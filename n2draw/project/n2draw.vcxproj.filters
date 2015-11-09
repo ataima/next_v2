@@ -15,12 +15,18 @@
     <ClInclude Include="..\header\n2drawmanager.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\n2connection.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2draw.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\n2drawmanager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2connection.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

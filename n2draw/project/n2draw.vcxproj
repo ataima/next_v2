@@ -27,10 +27,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\header\n2connection.h" />
     <ClInclude Include="..\header\n2draw.h" />
     <ClInclude Include="..\header\n2drawmanager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\n2connection.cpp" />
     <ClCompile Include="..\source\n2draw.cpp" />
     <ClCompile Include="..\source\n2drawmanager.cpp" />
   </ItemGroup>

@@ -28,5 +28,8 @@
     <ClCompile Include="..\source\testn2objmanager.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\testn2connection.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
