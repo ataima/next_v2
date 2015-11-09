@@ -80,7 +80,7 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 						{
 							if (src_dw != 0 && dst_up == 0)
 							{
-								for (u = p_src.y + 1; u < p_dst.y; u++)
+								for (u = p_dst.y + 1; u < p_src.y; u++)
 								{
 									InnObj *v = manager->getObj(p_src.x, u);
 									if (v == nullptr)
@@ -94,7 +94,7 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 							else
 								if (src_dw == 0 && dst_up != 0)
 								{
-									for (u = p_dst.y - 1; u < p_src.y; u--)
+									for (u = p_src.y - 1; u < p_src.y; u--)
 									{
 										InnObj *v = manager->getObj(p_src.x, u);
 										if (v == nullptr)
@@ -109,7 +109,7 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 									if (src_dw == 0 && dst_up == 0)
 									{
 
-										for (u = p_src.y; u < p_dst.y; u++)
+										for (u = p_dst.y; u < p_src.y; u++)
 										{
 											InnObj *v = manager->getObj(p_src.x, u);
 											if (v == nullptr)

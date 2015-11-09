@@ -118,7 +118,7 @@ public:
 	}
 	static void getOsName(char *buff, int len)
 	{
-#if defined (WIN32) || defined(BORLAND)
+#if defined (_WIN32) || defined (_WIN64)|| defined(BORLAND)
 		strncpy(buff, getenv("OS"), len);
 #else
 		// DA FARE
@@ -127,7 +127,7 @@ public:
 	}
 	static void getDomain(char *buff, int len)
 	{
-#if defined (WIN32) || defined(BORLAND)
+#if defined (_WIN32) || defined (_WIN64)|| defined(BORLAND)
 		strncpy(buff, getenv("USERDOMAIN"), len);
 #else
 		// DA FARE
@@ -147,14 +147,12 @@ public:
 	void addStartPage(void)
 	{
 		const char *MSG = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n<HTML>\n";
-		//fprintf(out,MSG);
 		fputs(MSG, out);
 		fflush(out);
 	}
 	void addEndPage(void)
 	{
 		const char *MSG = "</HTML>\n";
-		//fprintf(out,MSG);
 		fputs(MSG, out);
 		fflush(out);
 	}
@@ -171,14 +169,12 @@ public:
 			"-->\n"
 			"</STYLE>\n"
 			"</HEAD>\n";
-		//fprintf(out,MSG);
 		fputs(MSG, out);
 		fflush(out);
 	}
 	void addPageFormat(void)
 	{
 		const char *MSG = "<BODY LANG=\"it-IT\" BGCOLOR=\"#ffcc99\" DIR=\"LTR\">\n";
-		//fprintf(out,MSG);
 		fputs(MSG, out);
 		fflush(out);
 	}
@@ -214,7 +210,6 @@ public:
 	void addSpace(void)
 	{
 		const char *MSG = "<P STYLE=\"margin-bottom: 1cm\"><BR></P>";
-		//fprintf(out,MSG);
 		fputs(MSG, out);
 		fflush(out);
 	}
@@ -278,7 +273,6 @@ public:
 	}
 	inline void addEndTable(void)
 	{
-		//fprintf(out,"</TABLE>");
 		fputs("</TABLE>", out);
 		fflush(out);
 	}
@@ -339,7 +333,6 @@ public:
 			ptrStop = strstr(ptrStart, "\n\r");
 			if (ptrStop == NULL)
 			{
-				//fprintf(out,ptrStart);
 				fputs(ptrStart, out);
 				break;
 			}
@@ -351,7 +344,6 @@ public:
 				fwrite(MSG3, 4, sizeof(char), out);
 			}
 		} while (1);
-		//fprintf(out,MSG2);
 		fputs(MSG2, out);
 		fflush(out);
 	}
@@ -1197,7 +1189,10 @@ public:
 	/// implementation of ...
 	virtual void OpenFile(void)
 	{
-		if (file == NULL)file = fopen(nameFile, "w");
+		if (file == NULL)
+		{
+			file = fopen(nameFile, "w+");
+		}
 	}
 	/// implementation of ...
 	virtual void CloseFile(void)
@@ -1884,7 +1879,7 @@ private :\
 	caTester *className::instance=caContainerTest::Addtest(new className())
 // any test method was register into test class
 /*
-#ifndef WIN32
+#ifndef _WIN32
 #define CA_TEST(memberTest,brief)\
 AddTest((functor)(&this->memberTest),#memberTest,#brief,docs,testReq,numTestReq,&totalTest)
 #else
