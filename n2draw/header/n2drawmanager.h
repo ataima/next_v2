@@ -17,8 +17,8 @@ public:
 	virtual bool removeAll( void ) = 0;
 	virtual bool setupPower(void) = 0;
 	virtual InnObj * getObj(size_t x, size_t y) = 0;
-
-
+        virtual bool moveObj(n2Point from, n2Point to ) = 0;
+        virtual bool swapObj(n2Point from, n2Point to ) = 0;
 };
 
 typedef std::map<std::string, InnObj *> hashObjTable;
@@ -40,6 +40,9 @@ public:
 	 bool replaceObj(size_t x, size_t y, InnObj * obj);
 	 bool removeAll( void );
 	 bool setupPower(void);
+         bool moveObj(n2Point from, n2Point to );
+         bool swapObj(n2Point from, n2Point to );
+
 protected:
 	bool genHashKey(size_t x, size_t y, std::string & out);
 	bool range(size_t x, size_t y);

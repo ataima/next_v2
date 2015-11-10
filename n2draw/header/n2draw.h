@@ -9,6 +9,14 @@
 #include <sstream>
 
 
+typedef struct tag_n2_point
+{
+	size_t x;
+	size_t y;
+	tag_n2_point(size_t _x, size_t _y) :x(_x), y(_y) {}
+} n2Point;
+
+
 enum tag_obj_context
 {
 	objNone = 0,

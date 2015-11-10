@@ -105,8 +105,10 @@ void test_n2ObjManager::test4(void)
 	for (size_t i = 0; i < 50; i++)
 	{
 		InnWire * wire = dynamic_cast<InnWire*>(mn.getObj(i, 0));
+                CA_ASSERT(wire!=NULL);
 		CA_ASSERT(wire->getNum() == (size_t)1);
 		wire = dynamic_cast<InnWire*>(mn.getObj(i, 19));
+                CA_ASSERT(wire!=NULL);
 		CA_ASSERT(wire->getNum() == (size_t)2);
 	}
 	nnObjComponent *c=new nnObjComponent(ObjContext::objContact);

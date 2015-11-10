@@ -3,12 +3,7 @@
 
 class IManager;
 
-typedef struct tag_n2_point
-{
-	size_t x;
-	size_t y;
-	tag_n2_point(size_t _x, size_t _y) :x(_x), y(_y) {}
-} n2Point;
+#include "n2draw.h"
 
 class n2Connection
 {
