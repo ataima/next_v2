@@ -3,19 +3,34 @@
 #include <iostream>
 #include <vector>
 
-nnObjManager::nnObjManager(size_t x, size_t y) : v_width(x), v_height(y)
+nnObjManager::nnObjManager(size_t x, size_t y) 
+    : v_width(x), v_height(y),
+      mask_width(0), mask_height(0)
 {
-
     nnObjWire::resetUI();
-    char i;
-    for (i = '0'; i < 127; i++)
-        table.push_back(i);
+    size_t i = v_width&0x0fffffff;
+    mask_width = 1;
+    while (i > 0)
+    {
+        i >>= 1;
+        mask_width <<= 1;
+        mask_width |= 1;
+    }
+    i = v_height & 0x0fffffff;
+    mask_height = 1;
+    while (i > 0)
+    {
+        i >>= 1;
+        mask_height <<= 1;
+        mask_height |= 1;
+    }
+
 }
 
 InnObj * nnObjManager::getObj(size_t x, size_t y)
 {
     nnObj * res = nullptr;
-    std::string hkey;
+    hashkey hkey;
     if (range(x, y))
         if (genHashKey(x, y, hkey)) {
             hashObjTable::iterator it = find(hkey);
@@ -29,21 +44,17 @@ InnObj * nnObjManager::getObj(size_t x, size_t y)
 bool nnObjManager::addObj(size_t x, size_t y, InnObj * obj)
 {
     bool res = false;
-    std::string hkey;
+    hashkey hkey;
     if (range(x, y) && obj != nullptr)
         if (genHashKey(x, y, hkey)) {
             hashObjTable::iterator it = find(hkey);
             if (it == end()) {
-                std::pair<std::string, InnObj *> p(hkey, obj);
+                std::pair<hashkey, InnObj *> p(hkey, obj);
                 insert(p);
                 obj->setXpos(x);
                 obj->setYpos(y);
                 res = linkObj(x, y, obj);
-            }
-            else {
-                std::cout << "HASH KEY : " << it->first << std::endl;
-                std::wcout << L"OBJ  : " << it->second->toString() << std::endl;
-            }
+             }
         }
     return res;
 }
@@ -51,7 +62,7 @@ bool nnObjManager::addObj(size_t x, size_t y, InnObj * obj)
 bool nnObjManager::removeObj(size_t x, size_t y)
 {
     bool res = false;
-    std::string hkey;
+    hashkey hkey;
     if (range(x, y))
         if (genHashKey(x, y, hkey)) {
             hashObjTable::iterator it = find(hkey);
@@ -71,7 +82,7 @@ bool nnObjManager::removeObj(size_t x, size_t y)
 bool nnObjManager::replaceObj(size_t x, size_t y, InnObj * obj)
 {
     bool res = false;
-    std::string hkey;
+    hashkey hkey;
     if (range(x, y) && obj != nullptr)
         if (genHashKey(x, y, hkey)) {
             hashObjTable::iterator it = find(hkey);
@@ -119,23 +130,19 @@ bool nnObjManager::setupPower(void)
     return res;
 }
 
-bool nnObjManager::genHashKey(size_t x, size_t y, std::string & out)
+bool nnObjManager::genHashKey(size_t x, size_t y, hashkey &key)
 {
     bool res = false;
-    size_t sizetable = table.size();
-    size_t i;
-    out.clear();
-    i = 0;
-    while (x / sizetable) {
-        out += table[i++];
-    }
-    out += table[x % sizetable];
-    i = sizetable - 1;
-    while (y / sizetable) {
-        out += table[i--];
-    }
-    out += table[sizetable - (y % sizetable)];
-    res = (out.size() > 0);
+    x <<= 1;
+    y <<= 1;
+    x |= 1;
+    y |= 1;
+    x &= mask_width;
+    y &= mask_height;
+    key = x;
+    key <<= 29;
+    key |= y;
+    res = key != 0;
     return res;
 }
 

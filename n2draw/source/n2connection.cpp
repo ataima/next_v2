@@ -7,6 +7,7 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 	bool res = false;
 	if (manager != nullptr)
 	{
+		InnObj *v = nullptr;
 		InnObj *src = manager->getObj(p_src.x, p_src.y);
 		InnObj *dst = manager->getObj(p_dst.x, p_dst.y);
 		if (src != nullptr && dst != nullptr)
@@ -26,17 +27,18 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 					if (p_src.x == p_dst.x && p_src.y != p_dst.y)
 					{
 						//vert connection
-						if (p_src.y < p_dst.y)
+
+						if (p_src.y > p_dst.y)
 						{
 							if (src_up != 0 && dst_dw == 0)
 							{
-								for (u = p_src.y + 1; u < p_dst.y; u++)
+								for (u = p_dst.y + 1; u < p_src.y; u++)
 								{
-									InnObj *v = manager->getObj(p_src.x, u);
+									v = manager->getObj(p_src.x, u);
 									if (v == nullptr)
 									{
-										InnObj *w = new nnObjWire(eWire::noWire);
-										manager->addObj(p_src.x, u, w);
+										v = new nnObjWire(eWire::noWire);
+										manager->addObj(p_src.x, u, v);
 									}
 								}
 								res = true;
@@ -46,11 +48,11 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 								{
 									for (u = p_dst.y - 1; u < p_src.y; u--)
 									{
-										InnObj *v = manager->getObj(p_src.x, u);
+										v = manager->getObj(p_src.x, u);
 										if (v == nullptr)
 										{
-											InnObj *w = new nnObjWire(eWire::noWire);
-											manager->addObj(p_src.x, u, w);
+											v = new nnObjWire(eWire::noWire);
+											manager->addObj(p_src.x, u, v);
 										}
 									}
 									res = true;
@@ -59,13 +61,13 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 									if (src_up == 0 && dst_dw == 0)
 									{
 
-										for (u = p_src.y; u < p_dst.y; u++)
+										for (u = p_dst.y; u < p_src.y; u++)
 										{
-											InnObj *v = manager->getObj(p_src.x, u);
+											v = manager->getObj(p_src.x, u);
 											if (v == nullptr)
 											{
-												InnObj *w = new nnObjWire(eWire::noWire);
-												manager->addObj(p_src.x, u, w);
+												v = new nnObjWire(eWire::noWire);
+												manager->addObj(p_src.x, u, v);
 											}
 										}
 										res = true;
@@ -80,13 +82,13 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 						{
 							if (src_dw != 0 && dst_up == 0)
 							{
-								for (u = p_dst.y + 1; u < p_src.y; u++)
+								for (u = p_src.y + 1; u < p_dst.y; u++)
 								{
-									InnObj *v = manager->getObj(p_src.x, u);
+									v = manager->getObj(p_src.x, u);
 									if (v == nullptr)
 									{
-										InnObj *w = new nnObjWire(eWire::noWire);
-										manager->addObj(p_src.x, u, w);
+										v = new nnObjWire(eWire::noWire);
+										manager->addObj(p_src.x, u, v);
 									}
 								}
 								res = true;
@@ -94,13 +96,13 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 							else
 								if (src_dw == 0 && dst_up != 0)
 								{
-									for (u = p_src.y - 1; u < p_src.y; u--)
+									for (u = p_dst.y - 1; u > p_src.y; u--)
 									{
-										InnObj *v = manager->getObj(p_src.x, u);
+										v = manager->getObj(p_src.x, u);
 										if (v == nullptr)
 										{
-											InnObj *w = new nnObjWire(eWire::noWire);
-											manager->addObj(p_src.x, u, w);
+											v = new nnObjWire(eWire::noWire);
+											manager->addObj(p_src.x, u, v);
 										}
 									}
 									res = true;
@@ -109,13 +111,13 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 									if (src_dw == 0 && dst_up == 0)
 									{
 
-										for (u = p_dst.y; u < p_src.y; u++)
+										for (u = p_src.y; u < p_dst.y; u++)
 										{
-											InnObj *v = manager->getObj(p_src.x, u);
+											v = manager->getObj(p_src.x, u);
 											if (v == nullptr)
 											{
-												InnObj *w = new nnObjWire(eWire::noWire);
-												manager->addObj(p_src.x, u, w);
+												v = new nnObjWire(eWire::noWire);
+												manager->addObj(p_src.x, u, v);
 											}
 										}
 										res = true;
