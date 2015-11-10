@@ -1,6 +1,18 @@
 #include "n2drawmanager.h"
 #include <algorithm>
+#include <iostream>
+#include <vector>
 
+
+
+nnObjManager::nnObjManager(size_t x, size_t y) :v_width(x), v_height(y) 
+{ 
+    
+    nnObjWire::resetUI(); 
+    char  i;
+    for(i='0';i<127;i++)
+     table.push_back(i);     
+}
 
 
 
@@ -36,6 +48,11 @@ bool nnObjManager::addObj(size_t x, size_t y, InnObj * obj)
 				obj->setYpos(y);
 				res = linkObj(x, y, obj);
 			}
+                        else
+                        {
+                            std::cout << "HASH KEY : " << it->first<<std::endl;
+                            std::wcout << L"OBJ  : " <<it->second->toString()<<std::endl;
+                        }
 		}
 	return res;
 }
@@ -122,9 +139,8 @@ bool nnObjManager::setupPower(void)
 
 bool nnObjManager::genHashKey(size_t x, size_t y, std::string & out)
 {
-	bool res = false;
-	const char table[] = "LMNOPQRSTUVWXlmnop6789abcdefghiqrstuvwxYZABCDEF<>-.;^()GHIJ012345jyz£$%&?*[]{}";
-	const int  sizetable = sizeof(table);
+	bool res = false;	
+	size_t  sizetable = table.size();
 	size_t i;
 	out.clear();
 	i = 0;
