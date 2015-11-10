@@ -162,11 +162,9 @@ bool nnObjWire::connectFromUp(nnObjWire & b)
 	}
 	break;
 	case eWire::wireHorizzontal:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTHorizUp);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTHorizUp);
+		res = true;
 		break;
 	case eWire::wireTVertRight:
 	case eWire::wireTVertLeft:
@@ -175,31 +173,23 @@ bool nnObjWire::connectFromUp(nnObjWire & b)
 	case eWire::wireAngleUpRight:
 	case eWire::wireAngleUpLeft:
 	case eWire::wireVertical:
-		if (getNum() == b.getNum())
-		{
-			res = true;
-		}
+		setNum(b.getNum());
+		res = true;
 		break;
 	case eWire::wireAngleDownRight:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTVertRight);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTVertRight);
+		res = true;
 		break;
 	case eWire::wireAngleDownLeft:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTVertLeft);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTVertLeft);
+		res = true;
 		break;
 	case eWire::wireTHorizDown:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireCross);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireCross);
+		res = true;
 		break;
 	}
 	return res;
@@ -268,11 +258,9 @@ bool nnObjWire::connectFromDown(nnObjWire & b)
 	}
 	break;
 	case eWire::wireHorizzontal:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTHorizDown);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTHorizDown);
+		res = true;
 		break;
 	case eWire::wireTVertRight:
 	case eWire::wireTVertLeft:
@@ -281,29 +269,23 @@ bool nnObjWire::connectFromDown(nnObjWire & b)
 	case eWire::wireAngleDownRight:
 	case eWire::wireAngleDownLeft:
 	case eWire::wireVertical:
-		if (getNum() == b.getNum())
-			res = true;
+		setNum(b.getNum());
+		res = true;
 		break;
 	case eWire::wireAngleUpRight:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTVertRight);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTVertRight);
+		res = true;
 		break;
 	case eWire::wireAngleUpLeft:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTVertLeft);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTVertLeft);
+		res = true;
 		break;
 	case eWire::wireTHorizUp:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireCross);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireCross);
+		res = true;
 		break;
 	}
 	return res;
@@ -372,11 +354,9 @@ bool nnObjWire::connectFromLeft(nnObjWire & b)
 	}
 	break;
 	case eWire::wireVertical:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTVertLeft);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTVertLeft);
+		res = true;
 		break;
 	case eWire::wireTHorizDown:
 	case eWire::wireTHorizUp:
@@ -385,29 +365,23 @@ bool nnObjWire::connectFromLeft(nnObjWire & b)
 	case eWire::wireAngleUpLeft:
 	case eWire::wireAngleDownLeft:
 	case eWire::wireHorizzontal:
-		if (getNum() == b.getNum())
-			res = true;
+		setNum(b.getNum());
+		res = true;
 		break;
 	case eWire::wireAngleUpRight:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTHorizUp);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTHorizUp);
+		res = true;
 		break;
 	case eWire::wireAngleDownRight:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTHorizDown);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireTHorizDown);
+		res = true;
 		break;
 	case eWire::wireTVertRight:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireCross);
-			res = true;
-		}
+		setNum(b.getNum());
+		setWire(eWire::wireCross);
+		res = true;
 		break;
 	}
 	return res;
@@ -470,11 +444,9 @@ bool nnObjWire::connectFromRight(nnObjWire & b)
 	}
 	break;
 	case eWire::wireVertical:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTVertRight);
+		setNum(b.getNum());
+		setWire(eWire::wireTVertRight);
 			res = true;
-		}
 		break;
 	case eWire::wireTHorizDown:
 	case eWire::wireTHorizUp:
@@ -483,29 +455,23 @@ bool nnObjWire::connectFromRight(nnObjWire & b)
 	case eWire::wireAngleUpRight:
 	case eWire::wireAngleDownRight:
 	case eWire::wireHorizzontal:
-		if (getNum() == b.getNum())
-			res = true;
+		setNum(b.getNum());
+		res = true;
 		break;
 	case eWire::wireAngleUpLeft:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTHorizUp);
+		setNum(b.getNum());
+		setWire(eWire::wireTHorizUp);
 			res = true;
-		}
 		break;
 	case eWire::wireAngleDownLeft:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireTHorizDown);
+		setNum(b.getNum());
+		setWire(eWire::wireTHorizDown);
 			res = true;
-		}
 		break;
 	case eWire::wireTVertLeft:
-		if (getNum() == b.getNum())
-		{
-			setWire(eWire::wireCross);
+		setNum(b.getNum());
+		setWire(eWire::wireCross);
 			res = true;
-		}
 		break;
 	}
 	return res;

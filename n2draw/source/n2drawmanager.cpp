@@ -177,21 +177,45 @@ bool nnObjManager::range(size_t x, size_t y)
 bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
 {
     bool res = false;
-    if (obj != nullptr) {
-        if (y > 0) {
-            InnObj *neighbour = getObj(x, y - 1);
-            obj->setUpNeighbour(neighbour);
-            if (neighbour != nullptr) {
-                neighbour->setDownNeighbour(obj);
-            }
-        }
-        if (y + 1 < v_height) {
-            InnObj *neighbour = getObj(x, y + 1);
-            obj->setDownNeighbour(neighbour);
-            if (neighbour != nullptr) {
-                neighbour->setUpNeighbour(obj);
-            }
-        }
+    if (obj != nullptr)
+	{
+		InnObj *neighbourUp = nullptr;
+		InnObj *neighbourDw = nullptr;
+		if (y > 0) 
+		{
+			neighbourUp = getObj(x, y - 1);
+		}
+		if (y + 1 < v_height)
+		{
+			neighbourDw = getObj(x, y + 1);
+		}
+		
+		if (obj->isComponent())
+		{
+			obj->setUpNeighbour(neighbourUp);
+			obj->setDownNeighbour(neighbourDw);
+			if (neighbourUp != nullptr)
+			{
+				neighbourUp->setDownNeighbour(obj);
+			}
+			if (neighbourDw != nullptr)
+			{
+				neighbourDw->setUpNeighbour(obj);
+			}
+		}
+		else
+		{
+			if (neighbourUp != nullptr && !neighbourUp->isComponent())
+			{
+				obj->setUpNeighbour(neighbourUp);
+				neighbourUp->setDownNeighbour(obj);
+			}
+			if (neighbourDw != nullptr && !neighbourDw->isComponent())
+			{
+				obj->setDownNeighbour(neighbourDw);
+				neighbourDw->setUpNeighbour(obj);
+			}
+		}
         res = true;
     }
     return res;

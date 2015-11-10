@@ -5,6 +5,7 @@
 bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p_dst)
 {
 	bool res = false;
+
 	if (manager != nullptr)
 	{
 		InnObj *v = nullptr;
