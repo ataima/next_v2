@@ -4,12 +4,14 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>../header/n2connection.h</itemPath>
       <itemPath>../header/n2draw.h</itemPath>
       <itemPath>../header/n2drawmanager.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>../source/n2connection.cpp</itemPath>
       <itemPath>../source/n2draw.cpp</itemPath>
       <itemPath>../source/n2drawmanager.cpp</itemPath>
     </logicalFolder>
@@ -50,9 +52,13 @@
           <output>../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libn2draw.a</output>
         </archiverTool>
       </compileType>
+      <item path="../header/n2connection.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../header/n2draw.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../header/n2drawmanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../source/n2connection.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../source/n2draw.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -89,9 +95,13 @@
           <output>../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libn2draw.a</output>
         </archiverTool>
       </compileType>
+      <item path="../header/n2connection.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../header/n2draw.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../header/n2drawmanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../source/n2connection.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../source/n2draw.cpp" ex="false" tool="1" flavor2="0">
       </item>

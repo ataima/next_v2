@@ -21,7 +21,7 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=Cygwin-Windows
+CND_PLATFORM=Cygwin_4.x-Windows
 CND_DLIB_EXT=dll
 CND_CONF=Release
 CND_DISTDIR=dist
@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/_ext/812168374/n2connection.o \
 	${OBJECTDIR}/_ext/812168374/n2draw.o \
 	${OBJECTDIR}/_ext/812168374/n2drawmanager.o
 
@@ -64,6 +65,11 @@ LDLIBSOPTIONS=
 	${RM} ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libn2draw.a
 	${AR} -rv ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libn2draw.a ${OBJECTFILES} 
 	$(RANLIB) ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libn2draw.a
+
+${OBJECTDIR}/_ext/812168374/n2connection.o: ../source/n2connection.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/n2connection.o ../source/n2connection.cpp
 
 ${OBJECTDIR}/_ext/812168374/n2draw.o: ../source/n2draw.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
