@@ -12,10 +12,11 @@ public:
 	// 
 	virtual bool addObj(size_t x, size_t y, InnObj * obj) = 0;
 	virtual bool removeObj(size_t x, size_t y) = 0;
+	virtual InnObj * getObj(size_t x, size_t y) = 0;
+	virtual InnObj * outObj(size_t x, size_t y) = 0;
 	virtual bool replaceObj(size_t x, size_t y, InnObj * obj) = 0;
 	virtual bool removeAll(void) = 0;
 	virtual bool setupPower(void) = 0;
-	virtual InnObj * getObj(size_t x, size_t y) = 0;
 	virtual bool moveObj(n2Point from, n2Point to) = 0;
 	virtual bool swapObj(n2Point from, n2Point to) = 0;
 };
@@ -38,6 +39,7 @@ public:
 	nnObjManager(size_t x, size_t y);
 	~nnObjManager() { removeAll(); }
 	InnObj * getObj(size_t x, size_t y);
+	InnObj * outObj(size_t x, size_t y);
 	bool addObj(size_t x, size_t y, InnObj * obj);
 	bool removeObj(size_t x, size_t y);
 	bool replaceObj(size_t x, size_t y, InnObj * obj);
@@ -45,7 +47,6 @@ public:
 	bool setupPower(void);
 	bool moveObj(n2Point from, n2Point to);
 	bool swapObj(n2Point from, n2Point to);
-
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);
 	bool range(size_t x, size_t y);

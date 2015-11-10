@@ -22,6 +22,7 @@ class test_n2ObjManager
 	CA_TEST(test_n2ObjManager::test8, "verifica connect/disconnect");
 	CA_TEST(test_n2ObjManager::test9, "verifica connect/disconnect");
 	CA_TEST(test_n2ObjManager::test10, "verifica connect/disconnect");
+	CA_TEST(test_n2ObjManager::test11, "verifica move");
 	CA_TEST_SUITE_END()
 	void setUp(void) {}
 	void tearDown(void) {}
@@ -35,6 +36,7 @@ class test_n2ObjManager
 	void test8(void);
 	void test9(void);
 	void test10(void);
+	void test11(void);
 };
 ///////////////////////////////////////////////////
 
@@ -299,3 +301,26 @@ void test_n2ObjManager::test10(void)
 	CA_ASSERT(mn.size() == 102);
 }
 
+
+void test_n2ObjManager::test11(void)
+{
+	_START();
+	_INFO("verifica interrna alla classe: metodo move");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjManager mn(50, 20);
+	nnObjCoil *c = new nnObjCoil();
+	bool res = mn.addObj(10, 12, c);
+	CA_ASSERT(res == true);
+	CA_ASSERT((int)mn.size() == (int)1);
+	CA_ASSERT(mn.getObj(10, 12) != nullptr);
+	CA_ASSERT(mn.getObj(10, 12)->isComponent());
+	res=mn.moveObj(n2Point(10, 12), n2Point(5, 3));
+	CA_ASSERT(res == true);
+	CA_ASSERT((int)mn.size() == (int)1);
+	CA_ASSERT(mn.getObj(5, 3) != nullptr);
+	CA_ASSERT(mn.getObj(5, 3)->isComponent());
+	CA_ASSERT(mn.getObj(10, 12) == nullptr);
+	res = mn.removeAll();
+	CA_ASSERT(res == true);
+}

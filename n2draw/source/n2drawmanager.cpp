@@ -79,6 +79,26 @@ bool nnObjManager::removeObj(size_t x, size_t y)
     return res;
 }
 
+
+InnObj * nnObjManager::outObj(size_t x, size_t y)
+{
+	InnObj * obj = nullptr;
+	hashkey hkey;
+	if (range(x, y))
+		if (genHashKey(x, y, hkey)) {
+			hashObjTable::iterator it = find(hkey);
+			if (it != end()) {
+				obj = it->second;
+				if (obj != nullptr) {
+					erase(it); // remove first break recursion
+					unlinkObj(x, y, obj);				
+				}
+			}
+		}
+	return obj;
+}
+
+
 bool nnObjManager::replaceObj(size_t x, size_t y, InnObj * obj)
 {
     bool res = false;
@@ -213,11 +233,28 @@ bool nnObjManager::unlinkObj(size_t x, size_t y, InnObj *obj)
 
 bool nnObjManager::moveObj(n2Point from, n2Point to)
 {
-    return false;
+	bool res = false;
+	InnObj *fromObj = getObj(from.x, from.y);
+	InnObj *toObj = getObj(to.x, to.y);
+	if (toObj == nullptr && fromObj!=nullptr && fromObj->isComponent())
+	{
+		fromObj =outObj(from.x, from.y);
+		res = addObj(to.x, to.y, fromObj);
+	}
+    return res;
 }
 
 bool nnObjManager::swapObj(n2Point from, n2Point to)
 {
-    return false;
+	bool res = false;
+	InnObj *fromObj = getObj(from.x, from.y);
+	InnObj *toObj = getObj(to.x, to.y);
+	if (toObj != nullptr && fromObj != nullptr && toObj->isComponent() && fromObj->isComponent())
+	{
+		fromObj = outObj(from.x, from.y);
+		toObj= outObj(to.x, to.y);
+		res = addObj(to.x, to.y, fromObj) & addObj(from.x, from.y, toObj);
+	}
+    return res;
 }
 
