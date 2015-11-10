@@ -21,7 +21,7 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=Cygwin-Windows
+CND_PLATFORM=Cygwin_4.x-Windows
 CND_DLIB_EXT=dll
 CND_CONF=Release
 CND_DISTDIR=dist
@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/_ext/812168374/mainApp.o \
+	${OBJECTDIR}/_ext/812168374/testn2connection.o \
 	${OBJECTDIR}/_ext/812168374/testn2draw.o \
 	${OBJECTDIR}/_ext/812168374/testn2objmanager.o
 
@@ -68,6 +69,11 @@ ${OBJECTDIR}/_ext/812168374/mainApp.o: ../source/mainApp.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/mainApp.o ../source/mainApp.cpp
+
+${OBJECTDIR}/_ext/812168374/testn2connection.o: ../source/testn2connection.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/testn2connection.o ../source/testn2connection.cpp
 
 ${OBJECTDIR}/_ext/812168374/testn2draw.o: ../source/testn2draw.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/812168374

@@ -11,6 +11,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>../source/mainApp.cpp</itemPath>
+      <itemPath>../source/testn2connection.cpp</itemPath>
       <itemPath>../source/testn2draw.cpp</itemPath>
       <itemPath>../source/testn2objmanager.cpp</itemPath>
     </logicalFolder>
@@ -36,6 +37,7 @@
       </toolsSet>
       <compileType>
         <cTool>
+          <standard>10</standard>
           <incDir>
             <pElem>../header</pElem>
           </incDir>
@@ -74,6 +76,8 @@
       <item path="../header/docMacro.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../source/mainApp.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../source/testn2connection.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../source/testn2draw.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -122,6 +126,8 @@
       <item path="../header/docMacro.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../source/mainApp.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../source/testn2connection.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../source/testn2draw.cpp" ex="false" tool="1" flavor2="0">
       </item>
