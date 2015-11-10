@@ -4,6 +4,7 @@
 
 
 #include <map>
+#include <vector>
 #include "n2draw.h"
 
 class IManager
@@ -21,7 +22,7 @@ public:
 };
 
 typedef std::map<std::string, InnObj *> hashObjTable;
-
+typedef std::vector<char> hashkeytable;
 class nnObjManager
 	: public IManager
 	, public hashObjTable
@@ -29,8 +30,9 @@ class nnObjManager
 protected:
 	size_t v_width;
 	size_t v_height;
+        hashkeytable table;
 public:
-	nnObjManager(size_t x, size_t y) :v_width(x), v_height(y) { nnObjWire::resetUI(); }
+	nnObjManager(size_t x, size_t y);
 	~nnObjManager() { removeAll(); }
 	 InnObj * getObj(size_t x, size_t y);
 	 bool addObj(size_t x, size_t y, InnObj * obj);
