@@ -82,20 +82,20 @@ bool nnObjManager::removeObj(size_t x, size_t y)
 
 InnObj * nnObjManager::outObj(size_t x, size_t y)
 {
-	InnObj * obj = nullptr;
-	hashkey hkey;
-	if (range(x, y))
-		if (genHashKey(x, y, hkey)) {
-			hashObjTable::iterator it = find(hkey);
-			if (it != end()) {
-				obj = it->second;
-				if (obj != nullptr) {
-					erase(it); // remove first break recursion
-					unlinkObj(x, y, obj);				
-				}
-			}
-		}
-	return obj;
+    InnObj * obj = nullptr;
+    hashkey hkey;
+    if (range(x, y))
+        if (genHashKey(x, y, hkey)) {
+            hashObjTable::iterator it = find(hkey);
+            if (it != end()) {
+                obj = it->second;
+                if (obj != nullptr) {
+                    erase(it); // remove first break recursion
+                    unlinkObj(x, y, obj);				
+                }
+            }
+        }
+    return obj;
 }
 
 
@@ -178,44 +178,83 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
 {
     bool res = false;
     if (obj != nullptr)
-	{
-		InnObj *neighbourUp = nullptr;
-		InnObj *neighbourDw = nullptr;
-		if (y > 0) 
-		{
-			neighbourUp = getObj(x, y - 1);
-		}
-		if (y + 1 < v_height)
-		{
-			neighbourDw = getObj(x, y + 1);
-		}
-		
-		if (obj->isComponent())
-		{
-			obj->setUpNeighbour(neighbourUp);
-			obj->setDownNeighbour(neighbourDw);
-			if (neighbourUp != nullptr)
-			{
-				neighbourUp->setDownNeighbour(obj);
-			}
-			if (neighbourDw != nullptr)
-			{
-				neighbourDw->setUpNeighbour(obj);
-			}
-		}
-		else
-		{
-			if (neighbourUp != nullptr && !neighbourUp->isComponent())
-			{
-				obj->setUpNeighbour(neighbourUp);
-				neighbourUp->setDownNeighbour(obj);
-			}
-			if (neighbourDw != nullptr && !neighbourDw->isComponent())
-			{
-				obj->setDownNeighbour(neighbourDw);
-				neighbourDw->setUpNeighbour(obj);
-			}
-		}
+    {
+        InnObj *neighbourUp = nullptr;
+        InnObj *neighbourDw = nullptr;
+        if (y > 0) 
+        {
+            neighbourUp = getObj(x, y - 1);
+        }
+        if (y + 1 < v_height)
+        {
+            neighbourDw = getObj(x, y + 1);
+        }
+        
+        if (obj->isComponent())
+        {
+            obj->setUpNeighbour(neighbourUp);
+            obj->setDownNeighbour(neighbourDw);
+            if (neighbourUp != nullptr)
+            {
+                neighbourUp->setDownNeighbour(obj);
+            }
+            if (neighbourDw != nullptr)
+            {
+                neighbourDw->setUpNeighbour(obj);
+            }
+        }
+        else
+        {
+            if (neighbourUp != nullptr && neighbourDw != nullptr)
+            {
+                if (neighbourUp->isComponent() && !neighbourDw->isComponent())
+                {
+                    obj->setDownNeighbour(neighbourDw);
+                    neighbourDw->setUpNeighbour(obj);
+                }
+                else
+                    if (!neighbourUp->isComponent() && neighbourDw->isComponent())
+                    {
+                        obj->setUpNeighbour(neighbourUp);
+                        neighbourUp->setDownNeighbour(obj);
+                    }
+                    else
+                        if (neighbourUp->isComponent() && neighbourDw->isComponent())
+                        {
+                            obj->setDownNeighbour(neighbourDw);
+                            neighbourDw->setUpNeighbour(obj);							
+                            neighbourUp->setDownNeighbour(obj);
+                        }
+                        else
+                        {
+                            InnWire *w1 = dynamic_cast<InnWire *>(neighbourUp);
+                            InnWire *w2 = dynamic_cast<InnWire *>(neighbourDw);
+                            if (w1 != nullptr && w2 != nullptr)
+                            {
+                                wireConnectionException e(w1->getNum(), w2->getNum());
+                                throw (e);
+                            }
+                            else
+                            {
+                                wireConnectionException e(0, 0);
+                                throw (e);
+                            }
+                        }
+
+            }
+            else
+            if (neighbourUp != nullptr )
+            {
+                obj->setUpNeighbour(neighbourUp);
+                neighbourUp->setDownNeighbour(obj);
+            }
+            else
+            if (neighbourDw != nullptr )
+            {
+                obj->setDownNeighbour(neighbourDw);
+                neighbourDw->setUpNeighbour(obj);
+            }
+        }
         res = true;
     }
     return res;
@@ -257,28 +296,28 @@ bool nnObjManager::unlinkObj(size_t x, size_t y, InnObj *obj)
 
 bool nnObjManager::moveObj(n2Point from, n2Point to)
 {
-	bool res = false;
-	InnObj *fromObj = getObj(from.x, from.y);
-	InnObj *toObj = getObj(to.x, to.y);
-	if (toObj == nullptr && fromObj!=nullptr && fromObj->isComponent())
-	{
-		fromObj =outObj(from.x, from.y);
-		res = addObj(to.x, to.y, fromObj);
-	}
+    bool res = false;
+    InnObj *fromObj = getObj(from.x, from.y);
+    InnObj *toObj = getObj(to.x, to.y);
+    if (toObj == nullptr && fromObj!=nullptr && fromObj->isComponent())
+    {
+        fromObj =outObj(from.x, from.y);
+        res = addObj(to.x, to.y, fromObj);
+    }
     return res;
 }
 
 bool nnObjManager::swapObj(n2Point from, n2Point to)
 {
-	bool res = false;
-	InnObj *fromObj = getObj(from.x, from.y);
-	InnObj *toObj = getObj(to.x, to.y);
-	if (toObj != nullptr && fromObj != nullptr && toObj->isComponent() && fromObj->isComponent())
-	{
-		fromObj = outObj(from.x, from.y);
-		toObj= outObj(to.x, to.y);
-		res = addObj(to.x, to.y, fromObj) & addObj(from.x, from.y, toObj);
-	}
+    bool res = false;
+    InnObj *fromObj = getObj(from.x, from.y);
+    InnObj *toObj = getObj(to.x, to.y);
+    if (toObj != nullptr && fromObj != nullptr && toObj->isComponent() && fromObj->isComponent())
+    {
+        fromObj = outObj(from.x, from.y);
+        toObj= outObj(to.x, to.y);
+        res = addObj(to.x, to.y, fromObj) & addObj(from.x, from.y, toObj);
+    }
     return res;
 }
 
