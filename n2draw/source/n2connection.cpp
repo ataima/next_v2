@@ -41,6 +41,12 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 										v = new nnObjWire(eWire::noWire);
 										manager->addObj(p_src.x, u, v);
 									}
+									else
+										if (v->isComponent())
+										{
+											positionBusyException e(p_src.x, u);
+											throw (e);
+										}
 								}
 								res = true;
 							}
@@ -55,6 +61,12 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 											v = new nnObjWire(eWire::noWire);
 											manager->addObj(p_src.x, u, v);
 										}
+										else
+											if (v->isComponent())
+											{
+												positionBusyException e(p_src.x, u);
+												throw (e);
+											}
 									}
 									res = true;
 								}
@@ -70,6 +82,12 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 												v = new nnObjWire(eWire::noWire);
 												manager->addObj(p_src.x, u, v);
 											}
+											else
+												if (u > p_dst.y && v->isComponent())
+												{
+													positionBusyException e(p_src.x, u);
+													throw (e);
+												}
 										}
 										res = true;
 									}
@@ -91,6 +109,12 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 										v = new nnObjWire(eWire::noWire);
 										manager->addObj(p_src.x, u, v);
 									}
+									else
+										if (v->isComponent())
+										{
+											positionBusyException e(p_src.x, u);
+											throw (e);
+										}
 								}
 								res = true;
 							}
@@ -105,6 +129,13 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 											v = new nnObjWire(eWire::noWire);
 											manager->addObj(p_src.x, u, v);
 										}
+										else
+											if (v->isComponent())
+
+											{
+												positionBusyException e(p_src.x, u);
+												throw (e);
+											}
 									}
 									res = true;
 								}
@@ -120,7 +151,14 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 												v = new nnObjWire(eWire::noWire);
 												manager->addObj(p_src.x, u, v);
 											}
+											else
+												if (u > p_src.y && v->isComponent())
+												{
+													positionBusyException e(p_src.x, u);
+													throw (e);
+												}
 										}
+
 										res = true;
 									}
 									else
@@ -133,6 +171,14 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 					else
 						if (p_src.y == p_dst.y && p_src.x != p_dst.x)
 						{
+							if(p_src.x < p_dst.x)
+							{
+
+							}
+							else
+							{
+
+							}
 
 						}
 

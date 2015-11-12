@@ -146,6 +146,15 @@ public :
 
 };
 
+class positionBusyException
+	:public std::runtime_error
+{
+public:
+	size_t x, y;
+	explicit positionBusyException(size_t _x, size_t _y) throw()
+		:runtime_error("positionBusyException"), x(_x), y(_y) {}
+
+};
 
 
 class  nnObjWire
