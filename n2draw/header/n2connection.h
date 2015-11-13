@@ -8,7 +8,7 @@ class IManager;
 class n2Connection
 {
 public:
-	static bool connectComponent(IManager *manager,n2Point src, n2Point dst);
+	static bool connectComponent(IManager *manager,n2Point & src, n2Point & dst);
 };
 
 

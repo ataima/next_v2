@@ -181,7 +181,7 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
     {
         InnObj *neighbourUp = nullptr;
         InnObj *neighbourDw = nullptr;
-        if (y > 0) 
+		if (y > 0)
         {
             neighbourUp = getObj(x, y - 1);
         }
@@ -189,7 +189,8 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
         {
             neighbourDw = getObj(x, y + 1);
         }
-        
+		
+		// VERT
         if (obj->isComponent())
         {
             obj->setUpNeighbour(neighbourUp);
@@ -202,6 +203,7 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
             {
                 neighbourDw->setUpNeighbour(obj);
             }
+			res = true;
         }
         else
         {
@@ -240,7 +242,6 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
                                 throw (e);
                             }
                         }
-
             }
             else
             if (neighbourUp != nullptr )
@@ -254,8 +255,28 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
                 obj->setDownNeighbour(neighbourDw);
                 neighbourDw->setUpNeighbour(obj);
             }
-        }
-        res = true;
+			else
+			{
+				//up & down =null 
+				// check for horizzontal connection on wire
+				InnObj *neighbourLeft = nullptr;
+				InnObj *neighbourRight = nullptr;
+				if (x > 0)
+				{
+					neighbourLeft = getObj(x-1, y);
+				}
+				if (x + 1 < v_width)
+				{
+					neighbourRight = getObj(x+1, y);
+				}
+				if (neighbourLeft != nullptr && !neighbourLeft->isComponent())
+					res=obj->connect(neighbourLeft);
+				if(neighbourRight != nullptr && !neighbourRight->isComponent())
+					res = obj->connect(neighbourRight);
+			}
+			res = true;
+		}
+       
     }
     return res;
 }

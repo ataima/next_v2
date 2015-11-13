@@ -2,7 +2,7 @@
 #include "n2drawmanager.h"
 #include "n2connection.h"
 
-bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p_dst)
+bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point & p_dst)
 {
 	bool res = false;
 
@@ -171,9 +171,48 @@ bool n2Connection::connectComponent(IManager * manager, n2Point p_src, n2Point p
 					else
 						if (p_src.y == p_dst.y && p_src.x != p_dst.x)
 						{
+							InnObj *near_src ;
+							InnObj *near_dst;
 							if(p_src.x < p_dst.x)
 							{
 
+								if (p_src.y > 1)
+								{
+									near_src = manager->getObj(p_src.x, p_src.y - 1);
+									near_dst = manager->getObj(p_dst.x, p_dst.y - 1);
+									if (near_src == nullptr && near_dst == nullptr)
+									{
+										size_t i;
+										v = new nnObjWire(eWire::wireAngleDownRight);
+										manager->addObj(p_src.x, p_src.y - 1,v);
+										for (i = p_src.x + 1; i < p_dst.x-1; i++)
+										{
+											v = new nnObjWire(eWire::noWire);
+											manager->addObj(i, p_src.y - 1, v);
+										}
+										v = new nnObjWire(eWire::wireAngleDownLeft);
+										manager->addObj(i, p_src.y - 1, v);
+									}
+								}
+								if (p_src.y < manager->getHeight() - 1)
+								{
+									near_src = manager->getObj(p_src.x, p_src.y + 1);
+									near_dst = manager->getObj(p_dst.x, p_dst.y + 1);
+									if (near_src == nullptr && near_dst == nullptr)
+									{
+										size_t i;
+										v = new nnObjWire(eWire::wireAngleUpRight);
+										manager->addObj(p_src.x, p_src.y + 1, v);
+										for (i = p_src.x + 1; i < p_dst.x - 1; i++)
+										{
+											v = new nnObjWire(eWire::noWire);
+											manager->addObj(i, p_src.y + 1, v);
+										}
+										v = new nnObjWire(eWire::wireAngleUpLeft);
+										manager->addObj(i, p_src.y + 1, v);
+									}
+									res = true;
+								}
 							}
 							else
 							{

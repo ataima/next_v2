@@ -343,7 +343,7 @@ bool nnObjWire::connectFromLeft(nnObjWire & b)
 	{
 	case eWire::noWire:
 	{
-		setWire(eWire::wireVertical);
+		setWire(eWire::wireHorizzontal);
 		size_t num = getNum(b);
 		if (num)
 		{
@@ -433,7 +433,7 @@ bool nnObjWire::connectFromRight(nnObjWire & b)
 	{
 	case eWire::noWire:
 	{
-		setWire(eWire::wireVertical);
+		setWire(eWire::wireHorizzontal);
 		size_t num = getNum(b);
 		if (num)
 		{
