@@ -185,7 +185,7 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 										size_t i;
 										v = new nnObjWire(eWire::wireAngleDownRight);
 										manager->addObj(p_src.x, p_src.y - 1,v);
-										for (i = p_src.x + 1; i < p_dst.x-1; i++)
+										for (i = p_src.x + 1; i < p_dst.x; i++)
 										{
 											v = new nnObjWire(eWire::noWire);
 											manager->addObj(i, p_src.y - 1, v);
@@ -203,7 +203,7 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 										size_t i;
 										v = new nnObjWire(eWire::wireAngleUpRight);
 										manager->addObj(p_src.x, p_src.y + 1, v);
-										for (i = p_src.x + 1; i < p_dst.x - 1; i++)
+										for (i = p_src.x + 1; i < p_dst.x ; i++)
 										{
 											v = new nnObjWire(eWire::noWire);
 											manager->addObj(i, p_src.y + 1, v);
