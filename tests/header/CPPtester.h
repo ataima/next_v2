@@ -362,7 +362,7 @@ public:
 /// for XML childs tag
 class xmlNode
 {
-	xmlNode * parent;	/// the fater of this node
+	xmlNode * parent;	/// the father of this node
 	xmlNode * child;   /// the child of this node
 	xmlNode * next;    /// the next node , child of this father
 	char *name;     /// the node name

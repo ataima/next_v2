@@ -167,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\mainApp.cpp" />
+    <ClCompile Include="..\source\testminiXml.cpp" />
     <ClCompile Include="..\source\testn2connection.cpp" />
     <ClCompile Include="..\source\testn2draw.cpp" />
     <ClCompile Include="..\source\testn2objmanager.cpp" />

@@ -35,9 +35,11 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/_ext/812168374/miniXml.o \
 	${OBJECTDIR}/_ext/812168374/n2connection.o \
 	${OBJECTDIR}/_ext/812168374/n2draw.o \
-	${OBJECTDIR}/_ext/812168374/n2drawmanager.o
+	${OBJECTDIR}/_ext/812168374/n2drawmanager.o \
+	${OBJECTDIR}/_ext/812168374/n2view.o
 
 
 # C Compiler Flags
@@ -66,6 +68,11 @@ LDLIBSOPTIONS=
 	${AR} -rv ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libn2draw.a ${OBJECTFILES} 
 	$(RANLIB) ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libn2draw.a
 
+${OBJECTDIR}/_ext/812168374/miniXml.o: ../source/miniXml.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -I../header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/miniXml.o ../source/miniXml.cpp
+
 ${OBJECTDIR}/_ext/812168374/n2connection.o: ../source/n2connection.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
 	${RM} "$@.d"
@@ -80,6 +87,11 @@ ${OBJECTDIR}/_ext/812168374/n2drawmanager.o: ../source/n2drawmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -I../header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/n2drawmanager.o ../source/n2drawmanager.cpp
+
+${OBJECTDIR}/_ext/812168374/n2view.o: ../source/n2view.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -I../header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/n2view.o ../source/n2view.cpp
 
 # Subprojects
 .build-subprojects:

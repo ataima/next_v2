@@ -31,5 +31,8 @@
     <ClCompile Include="..\source\testn2connection.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\testminiXml.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <vector>
-
+#include <string.h>
 
 typedef struct tag_n2_point
 {
