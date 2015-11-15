@@ -20,6 +20,7 @@ class test_n2draw_class
 	CA_TEST(test_n2draw_class::test8, "verifica connect 1");
 	CA_TEST(test_n2draw_class::test9, "verifica connect 2");
 	CA_TEST(test_n2draw_class::test10, "verifica connect 3");
+	CA_TEST(test_n2draw_class::test11, "verifica marshallObj template");
 	CA_TEST_SUITE_END()
 	void setUp(void);
 	void tearDown(void);
@@ -33,6 +34,7 @@ class test_n2draw_class
 	void test8(void);
 	void test9(void);
 	void test10(void);
+	void test11(void);
 	
 };
 ///////////////////////////////////////////////////
@@ -247,5 +249,24 @@ void test_n2draw_class::test10(void)
 	CA_ASSERT((size_t)u.getWire() == (size_t)eWire::wireTVertLeft);
 	CA_ASSERT(v.getConnections().front() == (size_t)1000);
 	
+}
+
+
+void test_n2draw_class::test11(void)
+{
+	_START();
+	_INFO("verify marshallObj temlate function");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjWire * v = nullptr;
+	try
+	{
+		marshallObj<nnObjWire>(v,__func__,__LINE__);
+	}
+	catch (failMemoryException e)
+	{
+		CA_ASSERT(strcmp(e.fun, "test11")==0);
+		CA_ASSERT(e.line == 264);
+	}
 }
 

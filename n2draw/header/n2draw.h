@@ -55,7 +55,7 @@ public:
 	virtual size_t getYpos(void) = 0;
 	virtual void setXpos(size_t pX) = 0;
 	virtual void setYpos(size_t pY) = 0;
-	virtual void setPos(size_t pX,size_t pY) = 0;
+	virtual void setPos(size_t pX, size_t pY) = 0;
 	virtual const std::wstring toString(void) const = 0;
 	virtual eWireDirection getDirection(InnObj * b) = 0;
 	virtual eConnections & getConnections(void) = 0;
@@ -141,9 +141,34 @@ public:
 	size_t x, y;
 	explicit positionBusyException(size_t _x, size_t _y) throw()
 		:runtime_error("positionBusyException"), x(_x), y(_y) {}
-
 };
 
+class failMemoryException
+	:public std::runtime_error
+{
+public:
+	char fun[256];
+	int line;
+	explicit failMemoryException(const char *funct, int _line) throw()
+		:runtime_error("failMemoryException"), line(_line) {
+		size_t l = strlen(funct);
+		size_t t = l < 255 ? l : 255;
+		memcpy(fun, funct,t);
+		fun[t] = 0;
+	}
+};
+
+template<class T>
+inline void marshallObj(T* ptr,const char* f,int l)
+{
+	if (ptr == nullptr)
+	{
+		failMemoryException e(f,l);
+		throw(e);
+	}
+}
+		
+#define MEMCHK(type,ptr) marshallObj<type>(ptr,__func__,__LINE__)
 
 class  nnObjConn
 	:public nnObjPos

@@ -137,7 +137,7 @@ bool nnObjWire::connect(InnObj * pb)
 			{
 				res = connectFromRight(pb->getConnections().front());
 				if(res)
-					res=connectFromLeft(pb->getConnections().front());
+					res= wire->connectFromLeft(pb->getConnections().front());
 			}
 			break;
 			}
