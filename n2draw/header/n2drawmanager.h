@@ -16,7 +16,6 @@ public:
 	virtual InnObj * outObj(size_t x, size_t y) = 0;
 	virtual bool replaceObj(size_t x, size_t y, InnObj * obj) = 0;
 	virtual bool removeAll(void) = 0;
-	virtual bool setupPower(void) = 0;
 	virtual bool moveObj(n2Point from, n2Point to) = 0;
 	virtual bool swapObj(n2Point from, n2Point to) = 0;
 	virtual size_t getWidth(void) = 0;
@@ -46,7 +45,6 @@ public:
 	bool removeObj(size_t x, size_t y);
 	bool replaceObj(size_t x, size_t y, InnObj * obj);
 	bool removeAll(void);
-	bool setupPower(void);
 	bool moveObj(n2Point from, n2Point to);
 	bool swapObj(n2Point from, n2Point to);
 	inline size_t getWidth(void)   { return v_width; }

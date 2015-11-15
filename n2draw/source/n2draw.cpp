@@ -26,22 +26,23 @@ const  std::wstring nnObjPos::toString(void) const
 
 
 
-eWireDirection nnObjPos::getDirection(InnObj & b)
+eWireDirection nnObjPos::getDirection(InnObj * pb)
 {
 	eWireDirection res = direction_unknow;
-	if (v_Xpos == b.getXpos())
+	if (pb == nullptr)return res;
+	if (v_Xpos == pb->getXpos())
 	{
 		//same row
-		if (v_Ypos < b.getYpos())
+		if (v_Ypos < pb->getYpos())
 			res = wire_from_down;
 		else
 			res = wire_from_up;
 	}
 	else
-		if (v_Ypos == b.getYpos())
+		if (v_Ypos == pb->getYpos())
 		{
 			//same col
-			if (v_Xpos < b.getXpos())
+			if (v_Xpos < pb->getXpos())
 				res = wire_from_right;
 			else
 				res = wire_from_left;
@@ -49,19 +50,54 @@ eWireDirection nnObjPos::getDirection(InnObj & b)
 	return res;
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-size_t  nnObjWire::getNum(nnObjWire & b)
+bool nnObjConn::powerConnect(size_t num)
 {
-	if (b.getNum() != 0 && getNum() == 0)
-		return b.getNum();
-	else
-		if (b.getNum() == 0 && getNum() == 0)
+	bool res = false;
+	if (num == 1)
+	{		
+		if (isComponent())
 		{
-			return ++uid_num;
+			nnObjComponent *cc = dynamic_cast<nnObjComponent *>(this);
+			if (cc != nullptr)
+			{
+				res=cc->connectFromUp(1);
+			}
 		}
-	return 0;
+		else
+		{
+			nnObjWire *ww = dynamic_cast<nnObjWire *>(this);
+			if (ww != nullptr)
+			{
+				res=ww->connectFromUp(1);
+			}
+		}
+	}
+	else
+		if (num == 2)
+		{
+			if (isComponent())
+			{
+				nnObjComponent *cc = dynamic_cast<nnObjComponent *>(this);
+				if (cc != nullptr)
+				{
+					res = cc->connectFromDown(2);
+				}
+			}
+			else
+			{
+				nnObjWire *ww = dynamic_cast<nnObjWire *>(this);
+				if (ww != nullptr)
+				{
+					res = ww->connectFromDown(2);
+				}
+			}
+		}
+	return res;
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 bool nnObjWire::connect(InnObj * pb)
@@ -72,71 +108,52 @@ bool nnObjWire::connect(InnObj * pb)
 		ObjContext context = pb->getContext();
 		if (context == ObjContext::objWire)
 		{
-			nnObjWire *pW = dynamic_cast<nnObjWire *>(pb);
-			if (pW != nullptr)
+			nnObjWire *wire = dynamic_cast<nnObjWire *>(pb);
+			eWireDirection w = getDirection(pb);
+			switch (w)
 			{
-				nnObjWire & bw = *pW;
-				eWireDirection w = getDirection(bw);
-				switch (w)
-				{
-				case wire_from_up:
-				{
-					res = connectFromUp(bw);
-					if (res)
-						res = bw.connectFromDown(*this);
-				}
-				break;
-				case wire_from_down:
-				{
-					res = connectFromDown(bw);
-					if (res)
-						res = bw.connectFromUp(*this);
-				}
-				break;
-				case wire_from_left:
-				{
-					res = connectFromLeft(bw);
-					if (res)
-						res = bw.connectFromRight(*this);
-				}
-				break;
-				case wire_from_right:
-				{
-					res = connectFromUp(bw);
-					if (res)
-						res = bw.connectFromDown(*this);
-				}
-				break;
-				}
+			case wire_from_up:
+			{
+				res = connectFromUp(pb->getConnections().back()) & wire->connectFromDown(pb->getConnections().back());
 			}
+			break;
+			case wire_from_down:
+			{
+				res = connectFromDown(pb->getConnections().front())& wire->connectFromUp(pb->getConnections().front());
+			}
+			break;
+			case wire_from_left:
+			{
+				res = connectFromLeft(pb->getConnections().front())& wire->connectFromRight(pb->getConnections().front());
+			}
+			break;
+			case wire_from_right:
+			{
+				res = connectFromRight(pb->getConnections().front()) & connectFromLeft(pb->getConnections().front());
+			}
+			break;
+			}
+
 		}
 		else
 			if (context == ObjContext::objContact || context == ObjContext::objCoil)
 			{
-				nnObjComponent *pW = dynamic_cast<nnObjComponent *>(pb);
-				if (pW != nullptr)
+
+				eWireDirection w = getDirection(pb);
+				switch (w)
 				{
-					eWireDirection w = getDirection(*pb);
-					switch (w)
-					{
-					case wire_from_up:
-					{
-						nnObjWire  & bw = pW->getDownWire();
-						res = connectFromUp(bw);
-						if (res)
-							res = bw.connect(this);
-					}
-					break;
-					case wire_from_down:
-					{
-						nnObjWire  & bw = pW->getUpWire();
-						res = connectFromDown(bw);
-						if (res)
-							res = bw.connect(this);
-					}
-					break;
-					}
+				case wire_from_up:
+				{
+					res = connectFromUp(pb->getConnections().back());
 				}
+				break;
+				case wire_from_down:
+				{
+					res = connectFromDown(pb->getConnections().front());
+				}
+				break;
+				}
+
 			}
 	}
 	return res;
@@ -144,7 +161,7 @@ bool nnObjWire::connect(InnObj * pb)
 
 
 
-bool nnObjWire::connectFromUp(nnObjWire & b)
+bool nnObjWire::connectFromUp(size_t num)
 {
 	bool res = false;
 	switch (getWire())
@@ -152,17 +169,15 @@ bool nnObjWire::connectFromUp(nnObjWire & b)
 	case eWire::noWire:
 	{
 		setWire(eWire::wireVertical);
-		size_t num = getNum(b);
 		if (num)
 		{
-			setNum(num);
-			b.setNum(num);
+			setConnections(num);
 			res = true;
 		}
 	}
 	break;
 	case eWire::wireHorizzontal:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTHorizUp);
 		res = true;
 		break;
@@ -173,21 +188,21 @@ bool nnObjWire::connectFromUp(nnObjWire & b)
 	case eWire::wireAngleUpRight:
 	case eWire::wireAngleUpLeft:
 	case eWire::wireVertical:
-		setNum(b.getNum());
+		setConnections(num);
 		res = true;
 		break;
 	case eWire::wireAngleDownRight:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTVertRight);
 		res = true;
 		break;
 	case eWire::wireAngleDownLeft:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTVertLeft);
 		res = true;
 		break;
 	case eWire::wireTHorizDown:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireCross);
 		res = true;
 		break;
@@ -198,7 +213,7 @@ bool nnObjWire::connectFromUp(nnObjWire & b)
 
 
 
-bool nnObjWire::disconnectFromUp(nnObjWire & b)
+bool nnObjWire::disconnectFromUp(size_t num)
 {
 	bool res = false;
 	switch (getWire())
@@ -214,7 +229,7 @@ bool nnObjWire::disconnectFromUp(nnObjWire & b)
 	case eWire::wireVertical:
 		setWire(eWire::noWire);
 	case eWire::noWire:
-		setNum(0);
+		setConnections(0);
 		res = true;
 		break;
 	case eWire::wireTVertRight:
@@ -240,7 +255,7 @@ bool nnObjWire::disconnectFromUp(nnObjWire & b)
 
 
 
-bool nnObjWire::connectFromDown(nnObjWire & b)
+bool nnObjWire::connectFromDown(size_t num)
 {
 	bool res = false;
 	switch (getWire())
@@ -248,17 +263,15 @@ bool nnObjWire::connectFromDown(nnObjWire & b)
 	case eWire::noWire:
 	{
 		setWire(eWire::wireVertical);
-		size_t num = getNum(b);
 		if (num)
 		{
-			setNum(num);
-			b.setNum(num);
+			setConnections(num);
 			res = true;
 		}
 	}
 	break;
 	case eWire::wireHorizzontal:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTHorizDown);
 		res = true;
 		break;
@@ -269,21 +282,21 @@ bool nnObjWire::connectFromDown(nnObjWire & b)
 	case eWire::wireAngleDownRight:
 	case eWire::wireAngleDownLeft:
 	case eWire::wireVertical:
-		setNum(b.getNum());
+		setConnections(num);
 		res = true;
 		break;
 	case eWire::wireAngleUpRight:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTVertRight);
 		res = true;
 		break;
 	case eWire::wireAngleUpLeft:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTVertLeft);
 		res = true;
 		break;
 	case eWire::wireTHorizUp:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireCross);
 		res = true;
 		break;
@@ -293,7 +306,7 @@ bool nnObjWire::connectFromDown(nnObjWire & b)
 
 
 
-bool nnObjWire::disconnectFromDown(nnObjWire & b)
+bool nnObjWire::disconnectFromDown(size_t num)
 {
 	bool res = false;
 	switch (getWire())
@@ -309,7 +322,7 @@ bool nnObjWire::disconnectFromDown(nnObjWire & b)
 	case eWire::wireVertical:
 		setWire(eWire::noWire);
 	case eWire::noWire:
-		setNum(0);
+		setConnections(0);
 		res = true;
 		break;
 	case eWire::wireTVertRight:
@@ -336,7 +349,7 @@ bool nnObjWire::disconnectFromDown(nnObjWire & b)
 
 
 
-bool nnObjWire::connectFromLeft(nnObjWire & b)
+bool nnObjWire::connectFromLeft(size_t num)
 {
 	bool res = false;
 	switch (getWire())
@@ -344,17 +357,15 @@ bool nnObjWire::connectFromLeft(nnObjWire & b)
 	case eWire::noWire:
 	{
 		setWire(eWire::wireHorizzontal);
-		size_t num = getNum(b);
 		if (num)
 		{
-			setNum(num);
-			b.setNum(num);
+			setConnections(num);
 			res = true;
 		}
 	}
 	break;
 	case eWire::wireVertical:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTVertLeft);
 		res = true;
 		break;
@@ -365,21 +376,21 @@ bool nnObjWire::connectFromLeft(nnObjWire & b)
 	case eWire::wireAngleUpLeft:
 	case eWire::wireAngleDownLeft:
 	case eWire::wireHorizzontal:
-		setNum(b.getNum());
+		setConnections(num);
 		res = true;
 		break;
 	case eWire::wireAngleUpRight:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTHorizUp);
 		res = true;
 		break;
 	case eWire::wireAngleDownRight:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTHorizDown);
 		res = true;
 		break;
 	case eWire::wireTVertRight:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireCross);
 		res = true;
 		break;
@@ -388,7 +399,7 @@ bool nnObjWire::connectFromLeft(nnObjWire & b)
 }
 
 
-bool nnObjWire::disconnectFromLeft(nnObjWire & b)
+bool nnObjWire::disconnectFromLeft(size_t num)
 {
 	bool res = false;
 	switch (getWire())
@@ -404,7 +415,7 @@ bool nnObjWire::disconnectFromLeft(nnObjWire & b)
 	case eWire::wireHorizzontal:
 		setWire(eWire::noWire);
 	case eWire::noWire:
-		setNum(0);
+		setConnections(num);
 		res = true;
 		break;
 	case eWire::wireTHorizDown:
@@ -426,7 +437,7 @@ bool nnObjWire::disconnectFromLeft(nnObjWire & b)
 }
 
 
-bool nnObjWire::connectFromRight(nnObjWire & b)
+bool nnObjWire::connectFromRight(size_t num)
 {
 	bool res = false;
 	switch (getWire())
@@ -434,19 +445,17 @@ bool nnObjWire::connectFromRight(nnObjWire & b)
 	case eWire::noWire:
 	{
 		setWire(eWire::wireHorizzontal);
-		size_t num = getNum(b);
 		if (num)
 		{
-			setNum(num);
-			b.setNum(num);
+			setConnections(num);
 			res = true;
 		}
 	}
 	break;
 	case eWire::wireVertical:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTVertRight);
-			res = true;
+		res = true;
 		break;
 	case eWire::wireTHorizDown:
 	case eWire::wireTHorizUp:
@@ -455,23 +464,23 @@ bool nnObjWire::connectFromRight(nnObjWire & b)
 	case eWire::wireAngleUpRight:
 	case eWire::wireAngleDownRight:
 	case eWire::wireHorizzontal:
-		setNum(b.getNum());
+		setConnections(num);
 		res = true;
 		break;
 	case eWire::wireAngleUpLeft:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTHorizUp);
-			res = true;
+		res = true;
 		break;
 	case eWire::wireAngleDownLeft:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireTHorizDown);
-			res = true;
+		res = true;
 		break;
 	case eWire::wireTVertLeft:
-		setNum(b.getNum());
+		setConnections(num);
 		setWire(eWire::wireCross);
-			res = true;
+		res = true;
 		break;
 	}
 	return res;
@@ -480,7 +489,7 @@ bool nnObjWire::connectFromRight(nnObjWire & b)
 
 
 
-bool nnObjWire::disconnectFromRight(nnObjWire & b)
+bool nnObjWire::disconnectFromRight(size_t num)
 {
 	bool res = false;
 	switch (getWire())
@@ -490,7 +499,7 @@ bool nnObjWire::disconnectFromRight(nnObjWire & b)
 	case eWire::wireAngleDownLeft:
 		setWire(eWire::noWire);
 	case eWire::noWire:
-		setNum(0);
+		setConnections(0);
 		res = true;
 		break;
 
@@ -520,13 +529,24 @@ bool nnObjWire::disconnectFromRight(nnObjWire & b)
 	return res;
 }
 
+size_t nnObjConn::uid_num = 2;
 
-size_t nnObjWire::uid_num = 2;
+
+const std::wstring nnObjConn::toString(void) const
+{
+	std::wostringstream s;
+	if(v_num.size()>0)
+		s << "N:" << v_num.front()<<":"<<v_num.back() << " - " << nnObjPos::toString();
+	else
+		s << "N:" << "0:0" << " - " << nnObjPos::toString();
+	return s.str();
+}
+
 
 const  std::wstring nnObjWire::toString(void) const
 {
 	std::wostringstream s;
-	s << "N:" << v_num << " - " << nnObjPos::toString() << " - ";
+	s << nnObjConn::toString() << " - ";
 	switch (v_wire)
 	{
 	case noWire: s << L"noWire"; break;
@@ -556,183 +576,168 @@ bool nnObjWire::disconnect(InnObj * pb)
 		ObjContext context = pb->getContext();
 		if (context == ObjContext::objWire)
 		{
-			nnObjWire *pW = dynamic_cast<nnObjWire *>(pb);
-			if (pW != nullptr)
+			eWireDirection w = getDirection(pb);
+			switch (w)
 			{
-				nnObjWire & bw = *pW;
-				eWireDirection w = getDirection(bw);
-				switch (w)
-				{
-				case wire_from_up:
-				{
-					res = disconnectFromUp(bw);
-					if (res)
-						res = bw.disconnectFromDown(*this);
-				}
-				break;
-				case wire_from_down:
-				{
-					res = disconnectFromDown(bw);
-					if (res)
-						res = bw.disconnectFromUp(*this);
-				}
-				break;
-				case wire_from_left:
-				{
-					res = disconnectFromLeft(bw);
-					if (res)
-						res = bw.disconnectFromRight(*this);
-				}
-				break;
-				case wire_from_right:
-				{
-					res = disconnectFromUp(bw);
-					if (res)
-						res = bw.disconnectFromDown(*this);
-				}
-				break;
-				}
+			case wire_from_up:
+			{
+				res = disconnectFromUp(pb->getConnections().front());
+			}
+			break;
+			case wire_from_down:
+			{
+				res = disconnectFromDown(pb->getConnections().front());
+			}
+			break;
+			case wire_from_left:
+			{
+				res = disconnectFromLeft(pb->getConnections().front());
+			}
+			break;
+			case wire_from_right:
+			{
+				res = disconnectFromUp(pb->getConnections().front());
+			}
+			break;
 			}
 		}
 		else
 			if (context == ObjContext::objContact || context == ObjContext::objCoil)
 			{
-				nnObjComponent *pW = dynamic_cast<nnObjComponent *>(pb);
-				if (pW != nullptr)
+				eWireDirection w = getDirection(pb);
+				switch (w)
 				{
-					eWireDirection w = getDirection(*pb);
-					switch (w)
-					{
-					case wire_from_up:
-					{
-						nnObjWire  & bw = pW->getDownWire();
-						res = disconnectFromUp(bw);
-						if (res)
-							res = bw.disconnect(this);
-					}
-					break;
-					case wire_from_down:
-					{
-						nnObjWire  & bw = pW->getUpWire();
-						res = disconnectFromDown(bw);
-						if (res)
-							res = bw.disconnect(this);
-					}
-					break;
-					}
+				case wire_from_up:
+				{
+					res = disconnectFromUp(pb->getConnections().front());
 				}
+				break;
+				case wire_from_down:
+				{
+					res = disconnectFromDown(pb->getConnections().back());
+				}
+				break;
+				}
+
 			}
 	}
 	return res;
 }
 
-void nnObjWire::setUpNeighbour(InnObj *obj)
-{
-	if (obj != NULL)
-	{
-		connect(obj);
-	}
-}
-
-void nnObjWire::setDownNeighbour(InnObj *obj)
-{
-	if (obj != NULL)
-	{
-		connect(obj);
-	}
-}
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const  std::wstring nnObjComponent::toString(void) const
+
+bool nnObjComponent::disconnect(InnObj *from)
 {
-	std::wostringstream s;
-	s << nnObjPos::toString() << std::endl;
-	s << "UP   : " << up_wire.toString() << std::endl;
-	s << "DOWN : " << down_wire.toString() << std::endl;
-	return s.str();
+	bool result = false;
+	eWireDirection res = getDirection(from);
+	if (res == eWireDirection::wire_from_up)
+	{
+		return disconnectFromUp();
+	}
+	else
+		if (res == eWireDirection::wire_from_down)
+		{
+			return disconnectFromDown();
+		}
+	return result;
 }
+
+
+
+
 
 bool nnObjComponent::connect(InnObj * from)
 {
-	eWireDirection res = getDirection(*from);
-	if (res == eWireDirection::wire_from_left)
-		return false;
-	else if (res == eWireDirection::wire_from_right)
-		return false;
-	else
+	bool result = false;
+	eWireDirection res = getDirection(from);
 		if (res == eWireDirection::wire_from_up)
-			return up_wire.connect(from);
+		{
+			if (from->isComponent())
+			{
+				size_t nconn=nnObjConn::getUI();
+				nnObjComponent *comp = dynamic_cast<nnObjComponent *>(from);
+				if (comp != nullptr)
+				{
+					result = comp->connectFromDown(nconn) & connectFromUp(nconn);
+				}
+			}
+			else
+			{
+				return connectFromUp(from->getConnections().front());
+			}
+		}
 		else
-			if (res == eWireDirection::wire_from_up)
-				return down_wire.connect(from);
+			if (res == eWireDirection::wire_from_down)
+			{
+				return connectFromDown(from->getConnections().front());
+			}
+	return result;
+}
+
+bool nnObjComponent::connectFromUp(size_t b)
+{
+	bool res = false;
+	if (v_num.size() == 0)
+	{
+		v_num.push_back(b);
+		v_num.push_back(0);
+	}
+	else
+	{
+		v_num[0] = b;
+	}
+	return res;
+}
+
+bool nnObjComponent::connectFromDown(size_t b)
+{
+	bool res = false;
+	if (v_num.size() == 0)
+	{
+		v_num.push_back(0);
+		v_num.push_back(b);
+		res = true;
+	}
+	else
+	if(v_num.size() == 2)
+	{
+		v_num[1] = b;
+		res = true;
+	}
+	return res;
+}
+
+bool nnObjComponent::disconnectFromUp(void)
+{
+	bool res = false;
+	if (v_num.size() != 0)
+	{
+		v_num[0] = 0;
+		res = true;
+	}
+	return false;
+}
+
+bool nnObjComponent::disconnectFromDown(void)
+{
+	bool res = false;
+	if (v_num.size() ==2)
+	{
+		v_num[1] = 0;
+		res = true;
+	}
 	return false;
 }
 
 
 
-void nnObjComponent::setUpNeighbour(InnObj *obj)
-{
-	if (obj == nullptr && up_neighbours != nullptr)
-	{
-		up_wire.disconnect(up_neighbours);
-	}
-	up_neighbours = obj;
-	if (obj != nullptr)
-	{
-		up_wire.connect(obj);
-	}
-
-}
-
-void nnObjComponent::setDownNeighbour(InnObj *obj)
-{
-	if (obj == nullptr && down_neighbours != nullptr)
-	{
-		down_wire.disconnect(down_neighbours);
-	}
-	down_neighbours = obj;
-	if (obj != nullptr)
-	{
-		down_wire.connect(obj);
-	}
-}
 
 
-void nnObjComponent::setXpos(size_t pX)
-{
-	nnObjPos::setXpos(pX);
-	up_wire.setXpos(pX);
-	down_wire.setXpos(pX);
-
-}
-
-void nnObjComponent::setYpos(size_t pY)
-{
-	nnObjPos::setYpos(pY);
-	up_wire.setYpos(pY);
-	down_wire.setYpos(pY);
-}
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const  std::wstring nnPowerUp::toString(void) const
-{
-	std::wostringstream s;
-	s << nnObjWire::toString() << " - ";
-	s << " Power Up" << std::endl;
-	return s.str();
-}
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const  std::wstring nnPowerDown::toString(void) const
-{
-	std::wostringstream s;
-	s << nnObjWire::toString() << " - ";
-	s << " Power Down" << std::endl;
-	return s.str();
-}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -753,3 +758,4 @@ const  std::wstring nnObjCoil::toString(void) const
 	s << nnObjComponent::toString();
 	return s.str();
 }
+

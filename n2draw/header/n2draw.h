@@ -7,6 +7,7 @@
 #include <string>
 #include <stdexcept>
 #include <sstream>
+#include <vector>
 
 
 typedef struct tag_n2_point
@@ -43,6 +44,7 @@ enum tag_wire_direction
 
 typedef tag_wire_direction  eWireDirection;
 
+typedef std::vector<size_t >  eConnections;
 
 class  InnObj
 {
@@ -53,11 +55,13 @@ public:
 	virtual size_t getYpos(void) = 0;
 	virtual void setXpos(size_t pX) = 0;
 	virtual void setYpos(size_t pY) = 0;
+	virtual void setPos(size_t pX,size_t pY) = 0;
 	virtual const std::wstring toString(void) const = 0;
-	virtual eWireDirection getDirection(InnObj & b) = 0;
-	virtual void setUpNeighbour(InnObj *obj) = 0;
-	virtual void setDownNeighbour(InnObj *obj) = 0;
+	virtual eWireDirection getDirection(InnObj * b) = 0;
+	virtual eConnections & getConnections(void) = 0;
+	virtual void setConnections(size_t  v) = 0;
 	virtual bool connect(InnObj* b) = 0;
+	virtual bool powerConnect(size_t num) = 0;
 	virtual bool disconnect(InnObj* b) = 0;
 	virtual bool isComponent(void) = 0;
 };
@@ -69,7 +73,7 @@ class  nnObj
 protected:
 	ObjContext v_context;
 public:
-	nnObj(ObjContext c){ v_context = c; }
+	nnObj(ObjContext c) { v_context = c; }
 	inline ObjContext getContext(void) { return v_context; }
 	inline void setContext(ObjContext & c) { v_context = c; }
 	const std::wstring toString(void) const;
@@ -86,10 +90,11 @@ public:
 	nnObjPos(ObjContext c) :nnObj(c), v_Xpos(0), v_Ypos(0) { }
 	inline  size_t getXpos(void) { return v_Xpos; }
 	inline  size_t getYpos(void) { return v_Ypos; }
-	virtual inline  void setXpos(size_t pX) { v_Xpos = pX; }
-	virtual inline  void setYpos(size_t pY) { v_Ypos = pY; }
+	inline  void setXpos(size_t pX) { v_Xpos = pX; }
+	inline  void setYpos(size_t pY) { v_Ypos = pY; }
+	inline  void setPos(size_t pX, size_t pY) { v_Xpos = pX; v_Ypos = pY; }
 	const  std::wstring toString(void) const;
-	eWireDirection getDirection(InnObj & b);
+	eWireDirection getDirection(InnObj * pb);
 };
 
 enum tag_wire
@@ -111,38 +116,21 @@ enum tag_wire
 typedef tag_wire eWire;
 
 
-
-enum tag_comp_conn
-{
-	conn_none,
-	conn_up,
-	conn_down
-};
-
-typedef tag_comp_conn eConnection;
-
-class nnObjWire;
-
-
 class InnWire
 {
 public:
 	virtual eWire getWire(void) = 0;
 	virtual void setWire(eWire c) = 0;
-	virtual size_t getNum(void) = 0;
-	virtual size_t getNum(nnObjWire & b) = 0;
-	virtual void setNum(size_t n) = 0;
-
 };
 
 // wire up !=wire down 
 class wireConnectionException
-	:public std::runtime_error 
+	:public std::runtime_error
 {
-public :
-	size_t up, down;
-	explicit wireConnectionException(size_t _up, size_t _down) throw()
-		:runtime_error("wireConnectionException"), up(_up),down(_down) {}
+public:
+	eConnections up, down;
+	explicit wireConnectionException(eConnections _up, eConnections _down) throw()
+		:runtime_error("wireConnectionException"), up(_up), down(_down) {}
 
 };
 
@@ -157,100 +145,68 @@ public:
 };
 
 
-class  nnObjWire
+class  nnObjConn
 	:public nnObjPos
+{
+protected:
+	eConnections v_num;
+	static size_t uid_num;
+
+public:
+	nnObjConn(ObjContext c) :nnObjPos(c), v_num(0) {}
+	inline eConnections & getConnections(void) { return v_num; }
+	inline virtual void setConnections(size_t n) { v_num.push_back(n); }
+	const  std::wstring toString(void) const;
+	static void resetUI(void) { uid_num = 2; }
+	static size_t getUI(void) { return ++uid_num; }
+	bool powerConnect(size_t num);
+
+};
+
+class  nnObjWire
+	: public nnObjConn
 	, public InnWire
 {
 protected:
 	eWire v_wire;
-	size_t v_num;
-	static size_t uid_num;
-
 public:
-	nnObjWire(eWire c) :nnObjPos(ObjContext::objWire)
-		, v_wire(c), v_num(0) {}
+	nnObjWire(eWire c) :nnObjConn(ObjContext::objWire)
+		, v_wire(c) {}
 	inline eWire getWire(void) { return v_wire; }
 	inline virtual void setWire(eWire c) { v_wire = c; }
-	inline size_t getNum(void) { return v_num; }
-	inline virtual void setNum(size_t n) { v_num = n; }
-	size_t getNum(nnObjWire & b);
+	const  std::wstring toString(void) const;
+	inline bool isComponent(void) { return false; }
 	bool connect(InnObj * b);
 	bool disconnect(InnObj * b);
-	const  std::wstring toString(void) const;
-	void setUpNeighbour(InnObj *obj);
-	void setDownNeighbour(InnObj *obj);
-	inline bool isComponent(void) { return false; }
-	static void resetUI(void) { uid_num = 2; }
+	bool connectFromUp(size_t b);
+	bool connectFromDown(size_t b);
 protected:
-	bool connectFromUp(nnObjWire & b);
-	bool connectFromDown(nnObjWire & b);
-	bool connectFromLeft(nnObjWire & b);
-	bool connectFromRight(nnObjWire & b);
 
-	bool disconnectFromUp(nnObjWire & b);
-	bool disconnectFromDown(nnObjWire & b);
-	bool disconnectFromLeft(nnObjWire & b);
-	bool disconnectFromRight(nnObjWire & b);
+	bool connectFromLeft(size_t b);
+	bool connectFromRight(size_t b);
 
-};
-
-
-class  nnPowerUp
-	:public nnObjWire
-{
-public:
-	nnPowerUp() :nnObjWire(eWire::wireTHorizDown) { v_num = 1; }
-	const  std::wstring toString(void) const;
-	inline void setWire(eWire c) {}
-	inline void setNum(size_t n) {}
-protected:
-	inline bool connectFromUp(nnObjWire & b) { return false; }
-	inline bool connectFromDown(nnObjWire & b) { return true; }
-	inline bool connectFromLeft(nnObjWire & b) { return false; }
-	inline bool connectFromRight(nnObjWire & b) { return false; }
-};
-
-
-class  nnPowerDown
-	:public nnObjWire
-{
-public:
-	nnPowerDown() :nnObjWire(eWire::wireTHorizUp) { v_num = 2; }
-	const  std::wstring toString(void) const;
-	inline void setWire(eWire c) {}
-	inline void setNum(size_t n) {}
-protected:
-	bool connectFromUp(nnObjWire & b) { return true; }
-	bool connectFromDown(nnObjWire & b) { return false; }
-	bool connectFromLeft(nnObjWire & b) { return false; }
-	bool connectFromRight(nnObjWire & b) { return false; }
+	bool disconnectFromUp(size_t b);
+	bool disconnectFromDown(size_t b);
+	bool disconnectFromLeft(size_t b);
+	bool disconnectFromRight(size_t b);
 };
 
 
 
 
 class  nnObjComponent
-	:public nnObjPos
+	:public nnObjConn
 {
-	nnObjWire up_wire;
-	nnObjWire down_wire;
-	InnObj* up_neighbours;
-	InnObj* down_neighbours;
 public:
-	nnObjComponent(ObjContext c) : nnObjPos(c)
-		, up_wire(eWire::noWire), down_wire(eWire::noWire)
-		, up_neighbours(nullptr),down_neighbours(nullptr){}
-	nnObjWire &getUpWire(void) { return up_wire; }
-	nnObjWire &getDownWire(void) { return down_wire; }
-	const  std::wstring toString(void) const;
-	void setUpNeighbour(InnObj *obj);
-	void setDownNeighbour(InnObj *obj);
+	nnObjComponent(ObjContext c) : nnObjConn(c) {}
 	inline bool isComponent(void) { return true; }
-	virtual bool connect(InnObj *b);
-	virtual void setXpos(size_t pX);
-	virtual void setYpos(size_t pY);
-	virtual bool disconnect(InnObj *b) { return false; }
-
+	bool connect(InnObj *b);
+	bool disconnect(InnObj *b);
+	bool connectFromUp(size_t b);
+	bool connectFromDown(size_t b);
+protected:
+	bool disconnectFromUp(void);
+	bool disconnectFromDown(void);
 };
 
 

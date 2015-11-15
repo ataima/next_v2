@@ -16,7 +16,7 @@ class test_n2draw_class
 	CA_TEST(test_n2draw_class::test4, "verifica tostring");
 	CA_TEST(test_n2draw_class::test5, "verifica get direction1");
 	CA_TEST(test_n2draw_class::test6, "verifica get direction2");
-	CA_TEST(test_n2draw_class::test7, "verifica getNum");
+	CA_TEST(test_n2draw_class::test7, "verifica getConnections().front");
 	CA_TEST(test_n2draw_class::test8, "verifica connect 1");
 	CA_TEST(test_n2draw_class::test9, "verifica connect 2");
 	CA_TEST(test_n2draw_class::test10, "verifica connect 3");
@@ -78,7 +78,7 @@ void test_n2draw_class::test2(void)
 	_INFO("verifica interna alla classe: metodo tostring");
 	_AUTHOR("Coppi Angelo n2draw library ");
 	_STOP();
-	nnObjComponent  v(ObjContext::objCoil);
+	nnObjCoil  v;
 	v.setXpos(10);
 	v.setXpos(20);
 	size_t t = v.toString().size();
@@ -133,9 +133,9 @@ void test_n2draw_class::test5(void)
 	nnObjWire  u(eWire::wireVertical);
 	u.setXpos(10);
 	u.setYpos(5);
-	eWireDirection w = u.getDirection(v);
+	eWireDirection w = u.getDirection(&v);
 	CA_ASSERT((size_t)w == (size_t)wire_from_down);
-	w = v.getDirection(u);
+	w = v.getDirection(&u);
 	CA_ASSERT((size_t)w == (size_t)wire_from_up);
 
 }
@@ -152,9 +152,9 @@ void test_n2draw_class::test6(void)
 	nnObjWire  u(eWire::wireHorizzontal);
 	u.setXpos(20);
 	u.setYpos(10);
-	eWireDirection w = u.getDirection(v);
+	eWireDirection w = u.getDirection(&v);
 	CA_ASSERT((size_t)w == (size_t)wire_from_left);
-	w = v.getDirection(u);
+	w = v.getDirection(&u);
 	CA_ASSERT((size_t)w == (size_t)wire_from_right);
 	
 }
@@ -162,19 +162,23 @@ void test_n2draw_class::test6(void)
 void test_n2draw_class::test7(void)
 {
 	_START();
-	_INFO("verifica interrna alla classe : metodo getNum");
+	_INFO("verifica interrna alla classe : metodo getConnections().front");
 	_AUTHOR("Coppi Angelo n2draw library ");
 	_STOP();
 	nnObjWire  v(eWire::noWire);
 	nnObjWire  u(eWire::wireHorizzontal);
-	u.setNum(1000);
-	eWireDirection w = v.getDirection(u);
+	v.setPos(10, 15);
+	u.setPos(10, 10);
+	u.setConnections(1000);
+	eWireDirection w = v.getDirection(&u);
 	CA_ASSERT((size_t)w == (size_t)wire_from_up);
 	bool res = v.connect(&u);
 	CA_ASSERT(res == true);
+	res = u.connect(&v);
+	CA_ASSERT(res == true);
 	CA_ASSERT((size_t)v.getWire() == (size_t)eWire::wireVertical);
 	CA_ASSERT((size_t)u.getWire() == (size_t)eWire::wireTHorizDown);
-	CA_ASSERT(v.getNum() == (size_t)1000);
+	CA_ASSERT(v.getConnections().front() == (size_t)1000);
 }
 
 void test_n2draw_class::test8(void)
@@ -185,14 +189,18 @@ void test_n2draw_class::test8(void)
 	_STOP();
 	nnObjWire  v(eWire::noWire);
 	nnObjWire  u(eWire::wireVertical);
-	u.setNum(1000);
-	eWireDirection w = v.getDirection(u);
+	v.setPos(10, 15);
+	u.setPos(10, 10);
+	u.setConnections(1000);
+	eWireDirection w = v.getDirection(&u);
 	CA_ASSERT((size_t)w == (size_t)wire_from_up);
 	bool res = v.connect(&u);
 	CA_ASSERT(res == true);
+	res = u.connect(&v);
+	CA_ASSERT(res == true);
 	CA_ASSERT((size_t)v.getWire() == (size_t)eWire::wireVertical);
 	CA_ASSERT((size_t)u.getWire() == (size_t)eWire::wireVertical);
-	CA_ASSERT(v.getNum() == (size_t)1000);
+	CA_ASSERT(v.getConnections().front() == (size_t)1000);
 }
 
 void test_n2draw_class::test9(void)
@@ -203,14 +211,18 @@ void test_n2draw_class::test9(void)
 	_STOP();
 	nnObjWire  v(eWire::noWire);
 	nnObjWire  u(eWire::wireAngleUpRight);
-	u.setNum(1000);
-	eWireDirection w = v.getDirection(u);
+	v.setPos(10, 15);
+	u.setPos(10, 10);
+	u.setConnections(1000);
+	eWireDirection w = v.getDirection(&u);
 	CA_ASSERT((size_t)w == (size_t)wire_from_up);
 	bool res = v.connect(&u);
 	CA_ASSERT(res==true);
+	res = u.connect(&v);
+	CA_ASSERT(res == true);
 	CA_ASSERT((size_t)v.getWire() == (size_t)eWire::wireVertical);
 	CA_ASSERT((size_t)u.getWire() == (size_t)eWire::wireTVertRight);
-	CA_ASSERT(v.getNum() == (size_t)1000);
+	CA_ASSERT(v.getConnections().front() == (size_t)1000);
 	
 }
 
@@ -222,14 +234,18 @@ void test_n2draw_class::test10(void)
 	_STOP();
 	nnObjWire  v(eWire::noWire);
 	nnObjWire  u(eWire::wireAngleUpLeft);
-	u.setNum(1000);
-	eWireDirection w = v.getDirection(u);
+	u.setConnections(1000);
+	v.setPos(10, 15);
+	u.setPos(10, 10);
+	eWireDirection w = v.getDirection(&u);
 	CA_ASSERT((size_t)w == (size_t)wire_from_up);
 	bool res = v.connect(&u);
 	CA_ASSERT(res == true);
+	res = u.connect(&v);
+	CA_ASSERT(res == true);
 	CA_ASSERT((size_t)v.getWire() == (size_t)eWire::wireVertical);
 	CA_ASSERT((size_t)u.getWire() == (size_t)eWire::wireTVertLeft);
-	CA_ASSERT(v.getNum() == (size_t)1000);
+	CA_ASSERT(v.getConnections().front() == (size_t)1000);
 	
 }
 

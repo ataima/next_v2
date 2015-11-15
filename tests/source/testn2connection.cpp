@@ -314,6 +314,7 @@ void test_n2Connection::test6(void)
 	_INFO("verifica interna alla classe: componenti with connection ");
 	_AUTHOR("Coppi Angelo n2draw library ");
 	_STOP();
+	bool res;
 	nnObjManager mn(50, 20);
 	nnObjCoil * coil = new nnObjCoil();
 	nnObjContact * contact = new nnObjContact();
@@ -321,7 +322,16 @@ void test_n2Connection::test6(void)
 	mn.addObj(5, 10, coil);
 	nnObjWire *wire = new nnObjWire(eWire::wireAngleDownLeft);
 	mn.addObj(5, 9, wire);
-	bool res = n2Connection::connectComponent(&mn, n2Point(5, 2), n2Point(5, 10));
+	try {
+		res = n2Connection::connectComponent(&mn, n2Point(5, 2), n2Point(5, 10));
+	}
+	catch (positionBusyException e)
+	{
+	}
+	catch (wireConnectionException v)
+	{
+		CA_ASSERT(v.down[0] == 4);
+	}
 	InnObj *w = mn.getObj(5, 3);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
@@ -350,14 +360,13 @@ void test_n2Connection::test6(void)
 	w = mn.getObj(5, 8);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireVertical);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::noWire);
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(5, 9);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireTVertLeft);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireAngleDownLeft);
 	std::wcout << w->toString() << std::endl;
-	CA_ASSERT(res == true);
 	res = mn.removeAll();
 	CA_ASSERT(res == true);
 }
@@ -383,48 +392,48 @@ void test_n2Connection::test7(void)
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireAngleDownRight);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum()==3);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front()==3);
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(6, 4);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 3);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 3);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(7, 4);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 3);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 3);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(8, 4);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 3);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 3);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(9, 4);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 3);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 3);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(10, 4);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 3);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 3);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(11, 4);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireAngleDownLeft);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 3);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 3);
 
 	std::wcout << w->toString() << std::endl;
 	
@@ -432,49 +441,49 @@ void test_n2Connection::test7(void)
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireAngleUpRight);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 4);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 4);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(6, 6);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 4);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 4);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(7, 6);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 4);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 4);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(8,6);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 4);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 4);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(9, 6);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 4);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 4);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(10, 6);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireHorizzontal);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 4);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 4);
 
 	std::wcout << w->toString() << std::endl;
 	w = mn.getObj(11, 6);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
 	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getWire() == eWire::wireAngleUpLeft);
-	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getNum() == 4);
+	CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 4);
 
 	std::wcout << w->toString() << std::endl;
 	res = mn.removeAll();
