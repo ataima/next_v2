@@ -38,6 +38,7 @@
       <compileType>
         <cTool>
           <standard>10</standard>
+          <commandlineTool>gcc</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
           </incDir>

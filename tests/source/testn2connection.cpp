@@ -46,7 +46,8 @@ void test_n2Connection::test1(void)
 	nnObjContact * contact = new nnObjContact();
 	mn.addObj(5, 2, contact);
 	mn.addObj(5, 10, coil);
-	bool res=n2Connection::connectComponent(&mn, n2Point(5, 2), n2Point(5, 10));
+        n2Point p1(5, 2),p2(5, 10);
+	bool res=n2Connection::connectComponent(&mn, p1,p2);
 	InnObj *w = mn.getObj(5, 3);
 	CA_ASSERT(w!=nullptr);
 	CA_ASSERT(w->isComponent()==false);
@@ -99,7 +100,8 @@ void test_n2Connection::test2(void)
 	nnObjContact * contact = new nnObjContact();
 	mn.addObj(5, 2, contact);
 	mn.addObj(5, 10, coil);
-	bool res = n2Connection::connectComponent(&mn, n2Point(5,10), n2Point(5, 2));
+        n2Point p1(5, 10),p2(5, 2);
+	bool res = n2Connection::connectComponent(&mn,p1,p2);
 	InnObj *w = mn.getObj(5, 3);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
@@ -154,7 +156,8 @@ void test_n2Connection::test3(void)
 	mn.addObj(5, 10, coil);
 	nnObjWire *wire = new nnObjWire(eWire::wireAngleUpLeft);
 	mn.addObj(5, 3, wire);
-	bool res = n2Connection::connectComponent(&mn, n2Point(5, 2), n2Point(5, 10));
+        n2Point p1(5, 2),p2(5, 10);
+	bool res = n2Connection::connectComponent(&mn, p1,p2);
 	InnObj *w = mn.getObj(5, 3);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
@@ -210,7 +213,8 @@ void test_n2Connection::test4(void)
 	mn.addObj(5, 10, coil);
 	nnObjWire *wire = new nnObjWire(eWire::wireAngleUpRight);
 	mn.addObj(5, 3, wire);
-	bool res = n2Connection::connectComponent(&mn, n2Point(5, 2), n2Point(5, 10));
+        n2Point p1(5, 2),p2(5, 10);
+	bool res = n2Connection::connectComponent(&mn, p1,p2);
 	InnObj *w = mn.getObj(5, 3);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
@@ -266,7 +270,8 @@ void test_n2Connection::test5(void)
 	mn.addObj(5, 10, coil);
 	nnObjWire *wire = new nnObjWire(eWire::wireTHorizUp);
 	mn.addObj(5, 3, wire);
-	bool res = n2Connection::connectComponent(&mn, n2Point(5, 2), n2Point(5, 10));
+        n2Point p1(5, 2),p2(5, 10);
+	bool res = n2Connection::connectComponent(&mn, p1,p2);
 	InnObj *w = mn.getObj(5, 3);
 	CA_ASSERT(w != nullptr);
 	CA_ASSERT(w->isComponent() == false);
@@ -322,8 +327,10 @@ void test_n2Connection::test6(void)
 	mn.addObj(5, 10, coil);
 	nnObjWire *wire = new nnObjWire(eWire::wireAngleDownLeft);
 	mn.addObj(5, 9, wire);
+        n2Point p1(5, 2),p2(5, 10);
 	try {
-		res = n2Connection::connectComponent(&mn, n2Point(5, 2), n2Point(5, 10));
+
+		res = n2Connection::connectComponent(&mn, p1,p2);
 	}
 	catch (positionBusyException e)
 	{
