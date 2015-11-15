@@ -4,6 +4,7 @@
 #include "n2draw.h"
 #include "n2drawmanager.h"
 #include "n2connection.h"
+#include "n2view.h"
 #include <iostream>
 
 
@@ -23,6 +24,7 @@ class test_n2Connection
 		CA_TEST(test_n2Connection::test8, "verify horiz connection from component");
 		CA_TEST(test_n2Connection::test9, "verify horiz connection from component");
 		CA_TEST(test_n2Connection::test10, "verify horiz connection from component");
+		CA_TEST(test_n2Connection::test11, "verify horiz connection from component");
 		CA_TEST_SUITE_END()
 		void setUp(void) {}
 	void tearDown(void) {}
@@ -36,6 +38,7 @@ class test_n2Connection
 	void test8(void);
 	void test9(void);
 	void test10(void);
+	void test11(void);
 };
 ///////////////////////////////////////////////////
 
@@ -1078,4 +1081,31 @@ void test_n2Connection::test10(void)
 
 	res = mn.removeAll();
 	CA_ASSERT(res == true);
+}
+
+
+void test_n2Connection::test11(void)
+{
+	_START();
+	_INFO("method connectComponent ");
+	_INFO("component with connection ");
+	_INFO("connect 1 wire to component");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjManager mn(50, 20);
+	nnObjCoil * coil = new nnObjCoil();
+	nnObjContact * contact = new nnObjContact();
+	nnObjWire *wire = new nnObjWire(eWire::noWire);
+	mn.addObj(5, 0, wire);
+	mn.addObj(5, 5, contact);
+	mn.addObj(5, 19,coil);
+	n2Point p0(5, 0);
+	n2Point p1(5, 5);
+	n2Point p2(5, 19);
+	bool res = n2Connection::connectComponent(&mn, p0, p1);
+	CA_ASSERT(res==true);
+	res = n2Connection::connectComponent(&mn, p1, p2);
+	CA_ASSERT(res == true);
+	nn2TextView view;
+	view.draw(&mn, nullptr);
 }

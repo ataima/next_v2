@@ -114,9 +114,9 @@ bool nnObjWire::connect(InnObj * pb)
 			{
 			case wire_from_up:
 			{
-				res = connectFromUp(pb->getConnections().back());
+				res = connectFromUp(pb->getConnections().front());
 				if(res)
-					res=wire->connectFromDown(pb->getConnections().back());
+					res=wire->connectFromDown(pb->getConnections().front());
 			}
 			break;
 			case wire_from_down:

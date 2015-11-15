@@ -158,6 +158,17 @@ public:
 	}
 };
 
+
+class wireNoAvaiableConnection
+	:public std::runtime_error
+{
+public:
+	explicit wireNoAvaiableConnection(void) throw()
+		:runtime_error("wireNoAvaiableConnection") {}
+};
+
+
+
 template<class T>
 inline void marshallObj(T* ptr,const char* f,int l)
 {

@@ -368,3 +368,28 @@ bool nnObjManager::swapObj(n2Point from, n2Point to)
 	return res;
 }
 
+n2Point  nnObjManager::getStartPoint(void)
+{
+	size_t x , y;
+	hashObjTable::iterator it = begin();
+	hashkey key = it->first;
+	y = key & 0xfffffff;
+	y = y/2;
+	x = (key >> 30) & 0xfffffff;
+	return n2Point(x, y);
+
+}
+
+
+n2Point  nnObjManager::getStopPoint(void)
+{
+	size_t x, y;
+	hashObjTable::reverse_iterator r_it = rbegin();
+	r_it++;
+	hashObjTable::iterator it = r_it.base();
+	hashkey key = it->first;
+	y = key & 0xfffffff;
+	y = y/2;
+	x = (key >> 30) & 0xfffffff;
+	return n2Point(x, y);
+}

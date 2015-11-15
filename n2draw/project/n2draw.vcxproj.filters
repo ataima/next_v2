@@ -18,6 +18,9 @@
     <ClInclude Include="..\header\n2connection.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\n2view.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2draw.cpp">
@@ -27,6 +30,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\n2connection.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2view.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

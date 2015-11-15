@@ -20,6 +20,8 @@ public:
 	virtual bool swapObj(n2Point from, n2Point to) = 0;
 	virtual size_t getWidth(void) = 0;
 	virtual size_t getHeight(void) = 0;
+	virtual n2Point getStartPoint(void) = 0;
+	virtual n2Point getStopPoint(void) = 0;
 };
 
 typedef unsigned long long int hashkey;
@@ -47,8 +49,10 @@ public:
 	bool removeAll(void);
 	bool moveObj(n2Point from, n2Point to);
 	bool swapObj(n2Point from, n2Point to);
-	inline size_t getWidth(void)   { return v_width; }
-	inline size_t getHeight(void)  { return v_height; }
+	inline size_t getWidth(void) { return v_width; }
+	inline size_t getHeight(void) { return v_height; }
+	n2Point getStartPoint(void);
+	n2Point getStopPoint(void);
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);
 	bool range(size_t x, size_t y);

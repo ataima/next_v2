@@ -21,16 +21,16 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 				{   //TWO COMPONENTS ANY TYPE...
 					if (p_src.x == p_dst.x && p_src.y != p_dst.y)
 					{
-						res = connectVertComponent(manager, c_src, c_dst, p_src, p_dst);
+						res = connectVertComponent(manager, p_src, p_dst);
 					}
 					else
 						if (p_src.y == p_dst.y && p_src.x != p_dst.x)
 						{
 							if (p_src.x < p_dst.x)
 							{
-								res=connectHorzIncrUpSideComponet(manager, p_src, p_dst);
-								if(res)
-									res=connectHorzIncrDownSideComponet(manager, p_src, p_dst);								
+								res = connectHorzIncrUpSideComponet(manager, p_src, p_dst);
+								if (res)
+									res = connectHorzIncrDownSideComponet(manager, p_src, p_dst);
 							}
 							else
 							{
@@ -42,13 +42,26 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 						}
 				}
 			}
+			else
+			{
+				// 1 component + wire
+				if (p_src.x == p_dst.x && p_src.y != p_dst.y)
+				{
+					res = connectVertWireComponent(manager, p_src, p_dst);
+				}
+				else
+				{
+					wireNoAvaiableConnection e;
+					throw(e);
+				}
+			}
 		}
 	}
 	return res;
 }
 
 
-bool n2Connection::connectVertComponent(IManager *manager, nnObjComponent * c_src, nnObjComponent * c_dst, n2Point &p_src, n2Point & p_dst)
+bool n2Connection::connectVertComponent(IManager *manager, n2Point &p_src, n2Point & p_dst)
 {
 	bool res = false;
 	size_t u;
@@ -416,6 +429,65 @@ bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point &
 					}
 				}
 			}
+	}
+	return res;
+}
+
+/////////////////////////////////////////////////////////////////////////
+bool n2Connection::connectVertWireComponent(IManager *manager, n2Point &p_src, n2Point & p_dst)
+{
+	bool res = false;
+	size_t u;
+	InnObj *v = nullptr;
+	size_t num = 0;
+	InnObj *src = manager->getObj(p_src.x, p_src.y);
+	InnObj *dst = manager->getObj(p_dst.x, p_dst.y);
+	if (src != nullptr && !src->isComponent())
+		num = src->getConnections().front();
+	if (dst != nullptr && !dst->isComponent())
+		num = dst->getConnections().front();
+	//vert connection
+	if (p_src.y > p_dst.y)
+	{
+		for (u = p_dst.y + 1; u < p_src.y; u++)
+		{
+			v = manager->getObj(p_src.x, u);
+			if (v == nullptr)
+			{
+				v = new nnObjWire(eWire::noWire);
+				MEMCHK(InnObj, v);
+				v->setConnections(num);
+				res = manager->addObj(p_src.x, u, v);
+				if (!res)break;
+			}
+			else
+				if (v->isComponent())
+				{
+					positionBusyException e(p_src.x, u);
+					throw (e);
+				}
+		}
+	}
+	else
+	{
+		for (u = p_src.y + 1; u < p_dst.y; u++)
+		{
+			v = manager->getObj(p_src.x, u);
+			if (v == nullptr)
+			{
+				v = new nnObjWire(eWire::noWire);
+				MEMCHK(InnObj, v);
+				v->setConnections(num);
+				res = manager->addObj(p_src.x, u, v);
+				if (!res)break;
+			}
+			else
+				if (v->isComponent())
+				{
+					positionBusyException e(p_src.x, u);
+					throw (e);
+				}
+		}
 	}
 	return res;
 }
