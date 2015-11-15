@@ -19,7 +19,7 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 				c_src = dynamic_cast<nnObjComponent*>(src);
 				c_dst = dynamic_cast<nnObjComponent*>(dst);
 				if (c_src != nullptr && c_dst != nullptr)
-				{
+				{   //TWO COMPONENTS ANY TYPE...
 					if (p_src.x == p_dst.x && p_src.y != p_dst.y)
 					{
 						//vert connection
@@ -66,13 +66,13 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 					else
 						if (p_src.y == p_dst.y && p_src.x != p_dst.x)
 						{
+							// HORZ
 							InnObj *near_src;
 							InnObj *near_dst;
 							if (p_src.x < p_dst.x)
 							{
-
-								if (p_src.y > 1)
-								{
+								if (p_src.y > 0)
+								{	//UP SIDE
 									near_src = manager->getObj(p_src.x, p_src.y - 1);
 									near_dst = manager->getObj(p_dst.x, p_dst.y - 1);
 									if (near_src == nullptr && near_dst == nullptr)
@@ -85,16 +85,57 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 											{
 												v = new nnObjWire(eWire::noWire);
 												v->setConnections(num);
-												manager->addObj(i, p_src.y - 1, v);
+												res=manager->addObj(i, p_src.y - 1, v);
+												if (!res)break;
 											}
-											v = new nnObjWire(eWire::wireAngleDownLeft);
-											v->setConnections(num);
-											manager->addObj(i, p_src.y - 1, v);
+											if (res)
+											{
+												v = new nnObjWire(eWire::wireAngleDownLeft);
+												v->setConnections(num);
+												res=manager->addObj(i, p_src.y - 1, v);
+											}
 										}
 									}
+									else
+										if (near_src != nullptr && near_dst == nullptr)
+										{
+											num = near_src->getConnections().front();
+											if (num == 1)
+											{
+												//vert to power positive
+												for (i = 0; i < p_src.y - 1; i++)
+												{
+													v = new nnObjWire(eWire::wireVertical);
+													v->setConnections(1);
+													res=manager->addObj(p_src.x, i, v);
+													if (!res)break;
+												}
+											}
+											else
+											{
+												v = new nnObjWire(eWire::noWire);
+												v->setConnections(num);
+												if (manager->addObj(p_src.x+1, p_src.y - 1, v))
+												{
+													for (i = p_src.x + 2; i < p_dst.x; i++)
+													{
+														v = new nnObjWire(eWire::noWire);
+														v->setConnections(num);
+														res=manager->addObj(i, p_src.y - 1, v);
+														if (!res)break;
+													}
+													if (res)
+													{
+														v = new nnObjWire(eWire::wireAngleDownLeft);
+														v->setConnections(num);
+														res=manager->addObj(i, p_src.y - 1, v);
+													}
+												}
+											}
+										}
 								}
-								if (p_src.y < manager->getHeight() - 1)
-								{
+								if (p_src.y < manager->getHeight() )
+								{  //DOWN SIDE
 									near_src = manager->getObj(p_src.x, p_src.y + 1);
 									near_dst = manager->getObj(p_dst.x, p_dst.y + 1);
 									if (near_src == nullptr && near_dst == nullptr)
@@ -107,14 +148,54 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 											{
 												v = new nnObjWire(eWire::noWire);
 												v->setConnections(num);
-												manager->addObj(i, p_src.y + 1, v);
+												res=manager->addObj(i, p_src.y + 1, v);
+												if (!res)break;
 											}
-											v = new nnObjWire(eWire::wireAngleUpLeft);
-											v->setConnections(num);
-											manager->addObj(i, p_src.y + 1, v);
+											if (res)
+											{
+												v = new nnObjWire(eWire::wireAngleUpLeft);
+												v->setConnections(num);
+												res=manager->addObj(i, p_src.y + 1, v);
+											}
 										}
 									}
-									res = true;
+									else
+										if (near_src != nullptr && near_dst == nullptr)
+										{
+											num = near_src->getConnections().back();
+											if (num == 2)
+											{
+												//vert to power positive
+												for (i = p_src.y + 1; i <=manager->getHeight() ; i++)
+												{
+													v = new nnObjWire(eWire::wireVertical);
+													v->setConnections(2);
+													res = manager->addObj(p_src.x, i, v);
+													if (!res)break;
+												}
+											}
+											else
+											{
+												v = new nnObjWire(eWire::noWire);
+												v->setConnections(num);
+												if (manager->addObj(p_src.x+1, p_src.y + 1, v))
+												{
+													for (i = p_src.x + 2; i < p_dst.x; i++)
+													{
+														v = new nnObjWire(eWire::noWire);
+														v->setConnections(num);
+														res = manager->addObj(i, p_src.y + 1, v);
+														if (!res)break;
+													}
+													if (res)
+													{
+														v = new nnObjWire(eWire::wireAngleUpLeft);
+														v->setConnections(num);
+														res = manager->addObj(i, p_src.y + 1, v);
+													}
+												}
+											}
+										}
 								}
 							}
 							else

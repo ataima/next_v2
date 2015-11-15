@@ -199,18 +199,24 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
 			{
 				if (neighbourUp->isComponent() && !neighbourDw->isComponent())
 				{
-					res = obj->connect(neighbourDw) & neighbourUp->connect(obj);
+					res = obj->connect(neighbourDw);
+					if (res)
+						res = neighbourUp->connect(obj);
 				}
 				else
 					if (!neighbourUp->isComponent() && neighbourDw->isComponent())
 					{
-						res = obj->connect(neighbourUp) & neighbourDw->connect(obj);
+						res = obj->connect(neighbourUp);
+						if (res)
+							res = neighbourDw->connect(obj);
 					}
 					else
 						if (neighbourUp->isComponent() && neighbourDw->isComponent())
 						{
 							obj->setConnections(nnObjConn::getUI());
-							res = neighbourUp->connect(obj) & neighbourDw->connect(obj);
+							res = neighbourUp->connect(obj);
+							if (res)
+								res = neighbourDw->connect(obj);
 						}
 						else
 						{
@@ -223,13 +229,15 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
 			else
 				if (neighbourUp != nullptr)
 				{
-					if ( neighbourUp->isComponent())
+					if (neighbourUp->isComponent())
 					{
 						if (obj->getConnections().empty())
 						{
 							obj->setConnections(nnObjConn::getUI());
 						}
-						res = neighbourUp->connect(obj) & obj->connect(neighbourUp);
+						res = neighbourUp->connect(obj);
+						if (res)
+							res = obj->connect(neighbourUp);
 					}
 					else
 					{
@@ -239,13 +247,15 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
 				else
 					if (neighbourDw != nullptr)
 					{
-						if ( neighbourDw->isComponent())
+						if (neighbourDw->isComponent())
 						{
 							if (obj->getConnections().empty())
 							{
 								obj->setConnections(nnObjConn::getUI());
 							}
-							res = neighbourDw->connect(obj) & obj->connect(neighbourDw);
+							res = neighbourDw->connect(obj);
+							if (res)
+								res = obj->connect(neighbourDw);
 						}
 						else
 						{
@@ -351,7 +361,9 @@ bool nnObjManager::swapObj(n2Point from, n2Point to)
 	{
 		fromObj = outObj(from.x, from.y);
 		toObj = outObj(to.x, to.y);
-		res = addObj(to.x, to.y, fromObj) & addObj(from.x, from.y, toObj);
+		res = addObj(to.x, to.y, fromObj);
+		if(res)
+			res=addObj(from.x, from.y, toObj);
 	}
 	return res;
 }

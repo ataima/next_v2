@@ -155,7 +155,7 @@ protected:
 public:
 	nnObjConn(ObjContext c) :nnObjPos(c), v_num(0) {}
 	inline eConnections & getConnections(void) { return v_num; }
-	inline virtual void setConnections(size_t n) { v_num.push_back(n); }
+	virtual inline void setConnections(size_t n) { v_num.push_back(n); }
 	const  std::wstring toString(void) const;
 	static void resetUI(void) { uid_num = 2; }
 	static size_t getUI(void) { return ++uid_num; }
@@ -180,6 +180,7 @@ public:
 	bool disconnect(InnObj * b);
 	bool connectFromUp(size_t b);
 	bool connectFromDown(size_t b);
+	void setConnections(size_t n);
 protected:
 
 	bool connectFromLeft(size_t b);

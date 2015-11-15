@@ -55,13 +55,13 @@ bool nnObjConn::powerConnect(size_t num)
 {
 	bool res = false;
 	if (num == 1)
-	{		
+	{
 		if (isComponent())
 		{
 			nnObjComponent *cc = dynamic_cast<nnObjComponent *>(this);
 			if (cc != nullptr)
 			{
-				res=cc->connectFromUp(1);
+				res = cc->connectFromUp(1);
 			}
 		}
 		else
@@ -69,7 +69,7 @@ bool nnObjConn::powerConnect(size_t num)
 			nnObjWire *ww = dynamic_cast<nnObjWire *>(this);
 			if (ww != nullptr)
 			{
-				res=ww->connectFromUp(1);
+				res = ww->connectFromUp(1);
 			}
 		}
 	}
@@ -114,22 +114,30 @@ bool nnObjWire::connect(InnObj * pb)
 			{
 			case wire_from_up:
 			{
-				res = connectFromUp(pb->getConnections().back()) & wire->connectFromDown(pb->getConnections().back());
+				res = connectFromUp(pb->getConnections().back());
+				if(res)
+					res=wire->connectFromDown(pb->getConnections().back());
 			}
 			break;
 			case wire_from_down:
 			{
-				res = connectFromDown(pb->getConnections().front())& wire->connectFromUp(pb->getConnections().front());
+				res = connectFromDown(pb->getConnections().front());
+				if(res)
+					res=wire->connectFromUp(pb->getConnections().front());
 			}
 			break;
 			case wire_from_left:
 			{
-				res = connectFromLeft(pb->getConnections().front())& wire->connectFromRight(pb->getConnections().front());
+				res = connectFromLeft(pb->getConnections().front());
+				if(res)
+					res=wire->connectFromRight(pb->getConnections().front());
 			}
 			break;
 			case wire_from_right:
 			{
-				res = connectFromRight(pb->getConnections().front()) & connectFromLeft(pb->getConnections().front());
+				res = connectFromRight(pb->getConnections().front());
+				if(res)
+					res=connectFromLeft(pb->getConnections().front());
 			}
 			break;
 			}
@@ -529,14 +537,29 @@ bool nnObjWire::disconnectFromRight(size_t num)
 	return res;
 }
 
+
+void nnObjWire::setConnections(size_t n)
+{
+	if (v_num.size() == 0)
+	{
+		v_num.push_back(n);
+	}
+	else
+	{
+			v_num[0] = n;
+
+	}
+}
+
+
 size_t nnObjConn::uid_num = 2;
 
 
 const std::wstring nnObjConn::toString(void) const
 {
 	std::wostringstream s;
-	if(v_num.size()>0)
-		s << "N:" << v_num.front()<<":"<<v_num.back() << " - " << nnObjPos::toString();
+	if (v_num.size() > 0)
+		s << "N:" << v_num.front() << ":" << v_num.back() << " - " << nnObjPos::toString();
 	else
 		s << "N:" << "0:0" << " - " << nnObjPos::toString();
 	return s.str();
@@ -652,27 +675,44 @@ bool nnObjComponent::connect(InnObj * from)
 {
 	bool result = false;
 	eWireDirection res = getDirection(from);
-		if (res == eWireDirection::wire_from_up)
+	if (res == eWireDirection::wire_from_up)
+	{
+		if (from->isComponent())
+		{
+			size_t nconn = nnObjConn::getUI();
+			nnObjComponent *comp = dynamic_cast<nnObjComponent *>(from);
+			if (comp != nullptr)
+			{
+				result = comp->connectFromDown(nconn);
+				if(result)
+					result=connectFromUp(nconn);
+			}
+		}
+		else
+		{
+				result = connectFromUp(from->getConnections().front());
+		}
+	}
+	else
+		if (res == eWireDirection::wire_from_down)
 		{
 			if (from->isComponent())
 			{
-				size_t nconn=nnObjConn::getUI();
+				size_t nconn = nnObjConn::getUI();
 				nnObjComponent *comp = dynamic_cast<nnObjComponent *>(from);
 				if (comp != nullptr)
 				{
-					result = comp->connectFromDown(nconn) & connectFromUp(nconn);
+					result = comp->connectFromUp(nconn);
+					if(result)
+						result=connectFromDown(nconn);
 				}
 			}
 			else
 			{
-				return connectFromUp(from->getConnections().front());
+					result = connectFromDown(from->getConnections().front());
 			}
+
 		}
-		else
-			if (res == eWireDirection::wire_from_down)
-			{
-				return connectFromDown(from->getConnections().front());
-			}
 	return result;
 }
 
@@ -701,11 +741,11 @@ bool nnObjComponent::connectFromDown(size_t b)
 		res = true;
 	}
 	else
-	if(v_num.size() == 2)
-	{
-		v_num[1] = b;
-		res = true;
-	}
+		if (v_num.size() == 2)
+		{
+			v_num[1] = b;
+			res = true;
+		}
 	return res;
 }
 
@@ -723,7 +763,7 @@ bool nnObjComponent::disconnectFromUp(void)
 bool nnObjComponent::disconnectFromDown(void)
 {
 	bool res = false;
-	if (v_num.size() ==2)
+	if (v_num.size() == 2)
 	{
 		v_num[1] = 0;
 		res = true;
