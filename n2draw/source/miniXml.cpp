@@ -332,12 +332,17 @@ miniXmlParse::miniXmlParse(const char *file_in, miniXmlNode * _root)
     if (file_in != nullptr && _root != nullptr)
     {
         root = _root;
+#ifdef _MSC_VER
+		FILE *in = nullptr;
+		fopen_s(&in,file_in, "r+");
+#else
         FILE *in = fopen(file_in, "r+");
+#endif
         if (in != nullptr)
         {
             p_end = p_index = nullptr;
             struct stat s;
-            if (fstat(fileno(in), &s) == 0)
+            if (fstat(_fileno(in), &s) == 0)
             {
                 buff = new char [s.st_size];
                 if (buff != nullptr)

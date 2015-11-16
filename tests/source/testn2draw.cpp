@@ -265,7 +265,7 @@ void test_n2draw_class::test11(void)
 	catch (failMemoryException e)
 	{
 		CA_ASSERT(strcmp(e.fun, "test11")==0);
-		CA_ASSERT(e.line == 264);
+		CA_ASSERT(e.line == 263);
 	}
 }
 
