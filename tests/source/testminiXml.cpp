@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string>
 #include "CPPtester.h"
-#include "windows.h"
 #include "miniXml.h"
 
 

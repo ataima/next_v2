@@ -1,6 +1,5 @@
 #include "stdio.h"
 #include "CPPtester.h"
-#include "windows.h"
 #include "n2draw.h"
 #include "n2drawmanager.h"
 #include "n2connection.h"

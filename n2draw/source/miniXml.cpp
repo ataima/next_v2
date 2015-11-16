@@ -337,7 +337,7 @@ miniXmlParse::miniXmlParse(const char *file_in, miniXmlNode * _root)
         {
             p_end = p_index = nullptr;
             struct stat s;
-            if (fstat(in->_file, &s) == 0)
+            if (fstat(fileno(in), &s) == 0)
             {
                 buff = new char [s.st_size];
                 if (buff != nullptr)

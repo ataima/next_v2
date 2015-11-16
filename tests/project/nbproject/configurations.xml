@@ -39,13 +39,14 @@
       <compileType>
         <cTool>
           <standard>10</standard>
-          <commandlineTool>gcc</commandlineTool>
+          <commandlineTool>gcc-5</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
           </incDir>
         </cTool>
         <ccTool>
           <standard>8</standard>
+          <commandlineTool>g++-5</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
             <pElem>../../n2draw/header</pElem>
@@ -97,6 +98,7 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <commandlineTool>gcc-5</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
           </incDir>
@@ -104,6 +106,7 @@
         <ccTool>
           <developmentMode>5</developmentMode>
           <standard>8</standard>
+          <commandlineTool>g++-5</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
             <pElem>../../n2draw/header</pElem>
