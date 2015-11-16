@@ -1,4 +1,5 @@
-#include "stdio.h"
+#include <stdio.h>
+#include <string>
 #include "CPPtester.h"
 #include "windows.h"
 #include "miniXml.h"
@@ -12,11 +13,13 @@ class test_miniXml_class
 	CA_TEST_SUITE(test_miniXml_class)
 	CA_TEST(test_miniXml_class::test1, "xlnode");
 	CA_TEST(test_miniXml_class::test2, "xlnode");
+	CA_TEST(test_miniXml_class::test3, "xlnode");
 	CA_TEST_SUITE_END()
 	void setUp(void);
 	void tearDown(void);
 	void test1(void);
 	void test2(void);
+	void test3(void);
 };
 ///////////////////////////////////////////////////
 
@@ -65,3 +68,21 @@ void test_miniXml_class::test2(void)
 	CA_ASSERT(root.getNext() == nullptr);
 	CA_ASSERT(child1->getNext() == child2);
 }
+
+
+
+void test_miniXml_class::test3(void)
+{
+	_START();
+	_INFO("parse XmlNode");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+        remove(".\\test3.xml");
+        const char *xml="<ROOT>\r\n<child1>\r\n1000\r\n</child1>\r\n<child2>\r\n2000\r\n</child2>\r\n</ROOT>\r\n";
+        FILE *f=fopen(".\\test3.xml","w+");
+        fwrite(xml,1,strlen(xml),f);
+        fclose(f);
+	miniXmlNode root("",(char *)"");
+	root.load(".\\test3.xml",&root);
+}
+

@@ -36,6 +36,8 @@ public:
 	miniXmlNode * find(const char *_name);
 	/// generate a XML file
 	void print(FILE *out);
+        /// load a XML from file
+	void load(const char *file_in,miniXmlNode * root);
 	/// assign a requested name
 	void setName(const char *_name);
 	/// assigne a requested value
@@ -46,5 +48,20 @@ public:
 	inline miniXmlNode * getNext(void) { return next; }
 
 };
-
+class miniXmlParse
+{
+    miniXmlNode * root; ///out
+    char * buff;
+    off_t max_size;
+    char *p_index;
+    char *p_end;
+public:
+    miniXmlParse(const char *filename, miniXmlNode * _root);
+    ~miniXmlParse();
+    bool parse(void);
+protected:
+    bool findNextChar(char ch);
+    bool getTokens(void);
+    bool captureNextString(std::string & token);
+};
 #endif
