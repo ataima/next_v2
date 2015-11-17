@@ -76,6 +76,23 @@ miniXmlNode::~miniXmlNode()
 /// xPath for crossing from iinternal child nodes
 /// path separator is assumend the point '.'
 
+miniXmlNode *miniXmlNode::add(const char *name, size_t idx, size_t value)
+{
+	char buff1[BUFFLENGTH];
+	char buff[64];
+	snprintf(buff1, BUFFLENGTH, "%s%d", name,idx);
+	snprintf(buff, 64, "%d", value);
+	return add(buff1, buff);
+}
+
+
+miniXmlNode * miniXmlNode::add(const char *name, size_t value)
+{
+	char buff[64];
+	snprintf(buff, 64, "%d", value);
+	return add(name, buff);
+}
+
 miniXmlNode * miniXmlNode::add(const char *name, char *value)
 {
     // name as Xpath = A.B.C. es test.suite.doc
@@ -282,13 +299,13 @@ void miniXmlNode::print(FILE *out)
                     break;
                 }
             }
+			fwrite("\n", 1, sizeof(char), out);
         }
     }
     if (child != nullptr)
         child->print(out);
     if (name != nullptr)
     {
-        // name not set ->only container
         snprintf(buff, BUFFLENGTH - 1, "</%s>\n", name);
         for (int i = 0; i < 254; i++)
         {
@@ -542,7 +559,7 @@ bool miniXmlParse::captureValue(std::string & token)
 	char * pTemp = p_index;
 	while (*p_index != '<' && p_index < p_end)
 	{
-		if (*p_index>' '-1)
+		if (*p_index>=' ')
 			token.push_back(*p_index);
 		p_index++;
 	}
@@ -559,7 +576,7 @@ bool miniXmlParse::skipSpaces(void)
 
         bool check(char p)
         {
-            if (p < ' ' || p > 126)
+            if (p < (' ') || p > 126)
                 return true;
             return false;
         }

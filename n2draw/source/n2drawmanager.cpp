@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include "miniXml.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -160,7 +161,29 @@ bool nnObjManager::removeAll(void)
 }
 
 
-
+void nnObjManager::save(std::string & name)
+{
+	size_t num_obj = 0;
+	if (!name.empty())
+	{
+		FILE*  out = fopen(name.c_str(), "w+");
+		if (out != NULL)
+		{
+			miniXmlNode root("next_v2", "1.0.0.0 Copyright(c) 2015 Angelo Coppi");
+			root.add("Wire_UID", nnObjConn::getUI());
+			hashObjTable::iterator it = begin();
+			hashObjTable::iterator _end =end();
+			while (it != _end)
+			{
+				miniXmlNode *child = root.add("Obj_UID_",++num_obj,num_obj);
+				it->second->save(child);
+				it++;
+			}
+			root.print(out);
+			fclose(out);
+		}
+	}
+}
 
 bool nnObjManager::genHashKey(size_t x, size_t y, hashkey &key)
 {

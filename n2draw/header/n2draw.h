@@ -69,6 +69,8 @@ typedef tag_wire_direction  eWireDirection;
 
 typedef std::vector<size_t >  eConnections;
 
+class miniXmlNode;
+
 class  InnObj
 {
 public:
@@ -87,6 +89,7 @@ public:
 	virtual bool powerConnect(size_t num) = 0;
 	virtual bool disconnect(InnObj* b) = 0;
 	virtual bool isComponent(void) = 0;
+	virtual void save(miniXmlNode *root) = 0;
 };
 
 
@@ -100,6 +103,7 @@ public:
 	inline ObjContext getContext(void) { return v_context; }
 	inline void setContext(ObjContext & c) { v_context = c; }
 	const std::wstring toString(void) const;
+	virtual void save(miniXmlNode *root);
 };
 
 
@@ -117,6 +121,7 @@ public:
 	inline  void setYpos(size_t pY) { v_Ypos = pY; }
 	inline  void setPos(size_t pX, size_t pY) { v_Xpos = pX; v_Ypos = pY; }
 	const  std::wstring toString(void) const;
+	virtual void save(miniXmlNode *root);
 	eWireDirection getDirection(InnObj * pb);
 };
 
@@ -204,9 +209,16 @@ inline void marshallObj(T* ptr,const char* f,int l)
 
 #if (_MSC_VER < 1900)
 #define __func__ __FUNCTION__
+#define snprintf  _snprintf
 #endif		
 
 #define MEMCHK(type,ptr) marshallObj<type>(ptr,__func__,__LINE__)
+
+
+typedef enum tag_specialization
+{
+	isGeneric
+} spec_obj;
 
 class  nnObjConn
 	:public nnObjPos
@@ -220,9 +232,11 @@ public:
 	inline eConnections & getConnections(void) { return v_num; }
 	virtual inline void setConnections(size_t n) { v_num.push_back(n); }
 	const  std::wstring toString(void) const;
+	virtual void save(miniXmlNode *root);
 	static void resetUI(void) { uid_num = 2; }
 	static size_t getUI(void) { return ++uid_num; }
 	bool powerConnect(size_t num);
+	static InnObj * getObjFromIds(spec_obj specific, ObjContext context);
 
 };
 
@@ -238,6 +252,7 @@ public:
 	inline eWire getWire(void) { return v_wire; }
 	inline virtual void setWire(eWire c) { v_wire = c; }
 	const  std::wstring toString(void) const;
+	virtual void save(miniXmlNode *root);
 	inline bool isComponent(void) { return false; }
 	bool connect(InnObj * b);
 	bool disconnect(InnObj * b);
@@ -277,19 +292,24 @@ protected:
 class  nnObjContact
 	:public nnObjComponent
 {
-
+	spec_obj v_spec;
 public:
-	nnObjContact() :nnObjComponent(ObjContext::objContact) {}
+	nnObjContact(spec_obj _v=spec_obj::isGeneric) :
+		nnObjComponent(ObjContext::objContact),v_spec(_v) {}
 	const  std::wstring toString(void) const;
+	virtual void save(miniXmlNode *root);
 };
 
 
 class  nnObjCoil
 	:public nnObjComponent
 {
+	spec_obj v_spec;
 public:
-	nnObjCoil() :nnObjComponent(ObjContext::objCoil) {}
+	nnObjCoil(spec_obj _v = spec_obj::isGeneric) :
+		nnObjComponent(ObjContext::objCoil), v_spec(_v) {}
 	const  std::wstring toString(void) const;
+	virtual void save(miniXmlNode *root);
 };
 
 

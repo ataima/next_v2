@@ -51,6 +51,8 @@ public:
 	/// xPath for crossing from iinternal child nodes
 	/// path separator is assumend the point '.'
 	miniXmlNode * add(const char *name, char *value);
+	miniXmlNode * add(const char *name, size_t value);
+	miniXmlNode * add(const char *name, size_t idx,size_t value);
 	/// this function link at this node a child xmlNode
 	miniXmlNode * link(char *name, miniXmlNode  *_child);
 	/// this function add a value at already existent value

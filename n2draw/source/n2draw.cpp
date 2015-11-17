@@ -1,4 +1,6 @@
-﻿#include "n2draw.h"
+﻿#include <stdio.h>
+#include "n2draw.h"
+#include "miniXml.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -39,6 +41,15 @@ const std::wstring nnObj::toString(void) const
 	return s.str();
 }
 
+
+void nnObj::save(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		root->add("Context",v_context);
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const  std::wstring nnObjPos::toString(void) const
@@ -49,6 +60,17 @@ const  std::wstring nnObjPos::toString(void) const
 	return s.str();
 }
 
+
+
+void nnObjPos::save(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		nnObj::save(root);
+		root->add("X_Position", v_Xpos);
+		root->add("Y_Position", v_Ypos);
+	}
+}
 
 
 eWireDirection nnObjPos::getDirection(InnObj * pb)
@@ -119,6 +141,33 @@ bool nnObjConn::powerConnect(size_t num)
 			}
 		}
 	return res;
+}
+
+
+InnObj * nnObjConn::getObjFromIds(spec_obj specific, ObjContext context)
+{
+	InnObj *obj = nullptr;
+	switch (context)
+	{
+	case objWire: obj=new nnObjWire(eWire::noWire); break;
+	case objContact: 
+	{
+		switch (specific)
+		{
+		case isGeneric: obj = new nnObjContact();
+		}
+	}
+		 break;
+	case objCoil:
+	{
+		switch (specific)
+		{
+		case isGeneric: obj = new nnObjCoil();
+		}
+	}
+		break;
+	}
+	return obj;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -591,6 +640,21 @@ const std::wstring nnObjConn::toString(void) const
 }
 
 
+void nnObjConn::save(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		std::stringstream s;
+		nnObjPos::save(root);
+		for (auto i : v_num)
+		{
+			s << i << " ";
+		}		
+		root->add("Connections", (char *)s.str().c_str());
+	}
+}
+
+
 const  std::wstring nnObjWire::toString(void) const
 {
 	std::wostringstream s;
@@ -615,6 +679,14 @@ const  std::wstring nnObjWire::toString(void) const
 }
 
 
+void nnObjWire::save(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		nnObjConn::save(root);
+		root->add("Connection_Type", v_wire);
+	}
+}
 
 bool nnObjWire::disconnect(InnObj * pb)
 {
@@ -814,6 +886,14 @@ const  std::wstring nnObjContact::toString(void) const
 	return s.str();
 }
 
+void nnObjContact::save(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		root->add("Spec", v_spec);
+		nnObjConn::save(root);
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const  std::wstring nnObjCoil::toString(void) const
@@ -824,3 +904,11 @@ const  std::wstring nnObjCoil::toString(void) const
 	return s.str();
 }
 
+void nnObjCoil::save(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		root->add("Spec", v_spec);
+		nnObjConn::save(root);
+	}
+}

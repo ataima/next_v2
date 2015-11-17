@@ -46,6 +46,7 @@ public:
 	virtual size_t getHeight(void) = 0;
 	virtual n2Point getStartPoint(void) = 0;
 	virtual n2Point getStopPoint(void) = 0;
+	virtual void save(std::string & name) = 0;
 };
 
 typedef unsigned long long int hashkey;
@@ -77,6 +78,7 @@ public:
 	inline size_t getHeight(void) { return v_height; }
 	n2Point getStartPoint(void);
 	n2Point getStopPoint(void);
+	void save(std::string & name);
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);
 	bool range(size_t x, size_t y);
