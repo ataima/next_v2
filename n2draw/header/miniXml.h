@@ -66,6 +66,7 @@ public:
 	/// this function return a next node 
 	miniXmlNode * findNext(const char *_name);
 	/// this function return a specified node 
+	miniXmlNode * find(const char *name, size_t idx);
 	miniXmlNode * find(const char *_name);
 	/// generate a XML file
 	void print(FILE *out);
@@ -79,7 +80,7 @@ public:
 	inline miniXmlNode * getParent(void) { return parent; }
 	inline miniXmlNode * getChild(void) { return child; }
 	inline miniXmlNode * getNext(void) { return next; }
-
+	inline const char  * getName(void) { return name; }
 };
 class miniXmlParse
 {

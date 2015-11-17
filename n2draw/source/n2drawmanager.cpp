@@ -166,21 +166,78 @@ void nnObjManager::save(std::string & name)
 	size_t num_obj = 0;
 	if (!name.empty())
 	{
-		FILE*  out = fopen(name.c_str(), "w+");
-		if (out != NULL)
-		{
-			miniXmlNode root("next_v2", "1.0.0.0 Copyright(c) 2015 Angelo Coppi");
-			root.add("Wire_UID", nnObjConn::getUI());
-			hashObjTable::iterator it = begin();
-			hashObjTable::iterator _end =end();
-			while (it != _end)
+		try{
+			FILE*  out = fopen(name.c_str(), "w+");
+			if (out != NULL)
 			{
-				miniXmlNode *child = root.add("Obj_UID_",++num_obj,num_obj);
-				it->second->save(child);
-				it++;
+				miniXmlNode root("next_v2", "1.0.0.0 Copyright(c) 2015 Angelo Coppi");
+				root.add("Wire_UID", nnObjConn::getUI());
+				root.add("Size", size()+1);
+				hashObjTable::iterator it = begin();
+				hashObjTable::iterator _end = end();
+				while (it != _end)
+				{
+					miniXmlNode *child = root.add("Obj_UID_", ++num_obj, num_obj);
+					it->second->save(child);
+					it++;
+				}
+				root.print(out);
+				fclose(out);
 			}
-			root.print(out);
-			fclose(out);
+		} catch (...)
+		{ }
+	}
+}
+
+
+
+void nnObjManager::load(std::string & name)
+{
+	size_t num_obj = 0;
+	if (!name.empty())
+	{
+		removeAll();
+		try{
+				miniXmlNode root("","");
+				root.load(name.c_str(), &root);
+				std::string name = root.getName();
+				std::string value = root.getValue();
+				if (name == "next_v2" && value == "1.0.0.0 Copyright(c) 2015 Angelo Coppi")
+				{
+					miniXmlNode *size = root.find("Size");
+					if (size != nullptr)
+					{
+						size_t i,numObj = ::atol(size->getValue());
+						for (i = 1; i < numObj; i++)
+						{
+							miniXmlNode *child = root.find("Obj_UID_", i);
+							if (child != nullptr)
+							{
+								if (i == atol(child->getValue()))
+								{
+									miniXmlNode *spec = child->find("Spec");
+									if (spec != nullptr)
+									{
+										miniXmlNode *context = child->find("Context");
+										if (context != nullptr)
+										{
+											InnObj *obj = nnObjConn::getObjFromIds((spec_obj)::atol(spec->getValue()), (ObjContext)atol(context->getValue()));
+											if (obj != nullptr)
+											{
+												obj->load(child);
+												addObj(obj->getXpos(), obj->getYpos(), obj);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+
+				}
+		}
+		catch (...)
+		{
 		}
 	}
 }

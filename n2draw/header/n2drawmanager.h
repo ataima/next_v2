@@ -79,6 +79,7 @@ public:
 	n2Point getStartPoint(void);
 	n2Point getStopPoint(void);
 	void save(std::string & name);
+	void load(std::string & name);
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);
 	bool range(size_t x, size_t y);

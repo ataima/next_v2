@@ -47,6 +47,7 @@ class test_n2ObjManager
 	CA_TEST(test_n2ObjManager::test10, "verifica connect/disconnect");
 	CA_TEST(test_n2ObjManager::test11, "verifica move");
 	CA_TEST(test_n2ObjManager::test12, "verifica save");
+	CA_TEST(test_n2ObjManager::test13, "verifica save + load");
 	CA_TEST_SUITE_END()
 		void setUp(void) {}
 	void tearDown(void) {}
@@ -62,6 +63,7 @@ class test_n2ObjManager
 	void test10(void);
 	void test11(void);
 	void test12(void);
+	void test13(void);
 };
 ///////////////////////////////////////////////////
 
@@ -350,8 +352,44 @@ void test_n2ObjManager::test12(void)
 	mn.save(name);
 	miniXmlNode root("",(char*)"");
 	root.load(name.c_str(), &root);
-	remove(".\\testsave.xml");
+	//remove(".\\testsave.xml");
 	root.print(stdout);
 	res = mn.removeAll();
 	CA_ASSERT(res == true);
+}
+
+
+void test_n2ObjManager::test13(void)
+{
+	_START();
+	_INFO("verifica interrna alla classe: metodo save + load");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjManager mn(50, 20);
+	nnObjCoil *c = new nnObjCoil();
+	bool res = mn.addObj(10, 12, c);
+	CA_ASSERT(res == true);
+	c = new nnObjCoil();
+	res = mn.addObj(11, 12, c);
+	CA_ASSERT(res == true);
+	c = new nnObjCoil();
+	res = mn.addObj(12, 12, c);
+	CA_ASSERT(res == true);
+	nnObjContact *d = new nnObjContact();
+	res = mn.addObj(10, 5, d);
+	CA_ASSERT(res == true);
+	d = new nnObjContact();
+	res = mn.addObj(11, 5, d);
+	CA_ASSERT(res == true);
+	d = new nnObjContact();
+	res = mn.addObj(12, 5, d);
+	CA_ASSERT(res == true);
+	remove(".\\testsaveload.xml");
+	std::string name(".\\testsaveload.xml");
+	mn.save(name);
+	nnObjManager mp(50, 20);
+	mp.load(name);
+
+	CA_ASSERT(mn.size()==mp.size());
+	// more test
 }

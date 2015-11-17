@@ -50,6 +50,19 @@ void nnObj::save(miniXmlNode *root)
 	}
 }
 
+
+
+void nnObj::load(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		miniXmlNode * node=root->find("Context");
+		if (node != nullptr)
+		{
+			v_context = (ObjContext)::atol(node->getValue());
+		}
+	}
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const  std::wstring nnObjPos::toString(void) const
@@ -69,6 +82,24 @@ void nnObjPos::save(miniXmlNode *root)
 		nnObj::save(root);
 		root->add("X_Position", v_Xpos);
 		root->add("Y_Position", v_Ypos);
+	}
+}
+
+void nnObjPos::load(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		nnObj::load(root);
+		miniXmlNode * node = root->find("X_Position");
+		if (node != nullptr)
+		{
+			v_Xpos = ::atol(node->getValue());
+		}
+		node = root->find("Y_Position");
+		if (node != nullptr)
+		{
+			v_Ypos = ::atol(node->getValue());
+		}
 	}
 }
 
@@ -655,6 +686,31 @@ void nnObjConn::save(miniXmlNode *root)
 }
 
 
+void nnObjConn::load(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		nnObjPos::load(root);
+		miniXmlNode * node = root->find("Connections");
+		if (node != nullptr)
+		{
+			v_num.clear();
+			const char *value = node->getValue();
+			if (value != nullptr)
+			{
+				do{
+					int i = ::atoi(value);
+					v_num.push_back(i);
+					while (*value!=' ')
+					{ 
+						value++;
+					}
+				} while (*value != '\0');
+			}
+		}		
+	}
+}
+
 const  std::wstring nnObjWire::toString(void) const
 {
 	std::wostringstream s;
@@ -685,6 +741,19 @@ void nnObjWire::save(miniXmlNode *root)
 	{
 		nnObjConn::save(root);
 		root->add("Connection_Type", v_wire);
+	}
+}
+
+void nnObjWire::load(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		nnObjConn::load(root);
+		miniXmlNode *node = root->find("Connection_Type");
+		if (node != nullptr)
+		{
+			v_wire = (eWire)::atol(node->getValue());
+		}
 	}
 }
 
@@ -895,6 +964,19 @@ void nnObjContact::save(miniXmlNode *root)
 	}
 }
 
+void nnObjContact::load(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		miniXmlNode *node = root->find("Spec");
+		if (node != nullptr)
+		{
+			v_spec = (spec_obj)::atol(node->getValue());
+			nnObjConn::load(root);
+		}
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const  std::wstring nnObjCoil::toString(void) const
 {
@@ -910,5 +992,18 @@ void nnObjCoil::save(miniXmlNode *root)
 	{
 		root->add("Spec", v_spec);
 		nnObjConn::save(root);
+	}
+}
+
+void nnObjCoil::load(miniXmlNode *root)
+{
+	if (root != nullptr)
+	{
+		miniXmlNode *node = root->find("Spec");
+		if (node != nullptr)
+		{
+			v_spec = (spec_obj)::atol(node->getValue());
+			nnObjConn::load(root);
+		}
 	}
 }

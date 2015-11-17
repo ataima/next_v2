@@ -201,6 +201,13 @@ miniXmlNode * miniXmlNode::findNext(const char *_name)
     return res;
 }
 
+miniXmlNode *miniXmlNode::find(const char *name, size_t idx)
+{
+	char buff1[BUFFLENGTH];
+	snprintf(buff1, BUFFLENGTH, "%s%d", name, idx);
+	return find(buff1);
+}
+
 miniXmlNode * miniXmlNode::find(const char *_name)
 {
     const char *ptr = strstr(_name, ".");
@@ -513,13 +520,14 @@ bool miniXmlParse::getTokens( miniXmlNode **node)
 						}
 						else
 						{
-							//start child
-							(*node)->setName(token_name.c_str());
-							p_index = p_temp;
-							miniXmlNode *child = new miniXmlNode(nullptr, nullptr, (*node));
-							(*node) = child;
-							res = getTokens(node);
-							(*node) = child->getParent();
+								//start child from father no value <root><child>
+								(*node)->setName(token_name.c_str());
+								p_index = p_temp;
+								miniXmlNode *child = new miniXmlNode(nullptr, nullptr, (*node));
+								(*node) = child;
+								res = getTokens(node);
+								(*node) = child->getParent();
+							
 						}
 					}
 				}

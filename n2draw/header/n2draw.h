@@ -90,6 +90,7 @@ public:
 	virtual bool disconnect(InnObj* b) = 0;
 	virtual bool isComponent(void) = 0;
 	virtual void save(miniXmlNode *root) = 0;
+	virtual void load(miniXmlNode *root) = 0;
 };
 
 
@@ -104,6 +105,7 @@ public:
 	inline void setContext(ObjContext & c) { v_context = c; }
 	const std::wstring toString(void) const;
 	virtual void save(miniXmlNode *root);
+	virtual void load(miniXmlNode *root);
 };
 
 
@@ -122,6 +124,7 @@ public:
 	inline  void setPos(size_t pX, size_t pY) { v_Xpos = pX; v_Ypos = pY; }
 	const  std::wstring toString(void) const;
 	virtual void save(miniXmlNode *root);
+	virtual void load(miniXmlNode *root);
 	eWireDirection getDirection(InnObj * pb);
 };
 
@@ -233,6 +236,7 @@ public:
 	virtual inline void setConnections(size_t n) { v_num.push_back(n); }
 	const  std::wstring toString(void) const;
 	virtual void save(miniXmlNode *root);
+	virtual void load(miniXmlNode *root);
 	static void resetUI(void) { uid_num = 2; }
 	static size_t getUI(void) { return ++uid_num; }
 	bool powerConnect(size_t num);
@@ -253,6 +257,7 @@ public:
 	inline virtual void setWire(eWire c) { v_wire = c; }
 	const  std::wstring toString(void) const;
 	virtual void save(miniXmlNode *root);
+	virtual void load(miniXmlNode *root);
 	inline bool isComponent(void) { return false; }
 	bool connect(InnObj * b);
 	bool disconnect(InnObj * b);
@@ -298,6 +303,7 @@ public:
 		nnObjComponent(ObjContext::objContact),v_spec(_v) {}
 	const  std::wstring toString(void) const;
 	virtual void save(miniXmlNode *root);
+	virtual void load(miniXmlNode *root);
 };
 
 
@@ -310,6 +316,7 @@ public:
 		nnObjComponent(ObjContext::objCoil), v_spec(_v) {}
 	const  std::wstring toString(void) const;
 	virtual void save(miniXmlNode *root);
+	virtual void load(miniXmlNode *root);
 };
 
 
