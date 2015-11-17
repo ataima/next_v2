@@ -167,7 +167,12 @@ void nnObjManager::save(std::string & name)
 	if (!name.empty())
 	{
 		try{
-			FILE*  out = fopen(name.c_str(), "w+");
+#ifdef _MSC_VER
+			FILE *out = nullptr;
+			fopen_s(&out, name.c_str(), "w+");
+#else
+			FILE *out = fopen(name.c_str(), "w+");
+#endif
 			if (out != NULL)
 			{
 				miniXmlNode root("next_v2", "1.0.0.0 Copyright(c) 2015 Angelo Coppi");
