@@ -393,28 +393,39 @@ bool miniXmlParse::parse(void)
     bool res = false;
     if (buff != nullptr && max_size > 0 && root != nullptr)
     {
+		miniXmlNode *current=root;
         do
         {
-            res = getTokens(root);
+            res = getTokens(&current);
         }
         while (res == true && p_index < p_end);
     }
     return res;
 }
 
-bool miniXmlParse::getTokens(miniXmlNode *node)
+bool miniXmlParse::getTokens( miniXmlNode **node)
 {
     bool res = false;
-    skipSpaces();
+	std::string token_name;
+	std::string token_value;
+	char *p_temp = p_index;
+	skipSpaces();
     if (findNextChar('<'))
-    {
-        std::string token_name;
-        std::string token_value;
-        if (captureNextString(token_name))
+    {		
+		if (*p_index == '/')
+		{ //end previous token
+			p_index++;
+			if (skipSpaces())
+			{
+				captureToken(token_value);
+				skipSpaces();
+				return token_name == token_value;
+			}
+		}
+		if (captureToken(token_name))
         {
-            node->setName(token_name.c_str());
             skipSpaces();
-            char *p_temp = p_index;
+            p_temp = p_index;
             if (*p_index == '<')
             {
                 p_index++;
@@ -422,23 +433,54 @@ bool miniXmlParse::getTokens(miniXmlNode *node)
                 { //end previous token
                     if (skipSpaces())
                     {
-                        captureNextString(token_value);
+						captureToken(token_value);
+						skipSpaces();
                         return token_name == token_value;
                     }
                 }
                 else
                 {//start child
+					(*node)->setName(token_name.c_str());
                     p_index = p_temp;
-                    miniXmlNode *child = new miniXmlNode(nullptr, nullptr, node);
-                    node->link((char*) token_name.c_str(), child);
-                    res = getTokens(child);
+					miniXmlNode *child = new miniXmlNode(nullptr, nullptr, (*node));
+					(*node) = child;
+					res = getTokens(node);
+					(*node) = child->getParent();
                 }
             }
-            if (captureNextString(token_value))
-            {
-                node->setValue((char*) token_value.c_str());
-                return true;
-            }
+			else
+			{
+				if (captureValue(token_value))
+				{
+					(*node)->add(token_name.c_str(), (char*)token_value.c_str());
+					skipSpaces();
+					if (*p_index == '<')
+					{
+						p_index++;
+						if (*p_index == '/')
+						{ //end previous token
+							p_index++;
+							if (skipSpaces())
+							{
+								token_value.clear();
+								captureToken(token_value);
+								skipSpaces();
+								return token_name == token_value;
+							}
+						}
+						else
+						{
+							//start child
+							(*node)->setName(token_name.c_str());
+							p_index = p_temp;
+							miniXmlNode *child = new miniXmlNode(nullptr, nullptr, (*node));
+							(*node) = child;
+							res = getTokens(node);
+							(*node) = child->getParent();
+						}
+					}
+				}
+			}
         }
     }
 
@@ -453,7 +495,7 @@ bool miniXmlParse::findNextChar(char ch)
     return isEnd();
 }
 
-bool miniXmlParse::captureNextString(std::string & token)
+bool miniXmlParse::captureToken(std::string & token)
 { // only token as <token>
     bool res = false;
     char * pTemp = p_index;
@@ -462,10 +504,26 @@ bool miniXmlParse::captureNextString(std::string & token)
         token.push_back(*p_index);
         p_index++;
     }
-    p_index++;
+	p_index++;
     res = isEnd();
     return res;
 }
+
+
+bool miniXmlParse::captureValue(std::string & token)
+{ // only token as <token>
+	bool res = false;
+	char * pTemp = p_index;
+	while (*p_index != '<' && p_index < p_end)
+	{
+		if (*p_index>' '-1)
+			token.push_back(*p_index);
+		p_index++;
+	}
+	res = isEnd();
+	return res;
+}
+
 
 bool miniXmlParse::skipSpaces(void)
 {

@@ -264,8 +264,12 @@ void test_n2draw_class::test11(void)
 	}
 	catch (failMemoryException e)
 	{
-		CA_ASSERT(strcmp(e.fun, "test11")==0);
-		CA_ASSERT(e.line == 263);
+#if (_MSC_VER < 1900)
+		CA_ASSERT(strcmp(e.fun, "test_n2draw_class::test11") == 0);
+#else
+		CA_ASSERT(strcmp(e.fun, "test11")==0);		
+#endif	
+		CA_ASSERT(e.line = 263);
 	}
 }
 

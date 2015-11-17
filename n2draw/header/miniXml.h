@@ -67,9 +67,10 @@ public:
     bool parse(void);
 protected:
     bool findNextChar(char ch);
-    bool getTokens(miniXmlNode *node);
-    bool captureNextString(std::string & token);
-    bool skipSpaces(void);
+	bool getTokens( miniXmlNode **currrent);
+    bool captureToken(std::string & token);
+	bool captureValue(std::string & token);
+	bool skipSpaces(void);
     inline bool isEnd(void){ return ((size_t)(p_index) < (size_t)(p_end));}
 };
 #endif
