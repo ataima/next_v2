@@ -21,8 +21,8 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=GNU-Linux-x86
-CND_DLIB_EXT=so
+CND_PLATFORM=Cygwin_4.x-Windows
+CND_DLIB_EXT=dll
 CND_CONF=Release
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -60,9 +60,9 @@ LDLIBSOPTIONS=-L../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM} -ln2draw
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tests
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tests.exe
 
-../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tests: ${OBJECTFILES}
+../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tests.exe: ${OBJECTFILES}
 	${MKDIR} -p ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tests ${OBJECTFILES} ${LDLIBSOPTIONS}
 
@@ -97,7 +97,7 @@ ${OBJECTDIR}/_ext/812168374/testn2objmanager.o: ../source/testn2objmanager.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tests
+	${RM} ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tests.exe
 
 # Subprojects
 .clean-subprojects:

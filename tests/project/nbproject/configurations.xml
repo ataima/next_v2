@@ -39,14 +39,14 @@
       <compileType>
         <cTool>
           <standard>10</standard>
-          <commandlineTool>gcc-5</commandlineTool>
+          <commandlineTool>gcc</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
           </incDir>
         </cTool>
         <ccTool>
           <standard>8</standard>
-          <commandlineTool>g++-5</commandlineTool>
+          <commandlineTool>g++</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
             <pElem>../../n2draw/header</pElem>

@@ -3,6 +3,12 @@
 
 
 #define  BUFFLENGTH  256
+
+#if (_MSC_VER < 1900)
+#define snprintf  _snprintf
+#endif		
+
+
 class miniXmlNode
 {
 	miniXmlNode * parent;	/// the father of this node
@@ -61,7 +67,9 @@ public:
     bool parse(void);
 protected:
     bool findNextChar(char ch);
-    bool getTokens(void);
+    bool getTokens(miniXmlNode *node);
     bool captureNextString(std::string & token);
+    bool skipSpaces(void);
+    inline bool isEnd(void){ return ((size_t)(p_index) < (size_t)(p_end));}
 };
 #endif

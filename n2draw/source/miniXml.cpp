@@ -2,9 +2,9 @@
 #include <string.h>
 #include <string>
 #include "miniXml.h"
-#ifndef _MSC_VER
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifndef _MSC_VER
 #include <unistd.h> 
 #endif
 
@@ -333,8 +333,8 @@ miniXmlParse::miniXmlParse(const char *file_in, miniXmlNode * _root)
     {
         root = _root;
 #ifdef _MSC_VER
-		FILE *in = nullptr;
-		fopen_s(&in,file_in, "r+");
+        FILE *in = nullptr;
+        fopen_s(&in, file_in, "r+");
 #else
         FILE *in = fopen(file_in, "r+");
 #endif
@@ -342,7 +342,11 @@ miniXmlParse::miniXmlParse(const char *file_in, miniXmlNode * _root)
         {
             p_end = p_index = nullptr;
             struct stat s;
+#ifdef _MSC_VER             
             if (fstat(_fileno(in), &s) == 0)
+#else
+            if (fstat(in->_file, &s) == 0)
+#endif                
             {
                 buff = new char [s.st_size];
                 if (buff != nullptr)
@@ -350,7 +354,7 @@ miniXmlParse::miniXmlParse(const char *file_in, miniXmlNode * _root)
                     max_size = fread(buff, 1, s.st_size, in);
                     if (max_size != 0)
                     {
-                        max_size=s.st_size;
+                        max_size = s.st_size;
                         p_index = buff;
                         p_end = &buff[max_size];
                     }
@@ -391,45 +395,92 @@ bool miniXmlParse::parse(void)
     {
         do
         {
-            res = getTokens();
+            res = getTokens(root);
         }
         while (res == true && p_index < p_end);
     }
     return res;
 }
 
-bool miniXmlParse::getTokens(void)
+bool miniXmlParse::getTokens(miniXmlNode *node)
 {
     bool res = false;
-    if(findNextChar('<'))
+    skipSpaces();
+    if (findNextChar('<'))
     {
-        std::string token;
-        captureNextString(token);
+        std::string token_name;
+        std::string token_value;
+        if (captureNextString(token_name))
+        {
+            node->setName(token_name.c_str());
+            skipSpaces();
+            char *p_temp = p_index;
+            if (*p_index == '<')
+            {
+                p_index++;
+                if (*p_index == '/')
+                { //end previous token
+                    if (skipSpaces())
+                    {
+                        captureNextString(token_value);
+                        return token_name == token_value;
+                    }
+                }
+                else
+                {//start child
+                    p_index = p_temp;
+                    miniXmlNode *child = new miniXmlNode(nullptr, nullptr, node);
+                    node->link((char*) token_name.c_str(), child);
+                    res = getTokens(child);
+                }
+            }
+            if (captureNextString(token_value))
+            {
+                node->setValue((char*) token_value.c_str());
+                return true;
+            }
+        }
     }
+
     return res;
 }
 
 bool miniXmlParse::findNextChar(char ch)
 {
-    while ( *p_index != ch && p_index < p_end )
+    while (*p_index != ch && p_index < p_end)
         p_index++;
     p_index++;
-    return (p_index<p_end);
+    return isEnd();
 }
-
-
-
 
 bool miniXmlParse::captureNextString(std::string & token)
 { // only token as <token>
-     bool res = false;
-     char * pTemp=p_index;
-     while ( *p_index != '>' && p_index < p_end )
-     {
+    bool res = false;
+    char * pTemp = p_index;
+    while (*p_index != '>' && p_index < p_end)
+    {
         token.push_back(*p_index);
         p_index++;
-     }
-     p_index++;
-     res=(p_index<p_end);
-     return res;
+    }
+    p_index++;
+    res = isEnd();
+    return res;
+}
+
+bool miniXmlParse::skipSpaces(void)
+{
+
+    struct test_space
+    {
+
+        bool check(char p)
+        {
+            if (p < ' ' || p > 126)
+                return true;
+            return false;
+        }
+    } tp;
+    while (tp.check(*p_index) && p_index < p_end)
+        p_index++;
+    return isEnd();
 }

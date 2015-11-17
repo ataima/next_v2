@@ -178,7 +178,11 @@ inline void marshallObj(T* ptr,const char* f,int l)
 		throw(e);
 	}
 }
-		
+
+#if (_MSC_VER < 1900)
+#define __func__ __FUNCTION__
+#endif		
+
 #define MEMCHK(type,ptr) marshallObj<type>(ptr,__func__,__LINE__)
 
 class  nnObjConn

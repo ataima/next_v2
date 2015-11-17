@@ -83,5 +83,6 @@ void test_miniXml_class::test3(void)
         fclose(f);
 	miniXmlNode root("",(char *)"");
 	root.load(".\\test3.xml",&root);
+        root.print(stdout);
 }
 
