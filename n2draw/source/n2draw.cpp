@@ -963,6 +963,7 @@ void nnObjContact::save(miniXmlNode *root)
 	{
 		root->add("Spec", v_spec);
 		nnObjConn::save(root);
+		nnObjVCPU::save(root);
 	}
 }
 
@@ -975,6 +976,7 @@ void nnObjContact::load(miniXmlNode *root)
 		{
 			v_spec = (spec_obj)::atol(node->getValue());
 			nnObjConn::load(root);
+			nnObjVCPU::load(root);
 		}
 	}
 }
@@ -1006,6 +1008,67 @@ void nnObjCoil::load(miniXmlNode *root)
 		{
 			v_spec = (spec_obj)::atol(node->getValue());
 			nnObjConn::load(root);
+		}
+	}
+}
+
+const std::wstring nnObjVCPU::toString(void) const
+{
+	std::wstringstream os;
+	if (v_vcpu != nullptr)
+	{		
+		for (auto i : v_reg)
+		{
+			if (i < v_vcpu->memSIZE)
+				os << "R(" << i << ") = " << std::dec << v_vcpu->u.memBASE[i] << "0X" << std::hex << v_vcpu->u.memBASE[i] << std::dec << std::endl;
+			else
+				os << "Error: index = " << i << " Out of bounds" << std::endl;
+		}
+	}
+	return os.str();
+}
+
+void nnObjVCPU::save(miniXmlNode * root)
+{
+	if (root != nullptr)
+	{
+		miniXmlNode *child=root->add("VCPU", "");
+		std::stringstream s;		
+		for (auto i : v_reg)
+		{
+			s << i << " ";
+		}
+		child->add("Regs", (char *)s.str().c_str());
+	}
+}
+
+void nnObjVCPU::load(miniXmlNode * root)
+{
+	if (root != nullptr)
+	{
+
+		miniXmlNode * node = root->find("VCPU");
+		if (node != nullptr)
+		{
+			node = node->find("Regs");
+			if (node != nullptr)
+			{
+				v_reg.clear();
+				const char *value = node->getValue();
+				size_t len = strlen(value);
+				if (value != nullptr && len > 0)
+				{
+					do {
+						int i = ::atoi(value);
+						v_reg.push_back(i);
+						while (*value != ' ' && len > 0)
+						{
+							value++;
+							len--;
+						}
+					} while (*value != '\0' && len > 0);
+				}
+			}
 		}
 	}
 }

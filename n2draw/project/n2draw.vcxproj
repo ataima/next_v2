@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\header\MerlinoVCPU.h" />
     <ClInclude Include="..\header\miniXml.h" />
     <ClInclude Include="..\header\n2connection.h" />
     <ClInclude Include="..\header\n2draw.h" />

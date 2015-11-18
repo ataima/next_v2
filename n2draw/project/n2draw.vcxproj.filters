@@ -24,6 +24,9 @@
     <ClInclude Include="..\header\miniXml.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\MerlinoVCPU.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2draw.cpp">

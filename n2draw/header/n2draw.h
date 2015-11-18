@@ -184,7 +184,7 @@ public:
 		:runtime_error("failMemoryException"), line(_line) {
 		size_t l = strlen(funct);
 		size_t t = l < 255 ? l : 255;
-		memcpy(fun, funct,t);
+		memcpy(fun, funct, t);
 		fun[t] = 0;
 	}
 };
@@ -201,11 +201,11 @@ public:
 
 
 template<class T>
-inline void marshallObj(T* ptr,const char* f,int l)
+inline void marshallObj(T* ptr, const char* f, int l)
 {
 	if (ptr == nullptr)
 	{
-		failMemoryException e(f,l);
+		failMemoryException e(f, l);
 		throw(e);
 	}
 }
@@ -293,14 +293,49 @@ protected:
 	bool disconnectFromDown(void);
 };
 
+typedef std::vector<size_t > eVCPUregister;
+
+
+#include "MerlinoVCPU.h"
+
+
+class InnVCPU
+{
+public:
+	virtual eVCPUregister &getVCPUregister(void) = 0;
+	virtual void setVCPUregister(eVCPUregister & r) = 0;
+	virtual const std::wstring toString(void) const = 0;
+	virtual void save(miniXmlNode *root) = 0;
+	virtual void load(miniXmlNode *root) = 0;
+	virtual void setBaseVCPU(pMerlinoVCPU vcpu) = 0;
+	virtual pMerlinoVCPU getBaseVCPU(void) = 0;
+
+};
+
+class nnObjVCPU
+	:public InnVCPU
+{
+	pMerlinoVCPU v_vcpu;
+	eVCPUregister v_reg;
+public:
+	nnObjVCPU() :v_vcpu(nullptr) { v_reg.clear(); }
+	inline eVCPUregister &getVCPUregister(void) { return  v_reg; }
+	inline void setVCPUregister(eVCPUregister & r) { v_reg.clear(); v_reg = r; }
+	const std::wstring toString(void) const;
+	void save(miniXmlNode *root);
+	void load(miniXmlNode *root);
+	virtual void setBaseVCPU(pMerlinoVCPU _vcpu) { v_vcpu = _vcpu; };
+	virtual pMerlinoVCPU getBaseVCPU(void) { return v_vcpu; }
+};
 
 class  nnObjContact
-	:public nnObjComponent
+	: public nnObjComponent
+	, public nnObjVCPU
 {
 	spec_obj v_spec;
 public:
-	nnObjContact(spec_obj _v=spec_obj::isGeneric) :
-		nnObjComponent(ObjContext::objContact),v_spec(_v) {}
+	nnObjContact(spec_obj _v = spec_obj::isGeneric) :
+		nnObjComponent(ObjContext::objContact), v_spec(_v) {}
 	const  std::wstring toString(void) const;
 	virtual void save(miniXmlNode *root);
 	virtual void load(miniXmlNode *root);
@@ -308,7 +343,8 @@ public:
 
 
 class  nnObjCoil
-	:public nnObjComponent
+	: public nnObjComponent
+	, public nnObjVCPU
 {
 	spec_obj v_spec;
 public:

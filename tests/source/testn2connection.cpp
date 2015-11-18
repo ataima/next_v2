@@ -1128,6 +1128,19 @@ void test_n2Connection::test11(void)
 	CA_ASSERT(res==true);
 	res = n2Connection::connectComponent(&mn, p1, p2);
 	CA_ASSERT(res == true);
+	coil = new nnObjCoil();
+	contact = new nnObjContact();
+	wire = new nnObjWire(eWire::noWire);
+	mn.addObj(15, 0, wire);
+	mn.addObj(15, 5, contact);
+	mn.addObj(15, 19, coil);
+	n2Point p3(15, 0);
+	n2Point p4(15, 5);
+	n2Point p5(15, 19);
+	res = n2Connection::connectComponent(&mn, p3, p4);
+	CA_ASSERT(res == true);
+	res = n2Connection::connectComponent(&mn, p4, p5);
+	CA_ASSERT(res == true);
 	nn2TextView view;
 	view.draw(&mn, nullptr);
 }
