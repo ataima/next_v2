@@ -696,16 +696,18 @@ void nnObjConn::load(miniXmlNode *root)
 		{
 			v_num.clear();
 			const char *value = node->getValue();
-			if (value != nullptr)
+			size_t len = strlen(value);
+			if (value != nullptr && len>0 )
 			{
 				do{
 					int i = ::atoi(value);
 					v_num.push_back(i);
-					while (*value!=' ')
+					while (*value!=' ' && len>0)
 					{ 
 						value++;
+						len--;
 					}
-				} while (*value != '\0');
+				} while (*value != '\0' && len>0);
 			}
 		}		
 	}
