@@ -48,6 +48,7 @@ class test_n2ObjManager
 	CA_TEST(test_n2ObjManager::test11, "verifica move");
 	CA_TEST(test_n2ObjManager::test12, "verifica save");
 	CA_TEST(test_n2ObjManager::test13, "verifica save + load");
+	CA_TEST(test_n2ObjManager::test14, "verifica undo");
 	CA_TEST_SUITE_END()
 		void setUp(void) {}
 	void tearDown(void) {}
@@ -64,6 +65,7 @@ class test_n2ObjManager
 	void test11(void);
 	void test12(void);
 	void test13(void);
+	void test14(void);
 };
 ///////////////////////////////////////////////////
 
@@ -348,9 +350,9 @@ void test_n2ObjManager::test12(void)
 	res = mn.addObj(12, 5, d);
 	CA_ASSERT(res == true);
 	remove(".\\testsave.xml");
-	std::string name(".\\testsave.xml");
+	STRING name(X(".\\testsave.xml"));
 	mn.save(name);
-	miniXmlNode root("",(char*)"");
+	miniXmlNode root(X(""));
 	root.load(name.c_str(), &root);
 	//remove(".\\testsave.xml");
 	root.print(stdout);
@@ -385,11 +387,36 @@ void test_n2ObjManager::test13(void)
 	res = mn.addObj(12, 5, d);
 	CA_ASSERT(res == true);
 	remove(".\\testsaveload.xml");
-	std::string name(".\\testsaveload.xml");
+	STRING name(X(".\\testsaveload.xml"));
 	mn.save(name);
 	nnObjManager mp(50, 20);
 	mp.load(name);
 
 	CA_ASSERT(mn.size()==mp.size());
 	// more test
+}
+
+void test_n2ObjManager::test14(void)
+{
+	_START();
+	_INFO("verifica interrna alla classe: metodo undo");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjManager mn(50, 20);
+	nnObjCoil *c = new nnObjCoil();
+	bool res = mn.addObj(10, 12, c);
+	CA_ASSERT(res == true);
+	CA_ASSERT(mn.size()==1);
+	CA_ASSERT(mn.getUndoObjs().size() == 1);
+	CA_ASSERT(mn.getUndoObjs().front().action == 2 );
+	mn.undo();
+	CA_ASSERT(mn.size() == 0);
+	CA_ASSERT(mn.getUndoObjs().size() == 0);
+	CA_ASSERT(mn.geRedoObjs().size() == 1);
+	mn.redo();
+	CA_ASSERT(mn.size() == 1);
+	CA_ASSERT(mn.getUndoObjs().size() == 1);
+	CA_ASSERT(mn.geRedoObjs().size() == 0);
+
+
 }

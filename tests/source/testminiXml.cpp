@@ -72,9 +72,9 @@ void test_miniXml_class::test1(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
 
-    miniXmlNode root("ROOT", (char*)"");
-    miniXmlNode* child1=root.add("child1", (char*)"1000");
-    miniXmlNode* child2=child1->add("child2", (char*)"2000");
+    miniXmlNode root(X("ROOT"), (XCHAR*)X(""));
+    miniXmlNode* child1=root.add(X("child1"), (XCHAR*)X("1000"));
+    miniXmlNode* child2=child1->add(X("child2"), (XCHAR*)X("2000"));
     root.print(stdout);
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
@@ -89,9 +89,9 @@ void test_miniXml_class::test2(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
 
-    miniXmlNode root("ROOT", (char*)"");
-    miniXmlNode* child1 = root.add("child1",(char*) "1000");
-    miniXmlNode* child2 = root.add("child2", (char*)"2000");
+    miniXmlNode root(X("ROOT"), (XCHAR*)"");
+    miniXmlNode* child1 = root.add(X("child1"),(XCHAR*) X("1000"));
+    miniXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
     root.print(stdout);
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
@@ -108,16 +108,16 @@ void test_miniXml_class::test3(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
         remove(".\\test3.xml");
-        const char *xml="<ROOT>\r\n<child1>\r\n1000\r\n</child1>\r\n<child2>\r\n2000\r\n</child2>\r\n</ROOT>\r\n";
+        const XCHAR *xml=X("<ROOT>\r\n<child1>\r\n1000\r\n</child1>\r\n<child2>\r\n2000\r\n</child2>\r\n</ROOT>\r\n");
         FILE *f=fopen(".\\test3.xml","w+");
-        fwrite(xml,1,strlen(xml),f);
+        fwrite(xml,sizeof(XCHAR),STRLEN(xml),f);
         fclose(f);
-    miniXmlNode root("",(char *)"");
-    root.load(".\\test3.xml",&root);
+    miniXmlNode root(X(""),(XCHAR *)"");
+    root.load(X(".\\test3.xml"),&root);
     root.print(stdout);
     remove(".\\test3.xml");
-    CA_ASSERT(root.find("child1") != NULL);
-    CA_ASSERT(root.find("child2") != NULL);
+    CA_ASSERT(root.find(X("child1")) != NULL);
+    CA_ASSERT(root.find(X("child2")) != NULL);
 }
 
 void test_miniXml_class::test4(void)
@@ -127,12 +127,12 @@ void test_miniXml_class::test4(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
 
-    miniXmlNode root("ROOT", (char*)"");
-    miniXmlNode* child1 = root.add("child1", (char*)"1000");
-    miniXmlNode* child2 = root.add("child2", (char*)"2000");
-    miniXmlNode* child3 = root.add("child3", (char*)"3000");
-    miniXmlNode* child4 = root.add("child4", (char*)"4000");
-    miniXmlNode* child5 = root.add("child5", (char*)"5000");
+    miniXmlNode root(X("ROOT"), (XCHAR*)"");
+    miniXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
+    miniXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
+    miniXmlNode* child3 = root.add(X("child3"), (XCHAR*)X("3000"));
+    miniXmlNode* child4 = root.add(X("child4"), (XCHAR*)X("4000"));
+    miniXmlNode* child5 = root.add(X("child5"), (XCHAR*)X("5000"));
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
     CA_ASSERT(root.getNext() == nullptr);
@@ -142,15 +142,15 @@ void test_miniXml_class::test4(void)
     FILE *f = fopen(".\\test4.xml", "w+");
     root.print(f);
     fclose(f);
-    miniXmlNode root1("", (char*)"");
-    root1.load(".\\test4.xml", &root1);
+    miniXmlNode root1;
+    root1.load(X(".\\test4.xml"), &root1);
     root1.print(stdout);
     remove(".\\test4.xml");
-    CA_ASSERT(root1.find("child1") != NULL);
-    CA_ASSERT(root1.find("child2") != NULL);
-    CA_ASSERT(root1.find("child3") != NULL);
-    CA_ASSERT(root1.find("child4") != NULL);
-    CA_ASSERT(root1.find("child5") != NULL);
+    CA_ASSERT(root1.find(X("child1")) != NULL);
+    CA_ASSERT(root1.find(X("child2")) != NULL);
+    CA_ASSERT(root1.find(X("child3")) != NULL);
+    CA_ASSERT(root1.find(X("child4")) != NULL);
+    CA_ASSERT(root1.find(X("child5")) != NULL);
 }
 
 void test_miniXml_class::test5(void)
@@ -159,12 +159,12 @@ void test_miniXml_class::test5(void)
     _INFO("create XmlNode and parse");
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
-    miniXmlNode root("ROOT", (char*)"");
-    miniXmlNode* child1 = root.add("child1", (char*)"1000");
-    miniXmlNode* child2 = root.add("child1.child2", (char*)"2000");
-    miniXmlNode* child3 = root.add("child1.child2.child3", (char*)"3000");
-    miniXmlNode* child4 = root.add("child1.child2.child3.child4", (char*)"4000");
-    miniXmlNode* child5 = root.add("child1.child2.child3.child4.child5", (char*)"5000");
+    miniXmlNode root(X("ROOT"), (XCHAR*)"");
+    miniXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
+    miniXmlNode* child2 = root.add(X("child1.child2"), (XCHAR*)X("2000"));
+    miniXmlNode* child3 = root.add(X("child1.child2.child3"), (XCHAR*)X("3000"));
+    miniXmlNode* child4 = root.add(X("child1.child2.child3.child4"), (XCHAR*)X("4000"));
+    miniXmlNode* child5 = root.add(X("child1.child2.child3.child4.child5"), (XCHAR*)X("5000"));
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
     CA_ASSERT(root.getNext() == nullptr);
@@ -175,15 +175,15 @@ void test_miniXml_class::test5(void)
     FILE *f = fopen(".\\test5.xml", "w+");
     root.print(f);
     fclose(f);
-    miniXmlNode root1("", (char*)"");
-    root1.load(".\\test5.xml", &root1);
+    miniXmlNode root1(X(""), (XCHAR*)X(""));
+    root1.load(X(".\\test5.xml"), &root1);
     root1.print(stdout);
     remove(".\\test5.xml");
-    CA_ASSERT(root1.find("child1") != NULL);
-    CA_ASSERT(root1.find("child1.child2") != NULL);
-    CA_ASSERT(root1.find("child1.child2.child3") != NULL);
-    CA_ASSERT(root1.find("child1.child2.child3.child4") != NULL);
-    CA_ASSERT(root1.find("child1.child2.child3.child4.child5") != NULL);
+    CA_ASSERT(root1.find(X("child1")) != NULL);
+    CA_ASSERT(root1.find(X("child1.child2")) != NULL);
+    CA_ASSERT(root1.find(X("child1.child2.child3")) != NULL);
+    CA_ASSERT(root1.find(X("child1.child2.child3.child4")) != NULL);
+    CA_ASSERT(root1.find(X("child1.child2.child3.child4.child5")) != NULL);
 }
 
 
@@ -194,9 +194,9 @@ void test_miniXml_class::test6(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
 
-    miniXmlNode root("ROOT", (char*)"1000");
-    miniXmlNode* child1 = root.add("child1", (char*)"1000");
-    miniXmlNode* child2 = root.add("child2", (char*)"2000");
+    miniXmlNode root(X("ROOT"), (XCHAR*)X("1000"));
+    miniXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
+    miniXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
     CA_ASSERT(root.getNext() == nullptr);
@@ -206,11 +206,13 @@ void test_miniXml_class::test6(void)
     FILE *f = fopen(".\\test6.xml", "w+");
     root.print(f);
     fclose(f);
-    miniXmlNode root1("", (char*)"");
-    root1.load(".\\test6.xml", &root1);
+    miniXmlNode root1;
+    root1.load(X(".\\test6.xml"), &root1);
     root1.print(stdout);
     remove(".\\test6.xml");
-    CA_ASSERT(strcmp(root1.getValue(),"1000") ==0);
-    CA_ASSERT(root1.find("child1") != NULL);
-    CA_ASSERT(root1.find("child2") != NULL);
+    CA_ASSERT(STRCMP(root1.getValue(),X("1000")) ==0);
+    CA_ASSERT(root1.find(X("child1")) != NULL);
+	CA_ASSERT(root1.find(X("child1"))->getLong() ==1000);
+	CA_ASSERT(root1.find(X("child2")) != NULL);
+	CA_ASSERT(root1.find(X("child2"))->getLong() == 2000);
 }

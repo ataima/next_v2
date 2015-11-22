@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "miniXml.h"
+#include <stdarg.h> 
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -30,9 +31,25 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
+
+
+
+bool xmlConfig::readConfiguration(const wchar_t *name)
+{
+	bool res = false;
+	return res;
+}
+
+bool xmlConfig::writeConfiguration(const wchar_t *name)
+{
+	bool res = false;
+	return res;
+}
+//////////////////////////////////////////////////////////////////////
 nnObjManager::nnObjManager(size_t x, size_t y)
 	: v_width(x), v_height(y),
-	mask_width(0), mask_height(0)
+	mask_width(0), mask_height(0), 
+	undoredoMode(false)
 {
 	nnObjWire::resetUI();
 	size_t i = v_width & 0x0fffffff;
@@ -52,6 +69,13 @@ nnObjManager::nnObjManager(size_t x, size_t y)
 		mask_height |= 1;
 	}
 
+}
+
+nnObjManager::~nnObjManager()
+{
+	 removeAll(); 
+	 clearUndoObjs();
+	 clearRedoObjs();
 }
 
 InnObj * nnObjManager::getObj(size_t x, size_t y)
@@ -81,6 +105,8 @@ bool nnObjManager::addObj(size_t x, size_t y, InnObj * obj)
 				obj->setXpos(x);
 				obj->setYpos(y);
 				res = linkObj(x, y, obj);
+				undo_redo_unit u(eAction::removeObjAction, x, y,nullptr);
+				record(u);
 			}
 		}
 	return res;
@@ -98,7 +124,8 @@ bool nnObjManager::removeObj(size_t x, size_t y)
 				if (obj != nullptr) {
 					erase(it); // remove first break recursion
 					unlinkObj(x, y, obj);
-					delete obj;
+					undo_redo_unit u(eAction::addObjAction, x, y,obj);
+					record(u);
 					res = true;
 				}
 			}
@@ -119,6 +146,8 @@ InnObj * nnObjManager::outObj(size_t x, size_t y)
 				if (obj != nullptr) {
 					erase(it); // remove first break recursion
 					unlinkObj(x, y, obj);
+					undo_redo_unit u(eAction::outObjAction, x, y, obj);
+					record(u);
 				}
 			}
 		}
@@ -134,12 +163,15 @@ bool nnObjManager::replaceObj(size_t x, size_t y, InnObj * obj)
 		if (genHashKey(x, y, hkey)) {
 			hashObjTable::iterator it = find(hkey);
 			if (it != end()) {
-				delete it->second;
+				undo_redo_unit u(eAction::addObjAction, x, y, it->second);
+				record(u);
 				it->second = obj;
 				obj->setXpos(x);
 				obj->setYpos(y);
 				if (it->second->isComponent()) {
 					linkObj(x, y, obj);
+					undo_redo_unit v(eAction::removeObjAction, x, y, nullptr);
+					record(v);
 					res = true;
 				}
 			}
@@ -150,8 +182,10 @@ bool nnObjManager::replaceObj(size_t x, size_t y, InnObj * obj)
 bool nnObjManager::removeAll(void)
 {
 	bool res = false;
-	if (size() > 0) {
-		for (auto n : *this) {
+	if (size() > 0)
+	{
+		for (auto n : *this)
+		{
 			delete n.second;
 		}
 		res = true;
@@ -161,7 +195,37 @@ bool nnObjManager::removeAll(void)
 }
 
 
-void nnObjManager::save(std::string & name)
+void nnObjManager::clearUndoObjs(void)
+{
+	if (undoObjs.size() > 0) 
+	{
+		for (auto n : undoObjs)
+		{
+			if(n.action==eAction::addObjAction && n.obj != nullptr)
+				delete n.obj;
+		}
+		undoObjs.clear();
+	}
+}
+
+
+void nnObjManager::clearRedoObjs(void)
+{
+	if (redoObjs.size() > 0)
+	{
+		for (auto n : redoObjs)
+		{
+			if (n.action == eAction::addObjAction && n.obj != nullptr)
+				delete n.obj;
+		}
+		redoObjs.clear();
+	}
+
+}
+
+
+
+void nnObjManager::save(STRING & name)
 {
 	size_t num_obj = 0;
 	if (!name.empty())
@@ -169,20 +233,22 @@ void nnObjManager::save(std::string & name)
 		try{
 #ifdef _MSC_VER
 			FILE *out = nullptr;
-			fopen_s(&out, name.c_str(), "w+");
+			FOPEN(&out, name.c_str(), X("w+"));
 #else
 			FILE *out = fopen(name.c_str(), "w+");
 #endif
 			if (out != NULL)
 			{
-				miniXmlNode root("next_v2", "1.0.0.0 Copyright(c) 2015 Angelo Coppi");
-				root.add("Wire_UID", nnObjConn::getUI());
-				root.add("Size", size()+1);
+				miniXmlNode root(X("next_v2"), X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));
+				root.add(X("Wire_UID"), nnObjConn::getUI());
+				root.add(X("Width"), v_width);
+				root.add(X("Height"), v_height);
+				root.add(X("Size"), size() + 1);
 				hashObjTable::iterator it = begin();
 				hashObjTable::iterator _end = end();
 				while (it != _end)
 				{
-					miniXmlNode *child = root.add("Obj_UID_", ++num_obj, num_obj);
+					miniXmlNode *child = root.add(X("Obj_UID_"), ++num_obj, num_obj);
 					it->second->save(child);
 					it++;
 				}
@@ -196,37 +262,52 @@ void nnObjManager::save(std::string & name)
 
 
 
-void nnObjManager::load(std::string & name)
+void nnObjManager::load(STRING & name)
 {
 	size_t num_obj = 0;
 	if (!name.empty())
 	{
 		removeAll();
 		try{
-				miniXmlNode root("","");
+				miniXmlNode root;
 				root.load(name.c_str(), &root);
-				std::string name = root.getName();
-				std::string value = root.getValue();
-				if (name == "next_v2" && value == "1.0.0.0 Copyright(c) 2015 Angelo Coppi")
+				STRING name = root.getName();
+				STRING value = root.getValue();
+				if (name == X("next_v2") && value == X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"))
 				{
-					miniXmlNode *size = root.find("Size");
+					miniXmlNode *t = root.find(X("Wire_UID"));
+					if (t != nullptr)
+					{
+						nnObjConn::setUI(t->getLong());
+					}
+					t = root.find(X("Width"));
+					if (t != nullptr)
+					{
+						v_width=t->getLong();
+					}
+					t = root.find(X("Height"));
+					if (t != nullptr)
+					{
+						v_height = t->getLong();
+					}
+					miniXmlNode *size = root.find(X("Size"));
 					if (size != nullptr)
 					{
-						size_t i,numObj = ::atol(size->getValue());
+						size_t i,numObj = size->getLong();
 						for (i = 1; i < numObj; i++)
 						{
-							miniXmlNode *child = root.find("Obj_UID_", i);
+							miniXmlNode *child = root.find(X("Obj_UID_"), i);
 							if (child != nullptr)
 							{
-								if (i == atol(child->getValue()))
+								if (i == child->getLong())
 								{
-									miniXmlNode *spec = child->find("Spec");
+									miniXmlNode *spec = child->find(X("Spec"));
 									if (spec != nullptr)
 									{
-										miniXmlNode *context = child->find("Context");
+										miniXmlNode *context = child->find(X("Context"));
 										if (context != nullptr)
 										{
-											InnObj *obj = nnObjConn::getObjFromIds((spec_obj)::atol(spec->getValue()), (ObjContext)atol(context->getValue()));
+											InnObj *obj = nnObjConn::getObjFromIds((spec_obj)spec->getLong(), (ObjContext)context->getLong());
 											if (obj != nullptr)
 											{
 												obj->load(child);
@@ -503,4 +584,101 @@ n2Point  nnObjManager::getStopPoint(void)
 	y = y/2;
 	x = (key >> 30) & 0xfffffff;
 	return n2Point(x, y);
+}
+
+
+void nnObjManager::record(undo_redo_unit u)
+{
+
+	if (undoredoMode == false)
+	{
+		if (undoObjs.size() >= 100)
+		{
+			undo_redo_unit old = undoObjs.front();
+			undoObjs.pop_front();
+			if (old.obj != nullptr)
+				delete old.obj;
+		}
+		undoObjs.push_back(u);
+	}
+	else
+	{
+		if (redoObjs.size() >= 100)
+		{
+			undo_redo_unit old = redoObjs.front();
+			redoObjs.pop_front();
+			if (old.obj != nullptr)
+				delete old.obj;
+		}
+		redoObjs.push_back(u);
+	}
+}
+
+bool nnObjManager::undo(void)
+{
+	bool res = false;
+	if (undoObjs.size() > 0)
+	{
+		undo_redo_unit f = undoObjs.back();
+		undoObjs.pop_back();
+		switch(f.action)
+		{
+		case addObjAction:
+			undoredoMode = true;
+			return addObj(f.x_pos, f.y_pos, f.obj);
+			undoredoMode = false;
+			break;
+		case removeObjAction:
+			undoredoMode = true;
+			return removeObj(f.x_pos, f.y_pos);
+			undoredoMode = false;
+			break;
+		case outObjAction:
+			undoredoMode = true;
+			addObj(f.x_pos, f.y_pos, f.obj);
+			undoredoMode = false;
+			break;
+		}
+	}
+	return res;
+}
+
+
+bool nnObjManager::redo(void)
+{
+	bool res = false;
+	if (redoObjs.size() > 0)
+	{
+		undo_redo_unit f = redoObjs.back();
+		redoObjs.pop_back();
+		switch (f.action)
+		{
+		case addObjAction:
+			undoredoMode = false;
+			return addObj(f.x_pos, f.y_pos, f.obj);
+			break;
+		case removeObjAction:
+			undoredoMode = false;
+			return removeObj(f.x_pos, f.y_pos);
+			break;
+		case outObjAction:
+			undoredoMode = false;
+			addObj(f.x_pos, f.y_pos, f.obj);
+			break;
+		}
+	}
+	return res;
+}
+
+bool readConfiguration(const wchar_t *name)
+{
+	bool res = false;
+	return false;
+}
+
+
+bool writeConfiguration(const wchar_t *name)
+{
+	bool res = false;
+	return false;
 }

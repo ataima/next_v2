@@ -52,7 +52,9 @@ using namespace std;
 // calc. from app.
 #define MAXNUMCLASSTEST 128
 #define MAXNUMTEST 256
-#define BUFFLENGTH	256
+#ifndef BUFFLENGTH
+#define BUFFLENGTH	512
+#endif
 //////////////////////////////
 // throw object
 typedef struct exc_fail

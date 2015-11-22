@@ -46,7 +46,7 @@ void nnObj::save(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		root->add("Context",v_context);
+		root->add(X("Context"),v_context);
 	}
 }
 
@@ -56,10 +56,10 @@ void nnObj::load(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		miniXmlNode * node=root->find("Context");
+		miniXmlNode * node=root->find(X("Context"));
 		if (node != nullptr)
 		{
-			v_context = (ObjContext)::atol(node->getValue());
+			v_context = (ObjContext)node->getLong();
 		}
 	}
 }
@@ -80,8 +80,8 @@ void nnObjPos::save(miniXmlNode *root)
 	if (root != nullptr)
 	{
 		nnObj::save(root);
-		root->add("X_Position", v_Xpos);
-		root->add("Y_Position", v_Ypos);
+		root->add(X("X_Position"), v_Xpos);
+		root->add(X("Y_Position"), v_Ypos);
 	}
 }
 
@@ -90,15 +90,15 @@ void nnObjPos::load(miniXmlNode *root)
 	if (root != nullptr)
 	{
 		nnObj::load(root);
-		miniXmlNode * node = root->find("X_Position");
+		miniXmlNode * node = root->find(X("X_Position"));
 		if (node != nullptr)
 		{
-			v_Xpos = ::atol(node->getValue());
+			v_Xpos = node->getLong();
 		}
-		node = root->find("Y_Position");
+		node = root->find(X("Y_Position"));
 		if (node != nullptr)
 		{
-			v_Ypos = ::atol(node->getValue());
+			v_Ypos = node->getLong();
 		}
 	}
 }
@@ -681,7 +681,7 @@ void nnObjConn::save(miniXmlNode *root)
 		{
 			s << i << " ";
 		}		
-		root->add("Connections", (char *)s.str().c_str());
+		root->add(X("Connections"), (XCHAR *)s.str().c_str());
 	}
 }
 
@@ -691,23 +691,23 @@ void nnObjConn::load(miniXmlNode *root)
 	if (root != nullptr)
 	{
 		nnObjPos::load(root);
-		miniXmlNode * node = root->find("Connections");
+		miniXmlNode * node = root->find(X("Connections"));
 		if (node != nullptr)
 		{
 			v_num.clear();
-			const char *value = node->getValue();
-			size_t len = strlen(value);
+			const XCHAR *value = node->getValue();
+			size_t len = STRLEN(value);
 			if (value != nullptr && len>0 )
 			{
 				do{
-					int i = ::atoi(value);
+					int i = ATOL(value);
 					v_num.push_back(i);
 					while (*value!=' ' && len>0)
 					{ 
 						value++;
 						len--;
 					}
-				} while (*value != '\0' && len>0);
+				} while (*value != X('\0') && len>0);
 			}
 		}		
 	}
@@ -742,7 +742,7 @@ void nnObjWire::save(miniXmlNode *root)
 	if (root != nullptr)
 	{
 		nnObjConn::save(root);
-		root->add("Connection_Type", v_wire);
+		root->add(X("Connection_Type"), v_wire);
 	}
 }
 
@@ -751,10 +751,10 @@ void nnObjWire::load(miniXmlNode *root)
 	if (root != nullptr)
 	{
 		nnObjConn::load(root);
-		miniXmlNode *node = root->find("Connection_Type");
+		miniXmlNode *node = root->find(X("Connection_Type"));
 		if (node != nullptr)
 		{
-			v_wire = (eWire)::atol(node->getValue());
+			v_wire = (eWire)node->getLong();
 		}
 	}
 }
@@ -961,7 +961,7 @@ void nnObjContact::save(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		root->add("Spec", v_spec);
+		root->add(X("Spec"), v_spec);
 		nnObjConn::save(root);
 		nnObjVCPU::save(root);
 	}
@@ -971,10 +971,10 @@ void nnObjContact::load(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		miniXmlNode *node = root->find("Spec");
+		miniXmlNode *node = root->find(X("Spec"));
 		if (node != nullptr)
 		{
-			v_spec = (spec_obj)::atol(node->getValue());
+			v_spec = (spec_obj)node->getLong();
 			nnObjConn::load(root);
 			nnObjVCPU::load(root);
 		}
@@ -994,7 +994,7 @@ void nnObjCoil::save(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		root->add("Spec", v_spec);
+		root->add(X("Spec"), v_spec);
 		nnObjConn::save(root);
 	}
 }
@@ -1003,10 +1003,10 @@ void nnObjCoil::load(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		miniXmlNode *node = root->find("Spec");
+		miniXmlNode *node = root->find(X("Spec"));
 		if (node != nullptr)
 		{
-			v_spec = (spec_obj)::atol(node->getValue());
+			v_spec = (spec_obj)node->getLong();
 			nnObjConn::load(root);
 		}
 	}
@@ -1032,13 +1032,13 @@ void nnObjVCPU::save(miniXmlNode * root)
 {
 	if (root != nullptr)
 	{
-		miniXmlNode *child=root->add("VCPU", "");
-		std::stringstream s;		
+		miniXmlNode *child=root->add(X("VCPU"),X(""));
+		SSTRING s;
 		for (auto i : v_reg)
 		{
 			s << i << " ";
 		}
-		child->add("Regs", (char *)s.str().c_str());
+		child->add(X("Regs"), (XCHAR *)s.str().c_str());
 	}
 }
 
@@ -1047,26 +1047,26 @@ void nnObjVCPU::load(miniXmlNode * root)
 	if (root != nullptr)
 	{
 
-		miniXmlNode * node = root->find("VCPU");
+		miniXmlNode * node = root->find(X("VCPU"));
 		if (node != nullptr)
 		{
-			node = node->find("Regs");
+			node = node->find(X("Regs"));
 			if (node != nullptr)
 			{
 				v_reg.clear();
-				const char *value = node->getValue();
-				size_t len = strlen(value);
+				const XCHAR *value = node->getValue();
+				size_t len = STRLEN(value);
 				if (value != nullptr && len > 0)
 				{
 					do {
-						int i = ::atoi(value);
+						int i = ATOL(value);
 						v_reg.push_back(i);
 						while (*value != ' ' && len > 0)
 						{
 							value++;
 							len--;
 						}
-					} while (*value != '\0' && len > 0);
+					} while (*value != X('\0') && len > 0);
 				}
 			}
 		}

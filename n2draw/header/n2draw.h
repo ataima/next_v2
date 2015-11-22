@@ -239,6 +239,7 @@ public:
 	virtual void load(miniXmlNode *root);
 	static void resetUI(void) { uid_num = 2; }
 	static size_t getUI(void) { return ++uid_num; }
+	static void setUI(long u) {uid_num=u; }
 	bool powerConnect(size_t num);
 	static InnObj * getObjFromIds(spec_obj specific, ObjContext context);
 

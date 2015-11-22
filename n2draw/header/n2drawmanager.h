@@ -28,8 +28,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include <map>
-#include "n2draw.h"
 
+#include <list>
+
+#include "n2draw.h"
+#include "miniXml.h"
 class IManager
 {
 public:
@@ -46,26 +49,68 @@ public:
 	virtual size_t getHeight(void) = 0;
 	virtual n2Point getStartPoint(void) = 0;
 	virtual n2Point getStopPoint(void) = 0;
-	virtual void save(std::string & name) = 0;
+	virtual void save(STRING & name) = 0;
+	virtual void load(STRING & name) = 0;
+	virtual bool undo(void)=0;
+	virtual bool redo(void)=0;
+};
+
+
+class IConfig
+{
+public:
+	virtual bool readConfiguration(const wchar_t *name) = 0;
+	virtual bool writeConfiguration(const wchar_t *name) = 0;
+};
+
+
+
+class xmlConfig
+	:public IConfig
+{
+	miniXmlNode conf;
+public:
+	bool readConfiguration(const wchar_t *name);
+	bool writeConfiguration(const wchar_t *name);
 };
 
 typedef unsigned long long int hashkey;
 typedef std::map<hashkey, InnObj *> hashObjTable;
 
-
 class nnObjManager
 	: public IManager
 	, public hashObjTable
 {
+	typedef enum tag_action_type
+	{
+		addObjAction=1,
+		removeObjAction,
+		outObjAction,
+	}eAction;
+
+
+	typedef struct tag_action
+	{
+		eAction action;
+		InnObj *obj;
+		size_t x_pos;
+		size_t y_pos;
+		tag_action(eAction a, size_t x,size_t y,InnObj* _obj = nullptr)
+			: action(a),x_pos(x),y_pos(y), obj(_obj) {}
+	} undo_redo_unit;
+
 protected:
 	size_t v_width;
 	size_t v_height;
 	size_t mask_width;
 	size_t mask_height;
-
+	std::list<undo_redo_unit> undoObjs;
+	std::list<undo_redo_unit> redoObjs;
+	bool undoredoMode;
+	xmlConfig configuration;
 public:
 	nnObjManager(size_t x, size_t y);
-	~nnObjManager() { removeAll(); }
+	~nnObjManager();
 	InnObj * getObj(size_t x, size_t y);
 	InnObj * outObj(size_t x, size_t y);
 	bool addObj(size_t x, size_t y, InnObj * obj);
@@ -78,14 +123,20 @@ public:
 	inline size_t getHeight(void) { return v_height; }
 	n2Point getStartPoint(void);
 	n2Point getStopPoint(void);
-	void save(std::string & name);
-	void load(std::string & name);
+	void save(STRING & name);
+	void load(STRING & name);
+	bool undo(void);
+	bool redo(void);
+	inline std::list<undo_redo_unit> & getUndoObjs(void) { return undoObjs; }
+	inline std::list<undo_redo_unit> & geRedoObjs(void) { return redoObjs; }
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);
 	bool range(size_t x, size_t y);
 	bool linkObj(size_t x, size_t y, InnObj *obj);
 	bool unlinkObj(size_t x, size_t y, InnObj *obj);
-
+	void record(undo_redo_unit u);
+	void clearUndoObjs(void);
+	void clearRedoObjs(void);
 };
 
 
