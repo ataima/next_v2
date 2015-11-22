@@ -53,26 +53,12 @@ public:
 	virtual void load(STRING & name) = 0;
 	virtual bool undo(void)=0;
 	virtual bool redo(void)=0;
-};
-
-
-class IConfig
-{
-public:
-	virtual bool readConfiguration(const wchar_t *name) = 0;
-	virtual bool writeConfiguration(const wchar_t *name) = 0;
+	virtual bool insertRow(size_t y_pos)=0;
+	virtual bool insertCol(size_t x_pos)=0;
 };
 
 
 
-class xmlConfig
-	:public IConfig
-{
-	miniXmlNode conf;
-public:
-	bool readConfiguration(const wchar_t *name);
-	bool writeConfiguration(const wchar_t *name);
-};
 
 typedef unsigned long long int hashkey;
 typedef std::map<hashkey, InnObj *> hashObjTable;
@@ -127,10 +113,13 @@ public:
 	void load(STRING & name);
 	bool undo(void);
 	bool redo(void);
+	bool insertRow(size_t y_pos);
+	bool insertCol(size_t x_pos);
 	inline std::list<undo_redo_unit> & getUndoObjs(void) { return undoObjs; }
 	inline std::list<undo_redo_unit> & geRedoObjs(void) { return redoObjs; }
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);
+	bool revHashKey( hashkey & key, size_t & x, size_t &y);
 	bool range(size_t x, size_t y);
 	bool linkObj(size_t x, size_t y, InnObj *obj);
 	bool unlinkObj(size_t x, size_t y, InnObj *obj);

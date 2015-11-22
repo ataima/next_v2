@@ -108,9 +108,9 @@ public:
     /// generate a XML file
     void print(FILE *out);
     /// load a XML from file
-    bool load(const XCHAR *file_in, miniXmlNode * root);
+    static bool load(const XCHAR *file_in, miniXmlNode * root);
 	/// save a XML from file
-	bool save(const XCHAR *file_out, miniXmlNode * root);
+	static bool save(const XCHAR *file_out, miniXmlNode * root);
 	/// assign a requested name
     void setName(const XCHAR *_name);
     /// assigne a requested value
@@ -145,4 +145,25 @@ protected:
     bool skipSpaces(void);
     inline bool isEnd(void){ return ((size_t)(p_index) < (size_t)(p_end));}
 };
+
+class IConfig
+{
+public:
+	virtual bool readConfiguration(const wchar_t *name) = 0;
+	virtual bool writeConfiguration(const wchar_t *name) = 0;
+};
+
+
+
+class xmlConfig
+	:public IConfig
+{
+	miniXmlNode conf;
+public:
+	bool readConfiguration(const wchar_t *name);
+	bool writeConfiguration(const wchar_t *name);
+};
+
+
+
 #endif

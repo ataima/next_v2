@@ -31,21 +31,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-
-
-
-bool xmlConfig::readConfiguration(const wchar_t *name)
-{
-	bool res = false;
-	return res;
-}
-
-bool xmlConfig::writeConfiguration(const wchar_t *name)
-{
-	bool res = false;
-	return res;
-}
-//////////////////////////////////////////////////////////////////////
 nnObjManager::nnObjManager(size_t x, size_t y)
 	: v_width(x), v_height(y),
 	mask_width(0), mask_height(0), 
@@ -560,14 +545,23 @@ bool nnObjManager::swapObj(n2Point from, n2Point to)
 	return res;
 }
 
+
+bool nnObjManager::revHashKey(hashkey & key, size_t & x, size_t &y)
+{
+	bool res = false;
+	y = key & 0xfffffff;
+	y = y / 2;
+	x = (key >> 30) & 0xfffffff;
+	res = (y != 0 && x != 0);
+	return res;
+}
+
 n2Point  nnObjManager::getStartPoint(void)
 {
 	size_t x , y;
 	hashObjTable::iterator it = begin();
 	hashkey key = it->first;
-	y = key & 0xfffffff;
-	y = y/2;
-	x = (key >> 30) & 0xfffffff;
+	revHashKey(key, x, y);
 	return n2Point(x, y);
 
 }
@@ -580,9 +574,7 @@ n2Point  nnObjManager::getStopPoint(void)
 	r_it++;
 	hashObjTable::iterator it = r_it.base();
 	hashkey key = it->first;
-	y = key & 0xfffffff;
-	y = y/2;
-	x = (key >> 30) & 0xfffffff;
+	revHashKey(key, x, y);
 	return n2Point(x, y);
 }
 
@@ -670,15 +662,54 @@ bool nnObjManager::redo(void)
 	return res;
 }
 
-bool readConfiguration(const wchar_t *name)
+bool nnObjManager::insertRow(size_t y_pos)
 {
 	bool res = false;
-	return false;
+	iterator it = begin();
+	iterator _end = end();
+	while(it!=_end)
+	{
+		size_t x, y;
+		hashkey *key = (hashkey *)&it->first;
+		revHashKey(*key, x, y);
+		if (y >= y_pos)
+		{
+			y++;
+			res=genHashKey(x, y, *key);
+			if (!res)
+				break;
+		}
+		it++;
+	}
+	if (res)
+	{
+		v_height++;
+	}
+	return res;
 }
 
-
-bool writeConfiguration(const wchar_t *name)
+bool nnObjManager::insertCol(size_t x_pos)
 {
 	bool res = false;
-	return false;
+	iterator it = begin();
+	iterator _end = end();
+	while (it != _end)
+	{
+		size_t x, y;
+		hashkey *key = (hashkey *)&it->first;
+		revHashKey(*key, x, y);
+		if (x >= x_pos)
+		{
+			x++;
+			res = genHashKey(x, y, *key);
+			if (!res)
+				break;
+		}
+		it++;
+	}
+	if (res)
+	{
+		v_width++;
+	}
+	return res;
 }

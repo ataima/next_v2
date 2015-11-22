@@ -49,12 +49,13 @@ class test_n2ObjManager
 	CA_TEST(test_n2ObjManager::test12, "verifica save");
 	CA_TEST(test_n2ObjManager::test13, "verifica save + load");
 	CA_TEST(test_n2ObjManager::test14, "verifica undo");
+	CA_TEST(test_n2ObjManager::test15, "verifica insert row");
+	CA_TEST(test_n2ObjManager::test16, "verifica insert row");
 	CA_TEST_SUITE_END()
 		void setUp(void) {}
 	void tearDown(void) {}
 	void test1(void);
 	void test2(void);
-
 	void test4(void);
 	void test5(void);
 	void test6(void);
@@ -66,6 +67,8 @@ class test_n2ObjManager
 	void test12(void);
 	void test13(void);
 	void test14(void);
+	void test15(void);
+	void test16(void);
 };
 ///////////////////////////////////////////////////
 
@@ -419,4 +422,85 @@ void test_n2ObjManager::test14(void)
 	CA_ASSERT(mn.geRedoObjs().size() == 0);
 
 
+}
+
+
+void test_n2ObjManager::test15(void)
+{
+	struct tag_check
+	{
+		void revHashKey(hashkey & key, size_t & x, size_t &y)
+		{
+			y = key & 0xfffffff;
+			y = y / 2;
+			x = (key >> 30) & 0xfffffff;
+		}
+
+	};
+	_START();
+	_INFO("verifica interrna alla classe: metodo insert row");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjManager mn(50, 20);
+	nnObjCoil *c = new nnObjCoil();
+	bool res = mn.addObj(10, 12, c);
+	CA_ASSERT(res == true);
+	CA_ASSERT(mn.size() == 1);
+	res=mn.insertRow(6);
+	CA_ASSERT(res == true);
+	res = mn.insertRow(6);
+	CA_ASSERT(res == true);
+	res = mn.insertRow(6);
+	CA_ASSERT(res == true);
+	CA_ASSERT(mn.getHeight()==23);
+	CA_ASSERT(mn.size()==1);
+	CA_ASSERT(mn.getObj(10, 15) == c);	
+	nnObjManager::iterator it = mn.begin();
+	tag_check css;
+	size_t x, y;
+	hashkey k = it->first;
+	css.revHashKey(k, x, y);
+	CA_ASSERT(x == 10);
+	CA_ASSERT(y == 15);
+}
+
+
+
+void test_n2ObjManager::test16(void)
+{
+	struct tag_check
+	{
+		void revHashKey(hashkey & key, size_t & x, size_t &y)
+		{
+			y = key & 0xfffffff;
+			y = y / 2;
+			x = (key >> 30) & 0xfffffff;
+		}
+
+	};
+	_START();
+	_INFO("verifica interrna alla classe: metodo insert col");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjManager mn(50, 20);
+	nnObjCoil *c = new nnObjCoil();
+	bool res = mn.addObj(10, 12, c);
+	CA_ASSERT(res == true);
+	CA_ASSERT(mn.size() == 1);
+	res = mn.insertCol(8);
+	CA_ASSERT(res == true);
+	res = mn.insertCol(8);
+	CA_ASSERT(res == true);
+	res = mn.insertCol(8);
+	CA_ASSERT(res == true);
+	CA_ASSERT(mn.getWidth() == 53);
+	CA_ASSERT(mn.size() == 1);
+	CA_ASSERT(mn.getObj(13, 12) == c);
+	nnObjManager::iterator it = mn.begin();
+	tag_check css;
+	size_t x, y;
+	hashkey k = it->first;
+	css.revHashKey(k, x, y);
+	CA_ASSERT(x == 13);
+	CA_ASSERT(y == 12);
 }

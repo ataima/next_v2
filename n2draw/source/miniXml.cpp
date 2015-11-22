@@ -96,10 +96,10 @@ miniXmlNode *miniXmlNode::add(const XCHAR  *name, size_t idx, size_t value)
 miniXmlNode * miniXmlNode::add(const XCHAR *name, size_t value)
 {
 	XCHAR buff[BUFFLENGTH];
-	if(name!=nullptr)
+	if (name != nullptr)
 	{
-	xsprintf(buff,X("%d"), value);
-	return add(name, buff);
+		xsprintf(buff, X("%d"), value);
+		return add(name, buff);
 	}
 	return nullptr;
 }
@@ -221,7 +221,7 @@ miniXmlNode * miniXmlNode::findNext(const XCHAR *_name)
 miniXmlNode *miniXmlNode::find(const XCHAR *name, size_t idx)
 {
 	XCHAR buff1[BUFFLENGTH];
-	xsprintf(buff1,  X("%s%d"), name, idx);
+	xsprintf(buff1, X("%s%d"), name, idx);
 	return find(buff1);
 }
 
@@ -283,9 +283,9 @@ void miniXmlNode::print(FILE *out)
 	if (name != nullptr)
 	{
 		// name not set ->only container
-		xsprintf(buff,  X("<%s>\n"), name);
+		xsprintf(buff, X("<%s>\n"), name);
 		fwrite(buff, STRLEN(buff), sizeof(XCHAR), out);
-		/* No replace 
+		/* No replace
 		if (value != nullptr)
 		{
 			const XCHAR * as[] = { " &lt; ", " &gt; ", " &amp; ", " &apos; ", " &quot; ", " " };
@@ -327,7 +327,7 @@ void miniXmlNode::print(FILE *out)
 			fwrite("\n", 1, sizeof(char), out);
 		}
 		*/
-		if (value != nullptr  && STRLEN(value)>0)
+		if (value != nullptr  && STRLEN(value) > 0)
 		{
 			xsprintf(buff, X("%s\n"), value);
 			fwrite(buff, STRLEN(buff), sizeof(XCHAR), out);
@@ -337,7 +337,7 @@ void miniXmlNode::print(FILE *out)
 		child->print(out);
 	if (name != nullptr)
 	{
-		xsprintf(buff,  X("</%s>\n"), name);
+		xsprintf(buff, X("</%s>\n"), name);
 		for (int i = 0; i < 254; i++)
 		{
 			if (buff[i] == '>')
@@ -426,15 +426,15 @@ int  miniXmlNode::xsprintf(XCHAR *buff, const XCHAR* format, ...)
 	va_list ArgList;
 #ifdef _MSC_VER
 	__crt_va_start(ArgList, format);
-	Result = _vsnwprintf_s_l(buff, BUFFLENGTH, BUFFLENGTH-1,format,NULL, ArgList);
+	Result = _vsnwprintf_s_l(buff, BUFFLENGTH, BUFFLENGTH - 1, format, NULL, ArgList);
 	__crt_va_end(ArgList);
 #else
 	va_start(ArgList, format)
-	Result = vswprintf(buff, BUFFLENGTH, format, ArgList);	
+		Result = vswprintf(buff, BUFFLENGTH, format, ArgList);
 	va_end(ArgList)
 #endif
 
-	return Result;
+		return Result;
 }
 
 bool swapNode(miniXmlNode *src, miniXmlNode* dst)
@@ -669,4 +669,17 @@ bool miniXmlParse::skipSpaces(void)
 	while (tp.check(*p_index) && p_index < p_end)
 		p_index++;
 	return isEnd();
+}
+
+
+
+bool xmlConfig::readConfiguration(const wchar_t *name)
+{
+	return miniXmlNode::load(name,&conf);
+}
+
+
+bool xmlConfig::writeConfiguration(const wchar_t *name)
+{
+	return miniXmlNode::save(name,&conf);
 }
