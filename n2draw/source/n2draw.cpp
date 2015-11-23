@@ -1,4 +1,5 @@
 ﻿#include <stdio.h>
+#include <stdlib.h>
 #include "n2draw.h"
 #include "miniXml.h"
 
@@ -1032,7 +1033,7 @@ void nnObjVCPU::save(miniXmlNode * root)
 {
 	if (root != nullptr)
 	{
-		miniXmlNode *child=root->add(X("VCPU"),X(""));
+		miniXmlNode *child=root->add(X("VCPU"),(XCHAR *)X(""));
 		SSTRING s;
 		for (auto i : v_reg)
 		{

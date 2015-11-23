@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -98,7 +98,7 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
-          <commandlineTool>gcc-5</commandlineTool>
+          <commandlineTool>gcc</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
           </incDir>
@@ -106,7 +106,7 @@
         <ccTool>
           <developmentMode>5</developmentMode>
           <standard>8</standard>
-          <commandlineTool>g++-5</commandlineTool>
+          <commandlineTool>g++</commandlineTool>
           <incDir>
             <pElem>../header</pElem>
             <pElem>../../n2draw/header</pElem>

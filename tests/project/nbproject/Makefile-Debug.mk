@@ -21,7 +21,7 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=Cygwin_4.x-Windows
+CND_PLATFORM=Cygwin-Windows
 CND_DLIB_EXT=dll
 CND_CONF=Debug
 CND_DISTDIR=dist
@@ -35,11 +35,11 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/812168374/mainApp.o \
-	${OBJECTDIR}/_ext/812168374/testminiXml.o \
-	${OBJECTDIR}/_ext/812168374/testn2connection.o \
-	${OBJECTDIR}/_ext/812168374/testn2draw.o \
-	${OBJECTDIR}/_ext/812168374/testn2objmanager.o
+	${OBJECTDIR}/_ext/cf974b4a/mainApp.o \
+	${OBJECTDIR}/_ext/cf974b4a/testminiXml.o \
+	${OBJECTDIR}/_ext/cf974b4a/testn2connection.o \
+	${OBJECTDIR}/_ext/cf974b4a/testn2draw.o \
+	${OBJECTDIR}/_ext/cf974b4a/testn2objmanager.o
 
 
 # C Compiler Flags
@@ -66,30 +66,30 @@ LDLIBSOPTIONS=-L../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM} -ln2draw
 	${MKDIR} -p ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tests ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/_ext/812168374/mainApp.o: ../source/mainApp.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+${OBJECTDIR}/_ext/cf974b4a/mainApp.o: ../source/mainApp.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/cf974b4a
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/mainApp.o ../source/mainApp.cpp
+	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cf974b4a/mainApp.o ../source/mainApp.cpp
 
-${OBJECTDIR}/_ext/812168374/testminiXml.o: ../source/testminiXml.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+${OBJECTDIR}/_ext/cf974b4a/testminiXml.o: ../source/testminiXml.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/cf974b4a
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/testminiXml.o ../source/testminiXml.cpp
+	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cf974b4a/testminiXml.o ../source/testminiXml.cpp
 
-${OBJECTDIR}/_ext/812168374/testn2connection.o: ../source/testn2connection.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+${OBJECTDIR}/_ext/cf974b4a/testn2connection.o: ../source/testn2connection.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/cf974b4a
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/testn2connection.o ../source/testn2connection.cpp
+	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cf974b4a/testn2connection.o ../source/testn2connection.cpp
 
-${OBJECTDIR}/_ext/812168374/testn2draw.o: ../source/testn2draw.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+${OBJECTDIR}/_ext/cf974b4a/testn2draw.o: ../source/testn2draw.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/cf974b4a
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/testn2draw.o ../source/testn2draw.cpp
+	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cf974b4a/testn2draw.o ../source/testn2draw.cpp
 
-${OBJECTDIR}/_ext/812168374/testn2objmanager.o: ../source/testn2objmanager.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/812168374
+${OBJECTDIR}/_ext/cf974b4a/testn2objmanager.o: ../source/testn2objmanager.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/cf974b4a
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/812168374/testn2objmanager.o ../source/testn2objmanager.cpp
+	$(COMPILE.cc) -g -I../header -I../../n2draw/header -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/cf974b4a/testn2objmanager.o ../source/testn2objmanager.cpp
 
 # Subprojects
 .build-subprojects:

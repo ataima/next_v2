@@ -45,8 +45,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #endif
 #define  X(msg)   _T(msg)
 #else
-#include <char.h>
-#define  XCHAR char
+#define  XCHAR    char
 #define  STRSTR   strstr
 #define  STRLEN   strlen
 #define  STRING   std::string
@@ -149,8 +148,8 @@ protected:
 class IConfig
 {
 public:
-	virtual bool readConfiguration(const wchar_t *name) = 0;
-	virtual bool writeConfiguration(const wchar_t *name) = 0;
+	virtual bool readConfiguration(const XCHAR *name) = 0;
+	virtual bool writeConfiguration(const XCHAR *name) = 0;
 };
 
 
@@ -160,8 +159,8 @@ class xmlConfig
 {
 	miniXmlNode conf;
 public:
-	bool readConfiguration(const wchar_t *name);
-	bool writeConfiguration(const wchar_t *name);
+	bool readConfiguration(const XCHAR *name);
+	bool writeConfiguration(const XCHAR *name);
 };
 
 

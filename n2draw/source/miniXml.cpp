@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <string>
+#include <stdarg.h>
 #include "miniXml.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -424,16 +426,27 @@ int  miniXmlNode::xsprintf(XCHAR *buff, const XCHAR* format, ...)
 {
 	int Result;
 	va_list ArgList;
+#ifdef _UNICODE        
 #ifdef _MSC_VER
 	__crt_va_start(ArgList, format);
 	Result = _vsnwprintf_s_l(buff, BUFFLENGTH, BUFFLENGTH - 1, format, NULL, ArgList);
 	__crt_va_end(ArgList);
 #else
-	va_start(ArgList, format)
-		Result = vswprintf(buff, BUFFLENGTH, format, ArgList);
-	va_end(ArgList)
+	va_start(ArgList, format);
+	Result = vswprintf(buff, BUFFLENGTH, format, ArgList);
+	va_end(ArgList);
 #endif
-
+#else
+#ifdef _MSC_VER
+	__crt_va_start(ArgList, format);
+	Result = _vsnprintf_s_l(buff, BUFFLENGTH, BUFFLENGTH - 1, format, NULL, ArgList);
+	__crt_va_end(ArgList);
+#else
+	va_start(ArgList, format);
+	Result = vsnprintf(buff, BUFFLENGTH, format, ArgList);
+	va_end(ArgList);
+#endif
+#endif
 		return Result;
 }
 
@@ -673,13 +686,13 @@ bool miniXmlParse::skipSpaces(void)
 
 
 
-bool xmlConfig::readConfiguration(const wchar_t *name)
+bool xmlConfig::readConfiguration(const XCHAR *name)
 {
 	return miniXmlNode::load(name,&conf);
 }
 
 
-bool xmlConfig::writeConfiguration(const wchar_t *name)
+bool xmlConfig::writeConfiguration(const XCHAR *name)
 {
 	return miniXmlNode::save(name,&conf);
 }

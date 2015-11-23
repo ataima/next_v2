@@ -1,6 +1,5 @@
-
+#include <stdio.h>
 #include "n2drawmanager.h"
-#include <algorithm>
 #include <iostream>
 #include <vector>
 #include "miniXml.h"
@@ -220,11 +219,11 @@ void nnObjManager::save(STRING & name)
 			FILE *out = nullptr;
 			FOPEN(&out, name.c_str(), X("w+"));
 #else
-			FILE *out = fopen(name.c_str(), "w+");
+			FILE *out = FOPEN(name.c_str(), "w+");
 #endif
 			if (out != NULL)
 			{
-				miniXmlNode root(X("next_v2"), X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));
+				miniXmlNode root(X("next_v2"),(XCHAR *) X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));
 				root.add(X("Wire_UID"), nnObjConn::getUI());
 				root.add(X("Width"), v_width);
 				root.add(X("Height"), v_height);
