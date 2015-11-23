@@ -51,10 +51,17 @@ public:
 	virtual n2Point getStopPoint(void) = 0;
 	virtual void save(STRING & name) = 0;
 	virtual void load(STRING & name) = 0;
-	virtual bool undo(void)=0;
-	virtual bool redo(void)=0;
-	virtual bool insertRow(size_t y_pos)=0;
-	virtual bool insertCol(size_t x_pos)=0;
+	virtual bool undo(void) = 0;
+	virtual bool redo(void) = 0;
+	virtual bool insertRow(size_t y_pos) = 0;
+	virtual bool insertCol(size_t x_pos) = 0;
+	virtual bool removeRow(size_t y_pos) = 0;
+	virtual bool removeCol(size_t x_pos) = 0;
+	virtual bool removeEmptyCol(void) = 0;
+	virtual bool ResizeHeight(size_t h) = 0;
+	virtual bool ResizeWidth(size_t w) = 0;
+	virtual bool Resize(size_t w, size_t h) = 0;
+	
 };
 
 
@@ -69,7 +76,7 @@ class nnObjManager
 {
 	typedef enum tag_action_type
 	{
-		addObjAction=1,
+		addObjAction = 1,
 		removeObjAction,
 		outObjAction,
 	}eAction;
@@ -81,8 +88,8 @@ class nnObjManager
 		InnObj *obj;
 		size_t x_pos;
 		size_t y_pos;
-		tag_action(eAction a, size_t x,size_t y,InnObj* _obj = nullptr)
-			: action(a),x_pos(x),y_pos(y), obj(_obj) {}
+		tag_action(eAction a, size_t x, size_t y, InnObj* _obj = nullptr)
+			: action(a), x_pos(x), y_pos(y), obj(_obj) {}
 	} undo_redo_unit;
 
 protected:
@@ -115,17 +122,25 @@ public:
 	bool redo(void);
 	bool insertRow(size_t y_pos);
 	bool insertCol(size_t x_pos);
+	bool removeRow(size_t y_pos);
+	bool removeCol(size_t x_pos);
+	bool removeEmptyCol(void);
 	inline std::list<undo_redo_unit> & getUndoObjs(void) { return undoObjs; }
 	inline std::list<undo_redo_unit> & geRedoObjs(void) { return redoObjs; }
+	bool ResizeHeight(size_t h);
+	bool ResizeWidth(size_t w);
+	bool Resize(size_t w, size_t h);
+
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);
-	bool revHashKey( hashkey & key, size_t & x, size_t &y);
+	bool revHashKey(hashkey & key, size_t & x, size_t &y);
 	bool range(size_t x, size_t y);
 	bool linkObj(size_t x, size_t y, InnObj *obj);
 	bool unlinkObj(size_t x, size_t y, InnObj *obj);
 	void record(undo_redo_unit u);
 	void clearUndoObjs(void);
 	void clearRedoObjs(void);
+	bool checkRemovableCol(size_t x);
 };
 
 

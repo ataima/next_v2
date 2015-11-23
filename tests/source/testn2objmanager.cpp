@@ -503,4 +503,18 @@ void test_n2ObjManager::test16(void)
 	css.revHashKey(k, x, y);
 	CA_ASSERT(x == 13);
 	CA_ASSERT(y == 12);
+	res = mn.ResizeHeight(15);
+	CA_ASSERT(res == true);
+	CA_ASSERT(mn.getHeight() == 15);
+	res = mn.ResizeWidth(30);
+	CA_ASSERT(res == true);
+	CA_ASSERT(mn.getWidth() == 30);
+	res = mn.Resize(25,14);
+	CA_ASSERT(res == true);
+	c = new nnObjCoil();
+	res = mn.addObj(24, 13, c);
+	CA_ASSERT(res == true);
+	res = mn.Resize(20, 14);
+	CA_ASSERT(res == true);
+	CA_ASSERT(mn.getObj(19, 13) == c);
 }
