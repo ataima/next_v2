@@ -33,10 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "n2draw.h"
 #include "miniXml.h"
+
+
+class nnObjCoil;
+class nnObjContact;
 class IManager
 {
 public:
 	// 
+	virtual bool addCoil(size_t x,  nnObjCoil * obj) = 0;
+	virtual bool addWire(size_t x, size_t y, InnObj * obj) = 0;
+	virtual bool addContact(size_t x, size_t y, nnObjContact * obj) = 0;
 	virtual bool addObj(size_t x, size_t y, InnObj * obj) = 0;
 	virtual bool removeObj(size_t x, size_t y) = 0;
 	virtual InnObj * getObj(size_t x, size_t y) = 0;
@@ -65,6 +72,55 @@ public:
 };
 
 
+class IUndoRedo
+{
+public :
+	virtual bool undo(void) = 0;
+	virtual bool redo(void) = 0;
+};
+
+
+typedef enum tag_action_type
+{
+	addObjAction = 1,
+	removeObjAction,
+	outObjAction,
+}eAction;
+
+
+typedef struct tag_action
+{
+	eAction action;
+	InnObj *obj;
+	size_t x_pos;
+	size_t y_pos;
+	tag_action(eAction a, size_t x, size_t y, InnObj* _obj = nullptr)
+		: action(a), x_pos(x), y_pos(y), obj(_obj) {}
+} undo_redo_unit;
+
+typedef std::list<undo_redo_unit> vectorUR;
+
+
+class nnObjUndoRedo
+	: public IUndoRedo
+{
+	vectorUR undoObjs;
+	vectorUR redoObjs;
+	bool undoredoMode;
+	IManager *manager;
+public:
+	nnObjUndoRedo(IManager *_manager=nullptr);
+	~nnObjUndoRedo();
+	bool setHost(IManager *_manager);
+	bool undo(void);
+	bool redo(void);
+	inline vectorUR & getUndoObjs(void) { return undoObjs; }
+	inline vectorUR & getRedoObjs(void) { return redoObjs; }
+	void record(undo_redo_unit u);
+private:
+	void clearUndoObjs(void);
+	void clearRedoObjs(void);
+};
 
 
 typedef unsigned long long int hashkey;
@@ -74,38 +130,20 @@ class nnObjManager
 	: public IManager
 	, public hashObjTable
 {
-	typedef enum tag_action_type
-	{
-		addObjAction = 1,
-		removeObjAction,
-		outObjAction,
-	}eAction;
-
-
-	typedef struct tag_action
-	{
-		eAction action;
-		InnObj *obj;
-		size_t x_pos;
-		size_t y_pos;
-		tag_action(eAction a, size_t x, size_t y, InnObj* _obj = nullptr)
-			: action(a), x_pos(x), y_pos(y), obj(_obj) {}
-	} undo_redo_unit;
-
-protected:
 	size_t v_width;
 	size_t v_height;
 	size_t mask_width;
 	size_t mask_height;
-	std::list<undo_redo_unit> undoObjs;
-	std::list<undo_redo_unit> redoObjs;
-	bool undoredoMode;
+	nnObjUndoRedo managerUR;
 	xmlConfig configuration;
 public:
 	nnObjManager(size_t x, size_t y);
 	~nnObjManager();
 	InnObj * getObj(size_t x, size_t y);
 	InnObj * outObj(size_t x, size_t y);
+	bool addCoil(size_t x,  nnObjCoil * obj);
+	bool addWire(size_t x, size_t y, InnObj * obj);
+	bool addContact(size_t x, size_t y, nnObjContact * obj);
 	bool addObj(size_t x, size_t y, InnObj * obj);
 	bool removeObj(size_t x, size_t y);
 	bool replaceObj(size_t x, size_t y, InnObj * obj);
@@ -125,8 +163,8 @@ public:
 	bool removeRow(size_t y_pos);
 	bool removeCol(size_t x_pos);
 	bool removeEmptyCol(void);
-	inline std::list<undo_redo_unit> & getUndoObjs(void) { return undoObjs; }
-	inline std::list<undo_redo_unit> & geRedoObjs(void) { return redoObjs; }
+	inline vectorUR & getUndoObjs(void) { return managerUR.getUndoObjs(); }
+	inline vectorUR & geRedoObjs(void) { return managerUR.getRedoObjs(); }
 	bool ResizeHeight(size_t h);
 	bool ResizeWidth(size_t w);
 	bool Resize(size_t w, size_t h);
@@ -134,12 +172,10 @@ public:
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);
 	bool revHashKey(hashkey & key, size_t & x, size_t &y);
-	bool range(size_t x, size_t y);
+	bool range(size_t x, size_t y); 
+	bool rangeContact(size_t x, size_t y);
 	bool linkObj(size_t x, size_t y, InnObj *obj);
 	bool unlinkObj(size_t x, size_t y, InnObj *obj);
-	void record(undo_redo_unit u);
-	void clearUndoObjs(void);
-	void clearRedoObjs(void);
 	bool checkRemovableCol(size_t x);
 };
 

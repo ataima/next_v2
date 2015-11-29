@@ -4,6 +4,8 @@
 #include "n2drawmanager.h"
 #include <iostream>
 #include "miniXml.h"
+#include "n2view.h"
+#include "n2connection.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -51,6 +53,8 @@ class test_n2ObjManager
 	CA_TEST(test_n2ObjManager::test14, "verifica undo");
 	CA_TEST(test_n2ObjManager::test15, "verifica insert row");
 	CA_TEST(test_n2ObjManager::test16, "verifica insert row");
+	CA_TEST(test_n2ObjManager::test17, "verifica insert add Coil");
+	CA_TEST(test_n2ObjManager::test18, "verifica insert add Coil");
 	CA_TEST_SUITE_END()
 		void setUp(void) {}
 	void tearDown(void) {}
@@ -69,6 +73,8 @@ class test_n2ObjManager
 	void test14(void);
 	void test15(void);
 	void test16(void);
+	void test17(void);
+	void test18(void);
 };
 ///////////////////////////////////////////////////
 
@@ -517,4 +523,49 @@ void test_n2ObjManager::test16(void)
 	res = mn.Resize(20, 14);
 	CA_ASSERT(res == true);
 	CA_ASSERT(mn.getObj(19, 13) == c);
+}
+
+void test_n2ObjManager::test17(void)
+{
+	_START();
+	_INFO("verifica interrna alla classe: metodo add Coil");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjManager mn(50, 20);
+	nnObjContact *v = new nnObjContact();
+	bool res = mn.addContact(10, 0, v);
+	CA_ASSERT(res == true);
+	CA_ASSERT((int)mn.size() == (int)1);
+	nnObjCoil *u = new nnObjCoil();
+	res = mn.addCoil(10,  u);
+	CA_ASSERT(res == true);
+	CA_ASSERT((int)mn.size() == (int)20);
+	nn2TextView view;
+	view.draw(&mn, nullptr);
+}
+
+
+void test_n2ObjManager::test18(void)
+{
+	_START();
+	_INFO("verifica interrna alla classe: metodo add Coil +connect");
+	_AUTHOR("Coppi Angelo n2draw library ");
+	_STOP();
+	nnObjManager mn(50, 20);
+	nnObjContact *v = new nnObjContact();
+	bool res = mn.addContact(10, 0, v);
+	CA_ASSERT(res == true);
+	CA_ASSERT((int)mn.size() == (int)1);
+	nnObjCoil *u = new nnObjCoil();
+	res = mn.addCoil(10, u);
+	CA_ASSERT(res == true);
+	CA_ASSERT((int)mn.size() == (int)20);
+	v = new nnObjContact();
+	nn2TextView view;
+	res = mn.addContact(12, 0, v);
+	CA_ASSERT(res == true);
+	n2Point p1(12, 0);
+	n2Point p2(10, 0);
+	n2Connection::connectComponent(&mn, p1, p2);
+	view.draw(&mn, nullptr);
 }

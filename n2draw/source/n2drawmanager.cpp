@@ -32,8 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 nnObjManager::nnObjManager(size_t x, size_t y)
 	: v_width(x), v_height(y),
-	mask_width(0), mask_height(0),
-	undoredoMode(false)
+	mask_width(0), mask_height(0)
 {
 	nnObjWire::resetUI();
 	size_t i = v_width & 0x0fffffff;
@@ -52,14 +51,12 @@ nnObjManager::nnObjManager(size_t x, size_t y)
 		mask_height <<= 1;
 		mask_height |= 1;
 	}
-
+	managerUR.setHost(this);
 }
 
 nnObjManager::~nnObjManager()
 {
 	removeAll();
-	clearUndoObjs();
-	clearRedoObjs();
 }
 
 InnObj * nnObjManager::getObj(size_t x, size_t y)
@@ -90,7 +87,7 @@ bool nnObjManager::addObj(size_t x, size_t y, InnObj * obj)
 				obj->setYpos(y);
 				res = linkObj(x, y, obj);
 				undo_redo_unit u(eAction::removeObjAction, x, y, nullptr);
-				record(u);
+				managerUR.record(u);
 			}
 		}
 	return res;
@@ -109,7 +106,7 @@ bool nnObjManager::removeObj(size_t x, size_t y)
 					erase(it); // remove first break recursion
 					unlinkObj(x, y, obj);
 					undo_redo_unit u(eAction::addObjAction, x, y, obj);
-					record(u);
+					managerUR.record(u);
 					res = true;
 				}
 			}
@@ -131,11 +128,104 @@ InnObj * nnObjManager::outObj(size_t x, size_t y)
 					erase(it); // remove first break recursion
 					unlinkObj(x, y, obj);
 					undo_redo_unit u(eAction::outObjAction, x, y, obj);
-					record(u);
+					managerUR.record(u);
 				}
 			}
 		}
 	return obj;
+}
+
+bool nnObjManager::addCoil(size_t x, nnObjCoil * obj)
+{
+	bool res = false;
+	if (obj->getContext() == objCoil)
+	{
+		if (getObj(x, v_height - 1) == nullptr)
+		{
+			size_t i;
+			// y pos is relative :
+			// coil pos = y-1, for first empty position to y-1 wire to connect
+			// find first empty cell
+			for (i = 0; i < v_height - 1; i++)
+				if (getObj(x, i) == nullptr)break;
+			for (; i < v_height - 1; i++)
+			{
+				nnObjWire *wire = new nnObjWire(eWire::wireVertical);
+				res = addWire(x, i, wire);
+				if (!res)break;
+			}
+			if (res)
+			{
+				hashkey hkey;
+				if (range(x, v_height - 1) && obj != nullptr)
+				{
+					if (genHashKey(x, v_height - 1, hkey)) {
+						hashObjTable::iterator it = find(hkey);
+						if (it == end()) {
+							std::pair<hashkey, InnObj *> p(hkey, obj);
+							insert(p);
+							obj->setXpos(x);
+							obj->setYpos(v_height - 1);
+							res = linkObj(x, v_height - 1, obj);
+							undo_redo_unit u(eAction::removeObjAction, x, v_height - 1, nullptr);
+							managerUR.record(u);
+						}
+					}
+				}
+			}
+		}
+	}
+	return res;
+}
+
+bool nnObjManager::addWire(size_t x, size_t y, InnObj * obj)
+{
+	bool res = false;
+	if (obj->getContext() == objWire)
+	{
+		hashkey hkey;
+		if (rangeContact(x, y) && obj != nullptr)
+		{
+			if (genHashKey(x, y, hkey)) {
+				hashObjTable::iterator it = find(hkey);
+				if (it == end()) {
+					std::pair<hashkey, InnObj *> p(hkey, obj);
+					insert(p);
+					obj->setXpos(x);
+					obj->setYpos(y);
+					res = linkObj(x, y, obj);
+					undo_redo_unit u(eAction::removeObjAction, x, y, nullptr);
+					managerUR.record(u);
+				}
+			}
+		}
+	}
+	return res;
+}
+
+bool nnObjManager::addContact(size_t x, size_t y, nnObjContact * obj)
+{
+	bool res = false;
+	if (obj->getContext() == objContact)
+	{
+		hashkey hkey;
+		if (rangeContact(x, y) && obj != nullptr)
+		{
+			if (genHashKey(x, y, hkey)) {
+				hashObjTable::iterator it = find(hkey);
+				if (it == end()) {
+					std::pair<hashkey, InnObj *> p(hkey, obj);
+					insert(p);
+					obj->setXpos(x);
+					obj->setYpos(y);
+					res = linkObj(x, y, obj);
+					undo_redo_unit u(eAction::removeObjAction, x, y, nullptr);
+					managerUR.record(u);
+				}
+			}
+		}
+	}
+	return res;
 }
 
 
@@ -148,14 +238,14 @@ bool nnObjManager::replaceObj(size_t x, size_t y, InnObj * obj)
 			hashObjTable::iterator it = find(hkey);
 			if (it != end()) {
 				undo_redo_unit u(eAction::addObjAction, x, y, it->second);
-				record(u);
+				managerUR.record(u);
 				it->second = obj;
 				obj->setXpos(x);
 				obj->setYpos(y);
 				if (it->second->isComponent()) {
 					linkObj(x, y, obj);
 					undo_redo_unit v(eAction::removeObjAction, x, y, nullptr);
-					record(v);
+					managerUR.record(v);
 					res = true;
 				}
 			}
@@ -179,33 +269,8 @@ bool nnObjManager::removeAll(void)
 }
 
 
-void nnObjManager::clearUndoObjs(void)
-{
-	if (undoObjs.size() > 0)
-	{
-		for (auto n : undoObjs)
-		{
-			if (n.action == eAction::addObjAction && n.obj != nullptr)
-				delete n.obj;
-		}
-		undoObjs.clear();
-	}
-}
 
 
-void nnObjManager::clearRedoObjs(void)
-{
-	if (redoObjs.size() > 0)
-	{
-		for (auto n : redoObjs)
-		{
-			if (n.action == eAction::addObjAction && n.obj != nullptr)
-				delete n.obj;
-		}
-		redoObjs.clear();
-	}
-
-}
 
 
 
@@ -223,7 +288,7 @@ void nnObjManager::save(STRING & name)
 #endif
 			if (out != NULL)
 			{
-				miniXmlNode root(X("next_v2"),(XCHAR *) X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));
+				miniXmlNode root(X("next_v2"), (XCHAR *)X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));
 				root.add(X("Wire_UID"), nnObjConn::getUI());
 				root.add(X("Width"), v_width);
 				root.add(X("Height"), v_height);
@@ -334,6 +399,13 @@ bool nnObjManager::range(size_t x, size_t y)
 {
 	bool res = false;
 	if (x < v_width && y < v_height)
+		res = true;
+	return res;
+}
+bool nnObjManager::rangeContact(size_t x, size_t y)
+{
+	bool res = false;
+	if (x < v_width && y < v_height - 1)
 		res = true;
 	return res;
 }
@@ -580,87 +652,17 @@ n2Point  nnObjManager::getStopPoint(void)
 }
 
 
-void nnObjManager::record(undo_redo_unit u)
-{
 
-	if (undoredoMode == false)
-	{
-		if (undoObjs.size() >= 100)
-		{
-			undo_redo_unit old = undoObjs.front();
-			undoObjs.pop_front();
-			if (old.obj != nullptr)
-				delete old.obj;
-		}
-		undoObjs.push_back(u);
-	}
-	else
-	{
-		if (redoObjs.size() >= 100)
-		{
-			undo_redo_unit old = redoObjs.front();
-			redoObjs.pop_front();
-			if (old.obj != nullptr)
-				delete old.obj;
-		}
-		redoObjs.push_back(u);
-	}
-}
 
 bool nnObjManager::undo(void)
 {
-	bool res = false;
-	if (undoObjs.size() > 0)
-	{
-		undo_redo_unit f = undoObjs.back();
-		undoObjs.pop_back();
-		switch (f.action)
-		{
-		case addObjAction:
-			undoredoMode = true;
-			return addObj(f.x_pos, f.y_pos, f.obj);
-			undoredoMode = false;
-			break;
-		case removeObjAction:
-			undoredoMode = true;
-			return removeObj(f.x_pos, f.y_pos);
-			undoredoMode = false;
-			break;
-		case outObjAction:
-			undoredoMode = true;
-			addObj(f.x_pos, f.y_pos, f.obj);
-			undoredoMode = false;
-			break;
-		}
-	}
-	return res;
+	return managerUR.undo();
 }
 
 
 bool nnObjManager::redo(void)
 {
-	bool res = false;
-	if (redoObjs.size() > 0)
-	{
-		undo_redo_unit f = redoObjs.back();
-		redoObjs.pop_back();
-		switch (f.action)
-		{
-		case addObjAction:
-			undoredoMode = false;
-			return addObj(f.x_pos, f.y_pos, f.obj);
-			break;
-		case removeObjAction:
-			undoredoMode = false;
-			return removeObj(f.x_pos, f.y_pos);
-			break;
-		case outObjAction:
-			undoredoMode = false;
-			addObj(f.x_pos, f.y_pos, f.obj);
-			break;
-		}
-	}
-	return res;
+	return managerUR.redo();
 }
 
 bool nnObjManager::insertRow(size_t y_pos)
@@ -808,7 +810,7 @@ bool nnObjManager::removeCol(size_t x_pos)
 			}
 		}
 		res = y == v_height;
-	}	
+	}
 	if (res)
 	{
 		iterator it = begin();
@@ -922,7 +924,7 @@ bool nnObjManager::ResizeWidth(size_t w)
 		{
 			while (w < v_width)
 			{
-				res = removeCol(v_width-1);
+				res = removeCol(v_width - 1);
 				if (!res)
 					break;
 				v_width--;
@@ -959,4 +961,134 @@ bool nnObjManager::Resize(size_t w, size_t h)
 	if (res)
 		res = ResizeHeight(h);
 	return res;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+nnObjUndoRedo::nnObjUndoRedo(IManager *_manager) 
+	:manager(_manager),
+	undoredoMode(false)
+{
+
+}
+
+nnObjUndoRedo::~nnObjUndoRedo()
+{
+	clearUndoObjs();
+	clearRedoObjs();
+}
+
+bool nnObjUndoRedo::undo(void)
+{
+	bool res = false;
+	if (manager!=nullptr && undoObjs.size() > 0)
+	{
+		undo_redo_unit f = undoObjs.back();
+		undoObjs.pop_back();
+		switch (f.action)
+		{
+		case addObjAction:
+			undoredoMode = true;
+			res= manager->addObj(f.x_pos, f.y_pos, f.obj);
+			undoredoMode = false;
+			break;
+		case removeObjAction:
+			undoredoMode = true;
+			res = manager->removeObj(f.x_pos, f.y_pos);
+			undoredoMode = false;
+			break;
+		case outObjAction:
+			undoredoMode = true;
+			res = manager->addObj(f.x_pos, f.y_pos, f.obj);
+			undoredoMode = false;
+			break;
+		}
+	}
+	return res;
+}
+
+bool nnObjUndoRedo::redo(void)
+{
+	bool res = false;
+	if (manager != nullptr && redoObjs.size() > 0)
+	{
+		undo_redo_unit f = redoObjs.back();
+		redoObjs.pop_back();
+		switch (f.action)
+		{
+		case addObjAction:
+			undoredoMode = false;
+			res = manager->addObj(f.x_pos, f.y_pos, f.obj);
+			break;
+		case removeObjAction:
+			undoredoMode = false;
+			res = manager->removeObj(f.x_pos, f.y_pos);
+			break;
+		case outObjAction:
+			undoredoMode = false;
+			res = manager->addObj(f.x_pos, f.y_pos, f.obj);
+			break;
+		}
+	}
+	return res;
+
+}
+
+bool nnObjUndoRedo::setHost(IManager *_manager)
+{
+	manager = _manager;
+	return true;
+}
+
+void nnObjUndoRedo::record(undo_redo_unit u)
+{
+	if (undoredoMode == false)
+	{
+		if (undoObjs.size() >= 100)
+		{
+			undo_redo_unit old = undoObjs.front();
+			undoObjs.pop_front();
+			if (old.obj != nullptr)
+				delete old.obj;
+		}
+		undoObjs.push_back(u);
+	}
+	else
+	{
+		if (redoObjs.size() >= 100)
+		{
+			undo_redo_unit old = redoObjs.front();
+			redoObjs.pop_front();
+			if (old.obj != nullptr)
+				delete old.obj;
+		}
+		redoObjs.push_back(u);
+	}
+}
+
+void nnObjUndoRedo::clearUndoObjs(void)
+{
+	if (undoObjs.size() > 0)
+	{
+		for (auto n : undoObjs)
+		{
+			if (n.action == eAction::addObjAction && n.obj != nullptr)
+				delete n.obj;
+		}
+		undoObjs.clear();
+	}
+}
+
+void nnObjUndoRedo::clearRedoObjs(void)
+{
+	if (redoObjs.size() > 0)
+	{
+		for (auto n : redoObjs)
+		{
+			if (n.action == eAction::addObjAction && n.obj != nullptr)
+				delete n.obj;
+		}
+		redoObjs.clear();
+	}
 }

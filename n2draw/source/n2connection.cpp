@@ -101,7 +101,7 @@ bool n2Connection::connectVertComponent(IManager *manager, n2Point &p_src, n2Poi
 			{
 				v = new nnObjWire(eWire::noWire);
 				MEMCHK(InnObj, v);
-				res = manager->addObj(p_src.x, u, v);
+				res = manager->addWire(p_src.x, u, v);
 				if (!res)break;
 			}
 			else
@@ -121,7 +121,7 @@ bool n2Connection::connectVertComponent(IManager *manager, n2Point &p_src, n2Poi
 			{
 				v = new nnObjWire(eWire::noWire);
 				MEMCHK(InnObj, v);
-				res = manager->addObj(p_src.x, u, v);
+				res = manager->addWire(p_src.x, u, v);
 				if (!res)break;
 			}
 			else
@@ -150,7 +150,7 @@ bool n2Connection::connectHorzIncrUpSideComponet(IManager * manager, n2Point & p
 		{
 			v = new nnObjWire(eWire::wireAngleDownRight);
 			MEMCHK(InnObj, v);
-			if (manager->addObj(p_src.x, p_src.y - 1, v))
+			if (manager->addWire(p_src.x, p_src.y - 1, v))
 			{
 				num = v->getConnections().front();
 				for (i = p_src.x + 1; i < p_dst.x; i++)
@@ -158,7 +158,7 @@ bool n2Connection::connectHorzIncrUpSideComponet(IManager * manager, n2Point & p
 					v = new nnObjWire(eWire::noWire);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					res = manager->addObj(i, p_src.y - 1, v);
+					res = manager->addWire(i, p_src.y - 1, v);
 					if (!res)break;
 				}
 				if (res)
@@ -166,7 +166,7 @@ bool n2Connection::connectHorzIncrUpSideComponet(IManager * manager, n2Point & p
 					v = new nnObjWire(eWire::wireAngleDownLeft);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					res = manager->addObj(i, p_src.y - 1, v);
+					res = manager->addWire(i, p_src.y - 1, v);
 				}
 			}
 		}
@@ -182,7 +182,7 @@ bool n2Connection::connectHorzIncrUpSideComponet(IManager * manager, n2Point & p
 						v = new nnObjWire(eWire::wireVertical);
 						MEMCHK(InnObj, v);
 						v->setConnections(1);
-						res = manager->addObj(p_src.x, i, v);
+						res = manager->addWire(p_src.x, i, v);
 						if (!res)break;
 					}
 				}
@@ -191,14 +191,14 @@ bool n2Connection::connectHorzIncrUpSideComponet(IManager * manager, n2Point & p
 					v = new nnObjWire(eWire::noWire);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					if (manager->addObj(p_src.x + 1, p_src.y - 1, v))
+					if (manager->addWire(p_src.x + 1, p_src.y - 1, v))
 					{
 						for (i = p_src.x + 2; i < p_dst.x; i++)
 						{
 							v = new nnObjWire(eWire::noWire);
 							MEMCHK(InnObj, v);
 							v->setConnections(num);
-							res = manager->addObj(i, p_src.y - 1, v);
+							res = manager->addWire(i, p_src.y - 1, v);
 							if (!res)break;
 						}
 						if (res)
@@ -206,7 +206,7 @@ bool n2Connection::connectHorzIncrUpSideComponet(IManager * manager, n2Point & p
 							v = new nnObjWire(eWire::wireAngleDownLeft);
 							MEMCHK(InnObj, v);
 							v->setConnections(num);
-							res = manager->addObj(i, p_src.y - 1, v);
+							res = manager->addWire(i, p_src.y - 1, v);
 						}
 					}
 				}
@@ -230,7 +230,7 @@ bool n2Connection::connectHorzIncrDownSideComponet(IManager * manager, n2Point &
 		{
 			v = new nnObjWire(eWire::wireAngleUpRight);
 			MEMCHK(InnObj, v);
-			if (manager->addObj(p_src.x, p_src.y + 1, v))
+			if (manager->addWire(p_src.x, p_src.y + 1, v))
 			{
 				num = v->getConnections().front();
 				for (i = p_src.x + 1; i < p_dst.x; i++)
@@ -238,7 +238,7 @@ bool n2Connection::connectHorzIncrDownSideComponet(IManager * manager, n2Point &
 					v = new nnObjWire(eWire::noWire);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					res = manager->addObj(i, p_src.y + 1, v);
+					res = manager->addWire(i, p_src.y + 1, v);
 					if (!res)break;
 				}
 				if (res)
@@ -246,7 +246,7 @@ bool n2Connection::connectHorzIncrDownSideComponet(IManager * manager, n2Point &
 					v = new nnObjWire(eWire::wireAngleUpLeft);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					res = manager->addObj(i, p_src.y + 1, v);
+					res = manager->addWire(i, p_src.y + 1, v);
 				}
 			}
 		}
@@ -262,7 +262,7 @@ bool n2Connection::connectHorzIncrDownSideComponet(IManager * manager, n2Point &
 						v = new nnObjWire(eWire::wireVertical);
 						MEMCHK(InnObj, v);
 						v->setConnections(2);
-						res = manager->addObj(p_src.x, i, v);
+						res = manager->addWire(p_src.x, i, v);
 						if (!res)break;
 					}
 				}
@@ -271,14 +271,14 @@ bool n2Connection::connectHorzIncrDownSideComponet(IManager * manager, n2Point &
 					v = new nnObjWire(eWire::noWire);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					if (manager->addObj(p_src.x + 1, p_src.y + 1, v))
+					if (manager->addWire(p_src.x + 1, p_src.y + 1, v))
 					{
 						for (i = p_src.x + 2; i < p_dst.x; i++)
 						{
 							v = new nnObjWire(eWire::noWire);
 							MEMCHK(InnObj, v);
 							v->setConnections(num);
-							res = manager->addObj(i, p_src.y + 1, v);
+							res = manager->addWire(i, p_src.y + 1, v);
 							if (!res)break;
 						}
 						if (res)
@@ -286,7 +286,7 @@ bool n2Connection::connectHorzIncrDownSideComponet(IManager * manager, n2Point &
 							v = new nnObjWire(eWire::wireAngleUpLeft);
 							MEMCHK(InnObj, v);
 							v->setConnections(num);
-							res = manager->addObj(i, p_src.y + 1, v);
+							res = manager->addWire(i, p_src.y + 1, v);
 						}
 					}
 				}
@@ -313,7 +313,7 @@ bool n2Connection::connectHorzDecrUpSideComponet(IManager * manager, n2Point & p
 		{
 			v = new nnObjWire(eWire::wireAngleDownLeft);
 			MEMCHK(InnObj, v);
-			if (manager->addObj(p_src.x, p_src.y - 1, v))
+			if (manager->addWire(p_src.x, p_src.y - 1, v))
 			{
 				num = v->getConnections().front();
 				for (i = p_src.x - 1; i > p_dst.x; i--)
@@ -321,7 +321,7 @@ bool n2Connection::connectHorzDecrUpSideComponet(IManager * manager, n2Point & p
 					v = new nnObjWire(eWire::noWire);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					res = manager->addObj(i, p_src.y - 1, v);
+					res = manager->addWire(i, p_src.y - 1, v);
 					if (!res)break;
 				}
 				if (res)
@@ -329,7 +329,7 @@ bool n2Connection::connectHorzDecrUpSideComponet(IManager * manager, n2Point & p
 					v = new nnObjWire(eWire::wireAngleDownRight);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					res = manager->addObj(i, p_src.y - 1, v);
+					res = manager->addWire(i, p_src.y - 1, v);
 				}
 			}
 		}
@@ -345,7 +345,7 @@ bool n2Connection::connectHorzDecrUpSideComponet(IManager * manager, n2Point & p
 						v = new nnObjWire(eWire::wireVertical);
 						MEMCHK(InnObj, v);
 						v->setConnections(1);
-						res = manager->addObj(p_src.x, i, v);
+						res = manager->addWire(p_src.x, i, v);
 						if (!res)break;
 					}
 				}
@@ -354,14 +354,14 @@ bool n2Connection::connectHorzDecrUpSideComponet(IManager * manager, n2Point & p
 					v = new nnObjWire(eWire::noWire);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					if (manager->addObj(p_src.x - 1, p_src.y - 1, v))
+					if (manager->addWire(p_src.x - 1, p_src.y - 1, v))
 					{
 						for (i = p_src.x - 2; i > p_dst.x; i--)
 						{
 							v = new nnObjWire(eWire::noWire);
 							MEMCHK(InnObj, v);
 							v->setConnections(num);
-							res = manager->addObj(i, p_src.y - 1, v);
+							res = manager->addWire(i, p_src.y - 1, v);
 							if (!res)break;
 						}
 						if (res)
@@ -369,7 +369,7 @@ bool n2Connection::connectHorzDecrUpSideComponet(IManager * manager, n2Point & p
 							v = new nnObjWire(eWire::wireAngleDownRight);
 							MEMCHK(InnObj, v);
 							v->setConnections(num);
-							res = manager->addObj(i, p_src.y - 1, v);
+							res = manager->addWire(i, p_src.y - 1, v);
 						}
 					}
 				}
@@ -393,7 +393,7 @@ bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point &
 		{
 			v = new nnObjWire(eWire::wireAngleUpLeft);
 			MEMCHK(InnObj, v);
-			if (manager->addObj(p_src.x, p_src.y + 1, v))
+			if (manager->addWire(p_src.x, p_src.y + 1, v))
 			{
 				num = v->getConnections().front();
 				for (i = p_src.x - 1; i > p_dst.x; i--)
@@ -401,7 +401,7 @@ bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point &
 					v = new nnObjWire(eWire::noWire);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					res = manager->addObj(i, p_src.y + 1, v);
+					res = manager->addWire(i, p_src.y + 1, v);
 					if (!res)break;
 				}
 				if (res)
@@ -409,7 +409,7 @@ bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point &
 					v = new nnObjWire(eWire::wireAngleUpRight);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					res = manager->addObj(i, p_src.y + 1, v);
+					res = manager->addWire(i, p_src.y + 1, v);
 				}
 			}
 		}
@@ -425,7 +425,7 @@ bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point &
 						v = new nnObjWire(eWire::wireVertical);
 						MEMCHK(InnObj, v);
 						v->setConnections(2);
-						res = manager->addObj(p_src.x, i, v);
+						res = manager->addWire(p_src.x, i, v);
 						if (!res)break;
 					}
 				}
@@ -434,14 +434,14 @@ bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point &
 					v = new nnObjWire(eWire::noWire);
 					MEMCHK(InnObj, v);
 					v->setConnections(num);
-					if (manager->addObj(p_src.x - 1, p_src.y + 1, v))
+					if (manager->addWire(p_src.x - 1, p_src.y + 1, v))
 					{
 						for (i = p_src.x - 2; i > p_dst.x; i--)
 						{
 							v = new nnObjWire(eWire::noWire);
 							MEMCHK(InnObj, v);
 							v->setConnections(num);
-							res = manager->addObj(i, p_src.y + 1, v);
+							res = manager->addWire(i, p_src.y + 1, v);
 							if (!res)break;
 						}
 						if (res)
@@ -449,7 +449,7 @@ bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point &
 							v = new nnObjWire(eWire::wireAngleUpRight);
 							MEMCHK(InnObj, v);
 							v->setConnections(num);
-							res = manager->addObj(i, p_src.y + 1, v);
+							res = manager->addWire(i, p_src.y + 1, v);
 						}
 					}
 				}
@@ -482,7 +482,7 @@ bool n2Connection::connectVertWireComponent(IManager *manager, n2Point &p_src, n
 				v = new nnObjWire(eWire::noWire);
 				MEMCHK(InnObj, v);
 				v->setConnections(num);
-				res = manager->addObj(p_src.x, u, v);
+				res = manager->addWire(p_src.x, u, v);
 				if (!res)break;
 			}
 			else
@@ -503,7 +503,7 @@ bool n2Connection::connectVertWireComponent(IManager *manager, n2Point &p_src, n
 				v = new nnObjWire(eWire::noWire);
 				MEMCHK(InnObj, v);
 				v->setConnections(num);
-				res = manager->addObj(p_src.x, u, v);
+				res = manager->addWire(p_src.x, u, v);
 				if (!res)break;
 			}
 			else
