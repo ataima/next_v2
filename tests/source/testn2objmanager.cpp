@@ -426,8 +426,6 @@ void test_n2ObjManager::test14(void)
 	CA_ASSERT(mn.size() == 1);
 	CA_ASSERT(mn.getUndoObjs().size() == 1);
 	CA_ASSERT(mn.geRedoObjs().size() == 0);
-
-
 }
 
 

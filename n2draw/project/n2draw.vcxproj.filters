@@ -27,6 +27,9 @@
     <ClInclude Include="..\header\MerlinoVCPU.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\viewglue.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2draw.cpp">
@@ -42,6 +45,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\miniXml.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\viewglue.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
