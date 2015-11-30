@@ -37,7 +37,20 @@ typedef struct tag_n2_point
 {
 	size_t x;
 	size_t y;
-	tag_n2_point(size_t _x, size_t _y) :x(_x), y(_y) {}
+	tag_n2_point(size_t _x=0, size_t _y=0) :x(_x), y(_y) {}
+	inline void operator = (const struct tag_n2_point b)
+	{
+		x = b.x;
+		y = b.y;
+	}
+	inline bool operator != (const struct tag_n2_point b)
+	{
+		return (x != b.x) || (y != b.y);
+	}
+	inline bool  valid(void)
+	{
+		return (x != -1 && y != -1 );
+	}
 } n2Point;
 
 

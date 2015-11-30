@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define  STRSTR   wcsstr
 #define  STRLEN   wcslen
 #define  STRING   std::wstring
-#define  SSTRING   std::wstringstream
+#define  SSTRING  std::wstringstream
 #define  STRCMP   wcscmp
 #define  ATOL     _wtol
 #ifdef _MSC_VER
