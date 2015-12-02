@@ -35,6 +35,7 @@ class nnViewGlue
 	:public IViewGlue
 {
 
+
 	typedef enum tag_status_select
 	{
 		s_unselect,
@@ -45,14 +46,17 @@ class nnViewGlue
 
 	}status_select;
 
+
 	n2Point select_start;
 	n2Point select_stop;
 	size_t const_x;
 	size_t const_y;
 	size_t width;
 	size_t height;
+
 	IManager  *manager;
 	status_select status;
+
 
 public:
 	nnViewGlue(IManager  *);

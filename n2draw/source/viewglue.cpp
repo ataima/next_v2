@@ -18,7 +18,9 @@ bool nnViewGlue::unselect()
 	select_stop.x = -1;
 	select_stop.y = -1;
 
+
 	status = s_unselect;
+
 
 	return true;
 }
@@ -182,6 +184,7 @@ bool nnViewGlue::getSelectArea(size_t & width, size_t & height)
 bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, n2Point phyPoint)
 {
 
+
 	bool res = true;
 	if (status == start_activate)
 		status = start_resize;
@@ -193,17 +196,20 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, n2Point phyPoint)
 			select_stop = p;
 		}
 	}
+
 	return res;
 }
 
 bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, n2Point phyPoint)
 {
 
+
 	bool res = true;
 	if (status == s_unselect)
 		status = start_activate;
 	selectStart(getCoordLog(phyPoint));
 	select_stop = select_start;
+
 	return res;
 }
 
@@ -221,5 +227,6 @@ bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, n2Point phyPoint
 		}
 		status = selected;
 	}
+
 	return res;
 }
