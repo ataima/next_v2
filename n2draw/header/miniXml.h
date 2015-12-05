@@ -108,9 +108,9 @@ public:
     void print(FILE *out);
     /// load a XML from file
     static bool load(const XCHAR *file_in, miniXmlNode * root);
-	/// save a XML from file
-	static bool save(const XCHAR *file_out, miniXmlNode * root);
-	/// assign a requested name
+    /// save a XML from file
+    static bool save(const XCHAR *file_out, miniXmlNode * root);
+    /// assign a requested name
     void setName(const XCHAR *_name);
     /// assigne a requested value
     void setValue(XCHAR *_value);
@@ -129,7 +129,7 @@ class miniXmlParse
 {
     miniXmlNode * root; ///out
     XCHAR * buff;
-    off_t max_size;
+    size_t max_size;
     XCHAR *p_index;
     XCHAR *p_end;
 public:
@@ -148,19 +148,19 @@ protected:
 class IConfig
 {
 public:
-	virtual bool readConfiguration(const XCHAR *name) = 0;
-	virtual bool writeConfiguration(const XCHAR *name) = 0;
+    virtual bool readConfiguration(const XCHAR *name) = 0;
+    virtual bool writeConfiguration(const XCHAR *name) = 0;
 };
 
 
 
 class xmlConfig
-	:public IConfig
+    :public IConfig
 {
-	miniXmlNode conf;
+    miniXmlNode conf;
 public:
-	bool readConfiguration(const XCHAR *name);
-	bool writeConfiguration(const XCHAR *name);
+    bool readConfiguration(const XCHAR *name);
+    bool writeConfiguration(const XCHAR *name);
 };
 
 

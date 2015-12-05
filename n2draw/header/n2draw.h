@@ -32,12 +32,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <vector>
 #include <string.h>
+#include <algorithm>
+
+
+
 
 typedef struct tag_n2_point
 {
 	size_t x;
 	size_t y;
-	tag_n2_point(size_t _x=0, size_t _y=0) :x(_x), y(_y) {}
+	tag_n2_point(size_t _x = 0, size_t _y = 0) :x(_x), y(_y) {}
 	inline void operator = (const struct tag_n2_point b)
 	{
 		x = b.x;
@@ -47,11 +51,37 @@ typedef struct tag_n2_point
 	{
 		return (x != b.x) || (y != b.y);
 	}
-	inline bool  valid(void)
+	inline bool operator != (const size_t v)
 	{
-		return (x != -1 && y != -1 );
+		return (x != v) || (y != v);
+	}
+	inline bool  isValid(void)
+	{
+		return (x != -1 && y != -1);
+	}
+	inline void set(size_t _x, size_t _y)
+	{
+		x = _x;
+		y = _y;
+	}
+	tag_n2_point intersect(const tag_n2_point & p)
+	{
+
+		tag_n2_point res;
+		res.x = x < p.x ? x : p.x;
+		res.y = y < p.y ? y : p.y;
+		return res;
+	}
+	friend bool operator<(const tag_n2_point & a, const tag_n2_point & b)
+	{
+		if (a.x < b.x)
+			if (a.y < b.y)
+				return true;
+		return false;
 	}
 } n2Point;
+
+
 
 
 enum tag_obj_context
@@ -252,7 +282,7 @@ public:
 	virtual void load(miniXmlNode *root);
 	static void resetUI(void) { uid_num = 2; }
 	static size_t getUI(void) { return ++uid_num; }
-	static void setUI(long u) {uid_num=u; }
+	static void setUI(long u) { uid_num = u; }
 	bool powerConnect(size_t num);
 	static InnObj * getObjFromIds(spec_obj specific, ObjContext context);
 
