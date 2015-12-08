@@ -21,13 +21,19 @@
     <ClInclude Include="..\header\n2view.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\miniXml.h">
-      <Filter>header</Filter>
-    </ClInclude>
     <ClInclude Include="..\header\MerlinoVCPU.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\viewglue.h">
+    <ClInclude Include="..\header\n2viewglue.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2miniXml.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2appmanager.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2imagemanager.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,10 +50,16 @@
     <ClCompile Include="..\source\n2view.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\miniXml.cpp">
+    <ClCompile Include="..\source\n2viewglue.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\viewglue.cpp">
+    <ClCompile Include="..\source\n2miniXml.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2imagemanager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2appmanager.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

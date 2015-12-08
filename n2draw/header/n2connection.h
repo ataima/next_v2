@@ -31,18 +31,18 @@ class IManager;
 
 #include "n2draw.h"
 
-class n2Connection
+class nnConnection
 {
 public:
-	static bool connectComponent(IManager *manager, n2Point & src, n2Point & dst);
+	static bool connectComponent(IManager *manager, nnPoint & src, nnPoint & dst);
 protected:
-	static bool connectVertComponent(IManager *manager, n2Point &p_src, n2Point & p_dst);
-	static bool connectHorzIncrUpSideComponet(IManager *manager, n2Point & src, n2Point & dst);
-	static bool connectHorzIncrDownSideComponet(IManager *manager, n2Point & src, n2Point & dst);
-	static bool connectHorzDecrUpSideComponet(IManager *manager, n2Point & src, n2Point & dst);
-	static bool connectHorzDecrDownSideComponet(IManager *manager, n2Point & src, n2Point & dst);
+	static bool connectVertComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst);
+	static bool connectHorzIncrUpSideComponet(IManager *manager, nnPoint & src, nnPoint & dst);
+	static bool connectHorzIncrDownSideComponet(IManager *manager, nnPoint & src, nnPoint & dst);
+	static bool connectHorzDecrUpSideComponet(IManager *manager, nnPoint & src, nnPoint & dst);
+	static bool connectHorzDecrDownSideComponet(IManager *manager, nnPoint & src, nnPoint & dst);
 
-	static bool connectVertWireComponent(IManager *manager, n2Point &p_src, n2Point & p_dst);
+	static bool connectVertWireComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst);
 };
 
 

@@ -27,7 +27,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point & p_dst)
+bool nnConnection::connectComponent(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
 	if (manager != nullptr)
@@ -76,8 +76,8 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 				}
 				else
 				{
-					wireNoAvaiableConnection e;
-					throw(e);
+					wireNoAvaiableConnection *pe=new wireNoAvaiableConnection();
+					throw(pe);
 				}
 			}
 		}
@@ -86,7 +86,7 @@ bool n2Connection::connectComponent(IManager * manager, n2Point & p_src, n2Point
 }
 
 
-bool n2Connection::connectVertComponent(IManager *manager, n2Point &p_src, n2Point & p_dst)
+bool nnConnection::connectVertComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst)
 {
 	bool res = false;
 	size_t u;
@@ -107,8 +107,8 @@ bool n2Connection::connectVertComponent(IManager *manager, n2Point &p_src, n2Poi
 			else
 				if (v->isComponent())
 				{
-					positionBusyException e(p_src.x, u);
-					throw (e);
+					positionBusyException *pe=new positionBusyException(p_src.x, u);
+					throw (pe);
 				}
 		}
 	}
@@ -127,15 +127,15 @@ bool n2Connection::connectVertComponent(IManager *manager, n2Point &p_src, n2Poi
 			else
 				if (v->isComponent())
 				{
-					positionBusyException e(p_src.x, u);
-					throw (e);
+					positionBusyException *pe = new positionBusyException(p_src.x, u);
+					throw (pe);
 				}
 		}
 	}
 	return res;
 }
 
-bool n2Connection::connectHorzIncrUpSideComponet(IManager * manager, n2Point & p_src, n2Point & p_dst)
+bool nnConnection::connectHorzIncrUpSideComponet(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
 	size_t  i, num;
@@ -215,7 +215,7 @@ bool n2Connection::connectHorzIncrUpSideComponet(IManager * manager, n2Point & p
 	return res;
 }
 
-bool n2Connection::connectHorzIncrDownSideComponet(IManager * manager, n2Point & p_src, n2Point & p_dst)
+bool nnConnection::connectHorzIncrDownSideComponet(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
 	size_t  i, num;
@@ -298,7 +298,7 @@ bool n2Connection::connectHorzIncrDownSideComponet(IManager * manager, n2Point &
 
 
 
-bool n2Connection::connectHorzDecrUpSideComponet(IManager * manager, n2Point & p_src, n2Point & p_dst)
+bool nnConnection::connectHorzDecrUpSideComponet(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
 	size_t  i, num;
@@ -378,7 +378,7 @@ bool n2Connection::connectHorzDecrUpSideComponet(IManager * manager, n2Point & p
 	return res;
 }
 
-bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point & p_src, n2Point & p_dst)
+bool nnConnection::connectHorzDecrDownSideComponet(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
 	size_t  i, num;
@@ -459,7 +459,7 @@ bool n2Connection::connectHorzDecrDownSideComponet(IManager * manager, n2Point &
 }
 
 /////////////////////////////////////////////////////////////////////////
-bool n2Connection::connectVertWireComponent(IManager *manager, n2Point &p_src, n2Point & p_dst)
+bool nnConnection::connectVertWireComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst)
 {
 	bool res = false;
 	size_t u;
@@ -488,8 +488,8 @@ bool n2Connection::connectVertWireComponent(IManager *manager, n2Point &p_src, n
 			else
 				if (v->isComponent())
 				{
-					positionBusyException e(p_src.x, u);
-					throw (e);
+					positionBusyException *pe=new positionBusyException(p_src.x, u);
+					throw (pe);
 				}
 		}
 	}
@@ -509,8 +509,8 @@ bool n2Connection::connectVertWireComponent(IManager *manager, n2Point &p_src, n
 			else
 				if (v->isComponent())
 				{
-					positionBusyException e(p_src.x, u);
-					throw (e);
+					positionBusyException *pe = new positionBusyException(p_src.x, u);
+					throw (pe);
 				}
 		}
 	}

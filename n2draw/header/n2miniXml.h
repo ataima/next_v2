@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 #define  BUFFLENGTH  512
+#include <string>
 
 #ifdef _UNICODE
 #include <tchar.h>
@@ -150,6 +151,7 @@ class IConfig
 public:
     virtual bool readConfiguration(const XCHAR *name) = 0;
     virtual bool writeConfiguration(const XCHAR *name) = 0;
+    virtual miniXmlNode & getRoot(void) = 0;
 };
 
 
@@ -161,6 +163,7 @@ class xmlConfig
 public:
     bool readConfiguration(const XCHAR *name);
     bool writeConfiguration(const XCHAR *name);
+    inline  miniXmlNode & getRoot(void) { return conf; }
 };
 
 

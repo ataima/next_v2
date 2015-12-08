@@ -37,5 +37,11 @@
     <ClCompile Include="..\source\testviewglue.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\testbmpImage.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\testn2imagemanager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

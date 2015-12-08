@@ -28,18 +28,39 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 // interface
-class InnObjView
+class IView
 {
 public:
-	virtual void draw(IManager *manager, void * context) = 0;
+    virtual bool readConfiguration(miniXmlNode *node) = 0;
+    virtual int getTheme(void) = 0;
+    virtual bool loadTheme(int num) = 0;
+    virtual void draw(IManager *manager, void * context) = 0;
 };
 
 
 
-class nn2TextView
-	:public InnObjView
+class nnTextView
+    :public IView
 {
 public:
-	void draw(IManager * manager, void * context);
+    void draw(IManager * manager, void * context);
+    bool readConfiguration(miniXmlNode *node) { return false; }
+    int getTheme(void)  { return 0; } 
+    bool loadTheme(int num)  { return false; }
 };
+
+
+class nnView
+    :public IView
+{
+
+public:
+    nnView();
+    ~nnView();
+    void draw(IManager * manager, void * context);
+    bool readConfiguration(miniXmlNode *node);
+    int getTheme(void);
+    bool loadTheme(int num);
+};
+
 #endif

@@ -3,10 +3,10 @@
 #include "n2draw.h"
 #include "n2drawmanager.h"
 #include <iostream>
-#include "miniXml.h"
+#include "n2miniXml.h"
 #include "n2view.h"
 #include "n2connection.h"
-#include "viewglue.h"
+#include "n2viewglue.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -45,7 +45,7 @@ class test_viewglue
 	CA_TEST(test_viewglue::test4, "verifica mouse event");
 	CA_TEST(test_viewglue::test5, "verifica mouse event");
 	CA_TEST_SUITE_END()
-		void setUp(void) {}
+	void setUp(void) {}
 	void tearDown(void) {}
 	void test1(void);
 	void test2(void);
@@ -85,21 +85,21 @@ void test_viewglue::test2(void)
 	_AUTHOR("Coppi Angelo n2draw library ");
 	_STOP();
 	miniXmlNode  node(X("PHY_MAP"));
-	node.add(X("X"), 1000);
-	node.add(X("Y"), 2000);
+	node.add(X("X"), 100);
+	node.add(X("Y"), 200);
 	node.add(X("HEIGHT"), 800);
 	node.add(X("WIDTH"), 1200);
 	nnViewGlue gphy(nullptr);
-	bool res = gphy.readConfiguration(&node);
+	bool res = gphy.readConfiguration(node);
 	CA_ASSERT(res == true);
-	n2Point input(1, 1);
-	n2Point p = gphy.getCoordPhy(input);
-	CA_ASSERT(p.x == 1000);
-	CA_ASSERT(p.y == 2000);
+	nnPoint input(1, 1);
+	nnPoint p = gphy.getCoordPhy(input);
+	CA_ASSERT(p.x == 100);
+	CA_ASSERT(p.y == 200);
 	input.set(10000, 20000);
 	p = gphy.getCoordLog(input);
-	CA_ASSERT(p.x == 10);
-	CA_ASSERT(p.y == 10);
+	CA_ASSERT(p.x == 100);
+	CA_ASSERT(p.y == 100);
 }
 
 
@@ -116,7 +116,7 @@ void test_viewglue::test3(void)
 	node.add(X("Y"), 32);
 	node.add(X("HEIGHT"), 600);
 	node.add(X("WIDTH"), 1200);
-	bool res = gphy.readConfiguration(&node);
+	bool res = gphy.readConfiguration(node);
 	CA_ASSERT(res == true);
 	CA_ASSERT(gphy.isStartValid() == false);
 	CA_ASSERT(gphy.isStopValid() == false);
@@ -162,10 +162,10 @@ void test_viewglue::test4(void)
 	node.add(X("Y"), 32);
 	node.add(X("HEIGHT"), 600);
 	node.add(X("WIDTH"), 1200);
-	bool res = gphy.readConfiguration(&node);
+	bool res = gphy.readConfiguration(node);
 	CA_ASSERT(res == true);
 	nn_mouse_buttons btn = nn_mouse_buttons::nn_m_button_left;
-	n2Point p(200, 140);
+	nnPoint p(200, 140);
 	res = gphy.handlerMouseButtonDown(btn, p);
 	CA_ASSERT(res == true);
 	p.set(250, 160);
@@ -185,7 +185,7 @@ void test_viewglue::test4(void)
 	CA_ASSERT(res == true);
 	CA_ASSERT(gphy.isStartValid() == true);
 	CA_ASSERT(gphy.isStopValid() == true);
-	n2Point start, stop;
+	nnPoint start, stop;
 	CA_ASSERT(gphy.getSelectArea(start, stop) == true);
 	CA_ASSERT(start.isValid() == true);
 	CA_ASSERT(stop.isValid() == true);
@@ -206,10 +206,10 @@ void test_viewglue::test5(void)
 	node.add(X("Y"), 32);
 	node.add(X("HEIGHT"), 600);
 	node.add(X("WIDTH"), 1200);
-	bool res = gphy.readConfiguration(&node);
+	bool res = gphy.readConfiguration(node);
 	CA_ASSERT(res == true);
 	nn_mouse_buttons btn = nn_mouse_buttons::nn_m_button_left;
-	n2Point p(200, 140);
+	nnPoint p(200, 140);
 	res = gphy.handlerMouseButtonDown(btn, p);
 	CA_ASSERT(res == true);
 	p.set(250, 160);

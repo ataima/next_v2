@@ -31,8 +31,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include <list>
 
+#include "n2miniXml.h"
 #include "n2draw.h"
-#include "miniXml.h"
+#include "n2miniXml.h"
 
 
 class nnObjCoil;
@@ -50,12 +51,12 @@ public:
 	virtual InnObj * outObj(size_t x, size_t y) = 0;
 	virtual bool replaceObj(size_t x, size_t y, InnObj * obj) = 0;
 	virtual bool removeAll(void) = 0;
-	virtual bool moveObj(n2Point from, n2Point to) = 0;
-	virtual bool swapObj(n2Point from, n2Point to) = 0;
+	virtual bool moveObj(nnPoint from, nnPoint to) = 0;
+	virtual bool swapObj(nnPoint from, nnPoint to) = 0;
 	virtual size_t getWidth(void) = 0;
 	virtual size_t getHeight(void) = 0;
-	virtual n2Point getStartPoint(void) = 0;
-	virtual n2Point getStopPoint(void) = 0;
+	virtual nnPoint getStartPoint(void) = 0;
+	virtual nnPoint getStopPoint(void) = 0;
 	virtual void save(STRING & name) = 0;
 	virtual void load(STRING & name) = 0;
 	virtual bool undo(void) = 0;
@@ -68,6 +69,7 @@ public:
 	virtual bool ResizeHeight(size_t h) = 0;
 	virtual bool ResizeWidth(size_t w) = 0;
 	virtual bool Resize(size_t w, size_t h) = 0;
+    virtual bool readConfiguration(miniXmlNode & node) = 0;
 	
 };
 
@@ -135,7 +137,7 @@ class nnObjManager
 	size_t mask_width;
 	size_t mask_height;
 	nnObjUndoRedo managerUR;
-	xmlConfig configuration;
+
 public:
 	nnObjManager(size_t x, size_t y);
 	~nnObjManager();
@@ -148,12 +150,12 @@ public:
 	bool removeObj(size_t x, size_t y);
 	bool replaceObj(size_t x, size_t y, InnObj * obj);
 	bool removeAll(void);
-	bool moveObj(n2Point from, n2Point to);
-	bool swapObj(n2Point from, n2Point to);
+	bool moveObj(nnPoint from, nnPoint to);
+	bool swapObj(nnPoint from, nnPoint to);
 	inline size_t getWidth(void) { return v_width; }
 	inline size_t getHeight(void) { return v_height; }
-	n2Point getStartPoint(void);
-	n2Point getStopPoint(void);
+	nnPoint getStartPoint(void);
+	nnPoint getStopPoint(void);
 	void save(STRING & name);
 	void load(STRING & name);
 	bool undo(void);
@@ -168,6 +170,7 @@ public:
 	bool ResizeHeight(size_t h);
 	bool ResizeWidth(size_t w);
 	bool Resize(size_t w, size_t h);
+    bool readConfiguration(miniXmlNode & node) ;
 
 protected:
 	bool genHashKey(size_t x, size_t y, hashkey & key);

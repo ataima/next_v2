@@ -2,7 +2,7 @@
 #include "CPPtester.h"
 #include "n2draw.h"
 #include "n2drawmanager.h"
-#include "n2connection.h"
+#include "n2Connection.h"
 #include "n2view.h"
 #include <iostream>
 
@@ -32,21 +32,21 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 ///////////////////// HEADER //////////////////////
 
-class test_n2Connection
+class test_nnConnection
     : public caTester
 {
-    CA_TEST_SUITE(test_n2Connection)
-        CA_TEST(test_n2Connection::test1, "verify vertical connection from component");
-        CA_TEST(test_n2Connection::test2, "verify vertical connection from component");
-        CA_TEST(test_n2Connection::test3, "verify vertical connection from component");
-        CA_TEST(test_n2Connection::test4, "verify vertical connection from component");
-        CA_TEST(test_n2Connection::test5, "verify vertical connection from component");
-        CA_TEST(test_n2Connection::test6, "verify vertical connection from component");
-        CA_TEST(test_n2Connection::test7, "verify horiz connection from component");
-        CA_TEST(test_n2Connection::test8, "verify horiz connection from component");
-        CA_TEST(test_n2Connection::test9, "verify horiz connection from component");
-        CA_TEST(test_n2Connection::test10, "verify horiz connection from component");
-        CA_TEST(test_n2Connection::test11, "verify horiz connection from component");
+    CA_TEST_SUITE(test_nnConnection)
+        CA_TEST(test_nnConnection::test1, "verify vertical connection from component");
+        CA_TEST(test_nnConnection::test2, "verify vertical connection from component");
+        CA_TEST(test_nnConnection::test3, "verify vertical connection from component");
+        CA_TEST(test_nnConnection::test4, "verify vertical connection from component");
+        CA_TEST(test_nnConnection::test5, "verify vertical connection from component");
+        CA_TEST(test_nnConnection::test6, "verify vertical connection from component");
+        CA_TEST(test_nnConnection::test7, "verify horiz connection from component");
+        CA_TEST(test_nnConnection::test8, "verify horiz connection from component");
+        CA_TEST(test_nnConnection::test9, "verify horiz connection from component");
+        CA_TEST(test_nnConnection::test10, "verify horiz connection from component");
+        CA_TEST(test_nnConnection::test11, "verify horiz connection from component");
         CA_TEST_SUITE_END()
         void setUp(void) {}
     void tearDown(void) {}
@@ -64,9 +64,9 @@ class test_n2Connection
 };
 ///////////////////////////////////////////////////
 
-REGISTER_CLASS(test_n2Connection);
+REGISTER_CLASS(test_nnConnection);
 
-void test_n2Connection::test1(void)
+void test_nnConnection::test1(void)
 {
     _START();
     _INFO("verifica interrna alla classe: metodo connectComponent ");
@@ -77,8 +77,8 @@ void test_n2Connection::test1(void)
     nnObjContact * contact = new nnObjContact();
     mn.addObj(5, 2, contact);
     mn.addObj(5, 10, coil);
-    n2Point p1(5, 2),p2(5, 10);
-    bool res=n2Connection::connectComponent(&mn, p1,p2);
+    nnPoint p1(5, 2),p2(5, 10);
+    bool res=nnConnection::connectComponent(&mn, p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
     CA_ASSERT(w!=nullptr);
@@ -121,7 +121,7 @@ void test_n2Connection::test1(void)
 }
 
 
-void test_n2Connection::test2(void)
+void test_nnConnection::test2(void)
 {
     _START();
     _INFO("verifica interrna alla classe: metodo connectComponent ");
@@ -132,8 +132,8 @@ void test_n2Connection::test2(void)
     nnObjContact * contact = new nnObjContact();
     mn.addObj(5, 2, contact);
     mn.addObj(5, 10, coil);
-        n2Point p1(5, 10),p2(5, 2);
-    bool res = n2Connection::connectComponent(&mn,p1,p2);
+        nnPoint p1(5, 10),p2(5, 2);
+    bool res = nnConnection::connectComponent(&mn,p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
     CA_ASSERT(w != nullptr);
@@ -175,7 +175,7 @@ void test_n2Connection::test2(void)
     CA_ASSERT(res == true);
 }
 
-void test_n2Connection::test3(void)
+void test_nnConnection::test3(void)
 {
     _START();
     _INFO("verifica interna alla classe: metodo connectComponent ");
@@ -189,8 +189,8 @@ void test_n2Connection::test3(void)
     mn.addObj(5, 10, coil);
     nnObjWire *wire = new nnObjWire(eWire::wireAngleUpLeft);
     mn.addObj(5, 3, wire);
-        n2Point p1(5, 2),p2(5, 10);
-    bool res = n2Connection::connectComponent(&mn, p1,p2);
+        nnPoint p1(5, 2),p2(5, 10);
+    bool res = nnConnection::connectComponent(&mn, p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
     CA_ASSERT(w != nullptr);
@@ -233,7 +233,7 @@ void test_n2Connection::test3(void)
 }
 
 
-void test_n2Connection::test4(void)
+void test_nnConnection::test4(void)
 {
     _START();
     _INFO("verifica interna alla classe: metodo connectComponent ");
@@ -247,8 +247,8 @@ void test_n2Connection::test4(void)
     mn.addObj(5, 10, coil);
     nnObjWire *wire = new nnObjWire(eWire::wireAngleUpRight);
     mn.addObj(5, 3, wire);
-        n2Point p1(5, 2),p2(5, 10);
-    bool res = n2Connection::connectComponent(&mn, p1,p2);
+        nnPoint p1(5, 2),p2(5, 10);
+    bool res = nnConnection::connectComponent(&mn, p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
     CA_ASSERT(w != nullptr);
@@ -291,7 +291,7 @@ void test_n2Connection::test4(void)
 }
 
 
-void test_n2Connection::test5(void)
+void test_nnConnection::test5(void)
 {
     _START();
     _INFO("verifica interna alla classe: metodo connectComponent ");
@@ -305,8 +305,8 @@ void test_n2Connection::test5(void)
     mn.addObj(5, 10, coil);
     nnObjWire *wire = new nnObjWire(eWire::wireTHorizUp);
     mn.addObj(5, 3, wire);
-        n2Point p1(5, 2),p2(5, 10);
-    bool res = n2Connection::connectComponent(&mn, p1,p2);
+        nnPoint p1(5, 2),p2(5, 10);
+    bool res = nnConnection::connectComponent(&mn, p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
     CA_ASSERT(w != nullptr);
@@ -348,7 +348,7 @@ void test_n2Connection::test5(void)
     CA_ASSERT(res == true);
 }
 
-void test_n2Connection::test6(void)
+void test_nnConnection::test6(void)
 {
     _START();
     _INFO("verifica interna alla classe: metodo connectComponent ");
@@ -363,10 +363,10 @@ void test_n2Connection::test6(void)
     mn.addObj(5, 10, coil);
     nnObjWire *wire = new nnObjWire(eWire::wireAngleDownLeft);
     mn.addObj(5, 9, wire);
-        n2Point p1(5, 2),p2(5, 10);
+        nnPoint p1(5, 2),p2(5, 10);
     try {
 
-        res = n2Connection::connectComponent(&mn, p1,p2);
+        res = nnConnection::connectComponent(&mn, p1,p2);
         CA_ASSERT(res == false);
     }
     catch (positionBusyException e)
@@ -417,7 +417,7 @@ void test_n2Connection::test6(void)
 
 
 
-void test_n2Connection::test7(void)
+void test_nnConnection::test7(void)
 {
     _START();
     _INFO("verifica interna alla classe: metodo connectComponent ");
@@ -429,9 +429,9 @@ void test_n2Connection::test7(void)
     nnObjContact * contact = new nnObjContact();
     mn.addObj(5, 5, contact);
     mn.addObj(11, 5, coil);
-    n2Point p1(5, 5);
-    n2Point p2(11, 5);
-    bool res = n2Connection::connectComponent(&mn, p1, p2);
+    nnPoint p1(5, 5);
+    nnPoint p2(11, 5);
+    bool res = nnConnection::connectComponent(&mn, p1, p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 4);
     CA_ASSERT(w != nullptr);
@@ -536,7 +536,7 @@ void test_n2Connection::test7(void)
 }
 
 
-void test_n2Connection::test8(void)
+void test_nnConnection::test8(void)
 {
     _START();
     _INFO("method connectComponent ");
@@ -549,9 +549,9 @@ void test_n2Connection::test8(void)
     nnObjContact * contact = new nnObjContact();
     mn.addObj(5, 5, contact);
     mn.addObj(11, 5, coil);
-    n2Point p1(5, 5);
-    n2Point p2(11, 5);
-    bool res = n2Connection::connectComponent(&mn, p1, p2);
+    nnPoint p1(5, 5);
+    nnPoint p2(11, 5);
+    bool res = nnConnection::connectComponent(&mn, p1, p2);
     CA_ASSERT(res==true);
     InnObj *w = mn.getObj(5, 4);
     CA_ASSERT(w != nullptr);
@@ -670,8 +670,8 @@ void test_n2Connection::test8(void)
 
     nnObjContact * contact1 = new nnObjContact();
     mn.addObj(15, 5, contact1);
-    n2Point p3(15, 5);
-    res = n2Connection::connectComponent(&mn, p2, p3);
+    nnPoint p3(15, 5);
+    res = nnConnection::connectComponent(&mn, p2, p3);
     CA_ASSERT(res == true);
 
     w = mn.getObj(11, 4);
@@ -761,7 +761,7 @@ void test_n2Connection::test8(void)
 }
 
 
-void test_n2Connection::test9(void)
+void test_nnConnection::test9(void)
 {
     _START();
     _INFO("verifica interna alla classe: metodo connectComponent ");
@@ -773,9 +773,9 @@ void test_n2Connection::test9(void)
     nnObjContact * contact = new nnObjContact();
     mn.addObj(5, 5, contact);
     mn.addObj(11, 5, coil);
-    n2Point p1(5, 5);
-    n2Point p2(11, 5);
-    bool res = n2Connection::connectComponent(&mn, p2, p1);
+    nnPoint p1(5, 5);
+    nnPoint p2(11, 5);
+    bool res = nnConnection::connectComponent(&mn, p2, p1);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 4);
     CA_ASSERT(w != nullptr);
@@ -880,7 +880,7 @@ void test_n2Connection::test9(void)
 }
 
 
-void test_n2Connection::test10(void)
+void test_nnConnection::test10(void)
 {
     _START();
     _INFO("method connectComponent ");
@@ -893,9 +893,9 @@ void test_n2Connection::test10(void)
     nnObjContact * contact = new nnObjContact();
     mn.addObj(5, 5, contact);
     mn.addObj(11, 5, coil);
-    n2Point p1(5, 5);
-    n2Point p2(11, 5);
-    bool res = n2Connection::connectComponent(&mn, p2, p1);
+    nnPoint p1(5, 5);
+    nnPoint p2(11, 5);
+    bool res = nnConnection::connectComponent(&mn, p2, p1);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 4);
     CA_ASSERT(w != nullptr);
@@ -1014,8 +1014,8 @@ void test_n2Connection::test10(void)
 
     nnObjContact * contact1 = new nnObjContact();
     mn.addObj(1, 5, contact1);
-    n2Point p3(1, 5);
-    res = n2Connection::connectComponent(&mn, p1, p3);
+    nnPoint p3(1, 5);
+    res = nnConnection::connectComponent(&mn, p1, p3);
     CA_ASSERT(res == true);
 
     w = mn.getObj(5, 4);
@@ -1106,7 +1106,7 @@ void test_n2Connection::test10(void)
 }
 
 
-void test_n2Connection::test11(void)
+void test_nnConnection::test11(void)
 {
     _START();
     _INFO("method connectComponent ");
@@ -1121,12 +1121,12 @@ void test_n2Connection::test11(void)
     mn.addObj(5, 0, wire);
     mn.addObj(5, 5, contact);
     mn.addObj(5, 19,coil);
-    n2Point p0(5, 0);
-    n2Point p1(5, 5);
-    n2Point p2(5, 19);
-    bool res = n2Connection::connectComponent(&mn, p0, p1);
+    nnPoint p0(5, 0);
+    nnPoint p1(5, 5);
+    nnPoint p2(5, 19);
+    bool res = nnConnection::connectComponent(&mn, p0, p1);
     CA_ASSERT(res==true);
-    res = n2Connection::connectComponent(&mn, p1, p2);
+    res = nnConnection::connectComponent(&mn, p1, p2);
     CA_ASSERT(res == true);
     coil = new nnObjCoil();
     contact = new nnObjContact();
@@ -1134,13 +1134,13 @@ void test_n2Connection::test11(void)
     mn.addObj(15, 0, wire);
     mn.addObj(15, 5, contact);
     mn.addObj(15, 19, coil);
-    n2Point p3(15, 0);
-    n2Point p4(15, 5);
-    n2Point p5(15, 19);
-    res = n2Connection::connectComponent(&mn, p3, p4);
+    nnPoint p3(15, 0);
+    nnPoint p4(15, 5);
+    nnPoint p5(15, 19);
+    res = nnConnection::connectComponent(&mn, p3, p4);
     CA_ASSERT(res == true);
-    res = n2Connection::connectComponent(&mn, p4, p5);
+    res = nnConnection::connectComponent(&mn, p4, p5);
     CA_ASSERT(res == true);
-    nn2TextView view;
+    nnTextView view;
     view.draw(&mn, nullptr);
 }

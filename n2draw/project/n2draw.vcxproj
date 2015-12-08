@@ -28,20 +28,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\MerlinoVCPU.h" />
-    <ClInclude Include="..\header\miniXml.h" />
+    <ClInclude Include="..\header\n2appmanager.h" />
+    <ClInclude Include="..\header\n2miniXml.h" />
     <ClInclude Include="..\header\n2connection.h" />
     <ClInclude Include="..\header\n2draw.h" />
     <ClInclude Include="..\header\n2drawmanager.h" />
+    <ClInclude Include="..\header\n2imagemanager.h" />
     <ClInclude Include="..\header\n2view.h" />
-    <ClInclude Include="..\header\viewglue.h" />
+    <ClInclude Include="..\header\n2viewglue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\miniXml.cpp" />
+    <ClCompile Include="..\source\n2appmanager.cpp" />
+    <ClCompile Include="..\source\n2imagemanager.cpp" />
+    <ClCompile Include="..\source\n2miniXml.cpp" />
     <ClCompile Include="..\source\n2connection.cpp" />
     <ClCompile Include="..\source\n2draw.cpp" />
     <ClCompile Include="..\source\n2drawmanager.cpp" />
     <ClCompile Include="..\source\n2view.cpp" />
-    <ClCompile Include="..\source\viewglue.cpp" />
+    <ClCompile Include="..\source\n2viewglue.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3d708344-eb1c-4216-b2ca-b4a87a4cfe14}</ProjectGuid>
@@ -150,7 +154,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);$(SolutionDir)bmpimage\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -163,7 +167,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);$(SolutionDir)bmpimage\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -202,7 +206,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);$(SolutionDir)bmpimage\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -215,7 +219,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);$(SolutionDir)bmpimage\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

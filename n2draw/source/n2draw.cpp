@@ -1,7 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include "n2draw.h"
-#include "miniXml.h"
+#include "n2miniXml.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -186,7 +186,7 @@ InnObj * nnObjConn::getObjFromIds(spec_obj specific, ObjContext context)
 	{
 		switch (specific)
 		{
-		case isGeneric: obj = new nnObjContact();
+		case contact_generic_unknow: obj = new nnObjContact();
 		}
 	}
 		 break;
@@ -194,7 +194,7 @@ InnObj * nnObjConn::getObjFromIds(spec_obj specific, ObjContext context)
 	{
 		switch (specific)
 		{
-		case isGeneric: obj = new nnObjCoil();
+		case coil_generic_unknow: obj = new nnObjCoil();
 		}
 	}
 		break;

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string>
 #include "CPPtester.h"
-#include "miniXml.h"
+#include "n2miniXml.h"
 
 
 /**************************************************************
