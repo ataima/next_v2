@@ -84,13 +84,13 @@ void test_image_manager::test1(void)
     node.add(X("PATH"), X("D:\\CPP_PRJ\\next_v2\\tests\\project\\images"));
     miniXmlNode *wire = node.add(X("WIRE"), X(""));
     miniXmlNode *obj = wire->add(X("OBJ"), X(""));
-    obj->add(X("VALUE"), 1);
+    obj->add(X("VALUE"), X("wireHorizzontal"));
     obj->add(X("FILE"), X("file1.bmp"));
     obj = wire->add(X("OBJ"), X(""));
-    obj->add(X("VALUE"), 2);
+    obj->add(X("VALUE"), X("wireVertical"));
     obj->add(X("FILE"), X("file2.bmp"));
     obj = wire->add(X("OBJ"), X(""));
-    obj->add(X("VALUE"), 3);
+    obj->add(X("VALUE"), X("wireAngleUpRight"));
     obj->add(X("FILE"), X("file3.bmp"));
     miniXmlNode *contact = node.add(X("CONTACT"), X(""));
     obj = contact->add(X("OBJ"), X(""));
@@ -168,7 +168,7 @@ void test_image_manager::test2(void)
         listImage::const_iterator _end = images->end();
         while (it != _end)
         {
-            draw(*it);
+            draw((it->second));
             it++;
         }
     }

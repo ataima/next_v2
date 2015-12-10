@@ -141,7 +141,7 @@ protected:
 
 
 #ifndef _VECTOR_
-#include <vector>
+#include <map>
 #endif
 
 
@@ -149,7 +149,7 @@ protected:
 
 
 class  listImage
-	:public std::vector<bmpImage * >
+	:public std::map<size_t ,bmpImage * >
 {
 	unsigned int Width;
 	unsigned int Height;
@@ -157,7 +157,7 @@ class  listImage
 public:
 	listImage( unsigned int w = 0, unsigned int h = 0);
 	~listImage();
-	bool Add(bmpImage & b);
+	bool Add(size_t index, bmpImage & b );
 };
 
 

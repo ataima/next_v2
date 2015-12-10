@@ -175,6 +175,15 @@
     <ClCompile Include="..\source\testn2objmanager.cpp" />
     <ClCompile Include="..\source\testviewglue.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="infotest.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="infotest.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="infotest.xml" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

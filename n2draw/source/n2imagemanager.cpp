@@ -1,5 +1,5 @@
 #include "images.h"
-
+#include "n2draw.h"
 #include "n2ImageManager.h"
 
 nnImageManager::nnImageManager()
@@ -43,7 +43,7 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
                     miniXmlNode *e = t->find(X("VALUE"));
                     if (e)
                     {
-                        offset = e->getLong();
+                        offset = nnObjWire::wireStringToEnum(e->getValue());
                     }
                     e = t->find(X("FILE"));
                     if (e)
@@ -165,7 +165,7 @@ bool nnImageManager::loadImages(size_t w, size_t h)
                     if (image.getBitsPerPixel() != 24)
                         image.convertTo24Bits();
                     //TO DO STRECT TO FIT
-                    allImages.Add(image);
+                    allImages.Add(it->first,image);
                 }
             }
             else

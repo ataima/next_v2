@@ -8,7 +8,7 @@
 nnViewGlue::nnViewGlue(IManager  *_manager)
     :manager(_manager)
 {
-    const_x = const_y = width = height = offset_x = offset_y = 0;
+    const_x = const_y = p_width = p_height = offset_x = offset_y = 0;
     unselect();
 }
 
@@ -26,7 +26,7 @@ bool nnViewGlue::unselect()
 
 nnViewGlue::~nnViewGlue()
 {
-    const_x = const_y = width = height = offset_x = offset_y = 0;
+    const_x = const_y = p_width = p_height = offset_x = offset_y = 0;
 }
 
 
@@ -99,7 +99,7 @@ bool nnViewGlue::readConfiguration(miniXmlNode & node)
         t = conf->find(X("WIDTH"));
         if (t)
         {
-            width = t->getLong();
+            p_width = t->getLong();
         }
         else
         {
@@ -109,19 +109,28 @@ bool nnViewGlue::readConfiguration(miniXmlNode & node)
         t = conf->find(X("HEIGHT"));
         if (t)
         {
-            height = t->getLong();
+            p_height = t->getLong();
         }
         else
         {
             phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("HEIGHT"));
             throw (pe);
         }
-        res = createDrawPage(width, height);
+        res = view->createMainBitmap(p_width, p_height);
     }
     else
     {
         phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("PHY_MAP"));
         throw (pe);
+    }
+    if (res)
+    {
+        conf = node.find(X("PHY_VIEW"));
+        if (conf)
+        {
+            if (view)
+                view->readConfiguration(conf);
+        }
     }
     return res;
 }
@@ -294,22 +303,26 @@ bool nnViewGlue::handlerEscapeButton(void)
     return unselect();
 }
 
-bool nnViewGlue::createDrawPage(size_t w, size_t h)
-{
-    bool res = false;
-    if (w > const_x && h > const_y)
-    {
-        width = w;
-        height = h;
-        res = page.create((int)w, (int)h, 0);
-    }
-    return res;
-}
+
 
 bool nnViewGlue::updateDraw(void)
 {
     bool res = false;
-
+    if (view != nullptr  && manager != nullptr)
+    {
+        drawContext *ctx = new drawContext();
+        ctx->off_x = offset_x;
+        ctx->off_y = offset_y;
+        ctx->rows = (p_width / const_x);
+        ctx->colunms = (p_height / const_y);
+        ctx->width = offset_x + (p_width / const_x);
+        ctx->height = offset_y + (p_height / const_y);
+        ctx->max_phy_width = p_width;
+        ctx->max_phy_height = p_height;
+        ctx->const_phy_x = const_x;
+        ctx->const_phy_y = const_y;
+        res = view->draw(manager, ctx);
+    }
     return res;
 }
 
@@ -355,7 +368,7 @@ bool nnViewGlue::handlerScrollHorz(size_t pos)
 {
     //abs position 
     bool res = false;
-    size_t page_width = width / const_x;
+    size_t page_width = p_width / const_x;
     if (manager != nullptr && offset_x != pos && pos < (manager->getWidth() - page_width) && pos >= 0)
     {
         offset_x = pos;
@@ -368,7 +381,7 @@ bool nnViewGlue::handlerScrollVert(size_t pos)
 {
     //abs position 
     bool res = false;
-    size_t page_height = height / const_y;
+    size_t page_height = p_height / const_y;
     if (manager != nullptr && offset_y != pos && pos < (manager->getHeight() - page_height) && pos >= 0)
     {
         offset_y = pos;

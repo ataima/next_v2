@@ -1,6 +1,31 @@
 #ifndef VIEW_CONNECTION_HEADER
 #define VIEW_CONNECTION_HEADER
 
+/**************************************************************
+Copyright(c) 2015 Angelo Coppi
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files(the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions :
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+********************************************************************/
+
 
 #include "n2draw.h"
 #include "n2view.h"
@@ -44,7 +69,6 @@ public:
     virtual IManager *getManager(void) = 0;
     virtual void setManager(IManager *mn) = 0;
     virtual bool getSelectArea(nnPoint &start, nnPoint &stop) = 0;
-    virtual bool createDrawPage(size_t w, size_t h) = 0;
     virtual bmpImage & getDraw(void) = 0;
     virtual bool updateDraw(void) = 0;
 };
@@ -62,7 +86,6 @@ class nnViewGlue
         start_resize,
         stop_resize,
         selected
-
     }status_select;
 
 
@@ -70,15 +93,15 @@ class nnViewGlue
     nnPoint select_stop;
     size_t const_x;
     size_t const_y;
-    size_t width;
-    size_t height;
+    size_t p_width;
+    size_t p_height;
     size_t offset_x;
     size_t offset_y;
 
     IManager  *manager;
     IView     *view;
     status_select status;
-    bmpImage page;
+    
 
 public:
     nnViewGlue(IManager  *_manager);
@@ -105,8 +128,7 @@ public:
     inline void setManager(IManager *mn) { manager = mn; }
     inline bool select(nnPoint pos1, nnPoint pos2) { return selectStart(pos1) && selectStop(pos2); }
     inline bool getSelectArea(nnPoint &start, nnPoint &stop) { start = select_start; stop = select_stop; return true; }
-    bool createDrawPage(size_t w, size_t h);
-    inline bmpImage & getDraw(void) { return page; }
+    inline bmpImage & getDraw(void) { return view->getMainBitmap(); }
     bool updateDraw(void);
 };
 

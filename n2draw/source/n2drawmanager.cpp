@@ -352,13 +352,13 @@ void nnObjManager::load(STRING & name)
                         {
                             if (i == child->getLong())
                             {
-                                miniXmlNode *spec = child->find(X("Spec"));
+                                miniXmlNode *spec = child->find(X("Custom"));
                                 if (spec != nullptr)
                                 {
                                     miniXmlNode *context = child->find(X("Context"));
                                     if (context != nullptr)
                                     {
-                                        InnObj *obj = nnObjConn::getObjFromIds((spec_obj)spec->getLong(), (ObjContext)context->getLong());
+                                        InnObj *obj = nnObjConn::getObjFromIds((custom_obj)spec->getLong(), (ObjContext)context->getLong());
                                         if (obj != nullptr)
                                         {
                                             obj->load(child);

@@ -176,7 +176,7 @@ bool nnObjConn::powerConnect(size_t num)
 }
 
 
-InnObj * nnObjConn::getObjFromIds(spec_obj specific, ObjContext context)
+InnObj * nnObjConn::getObjFromIds(custom_obj specific, ObjContext context)
 {
 	InnObj *obj = nullptr;
 	switch (context)
@@ -658,6 +658,34 @@ void nnObjWire::setConnections(size_t n)
 }
 
 
+eWire nnObjWire::wireStringToEnum(const wchar_t *name)
+{
+    std::wstring value = name;
+    if (value == L"wireHorizzontal")
+        return wireHorizzontal;
+    if (value == L"wireVertical")
+        return wireVertical;
+    if (value == L"wireAngleUpRight")
+        return wireAngleUpRight;
+    if (value == L"wireAngleUpLeft")
+        return wireAngleUpLeft;
+    if (value == L"wireAngleDownRight")
+        return wireAngleDownRight;
+    if (value == L"wireAngleDownLeft")
+        return wireAngleDownLeft;
+    if (value == L"wireTHorizDown")
+        return wireTHorizDown;
+    if (value == L"wireTHorizUp")
+        return wireTHorizUp;
+    if (value == L"wireTVertRight")
+        return wireTVertRight;
+    if (value == L"wireTVertLeft")
+        return wireTVertLeft;
+    if (value == L"wireCross")
+        return wireCross;
+    return noWire;
+}
+
 size_t nnObjConn::uid_num = 2;
 
 
@@ -962,7 +990,7 @@ void nnObjContact::save(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		root->add(X("Spec"), v_spec);
+		root->add(X("Custom"), v_spec);
 		nnObjConn::save(root);
 		nnObjVCPU::save(root);
 	}
@@ -972,10 +1000,10 @@ void nnObjContact::load(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		miniXmlNode *node = root->find(X("Spec"));
+		miniXmlNode *node = root->find(X("Custom"));
 		if (node != nullptr)
 		{
-			v_spec = (spec_obj)node->getLong();
+			v_spec = (custom_obj)node->getLong();
 			nnObjConn::load(root);
 			nnObjVCPU::load(root);
 		}
@@ -995,7 +1023,7 @@ void nnObjCoil::save(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		root->add(X("Spec"), v_spec);
+		root->add(X("Custom"), v_spec);
 		nnObjConn::save(root);
 	}
 }
@@ -1004,10 +1032,10 @@ void nnObjCoil::load(miniXmlNode *root)
 {
 	if (root != nullptr)
 	{
-		miniXmlNode *node = root->find(X("Spec"));
+		miniXmlNode *node = root->find(X("Custom"));
 		if (node != nullptr)
 		{
-			v_spec = (spec_obj)node->getLong();
+			v_spec = (custom_obj)node->getLong();
 			nnObjConn::load(root);
 		}
 	}

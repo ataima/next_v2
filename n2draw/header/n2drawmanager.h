@@ -35,151 +35,154 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "n2draw.h"
 #include "n2miniXml.h"
 
-
+typedef unsigned long long int hashkey;
+typedef std::map<hashkey, InnObj *> hashObjTable;
 class nnObjCoil;
 class nnObjContact;
 class IManager
 {
 public:
-	// 
-	virtual bool addCoil(size_t x,  nnObjCoil * obj) = 0;
-	virtual bool addWire(size_t x, size_t y, InnObj * obj) = 0;
-	virtual bool addContact(size_t x, size_t y, nnObjContact * obj) = 0;
-	virtual bool addObj(size_t x, size_t y, InnObj * obj) = 0;
-	virtual bool removeObj(size_t x, size_t y) = 0;
-	virtual InnObj * getObj(size_t x, size_t y) = 0;
-	virtual InnObj * outObj(size_t x, size_t y) = 0;
-	virtual bool replaceObj(size_t x, size_t y, InnObj * obj) = 0;
-	virtual bool removeAll(void) = 0;
-	virtual bool moveObj(nnPoint from, nnPoint to) = 0;
-	virtual bool swapObj(nnPoint from, nnPoint to) = 0;
-	virtual size_t getWidth(void) = 0;
-	virtual size_t getHeight(void) = 0;
-	virtual nnPoint getStartPoint(void) = 0;
-	virtual nnPoint getStopPoint(void) = 0;
-	virtual void save(STRING & name) = 0;
-	virtual void load(STRING & name) = 0;
-	virtual bool undo(void) = 0;
-	virtual bool redo(void) = 0;
-	virtual bool insertRow(size_t y_pos) = 0;
-	virtual bool insertCol(size_t x_pos) = 0;
-	virtual bool removeRow(size_t y_pos) = 0;
-	virtual bool removeCol(size_t x_pos) = 0;
-	virtual bool removeEmptyCol(void) = 0;
-	virtual bool ResizeHeight(size_t h) = 0;
-	virtual bool ResizeWidth(size_t w) = 0;
-	virtual bool Resize(size_t w, size_t h) = 0;
+    // 
+    virtual bool addCoil(size_t x,  nnObjCoil * obj) = 0;
+    virtual bool addWire(size_t x, size_t y, InnObj * obj) = 0;
+    virtual bool addContact(size_t x, size_t y, nnObjContact * obj) = 0;
+    virtual bool addObj(size_t x, size_t y, InnObj * obj) = 0;
+    virtual bool removeObj(size_t x, size_t y) = 0;
+    virtual InnObj * getObj(size_t x, size_t y) = 0;
+    virtual InnObj * outObj(size_t x, size_t y) = 0;
+    virtual bool replaceObj(size_t x, size_t y, InnObj * obj) = 0;
+    virtual bool removeAll(void) = 0;
+    virtual bool moveObj(nnPoint from, nnPoint to) = 0;
+    virtual bool swapObj(nnPoint from, nnPoint to) = 0;
+    virtual size_t getWidth(void) = 0;
+    virtual size_t getHeight(void) = 0;
+    virtual nnPoint getStartPoint(void) = 0;
+    virtual nnPoint getStopPoint(void) = 0;
+    virtual void save(STRING & name) = 0;
+    virtual void load(STRING & name) = 0;
+    virtual bool undo(void) = 0;
+    virtual bool redo(void) = 0;
+    virtual bool insertRow(size_t y_pos) = 0;
+    virtual bool insertCol(size_t x_pos) = 0;
+    virtual bool removeRow(size_t y_pos) = 0;
+    virtual bool removeCol(size_t x_pos) = 0;
+    virtual bool removeEmptyCol(void) = 0;
+    virtual bool ResizeHeight(size_t h) = 0;
+    virtual bool ResizeWidth(size_t w) = 0;
+    virtual bool Resize(size_t w, size_t h) = 0;
     virtual bool readConfiguration(miniXmlNode & node) = 0;
-	
+    virtual bool revIndexes(hashkey & key,size_t & x, size_t & y) = 0;
+    
 };
 
 
 class IUndoRedo
 {
 public :
-	virtual bool undo(void) = 0;
-	virtual bool redo(void) = 0;
+    virtual bool undo(void) = 0;
+    virtual bool redo(void) = 0;
 };
 
 
 typedef enum tag_action_type
 {
-	addObjAction = 1,
-	removeObjAction,
-	outObjAction,
+    addObjAction = 1,
+    removeObjAction,
+    outObjAction,
 }eAction;
 
 
 typedef struct tag_action
 {
-	eAction action;
-	InnObj *obj;
-	size_t x_pos;
-	size_t y_pos;
-	tag_action(eAction a, size_t x, size_t y, InnObj* _obj = nullptr)
-		: action(a), x_pos(x), y_pos(y), obj(_obj) {}
+    eAction action;
+    InnObj *obj;
+    size_t x_pos;
+    size_t y_pos;
+    tag_action(eAction a, size_t x, size_t y, InnObj* _obj = nullptr)
+        : action(a), x_pos(x), y_pos(y), obj(_obj) {}
 } undo_redo_unit;
 
 typedef std::list<undo_redo_unit> vectorUR;
 
 
 class nnObjUndoRedo
-	: public IUndoRedo
+    : public IUndoRedo
 {
-	vectorUR undoObjs;
-	vectorUR redoObjs;
-	bool undoredoMode;
-	IManager *manager;
+    vectorUR undoObjs;
+    vectorUR redoObjs;
+    bool undoredoMode;
+    IManager *manager;
 public:
-	nnObjUndoRedo(IManager *_manager=nullptr);
-	~nnObjUndoRedo();
-	bool setHost(IManager *_manager);
-	bool undo(void);
-	bool redo(void);
-	inline vectorUR & getUndoObjs(void) { return undoObjs; }
-	inline vectorUR & getRedoObjs(void) { return redoObjs; }
-	void record(undo_redo_unit u);
+    nnObjUndoRedo(IManager *_manager=nullptr);
+    ~nnObjUndoRedo();
+    bool setHost(IManager *_manager);
+    bool undo(void);
+    bool redo(void);
+    inline vectorUR & getUndoObjs(void) { return undoObjs; }
+    inline vectorUR & getRedoObjs(void) { return redoObjs; }
+    void record(undo_redo_unit u);
 private:
-	void clearUndoObjs(void);
-	void clearRedoObjs(void);
+    void clearUndoObjs(void);
+    void clearRedoObjs(void);
 };
 
 
-typedef unsigned long long int hashkey;
-typedef std::map<hashkey, InnObj *> hashObjTable;
+
 
 class nnObjManager
-	: public IManager
-	, public hashObjTable
+    : public IManager
+    , public hashObjTable
 {
-	size_t v_width;
-	size_t v_height;
-	size_t mask_width;
-	size_t mask_height;
-	nnObjUndoRedo managerUR;
+    size_t v_width;
+    size_t v_height;
+    size_t mask_width;
+    size_t mask_height;
+    nnObjUndoRedo managerUR;
 
 public:
-	nnObjManager(size_t x, size_t y);
-	~nnObjManager();
-	InnObj * getObj(size_t x, size_t y);
-	InnObj * outObj(size_t x, size_t y);
-	bool addCoil(size_t x,  nnObjCoil * obj);
-	bool addWire(size_t x, size_t y, InnObj * obj);
-	bool addContact(size_t x, size_t y, nnObjContact * obj);
-	bool addObj(size_t x, size_t y, InnObj * obj);
-	bool removeObj(size_t x, size_t y);
-	bool replaceObj(size_t x, size_t y, InnObj * obj);
-	bool removeAll(void);
-	bool moveObj(nnPoint from, nnPoint to);
-	bool swapObj(nnPoint from, nnPoint to);
-	inline size_t getWidth(void) { return v_width; }
-	inline size_t getHeight(void) { return v_height; }
-	nnPoint getStartPoint(void);
-	nnPoint getStopPoint(void);
-	void save(STRING & name);
-	void load(STRING & name);
-	bool undo(void);
-	bool redo(void);
-	bool insertRow(size_t y_pos);
-	bool insertCol(size_t x_pos);
-	bool removeRow(size_t y_pos);
-	bool removeCol(size_t x_pos);
-	bool removeEmptyCol(void);
-	inline vectorUR & getUndoObjs(void) { return managerUR.getUndoObjs(); }
-	inline vectorUR & geRedoObjs(void) { return managerUR.getRedoObjs(); }
-	bool ResizeHeight(size_t h);
-	bool ResizeWidth(size_t w);
-	bool Resize(size_t w, size_t h);
+    nnObjManager(size_t x, size_t y);
+    ~nnObjManager();
+    InnObj * getObj(size_t x, size_t y);
+    InnObj * outObj(size_t x, size_t y);
+    bool addCoil(size_t x,  nnObjCoil * obj);
+    bool addWire(size_t x, size_t y, InnObj * obj);
+    bool addContact(size_t x, size_t y, nnObjContact * obj);
+    bool addObj(size_t x, size_t y, InnObj * obj);
+    bool removeObj(size_t x, size_t y);
+    bool replaceObj(size_t x, size_t y, InnObj * obj);
+    bool removeAll(void);
+    bool moveObj(nnPoint from, nnPoint to);
+    bool swapObj(nnPoint from, nnPoint to);
+    inline size_t getWidth(void) { return v_width; }
+    inline size_t getHeight(void) { return v_height; }
+    nnPoint getStartPoint(void);
+    nnPoint getStopPoint(void);
+    void save(STRING & name);
+    void load(STRING & name);
+    bool undo(void);
+    bool redo(void);
+    bool insertRow(size_t y_pos);
+    bool insertCol(size_t x_pos);
+    bool removeRow(size_t y_pos);
+    bool removeCol(size_t x_pos);
+    bool removeEmptyCol(void);
+    inline vectorUR & getUndoObjs(void) { return managerUR.getUndoObjs(); }
+    inline vectorUR & geRedoObjs(void) { return managerUR.getRedoObjs(); }
+    bool ResizeHeight(size_t h);
+    bool ResizeWidth(size_t w);
+    bool Resize(size_t w, size_t h);
     bool readConfiguration(miniXmlNode & node) ;
+    inline bool revIndexes(hashkey & key, size_t & x, size_t & y) 
+                { return revHashKey(key, x, y); }
 
 protected:
-	bool genHashKey(size_t x, size_t y, hashkey & key);
-	bool revHashKey(hashkey & key, size_t & x, size_t &y);
-	bool range(size_t x, size_t y); 
-	bool rangeContact(size_t x, size_t y);
-	bool linkObj(size_t x, size_t y, InnObj *obj);
-	bool unlinkObj(size_t x, size_t y, InnObj *obj);
-	bool checkRemovableCol(size_t x);
+    bool genHashKey(size_t x, size_t y, hashkey & key);
+    bool revHashKey(hashkey & key, size_t & x, size_t &y);
+    bool range(size_t x, size_t y); 
+    bool rangeContact(size_t x, size_t y);
+    bool linkObj(size_t x, size_t y, InnObj *obj);
+    bool unlinkObj(size_t x, size_t y, InnObj *obj);
+    bool checkRemovableCol(size_t x);
 };
 
 

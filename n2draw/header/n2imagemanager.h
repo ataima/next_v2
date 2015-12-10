@@ -36,7 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-typedef  std::map<long, std::wstring> objImageList;
+typedef  std::map<size_t, std::wstring> objImageList;
 
 
 class IImageManager

@@ -1552,7 +1552,7 @@ bool bmpImage::copyFromFile(const wchar_t *name)
         size_t err = _wfopen_s(&file, name, L"r");
         if (err == 0 && file != nullptr)
         {
-            short mask=0;
+            short mask = 0;
             struct _stati64  file_status;
             err = _fstati64(_fileno(file), &file_status);
             if (err == 0)
@@ -1772,21 +1772,21 @@ bool bmpImage::swapto(LPBITMAPFILEHEADER pI, int iSorg, int iDest)
 
 
 ///////////////////////////////////////////////////////////////// IMAGE LIST 
-listImage::listImage( unsigned int w, unsigned int h)
+listImage::listImage(unsigned int w, unsigned int h)
     : Width(w), Height(h)
 {
- 
+
 }
 
 
 listImage::~listImage()
 {
-    std::vector<bmpImage * >::iterator _it = begin();
-    std::vector<bmpImage * >::iterator _end = end();
+    std::map<size_t, bmpImage * >::iterator _it = begin();
+    std::map<size_t, bmpImage * >::iterator _end = end();
     while (_it != _end)
     {
-        if(*_it!=nullptr)
-            delete *_it;
+        if (_it->second != nullptr)
+            delete _it->second;
         _it++;
     }
     clear();
@@ -1794,20 +1794,17 @@ listImage::~listImage()
 }
 
 
-bool listImage::Add(bmpImage & b)
+bool listImage::Add(size_t index, bmpImage & b)
 {
     bool res = false;
     if (b.isValid())
     {
-        if (b.isValid())
+        bmpImage* t = new bmpImage();
+        if (t != nullptr)
         {
-            bmpImage* t = new bmpImage();
-            if (t != nullptr)
-            {
-                t->attach(b);
-                push_back(t);
-                res = true;
-            }
+            t->attach(b);
+            (*this)[index] = t;
+            res = true;
         }
     }
     return res;

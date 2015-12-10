@@ -369,12 +369,12 @@ void test_nnConnection::test6(void)
         res = nnConnection::connectComponent(&mn, p1,p2);
         CA_ASSERT(res == false);
     }
-    catch (positionBusyException e)
+    catch (positionBusyException *e)
     {
     }
-    catch (wireConnectionException v)
+    catch (wireConnectionException *v)
     {
-        CA_ASSERT(v.down[0] == 4);
+        CA_ASSERT(v->down[0] == 4);
     }
     InnObj *w = mn.getObj(5, 3);
     CA_ASSERT(w != nullptr);

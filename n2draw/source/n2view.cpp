@@ -29,7 +29,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-void nnTextView::draw(IManager * manager, void * context)
+bool nnTextView::draw(IManager * manager, void * context)
 {
     if (manager != nullptr)
     {
@@ -108,6 +108,8 @@ void nnTextView::draw(IManager * manager, void * context)
         }
         std::cout << std::endl;
     }
+
+    return true;
 }
 
 nnView::nnView()
@@ -118,21 +120,97 @@ nnView::~nnView()
 {
 }
 
-void nnView::draw(IManager * manager, void * context)
+bool nnView::draw(IManager * manager, void * context)
 {
+    bool res = false;
+    size_t x, y;
+    size_t ix, iy;
+    drawContext *ctx = (drawContext*)(context);
+    nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
+    hashObjTable::iterator it = mn.begin();
+    hashObjTable::iterator end = mn.end();
+    do
+    {
+        mn.revIndexes((hashkey)(it->first), ix, iy);
+        it++;
+    } while (ix < ctx->off_x && iy < ctx->off_y && it != end);
+    InnObj *obj;
+    for (y = 0; y < ctx->colunms; y++)
+    {
+        for (x = 0; x < ctx->rows; x++)
+        {
+            if (ix == x && iy == y)
+            {
+                obj = it->second;
+                drawObj(obj, x, y,ctx);
+                it++;
+                mn.revIndexes((hashkey)(it->first), ix, iy);
+            }
+            else
+            {
+                drawBkg( x, y,ctx);
+            }
+        }
+    }
+    delete context;
+    return res;
 }
 
 bool nnView::readConfiguration(miniXmlNode * node)
 {
-    return false;
+    bool res = false;
+    miniXmlNode *t = node->find(X("PARALLELISM"));
+    if (t)
+    {
+        n_thread = t->getLong();
+        if (n_thread > 8)
+        {
+            n_thread = 8;
+        }
+        if (n_thread < 1)
+        {
+            n_thread = 1;
+        }
+    }
+    else
+    {
+        phyViewConfigurationException *pe = new phyViewConfigurationException(X("PARALLELISM"));
+        throw (pe);
+    }
+    return res;
 }
 
-int nnView::getTheme(void)
+bool nnView::createMainBitmap(size_t w, size_t h)
 {
-    return 0;
+    bool res = false;
+    res=page.create(w, h, 0);
+    return res;
 }
 
-bool nnView::loadTheme(int num)
+bool nnView::drawObj(InnObj * obj, size_t & x, size_t & y, drawContext * ctx)
 {
-    return false;
+    bool res = false;
+    unsigned int image;
+    ObjContext context = obj->getContext();
+    if (context == objWire)
+    {
+        InnWire *wire = dynamic_cast<InnWire *>(obj);
+        image = (unsigned int)wire->getWire();
+    }
+    else
+        {
+            nnObjComponent * comp= dynamic_cast<nnObjComponent *>(obj);
+            image = (unsigned int)comp->getCustomization();
+        }
+        
+    return res;
 }
+
+bool nnView::drawBkg(size_t & x, size_t & y, drawContext * ctx)
+{
+    bool res = false;
+
+    return res;
+}
+
+

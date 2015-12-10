@@ -319,7 +319,7 @@ typedef enum tag_specialization
     // add here new input components
     coil_generic,
 
-} spec_obj;
+} custom_obj;
 
 
 
@@ -341,9 +341,11 @@ public:
     static size_t getUI(void) { return ++uid_num; }
     static void setUI(long u) { uid_num = u; }
     bool powerConnect(size_t num);
-    static InnObj * getObjFromIds(spec_obj specific, ObjContext context);
+    static InnObj * getObjFromIds(custom_obj specific, ObjContext context);
 
 };
+
+
 
 class  nnObjWire
     : public nnObjConn
@@ -365,6 +367,7 @@ public:
     bool connectFromUp(size_t b);
     bool connectFromDown(size_t b);
     void setConnections(size_t n);
+    static eWire wireStringToEnum(const wchar_t *name);
 protected:
 
     bool connectFromLeft(size_t b);
@@ -382,6 +385,8 @@ protected:
 class  nnObjComponent
     :public nnObjConn
 {
+protected:
+    custom_obj v_spec;
 public:
     nnObjComponent(ObjContext c) : nnObjConn(c) {}
     inline bool isComponent(void) { return true; }
@@ -389,6 +394,7 @@ public:
     bool disconnect(InnObj *b);
     bool connectFromUp(size_t b);
     bool connectFromDown(size_t b);
+    inline custom_obj getCustomization(void) { return v_spec; }
 protected:
     bool disconnectFromUp(void);
     bool disconnectFromDown(void);
@@ -436,10 +442,12 @@ class  nnObjContact
     : public nnObjComponent
     , public nnObjVCPU
 {
-    spec_obj v_spec;
+  
 public:
-    nnObjContact(spec_obj _v = spec_obj::contact_generic_unknow) :
-        nnObjComponent(ObjContext::objContact), v_spec(_v) {}
+    nnObjContact(custom_obj _v = custom_obj::contact_generic_unknow) :
+        nnObjComponent(ObjContext::objContact) {
+        v_spec = _v;
+    }
     const  std::wstring toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);
@@ -450,10 +458,12 @@ class  nnObjCoil
     : public nnObjComponent
     , public nnObjVCPU
 {
-    spec_obj v_spec;
+
 public:
-    nnObjCoil(spec_obj _v = spec_obj::coil_generic_unknow) :
-        nnObjComponent(ObjContext::objCoil), v_spec(_v) {}
+    nnObjCoil(custom_obj _v = custom_obj::coil_generic_unknow) :
+        nnObjComponent(ObjContext::objCoil) {
+        v_spec = _v;
+    }
     const  std::wstring toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);

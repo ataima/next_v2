@@ -44,4 +44,13 @@
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="infotest.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="infotest.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="infotest.xml" />
+  </ItemGroup>
 </Project>
