@@ -7,7 +7,7 @@ bool WinEvent::create(unsigned int message, unsigned int wparam, unsigned long l
 
 nnAppManager::nnAppManager()
 {
-
+   
 }
 
 nnAppManager::~nnAppManager()
@@ -16,7 +16,7 @@ nnAppManager::~nnAppManager()
 }
 
 
-bool nnAppManager::createObjects(std::wstring & conf_file_name)
+childApps * nnAppManager::createObjects(std::wstring & conf_file_name)
 {
     bool res = false;
     size_t line = __LINE__;
@@ -24,8 +24,8 @@ bool nnAppManager::createObjects(std::wstring & conf_file_name)
     MEMCHK(childApps, child);
     child->imageManager = nullptr;
     child->object_manager = nullptr;
-    child->views.clear();
-    try 
+    child->view = nullptr;
+    try
     {
         res = createInternalObjects(conf_file_name, *child);
     }
@@ -33,31 +33,23 @@ bool nnAppManager::createObjects(std::wstring & conf_file_name)
     {
         if (child->object_manager)
             delete child->object_manager;
-        if (child->views.size() > 0)
+        if (child->view)
         {
-            for (auto v : child->views)
-                delete v;
-            child->views.clear();
+            delete child->view;
         }
         if (child->imageManager)
             delete child->imageManager;
         delete child;
+        child = nullptr;
         throw(e);
     }
-    return res;
+    return child;
 }
 
 bool nnAppManager::createInternalObjects(std::wstring & conf_file_name, childApps & child)
 {
     bool res = false;
-    wchar_t cwd[1024];
-    std::wstring conf_file;
-    if (_wgetcwd(cwd, sizeof(cwd)) != nullptr)
-    {
-        conf_file += L"/";
-        conf_file += conf_file_name;
-    }
-    res = configuration.readConfiguration(conf_file.c_str());
+    res = configuration.readConfiguration(conf_file_name.c_str());
     if (res == true)
     {
         miniXmlNode *conf_manager = configuration.getRoot().find(X("APP"));
@@ -81,38 +73,37 @@ bool nnAppManager::createInternalObjects(std::wstring & conf_file_name, childApp
                         res = child.object_manager->readConfiguration(*conf_manager);
                         if (res)
                         {
-                            conf_manager = configuration.getRoot().find(X("PHY_MAP"));
+                            line = __LINE__;
+                            child.imageManager = new nnImageManager();
+                            MEMCHK(IImageManager, child.imageManager);
+                            conf_manager = configuration.getRoot().find(X("IMAGES"));
                             if (conf_manager)
                             {
-                                line = __LINE__;
-                                child.views.push_back(new nnViewGlue(child.object_manager));
-                                IViewGlue *viewglue = child.views.back();
-                                MEMCHK(IViewGlue, viewglue);
-                                res = viewglue->readConfiguration(*conf_manager);
-                                if (res)
-                                {
-                                    line = __LINE__;
-                                    child.imageManager = new nnImageManager();
-                                    MEMCHK(IImageManager, child.imageManager);
-                                    conf_manager = configuration.getRoot().find(X("IMAGES"));
-                                    if (conf_manager)
-                                    {
-                                        res = child.imageManager->readConfiguration(conf_manager);
-                                    }
-                                    else
-                                    {
-                                        appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("IMAGES"));
-                                        throw(e);
-                                    }
-                                }
+                                res = child.imageManager->readConfiguration(conf_manager);
                             }
                             else
                             {
-                                appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("PHY_MAP"));
+                                appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("IMAGES"));
                                 throw(e);
                             }
+                            if (res)
+                            {
+                                conf_manager = configuration.getRoot().find(X("PHY_MAP"));
+                                if (conf_manager)
+                                {
+                                    line = __LINE__;
+                                    child.view = new nnViewGlue(child.object_manager, child.imageManager );
+                                    IViewGlue *viewglue = child.view;
+                                    MEMCHK(IViewGlue, viewglue);
+                                    res = viewglue->readConfiguration(*conf_manager);
+                                }
+                                else
+                                {
+                                    appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("PHY_MAP"));
+                                    throw(e);
+                                }
+                            }
                         }
-
                     }
                     else
                     {
@@ -169,16 +160,10 @@ void childApps::clean(void)
         delete imageManager;
         imageManager = nullptr;
     }
-    if (!views.empty())
+    if (view)
     {
-        std::list<IViewGlue*>::iterator it = views.begin();
-        std::list<IViewGlue*>::iterator _end = views.end();
-        while (it != _end)
-        {
-            delete *it;
-            it++;
-        }
-        views.clear();
+        delete view;
+        view = nullptr;
     }
 }
 

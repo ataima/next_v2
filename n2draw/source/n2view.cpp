@@ -1,6 +1,10 @@
 
+#include "n2draw.h"
 #include "n2drawmanager.h"
-#include "n2View.h"
+#include "n2imagemanager.h"
+#include "n2view.h"
+#include "n2viewglue.h"
+
 #include <iostream>
 
 
@@ -112,7 +116,8 @@ bool nnTextView::draw(IManager * manager, void * context)
     return true;
 }
 
-nnView::nnView()
+nnView::nnView(IImageManager *_images) :
+    images(_images)
 {
 }
 
@@ -125,34 +130,46 @@ bool nnView::draw(IManager * manager, void * context)
     bool res = false;
     size_t x, y;
     size_t ix, iy;
-    drawContext *ctx = (drawContext*)(context);
-    nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
-    hashObjTable::iterator it = mn.begin();
-    hashObjTable::iterator end = mn.end();
-    do
+    nnViewGlue *glue = (nnViewGlue *)(context);
+    x = y = -1;
+    if (glue != nullptr)
     {
-        mn.revIndexes((hashkey)(it->first), ix, iy);
-        it++;
-    } while (ix < ctx->off_x && iy < ctx->off_y && it != end);
-    InnObj *obj;
-    for (y = 0; y < ctx->colunms; y++)
-    {
-        for (x = 0; x < ctx->rows; x++)
+        nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
+        nnPoint off = glue->getOffsetView();
+        nnPoint map = glue->getMap();
+        hashObjTable::iterator it = mn.begin();
+        hashObjTable::iterator end = mn.end();
+        if (it != end)
         {
-            if (ix == x && iy == y)
+            do
             {
-                obj = it->second;
-                drawObj(obj, x, y,ctx);
-                it++;
-                mn.revIndexes((hashkey)(it->first), ix, iy);
-            }
-            else
+                mn.revIndexes((hashkey)(it->first), ix, iy);               
+            } while (ix < off.x && iy < off.y && it != end);
+        }
+        InnObj *obj;
+        res = true;
+        bool t = false;
+        for (y = 0; y < map.y; y++)
+        {
+            for (x =0 ; x <map.x; x++)
             {
-                drawBkg( x, y,ctx);
+                if (ix == x && iy == y)
+                {
+                    obj = it->second;
+                    res &= drawObj(obj, x, y, glue);
+                    it++;
+                    if(it!=end)
+                        mn.revIndexes((hashkey)(it->first), ix, iy);
+                }
+                else
+                {
+                    res &= drawBkg(x, y, glue);
+                }
+                if (x == 0)break;
             }
+            if (y == 0)break;
         }
     }
-    delete context;
     return res;
 }
 
@@ -183,33 +200,61 @@ bool nnView::readConfiguration(miniXmlNode * node)
 bool nnView::createMainBitmap(size_t w, size_t h)
 {
     bool res = false;
-    res=page.create(w, h, 0);
+    res = page.create(w, h, 0);
     return res;
 }
 
-bool nnView::drawObj(InnObj * obj, size_t & x, size_t & y, drawContext * ctx)
+bool nnView::drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue * glue)
 {
     bool res = false;
-    unsigned int image;
+    unsigned int nImage;
     ObjContext context = obj->getContext();
     if (context == objWire)
     {
         InnWire *wire = dynamic_cast<InnWire *>(obj);
-        image = (unsigned int)wire->getWire();
+        nImage = (unsigned int)wire->getWire();
     }
     else
+    {
+        nnObjComponent * comp = dynamic_cast<nnObjComponent *>(obj);
+
+        nImage = (unsigned int)comp->getCustomization();
+    }
+    if (images != nullptr)
+    {
+        nnPoint pos = glue->getCoordPhy(x, y);
+        const listImage *mapImage = images->getImageList();
+        if (mapImage)
         {
-            nnObjComponent * comp= dynamic_cast<nnObjComponent *>(obj);
-            image = (unsigned int)comp->getCustomization();
+            listImage::const_iterator it = mapImage->find(nImage);
+            if (it != mapImage->end())
+            {
+                res = page.drawSprite(*it->second, pos.x, pos.y);
+            }
         }
-        
+
+    }
     return res;
 }
 
-bool nnView::drawBkg(size_t & x, size_t & y, drawContext * ctx)
+bool nnView::drawBkg(size_t & x, size_t & y, IViewGlue * glue)
 {
     bool res = false;
+    if (images != nullptr)
+    {
 
+        nnPoint pos = glue->getCoordPhy(x, y);
+        const listImage *mapImage = images->getImageList();
+        if (mapImage)
+        {
+            listImage::const_iterator it = mapImage->find(0);
+            if (it != mapImage->end())
+            {
+                res = page.drawSprite(*it->second, pos.x, pos.y);
+            }
+        }
+
+    }
     return res;
 }
 

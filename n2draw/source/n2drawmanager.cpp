@@ -34,6 +34,18 @@ nnObjManager::nnObjManager(size_t x, size_t y)
     : v_width(x), v_height(y),
     mask_width(0), mask_height(0)
 {
+    computeMask();
+}
+
+nnObjManager::~nnObjManager()
+{
+    removeAll();
+}
+
+
+
+bool nnObjManager::computeMask(void)
+{
     nnObjWire::resetUI();
     size_t i = v_width & 0x0fffffff;
     mask_width = 1;
@@ -52,12 +64,9 @@ nnObjManager::nnObjManager(size_t x, size_t y)
         mask_height |= 1;
     }
     managerUR.setHost(this);
+    return true;
 }
 
-nnObjManager::~nnObjManager()
-{
-    removeAll();
-}
 
 InnObj * nnObjManager::getObj(size_t x, size_t y)
 {
@@ -140,15 +149,15 @@ bool nnObjManager::addCoil(size_t x, nnObjCoil * obj)
     bool res = false;
     if (obj->getContext() == objCoil)
     {
-        if (getObj(x, v_height - 1) == nullptr)
+        if (getObj(x, v_height-1) == nullptr)
         {
-            size_t i;
+            size_t i,fp;
             // y pos is relative :
             // coil pos = y-1, for first empty position to y-1 wire to connect
             // find first empty cell
-            for (i = 0; i < v_height - 1; i++)
+            for (i = 0; i < v_height-1; i++)
                 if (getObj(x, i) == nullptr)break;
-            for (; i < v_height - 1; i++)
+            for (; i < v_height-1; i++)
             {
                 nnObjWire *wire = new nnObjWire(eWire::wireVertical);
                 res = addWire(x, i, wire);
@@ -156,18 +165,20 @@ bool nnObjManager::addCoil(size_t x, nnObjCoil * obj)
             }
             if (res)
             {
+
+                fp = v_height - 1;
                 hashkey hkey;
-                if (range(x, v_height - 1) && obj != nullptr)
+                if (range(x,fp) && obj != nullptr)
                 {
-                    if (genHashKey(x, v_height - 1, hkey)) {
+                    if (genHashKey(x, fp, hkey)) {
                         hashObjTable::iterator it = find(hkey);
                         if (it == end()) {
                             std::pair<hashkey, InnObj *> p(hkey, obj);
                             insert(p);
                             obj->setXpos(x);
-                            obj->setYpos(v_height - 1);
-                            res = linkObj(x, v_height - 1, obj);
-                            undo_redo_unit u(eAction::removeObjAction, x, v_height - 1, nullptr);
+                            obj->setYpos(fp);
+                            res = linkObj(x, fp, obj);
+                            undo_redo_unit u(eAction::removeObjAction, x, fp, nullptr);
                             managerUR.record(u);
                         }
                     }
@@ -341,6 +352,7 @@ void nnObjManager::load(STRING & name)
                 {
                     v_height = t->getLong();
                 }
+                computeMask();
                 miniXmlNode *size = root.find(X("Size"));
                 if (size != nullptr)
                 {

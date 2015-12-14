@@ -308,16 +308,17 @@ inline void marshallObj(T* ptr, const char* f, int l)
 
 typedef enum tag_specialization
 {
+    no_component = 0,
     contact_generic_unknow = 100000,
     coil_generic_unknow = 200000,
     contact_start_spec = 1000000,
     // add here new input components
-    contact_generic_coil_normally_open,
-    contact_generic_coil_normally_close,
+    contactGenericAnd,
+    contactGenericOr,
     // end contact spec
     coil_start_spec = 2000000,
     // add here new input components
-    coil_generic,
+    coilGeneric,
 
 } custom_obj;
 
@@ -395,6 +396,8 @@ public:
     bool connectFromUp(size_t b);
     bool connectFromDown(size_t b);
     inline custom_obj getCustomization(void) { return v_spec; }
+    static custom_obj getCustomizationFromName(const wchar_t * s);
+
 protected:
     bool disconnectFromUp(void);
     bool disconnectFromDown(void);
@@ -451,6 +454,23 @@ public:
     const  std::wstring toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);
+
+};
+
+class nnContactNO
+    :public nnObjContact
+{
+public:
+    nnContactNO():nnObjContact(contactGenericAnd) {}
+    const  std::wstring toString(void) const;
+};
+
+class nnContactNC
+    :public nnObjContact
+{
+public:
+    nnContactNC() :nnObjContact(contactGenericOr) {}
+    const  std::wstring toString(void) const;
 };
 
 
@@ -471,7 +491,13 @@ public:
 
 
 
-
+class nnGenericCoil
+    : public nnObjCoil
+{
+public:
+    nnGenericCoil() :nnObjCoil(coilGeneric) {}
+    const  std::wstring toString(void) const;
+};
 
 
 #endif

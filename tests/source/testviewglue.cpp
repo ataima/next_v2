@@ -67,7 +67,7 @@ void test_viewglue::test1(void)
     nnObjWire *v = new nnObjWire(eWire::wireAngleDownLeft);
     bool res = mn.addObj(10, 12, v);
     CA_ASSERT(res == true);
-    nnViewGlue gphy(&mn);
+    nnViewGlue gphy(&mn,nullptr);
     size_t w, h;
     CA_ASSERT(gphy.getSelectAreaPhy(w, h) == true);
     CA_ASSERT(w == 0);
@@ -90,7 +90,7 @@ void test_viewglue::test2(void)
     node.add(X("Y"), 200);
     node.add(X("HEIGHT"), 800);
     node.add(X("WIDTH"), 1200);
-    nnViewGlue gphy(nullptr);
+    nnViewGlue gphy(nullptr, nullptr);
     bool res = gphy.readConfiguration(node);
     CA_ASSERT(res == true);
     nnPoint input(1, 1);
@@ -111,7 +111,7 @@ void test_viewglue::test3(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnObjManager mn(50, 20);
-    nnViewGlue gphy(&mn);
+    nnViewGlue gphy(&mn,nullptr);
     miniXmlNode  node(X("PHY_MAP"));
     node.add(X("TYPE"), 1);
     node.add(X("X"), 24);
@@ -158,7 +158,7 @@ void test_viewglue::test4(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnObjManager mn(50, 20);
-    nnViewGlue gphy(&mn);
+    nnViewGlue gphy(&mn,nullptr);
     miniXmlNode  node(X("PHY_MAP"));
     node.add(X("TYPE"), 1);
     node.add(X("X"), 24);
@@ -203,7 +203,7 @@ void test_viewglue::test5(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnObjManager mn(50, 20);
-    nnViewGlue gphy(&mn);
+    nnViewGlue gphy(&mn,nullptr);
     miniXmlNode  node(X("PHY_MAP"));
     node.add(X("TYPE"), 1);
     node.add(X("X"), 24);

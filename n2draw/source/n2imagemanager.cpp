@@ -52,7 +52,13 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
                     }
                     if (offset >= 0 && !filename.empty())
                     {
-                        availObj[offset] = filename;
+                        if (availObj.find(offset)== availObj.end())
+                            availObj[offset] = filename;
+                        else
+                        {
+                            imagesConfigurationAlreadyLoadException *pe = new imagesConfigurationAlreadyLoadException(offset);
+                            throw (pe);
+                        }
                     }
                     else
                     {
@@ -79,16 +85,27 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
                     miniXmlNode *e = t->find(X("VALUE"));
                     if (e)
                     {
-                        offset = e->getLong();
+                        offset = nnObjComponent::getCustomizationFromName(e->getValue());
                     }
                     e = t->find(X("FILE"));
                     if (e)
                     {
                         filename = e->getValue();
                     }
-                    if (offset >= 0 && !filename.empty())
+                    if (offset >0 && !filename.empty())
                     {
-                        availObj[offset] = filename;
+                        if (availObj.find(offset) == availObj.end())
+                            availObj[offset] = filename;
+                        else
+                        {
+                            imagesConfigurationAlreadyLoadException *pe = new imagesConfigurationAlreadyLoadException(offset);
+                            throw (pe);
+                        }
+                    }
+                    else
+                    {
+                        imagesConfigurationBadFormatException *pe = new imagesConfigurationBadFormatException();
+                        throw (pe);
                     }
                 } while ((t = t->getNext()) != nullptr);
             }
@@ -110,16 +127,27 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
                     miniXmlNode *e = t->find(X("VALUE"));
                     if (e)
                     {
-                        offset = e->getLong();
+                        offset = nnObjComponent::getCustomizationFromName(e->getValue());
                     }
                     e = t->find(X("FILE"));
                     if (e)
                     {
                         filename = e->getValue();
                     }
-                    if (offset >= 0 && !filename.empty())
+                    if (offset > 0 && !filename.empty())
                     {
-                        availObj[offset] = filename;
+                        if (availObj.find(offset) == availObj.end())
+                            availObj[offset] = filename;
+                        else
+                        {
+                            imagesConfigurationAlreadyLoadException *pe = new imagesConfigurationAlreadyLoadException(offset);
+                            throw (pe);
+                        }
+                    }
+                    else
+                    {
+                        imagesConfigurationBadFormatException *pe = new imagesConfigurationBadFormatException();
+                        throw (pe);
                     }
                 } while ((t = t->getNext()) != nullptr);
             }

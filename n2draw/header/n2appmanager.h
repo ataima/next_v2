@@ -34,13 +34,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "n2viewglue.h"
 
 
-typedef std::list<IViewGlue*> listofViews;
+
 
 
 typedef struct tag_app_child
 {
     IManager                *object_manager;
-    listofViews             views;
+    IViewGlue               *view;
     IImageManager           *imageManager;
     void clean(void);
 } childApps;
@@ -67,7 +67,7 @@ public:
 class IAppManager
 {
 public:
-    virtual bool createObjects(std::wstring & conf_file_name) = 0;
+    virtual childApps * createObjects(std::wstring & conf_file_name) = 0;
     virtual bool routeEvents(IEvent * event) = 0;
     virtual bool closeAll(void) = 0;
 };
@@ -83,7 +83,7 @@ class nnAppManager
 public:
     nnAppManager();
     ~nnAppManager();
-    bool createObjects(std::wstring & conf_file_name);
+    childApps * createObjects(std::wstring & conf_file_name);
     bool routeEvents(IEvent * event);
     bool closeAll(void);
 protected:

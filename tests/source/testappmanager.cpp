@@ -1,10 +1,20 @@
 #include "stdio.h"
 #include "CPPtester.h"
 #include "images.h"
+#include "n2draw.h"
+#include "n2drawManager.h"
 #include "n2miniXml.h"
 #include "n2ImageManager.h"
+#include "n2viewglue.h"
+#include "n2appmanager.h"
+#include "n2connection.h"
+#ifdef _MSC_VER
+#include <direct.h>
+#endif
 
 /**************************************************************
+
+
 Copyright(c) 2015 Angelo Coppi
 
 Permission is hereby granted, free of charge, to any person
@@ -45,11 +55,11 @@ extern "C" int __stdcall  ReleaseDC(void * hWnd, void *DC);
 #endif
 
 
-class test_image_manager
+class test_app_manager
     : public caTester
 {
-    CA_TEST_SUITE(test_image_manager)
-    CA_TEST(test_image_manager::test1, "verifica loadbitmap");
+    CA_TEST_SUITE(test_app_manager)
+        CA_TEST(test_app_manager::test1, "verifica loadbitmap");
     CA_TEST_SUITE_END()
         void setUp(void) {}
     void tearDown(void) {}
@@ -58,9 +68,9 @@ class test_image_manager
 };
 ///////////////////////////////////////////////////
 
-REGISTER_CLASS(test_image_manager);
+REGISTER_CLASS(test_app_manager);
 
-void test_image_manager::draw(bmpImage * bmp)
+void test_app_manager::draw(bmpImage * bmp)
 {
 #ifdef _MSC_VER
     void* dc = ::GetDC(NULL);
@@ -75,29 +85,41 @@ void test_image_manager::draw(bmpImage * bmp)
 
 
 
-void test_image_manager::test1(void)
+void test_app_manager::test1(void)
 {
     _START();
-    _INFO("Verify of internal class nnImageManager: method  read configuration and load images");
+    _INFO("Verify of internal class nnAppManager:load and display a draw");
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
-    miniXmlNode  node;
-    bool res = miniXmlNode::load(X("..\\..\\images\\conf.xml"),&node);
+    nnAppManager app;
+    std::wstring name(X("..\\..\\images\\conf.xml"));
+    childApps *childs = app.createObjects(name);
+    CA_ASSERT(childs != nullptr);
+    bool res;
+    nnPoint p=childs->view->getCoordPhy(1,1);
+    CA_ASSERT(p.x != 0 );
+    CA_ASSERT(p.y != 0);
+    res=childs->imageManager->loadImages(p.x, p.y);
     CA_ASSERT(res == true);
-    nnImageManager im;
-    res = im.readConfiguration(&node);
+    nnContactNO *v = new nnContactNO();
+    nnObjManager *mn = dynamic_cast<nnObjManager *>(childs->object_manager);
+    res = mn->addContact(10, 0, v);
     CA_ASSERT(res == true);
-    res = im.loadImages(40, 48);
+    CA_ASSERT((int)mn->size() == (int)1);
+    nnGenericCoil *u = new nnGenericCoil();
+    res = mn->addCoil(10, u);
     CA_ASSERT(res == true);
-    const listImage *images = im.getImageList();
-    if (images != nullptr)
-    {
-        listImage::const_iterator it = images->begin();
-        listImage::const_iterator _end = images->end();
-        while (it != _end)
-        {
-            draw((it->second));
-            it++;
-        }
-    }
+    CA_ASSERT((int)mn->size() == (int)10);
+    nnContactNC *v1 = new nnContactNC();
+    res = mn->addContact(12, 0, v1);
+    CA_ASSERT(res == true);
+    nnPoint p1(12, 0);
+    nnPoint p2(10, 0);
+    nnConnection::connectComponent(childs->object_manager, p1, p2);
+    res = childs->view->updateDraw();
+//    CA_ASSERT(res == true);
+    bmpImage &bdraw = childs->view->getDraw();
+    draw(&bdraw);
+    _mkdir(".\\bmp");
+    bdraw.copyToFile(L".\\bmp\\test1_app.bmp");
 }

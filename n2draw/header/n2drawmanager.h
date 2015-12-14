@@ -183,6 +183,7 @@ protected:
     bool linkObj(size_t x, size_t y, InnObj *obj);
     bool unlinkObj(size_t x, size_t y, InnObj *obj);
     bool checkRemovableCol(size_t x);
+    bool computeMask(void);
 };
 
 

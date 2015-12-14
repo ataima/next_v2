@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <string>
 #include "n2miniXml.h"
+#include "n2imagemanager.h"
 #include "n2drawmanager.h"
 #include "n2viewglue.h"
 
 //TestviewGlue.cpp : T1
-nnViewGlue::nnViewGlue(IManager  *_manager)
-    :manager(_manager)
+nnViewGlue::nnViewGlue(IManager  *_manager,IImageManager *_images)
+    :manager(_manager),images(_images)
 {
     const_x = const_y = p_width = p_height = offset_x = offset_y = 0;
     unselect();
@@ -39,6 +40,14 @@ nnPoint nnViewGlue::getCoordPhy(nnPoint & logPoint)
     return res;
 }
 
+nnPoint nnViewGlue::getCoordPhy(size_t x,size_t y)
+{
+    nnPoint res(0, 0);
+    res.x = p_width-(x*const_x);
+    res.y = p_height-(y*const_y);
+    return res;
+}
+
 //TestviewGlue.cpp : T2
 nnPoint nnViewGlue::getCoordLog(nnPoint & phyPoint)
 {
@@ -61,7 +70,7 @@ bool nnViewGlue::readConfiguration(miniXmlNode & node)
             switch (t->getLong())
             {
             case 0: view = new nnTextView(); break;
-            case 1: view = new nnView(); break;
+            case 1: view = new nnView(images); break;
             default:
             {
                 phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("TYPE"));
@@ -304,24 +313,18 @@ bool nnViewGlue::handlerEscapeButton(void)
 }
 
 
+bmpImage & nnViewGlue::getDraw(void) 
+{
+    return view->getMainBitmap(); 
+}
 
 bool nnViewGlue::updateDraw(void)
 {
     bool res = false;
     if (view != nullptr  && manager != nullptr)
     {
-        drawContext *ctx = new drawContext();
-        ctx->off_x = offset_x;
-        ctx->off_y = offset_y;
-        ctx->rows = (p_width / const_x);
-        ctx->colunms = (p_height / const_y);
-        ctx->width = offset_x + (p_width / const_x);
-        ctx->height = offset_y + (p_height / const_y);
-        ctx->max_phy_width = p_width;
-        ctx->max_phy_height = p_height;
-        ctx->const_phy_x = const_x;
-        ctx->const_phy_y = const_y;
-        res = view->draw(manager, ctx);
+        
+        res = view->draw(manager, this);
     }
     return res;
 }

@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "n2draw.h"
 #include "n2view.h"
 #include "images.h"
+#include "n2imagemanager.h"
 
 
 
@@ -48,6 +49,7 @@ class IViewGlue
 {
 public:
     virtual nnPoint getCoordPhy(nnPoint & logPoint) = 0;
+    virtual nnPoint getCoordPhy(size_t x,size_t y) = 0;
     virtual nnPoint getCoordLog(nnPoint & phyPoint) = 0;
     virtual bool readConfiguration(miniXmlNode & node) = 0;
     virtual bool selectStart(size_t xpos, size_t ypos) = 0;
@@ -71,6 +73,8 @@ public:
     virtual bool getSelectArea(nnPoint &start, nnPoint &stop) = 0;
     virtual bmpImage & getDraw(void) = 0;
     virtual bool updateDraw(void) = 0;
+    virtual nnPoint getOffsetView(void) = 0;
+    virtual nnPoint getMap(void) = 0;
 };
 
 
@@ -99,14 +103,16 @@ class nnViewGlue
     size_t offset_y;
 
     IManager  *manager;
+    IImageManager *images;
     IView     *view;
     status_select status;
     
 
 public:
-    nnViewGlue(IManager  *_manager);
+    nnViewGlue(IManager  *_manager, IImageManager *_images);
     ~nnViewGlue();
     nnPoint getCoordPhy(nnPoint & logPoint);
+    nnPoint getCoordPhy(size_t x, size_t y);
     nnPoint getCoordLog(nnPoint & phyPoint);
     bool readConfiguration(miniXmlNode & node);
     bool selectStart(size_t xpos, size_t ypos);
@@ -128,8 +134,10 @@ public:
     inline void setManager(IManager *mn) { manager = mn; }
     inline bool select(nnPoint pos1, nnPoint pos2) { return selectStart(pos1) && selectStop(pos2); }
     inline bool getSelectArea(nnPoint &start, nnPoint &stop) { start = select_start; stop = select_stop; return true; }
-    inline bmpImage & getDraw(void) { return view->getMainBitmap(); }
+    bmpImage & getDraw(void);
     bool updateDraw(void);
+    inline nnPoint getOffsetView(void) { return nnPoint(offset_x, offset_y); }
+    inline nnPoint getMap(void) { return nnPoint((p_width / const_x), (p_height / const_y)); }
 };
 
 

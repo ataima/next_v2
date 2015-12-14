@@ -29,21 +29,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include "images.h"
+#include "n2imagemanager.h"
 
-typedef struct tag_cur_draw_point
-{
-    size_t off_x;
-    size_t off_y;
-    size_t width;
-    size_t height;
-    size_t rows;
-    size_t colunms;
-    size_t max_phy_width;
-    size_t max_phy_height;
-    size_t const_phy_x;
-    size_t const_phy_y;
 
-}drawContext;
 
 // interface
 class IView
@@ -69,23 +57,26 @@ public:
 };
 
 
+class IViewGlue;
+
 class nnView
     :public IView
 {
     int n_thread;
     bmpImage page;
+    IImageManager *images;
     size_t p_width;
     size_t p_height;
 public:
-    nnView();
+    nnView(IImageManager *_images);
     ~nnView();
     bool draw(IManager * manager, void * context);
     bool readConfiguration(miniXmlNode *node);
     bool createMainBitmap(size_t w, size_t h);
     inline bmpImage & getMainBitmap(void) { return page; }
 private:
-    bool drawObj(InnObj * obj, size_t & x, size_t & y, drawContext* ctx);
-    bool drawBkg( size_t & x, size_t & y, drawContext* ctx);
+    bool drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue *glue);
+    bool drawBkg( size_t & x, size_t & y,  IViewGlue *glu);
 };
 
 
@@ -100,4 +91,6 @@ public:
         :runtime_error("phyGlueConfigurationException"), node(_node) {}
 
 };
+
+
 #endif

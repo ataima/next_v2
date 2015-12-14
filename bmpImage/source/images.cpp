@@ -1496,6 +1496,63 @@ bool bmpImage::copyBits(bmpImage & dst, size_t left, size_t top, size_t right, s
     return copyBits(m_hBitmap, (LPBITMAPFILEHEADER)dst, left, top, right - left, bottom - top);
 }
 
+
+bool bmpImage::drawSprite(bmpImage & sprite, int left, int top)
+{
+    return drawSprite(m_hBitmap, sprite, left, top);
+}
+
+bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, size_t left, size_t top)
+{
+    bool bResult = false;
+    if (sprite != nullptr  && dst != nullptr)
+    {
+        unsigned int src_width = getWidth(sprite);
+        unsigned int src_height = getHeight(sprite);
+        unsigned int src_pitch = getPitch(sprite);
+        unsigned int src_line = getLine(sprite);
+        unsigned int dst_width = getWidth(dst);
+        unsigned int dst_height = getHeight(dst);
+        unsigned int dst_pitch = getPitch(dst);
+        LPBITMAPINFOHEADER dst_info = getInfoHeader(dst);
+        unsigned int dst_line = getLine(dst);
+        LPBITMAPINFOHEADER src_info = getInfoHeader(sprite);
+        unsigned  int depth = dst_line / dst_width;
+        if (depth != src_line / src_width)
+            return false;
+        // check the size of src image
+
+        if (dst_info != nullptr  && src_info != nullptr  && dst_info->biBitCount == src_info->biBitCount)
+        {
+            size_t height, width;
+            if (( left < dst_width) && ( top < dst_height)) {
+                unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
+                unsigned char  *src_bits = getBits(sprite);
+
+                // combine images
+                if (top + src_height > dst_height)
+                    height = dst_height - top;
+                else
+                    height = src_height;
+
+                if (left + src_width>dst_width)
+                    width = dst_width - left;
+                else
+                    width = src_width;
+                for (unsigned int rows = 0; rows < height; rows++) {
+                    memcpy(dst_bits, src_bits, width*depth);
+                    dst_bits += dst_pitch;
+                    src_bits += src_pitch;
+                }
+                bResult = true;
+            }
+        }
+    }
+    return bResult;
+
+}
+
+
 bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t left, size_t top, size_t width, size_t height)
 {
     bool bResult = false;
@@ -1509,7 +1566,7 @@ bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t l
         unsigned int dst_height = getHeight(dst);
         unsigned int dst_pitch = getPitch(dst);
         LPBITMAPINFOHEADER dst_info = getInfoHeader(dst);
-        unsigned int dst_line = getLine(src);
+        unsigned int dst_line = getLine(dst);
         LPBITMAPINFOHEADER src_info = getInfoHeader(src);
         unsigned  int depth = dst_line / dst_width;
         if (depth != src_line / src_width)
@@ -1521,7 +1578,6 @@ bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t l
             if ((left < src_width && left < dst_width) && (top < src_height && top < dst_height)) {
                 unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
                 unsigned char  *src_bits = getBits(src) + (top * src_pitch) + (left * depth);
-
                 // combine images
                 if (top + height > src_height)
                     height = src_height - top;

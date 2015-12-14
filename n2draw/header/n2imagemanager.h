@@ -1,6 +1,6 @@
 
 #ifndef N2IMAGE_MANAGER__HEADER
-#define N2VIEWN2IMAGE_MANAGER__HEADER_HEADER
+#define N2IMAGE_MANAGER__HEADER
 
 
 /**************************************************************
@@ -133,6 +133,15 @@ public:
         :runtime_error("imagesConfigurationBadFormatException") {}
 };
 
+
+class imagesConfigurationAlreadyLoadException
+    :public std::runtime_error
+{
+    size_t offset;
+public:
+    explicit class imagesConfigurationAlreadyLoadException(size_t off) throw()
+        :runtime_error("imagesConfigurationAlreadyLoadException") ,offset(off) {}
+};
 
 class imagesConfigurationUnknowFileException
     :public std::runtime_error

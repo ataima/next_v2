@@ -371,6 +371,7 @@ void test_nnConnection::test6(void)
     }
     catch (positionBusyException *e)
     {
+        CA_ASSERT(e==nullptr);
     }
     catch (wireConnectionException *v)
     {
