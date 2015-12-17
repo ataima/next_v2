@@ -166,7 +166,6 @@
     <ClInclude Include="..\header\docMacro.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\n2draw\header\n2draw.cpp" />
     <ClCompile Include="..\source\mainApp.cpp" />
     <ClCompile Include="..\source\testappmanager.cpp" />
     <ClCompile Include="..\source\testbmpImage.cpp" />

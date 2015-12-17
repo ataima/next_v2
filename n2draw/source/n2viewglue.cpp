@@ -43,10 +43,19 @@ nnPoint nnViewGlue::getCoordPhy(nnPoint & logPoint)
 nnPoint nnViewGlue::getCoordPhy(size_t x,size_t y)
 {
     nnPoint res(0, 0);
-    res.x = p_width-(x*const_x);
-    res.y = p_height-(y*const_y);
+    res.x = (x*const_x);
+    res.y = (y*const_y);
     return res;
 }
+
+nnPoint nnViewGlue::getMirrorCoordPhy(size_t x, size_t y)
+{
+    nnPoint res(0, 0);
+    res.x = p_width-(x*const_x)-const_x;
+    res.y = p_height-(y*const_y) - const_y;
+    return res;
+}
+
 
 //TestviewGlue.cpp : T2
 nnPoint nnViewGlue::getCoordLog(nnPoint & phyPoint)

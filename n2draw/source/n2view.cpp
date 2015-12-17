@@ -165,9 +165,7 @@ bool nnView::draw(IManager * manager, void * context)
                 {
                     res &= drawBkg(x, y, glue);
                 }
-                if (x == 0)break;
-            }
-            if (y == 0)break;
+            }            
         }
     }
     return res;
@@ -222,7 +220,7 @@ bool nnView::drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue * glue)
     }
     if (images != nullptr)
     {
-        nnPoint pos = glue->getCoordPhy(x, y);
+        nnPoint pos = glue->getMirrorCoordPhy(x, y);
         const listImage *mapImage = images->getImageList();
         if (mapImage)
         {
@@ -243,7 +241,7 @@ bool nnView::drawBkg(size_t & x, size_t & y, IViewGlue * glue)
     if (images != nullptr)
     {
 
-        nnPoint pos = glue->getCoordPhy(x, y);
+        nnPoint pos = glue->getMirrorCoordPhy(x, y);
         const listImage *mapImage = images->getImageList();
         if (mapImage)
         {

@@ -46,9 +46,6 @@
     <ClCompile Include="..\source\testappmanager.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\n2draw\header\n2draw.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="infotest.html" />

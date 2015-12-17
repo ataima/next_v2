@@ -60,11 +60,13 @@ class test_app_manager
 {
     CA_TEST_SUITE(test_app_manager)
         CA_TEST(test_app_manager::test1, "verifica loadbitmap");
+       CA_TEST(test_app_manager::test2, "verifica scroll");
     CA_TEST_SUITE_END()
         void setUp(void) {}
     void tearDown(void) {}
     void draw(bmpImage * bmp);
     void test1(void);
+    void test2(void);
 };
 ///////////////////////////////////////////////////
 
@@ -117,9 +119,57 @@ void test_app_manager::test1(void)
     nnPoint p2(10, 0);
     nnConnection::connectComponent(childs->object_manager, p1, p2);
     res = childs->view->updateDraw();
-//    CA_ASSERT(res == true);
+    CA_ASSERT(res == true);
     bmpImage &bdraw = childs->view->getDraw();
     draw(&bdraw);
     _mkdir(".\\bmp");
     bdraw.copyToFile(L".\\bmp\\test1_app.bmp");
+}
+
+
+void test_app_manager::test2(void)
+{
+    _START();
+    _INFO("Verify of internal class nnAppManager:load and display a draw, and scroll it");
+    _AUTHOR("Coppi Angelo n2draw library ");
+    _STOP();
+    nnAppManager app;
+    std::wstring name(X("..\\..\\images\\conf.xml"));
+    childApps *childs = app.createObjects(name);
+    CA_ASSERT(childs != nullptr);
+    bool res;
+    nnPoint p = childs->view->getCoordPhy(1, 1);
+    CA_ASSERT(p.x != 0);
+    CA_ASSERT(p.y != 0);
+    res = childs->imageManager->loadImages(p.x, p.y);
+    CA_ASSERT(res == true);
+    nnContactNO *v = new nnContactNO();
+    nnObjManager *mn = dynamic_cast<nnObjManager *>(childs->object_manager);
+    res = mn->addContact(10, 0, v);
+    CA_ASSERT(res == true);
+    CA_ASSERT((int)mn->size() == (int)1);
+    nnGenericCoil *u = new nnGenericCoil();
+    res = mn->addCoil(10, u);
+    CA_ASSERT(res == true);
+    CA_ASSERT((int)mn->size() == (int)10);
+    nnContactNC *v1 = new nnContactNC();
+    res = mn->addContact(12, 0, v1);
+    CA_ASSERT(res == true);
+    nnPoint p1(12, 0);
+    nnPoint p2(10, 0);
+    nnConnection::connectComponent(childs->object_manager, p2, p1);
+    res = childs->view->updateDraw();
+    CA_ASSERT(res == true);
+    bmpImage &bdraw = childs->view->getDraw();
+    draw(&bdraw);
+    childs->view->handlerScrollHorz(2);
+    res = childs->view->updateDraw();
+    CA_ASSERT(res == true);
+    bdraw = childs->view->getDraw();
+    draw(&bdraw);
+    childs->view->handlerScrollVert(2);
+    res = childs->view->updateDraw();
+    CA_ASSERT(res == true);
+    bdraw = childs->view->getDraw();
+    draw(&bdraw);
 }

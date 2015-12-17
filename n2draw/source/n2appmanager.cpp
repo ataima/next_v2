@@ -5,9 +5,12 @@ bool WinEvent::create(unsigned int message, unsigned int wparam, unsigned long l
     return false;
 }
 
-nnAppManager::nnAppManager()
+
+size_t nnAppManager::UID = 1;
+
+nnAppManager::nnAppManager():selected(-1)
 {
-   
+    
 }
 
 nnAppManager::~nnAppManager()
@@ -42,6 +45,11 @@ childApps * nnAppManager::createObjects(std::wstring & conf_file_name)
         delete child;
         child = nullptr;
         throw(e);
+    }
+    if (child != nullptr)
+    {
+        selected = static_cast<int>(UID);
+        childs[UID++] = child;
     }
     return child;
 }
@@ -141,8 +149,44 @@ bool nnAppManager::routeEvents(IEvent * event)
 
 bool nnAppManager::closeAll(void)
 {
-    return false;
+    clean();
+    selected = -1;
+    return true;
 }
+
+
+childApps *nnAppManager::activate(int v)
+{
+    childApps * res = nullptr;
+    if (!childs.empty())
+    {
+        listChild::iterator it = childs.find(v);
+        if (it != childs.end())
+        {
+            res = it->second;
+            selected = v;
+            res->view->updateDraw();
+        }
+    }
+    return res;
+}
+
+
+childApps *nnAppManager::active(void)
+{
+    childApps * res = nullptr;
+    if (!childs.empty() && selected>0)
+    {
+        listChild::iterator it = childs.find(selected);
+        if (it != childs.end())
+        {
+            res = it->second;
+            res->view->updateDraw();
+        }
+    }
+    return res;
+}
+
 
 
 
@@ -175,7 +219,8 @@ bool nnAppManager::clean(void)
     listChild::iterator _end = childs.end();
     while (it != _end)
     {
-        it->second.clean();
+        it->second->clean();
+        delete it->second;
         it++;
     }
     return childs.empty();

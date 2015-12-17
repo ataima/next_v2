@@ -70,22 +70,28 @@ public:
     virtual childApps * createObjects(std::wstring & conf_file_name) = 0;
     virtual bool routeEvents(IEvent * event) = 0;
     virtual bool closeAll(void) = 0;
+    virtual childApps *activate(int v) = 0;
+    virtual childApps *active(void) = 0;
 };
 
-typedef std::map<size_t, childApps> listChild;
+typedef std::map<size_t, childApps *> listChild;
 
 
 class nnAppManager
     :public IAppManager
 {
     listChild childs;
-    xmlConfig configuration;   
+    xmlConfig configuration; 
+    int selected;
+    static size_t UID;
 public:
     nnAppManager();
     ~nnAppManager();
     childApps * createObjects(std::wstring & conf_file_name);
     bool routeEvents(IEvent * event);
     bool closeAll(void);
+    childApps *activate(int v);
+    childApps *active(void);
 protected:
     bool clean(void);
     bool createInternalObjects(std::wstring & conf_file_name, childApps & child);

@@ -50,6 +50,7 @@ class IViewGlue
 public:
     virtual nnPoint getCoordPhy(nnPoint & logPoint) = 0;
     virtual nnPoint getCoordPhy(size_t x,size_t y) = 0;
+    virtual nnPoint getMirrorCoordPhy(size_t x, size_t y) = 0;
     virtual nnPoint getCoordLog(nnPoint & phyPoint) = 0;
     virtual bool readConfiguration(miniXmlNode & node) = 0;
     virtual bool selectStart(size_t xpos, size_t ypos) = 0;
@@ -113,6 +114,7 @@ public:
     ~nnViewGlue();
     nnPoint getCoordPhy(nnPoint & logPoint);
     nnPoint getCoordPhy(size_t x, size_t y);
+    nnPoint getMirrorCoordPhy(size_t x, size_t y);
     nnPoint getCoordLog(nnPoint & phyPoint);
     bool readConfiguration(miniXmlNode & node);
     bool selectStart(size_t xpos, size_t ypos);
