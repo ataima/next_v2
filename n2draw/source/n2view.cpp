@@ -149,9 +149,10 @@ bool nnView::draw(IManager * manager, void * context)
         InnObj *obj;
         res = true;
         bool t = false;
-        for (y = 0; y < map.y; y++)
+        map += off;
+        for (y = off.y; y < map.y; y++)
         {
-            for (x =0 ; x <map.x; x++)
+            for (x =off.x ; x <map.x; x++)
             {
                 if (ix == x && iy == y)
                 {

@@ -80,6 +80,16 @@ typedef struct tag_nn_point
                 return true;
         return false;
     }
+    inline void operator += (const tag_nn_point & a)
+    {
+        x += a.x;
+        y += a.y;
+    }
+    inline void operator += (const size_t v)
+    {
+        x += v;
+        y += v;
+    }
 } nnPoint;
 
 
