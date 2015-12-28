@@ -15,7 +15,9 @@ nnImageManager::~nnImageManager()
     allImages.clear();
     path.clear();
 }
-
+#if (_WIN32 || _WIN64)
+#define wgetcwd  _wgetcwd
+#endif
 
 bool nnImageManager::readConfiguration(miniXmlNode * node)
 {
@@ -29,7 +31,18 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
         miniXmlNode *xpath = conf->find(X("PATH"));
         if (xpath)
         {
-            path = xpath->getValue();
+            XCHAR buff[_MAX_PATH];
+            const XCHAR *v = xpath->getValue();
+            if(wgetcwd(buff,_MAX_PATH))
+            {
+             std::wstringstream ss;
+             ss<<buff<<"/"<<v;
+             path=ss.str().c_str();
+            }
+            else
+            {
+                path=v;
+            }
         }
         miniXmlNode *wire = conf->find(X("WIRE"));
         if (wire)

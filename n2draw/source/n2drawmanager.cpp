@@ -285,12 +285,12 @@ bool nnObjManager::removeAll(void)
 
 
 
-void nnObjManager::save(STRING & name)
+bool nnObjManager::save(STRING & name)
 {
+    bool res=false;
     size_t num_obj = 0;
     if (!name.empty())
     {
-        try {
 #ifdef _MSC_VER
             FILE *out = nullptr;
             FOPEN(&out, name.c_str(), X("w+"));
@@ -314,23 +314,20 @@ void nnObjManager::save(STRING & name)
                 }
                 root.print(out);
                 fclose(out);
+                res=true;
             }
-        }
-        catch (...)
-        {
-        }
     }
+return res;
 }
 
 
 
-void nnObjManager::load(STRING & name)
+bool nnObjManager::load(STRING & name)
 {
-    size_t num_obj = 0;
+    bool res=false;
     if (!name.empty())
     {
         removeAll();
-        try {
             miniXmlNode root;
             root.load(name.c_str(), &root);
             STRING name = root.getName();
@@ -384,11 +381,9 @@ void nnObjManager::load(STRING & name)
                 }
 
             }
-        }
-        catch (...)
-        {
-        }
+            res=true;
     }
+    return res;
 }
 
 bool nnObjManager::genHashKey(size_t x, size_t y, hashkey &key)
@@ -484,7 +479,7 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
                         {
                             InnObj *w1 = dynamic_cast<InnObj *>(neighbourUp);
                             InnObj *w2 = dynamic_cast<InnObj *>(neighbourDw);
-                            wireConnectionException *pe= new wireConnectionException(neighbourUp->getConnections(), neighbourUp->getConnections());
+                            wireConnectionException *pe= new wireConnectionException(w1->getConnections(), w2->getConnections());
                             throw (pe);
                         }
             }
@@ -558,10 +553,10 @@ bool nnObjManager::unlinkObj(size_t x, size_t y, InnObj *obj)
         neighbour = getObj(x, y - 1);
         if (neighbour != nullptr) {
             if (neighbour->isComponent()) {
-                neighbour->disconnect(obj);
+                res=neighbour->disconnect(obj);
             }
             else {
-                removeObj(x, y - 1);
+                res=removeObj(x, y - 1);
             }
         }
     }
@@ -569,10 +564,10 @@ bool nnObjManager::unlinkObj(size_t x, size_t y, InnObj *obj)
         neighbour = getObj(x, y + 1);
         if (neighbour != nullptr) {
             if (neighbour->isComponent()) {
-                neighbour->disconnect(obj);
+                res=neighbour->disconnect(obj);
             }
             else {
-                removeObj(x, y + 1);
+                res=removeObj(x, y + 1);
             }
         }
     }
@@ -582,7 +577,7 @@ bool nnObjManager::unlinkObj(size_t x, size_t y, InnObj *obj)
             neighbour = getObj(x - 1, y);
             if (neighbour != nullptr) {
                 if (!neighbour->isComponent()) {
-                    removeObj(x - 1, y);
+                    res=removeObj(x - 1, y);
                 }
             }
         }
@@ -590,13 +585,13 @@ bool nnObjManager::unlinkObj(size_t x, size_t y, InnObj *obj)
             neighbour = getObj(x + 1, y);
             if (neighbour != nullptr) {
                 if (!neighbour->isComponent()) {
-                    removeObj(x + 1, y);
+                    res=removeObj(x + 1, y);
                 }
             }
         }
 
     }
-    return true;
+    return res;
 }
 
 
@@ -977,6 +972,7 @@ bool nnObjManager::Resize(size_t w, size_t h)
 
 bool nnObjManager::readConfiguration(miniXmlNode & node)
 {
+    (node);
     return true;
 }
 

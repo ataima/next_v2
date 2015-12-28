@@ -58,12 +58,20 @@ public:
     virtual bool selectStart(nnPoint pos) = 0;
     virtual bool selectStop(nnPoint pos1) = 0;
     virtual bool select(nnPoint pos1, nnPoint pos2) = 0;
-    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
-    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
-    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
+    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
+    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
+    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
     virtual bool handlerScrollHorz(size_t pos) = 0;
     virtual bool handlerScrollVert(size_t pos) = 0;
-    virtual bool handlerEscapeButton(void) = 0;
+    virtual bool handlerEscapeButton(bool shift,bool ctrl,bool alt,nnPoint &start, nnPoint & stop) = 0;
+    virtual bool handlerHomeButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
+    virtual bool handlerEndButton(bool shitf,bool ctrl,bool alt,nnPoint &pos)=0;
+    virtual bool handlerPageUpButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
+    virtual bool handlerPageDownButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
+    virtual bool handlerLeftButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
+    virtual bool handlerRightButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
+    virtual bool handlerUpButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
+    virtual bool handlerDownButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
     virtual bool unselect() = 0;
     virtual bool getSelectAreaPhy(size_t & width, size_t & height) = 0;
     virtual bool getSelectStartPhy(size_t & x, size_t & y) = 0;
@@ -76,6 +84,14 @@ public:
     virtual bool updateDraw(void) = 0;
     virtual nnPoint getOffsetView(void) = 0;
     virtual nnPoint getMap(void) = 0;
+    virtual bool resize(size_t w, size_t h) = 0;
+    virtual bool needScrollBarHorz(void)=0;
+    virtual bool needScrollBarVert(void)=0;
+    virtual bool isSelectAreaPhyVisible(nnRect & result,nnPoint & start,nnPoint & stop)=0;
+    virtual size_t getScrollableHorzSize(void)=0;
+    virtual size_t getScrollableVertSize(void)=0;
+    virtual size_t getPageWidth(void)=0;
+    virtual size_t getPageHeight(void)=0;
 };
 
 
@@ -124,12 +140,20 @@ public:
     bool unselect();
     bool getSelectAreaPhy(size_t & width, size_t & height);
     bool getSelectStartPhy(size_t & x, size_t & y);
-    bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint);
-    bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint);
-    bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint);
+    bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
+    bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
+    bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
     bool handlerScrollHorz(size_t pos);
     bool handlerScrollVert(size_t pos);
-    bool handlerEscapeButton(void);
+    bool handlerEscapeButton(bool shift,bool ctrl,bool alt,nnPoint &start, nnPoint & stop);
+    bool handlerHomeButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
+    bool handlerEndButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
+    bool handlerPageUpButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
+    bool handlerPageDownButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
+    bool handlerLeftButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll);
+    bool handlerRightButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll);
+    bool handlerUpButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll);
+    bool handlerDownButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll);
     inline bool isStartValid(void) { return select_start != -1; }
     inline bool isStopValid(void) { return select_stop != -1; }
     inline IManager *getManager(void) { return manager; }
@@ -140,19 +164,21 @@ public:
     bool updateDraw(void);
     inline nnPoint getOffsetView(void) { return nnPoint(offset_x, offset_y); }
     inline nnPoint getMap(void) { return nnPoint((p_width / const_x), (p_height / const_y)); }
+    bool resize(size_t w, size_t h);
+    bool needScrollBarHorz(void);
+    bool needScrollBarVert(void);
+    bool isSelectAreaPhyVisible(nnRect & result,nnPoint & start,nnPoint & stop);
+    size_t getScrollableHorzSize(void);
+    size_t getScrollableVertSize(void);
+    inline size_t getPageWidth(void) { return p_width / const_x;  }
+    inline size_t getPageHeight(void){ return p_height / const_y; }
+
+private:
+    bool getVisibleArea(nnRect & area);
+    bool moveSelectArea(const int vx, const int vy, bool &needScroll);
+    bool resizeSelectArea(const int vx,const int vy);
 };
 
-
-// no conf phy view 
-class phyGlueConfigurationException
-    :public std::runtime_error
-{
-    std::wstring node;
-public:
-    explicit phyGlueConfigurationException(const wchar_t *_node) throw()
-        :runtime_error("phyGlueConfigurationException"),node(_node) {}
-
-};
 
 #endif
 

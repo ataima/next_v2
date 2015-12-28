@@ -136,9 +136,9 @@ public:
 	static void getUser(char *buff, int len)
 	{
 #if defined (_WIN32) || defined (_WIN64)|| defined(BORLAND)
-		unsigned long w = len;
+        //unsigned long w = len;
 		//		GetUserName(buff, &w);
-		strcpy(buff, "Windows user");
+        strncpy(buff, "Windows user",len);
 #else
 		sprintf(buff, "%s", getlogin());
 #endif
@@ -1246,9 +1246,9 @@ public:
 		return file;
 	}
 	/// implementation of ...
-	virtual void startDocument(const char *info) {}
+    virtual void startDocument(const char *info) {(info);}
 	/// implementation of ...
-	virtual void endDocument(const char *info) {}
+    virtual void endDocument(const char *info) {(info);}
 };
 
 
@@ -1291,6 +1291,7 @@ public:
 	/// implementation of ...
 	virtual void addResult(const char *info, int f = 0, int timeU = 0)
 	{
+        (f);
 		if (timeU != -1)
 			fprintf(file, "%s:%d ms\n", info, timeU);
 		else
@@ -1335,17 +1336,22 @@ public:
 	/// implementation of ...
 	void startDocument(const char *info)
 	{
+        (info);
 		const char msg[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		fprintf(file, "%s", msg);
 	}
 	/// implementation of ...
 	void addInfo(const char *info)
 	{
+        (info);
 		/*fprintf(file,"<!--%s-->",info);*/
 	}
 	/// implementation of ...
 	void addResult(const char *info, int f = 0, int timeU = 0)
 	{
+        (info);
+        (f);
+        (timeU);
 		/*fprintf(file,"<!--%s %d,%d-->",info,f,timeU);*/
 	}
 };
@@ -1368,15 +1374,19 @@ public:
 		type = f_html;
 	}
 	/// implementation of ...
-	void startDocument(const char *info) {}
+    void startDocument(const char *info) {(info);}
 	/// implementation of ...
 	void addInfo(const char *info)
-	{
+    {
+        (info);
 		/*fprintf(file,"<!--%s-->",info);*/
 	}
 	/// implementation of ...
 	void addResult(const char *info, int f = 0, int timeU = 0)
 	{
+        (info);
+        (f);
+        (timeU);
 		/*fprintf(file,"<!--%s %d,%d-->",info,f,timeU);*/
 	}
 };
@@ -1564,6 +1574,7 @@ public:
 	/// method for register the class in the suite and prepare the output
 	int RegisterTest(const char *name, const char *out, int option, int *testReq, int *numTestReq, int familyReq)
 	{
+        (name);
 		int res = 0;
 		int i;
 		totalTest = 0;

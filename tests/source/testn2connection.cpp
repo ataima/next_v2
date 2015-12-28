@@ -8,7 +8,6 @@
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
-
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
 files(the "Software"), to deal in the Software without
@@ -371,11 +370,13 @@ void test_nnConnection::test6(void)
     }
     catch (positionBusyException *e)
     {
+        delete e;
         CA_ASSERT(e==nullptr);
     }
     catch (wireConnectionException *v)
     {
         CA_ASSERT(v->down[0] == 4);
+        delete v;
     }
     InnObj *w = mn.getObj(5, 3);
     CA_ASSERT(w != nullptr);

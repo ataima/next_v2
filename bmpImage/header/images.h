@@ -69,6 +69,7 @@ public:
     bmpImage();
     bmpImage(bmpImage & b);
     ~bmpImage();
+    unsigned long getTotalSize();
     bool copyFromFile(const wchar_t *name);
     bool copyFrombmpImage(bmpImage & b);
     bool copyToFile(const wchar_t *name);

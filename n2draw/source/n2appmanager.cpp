@@ -2,6 +2,9 @@
 
 bool WinEvent::create(unsigned int message, unsigned int wparam, unsigned long lparam)
 {
+    (message);
+    (wparam);
+    (lparam);
     return false;
 }
 
@@ -22,7 +25,6 @@ nnAppManager::~nnAppManager()
 childApps * nnAppManager::createObjects(std::wstring & conf_file_name)
 {
     bool res = false;
-    size_t line = __LINE__;
     childApps * child = new childApps();
     MEMCHK(childApps, child);
     child->imageManager = nullptr;
@@ -32,24 +34,42 @@ childApps * nnAppManager::createObjects(std::wstring & conf_file_name)
     {
         res = createInternalObjects(conf_file_name, *child);
     }
-    catch (std::runtime_error *e)
+    catch (n2exception *e)
     {
-        if (child->object_manager)
-            delete child->object_manager;
-        if (child->view)
-        {
-            delete child->view;
-        }
-        if (child->imageManager)
-            delete child->imageManager;
+        child->clean();
         delete child;
         child = nullptr;
         throw(e);
+    }
+    if(res==false)
+    {
+        child->clean();
+        delete child;
+        child = nullptr;
     }
     if (child != nullptr)
     {
         selected = static_cast<int>(UID);
         childs[UID++] = child;
+    }
+    // OK is Valid;
+    if(child != nullptr)
+    {
+        bool res;
+        nnPoint p=child->view->getCoordPhy(1,1);
+        if(p.x != 0 && p.y != 0)
+        {
+            res=child->imageManager->loadImages(p.x, p.y);
+            if(!res)
+            {
+
+                child->clean();
+                delete child;
+                child = nullptr;
+                appManagerConfigureLoadImageException *e=new appManagerConfigureLoadImageException();
+                throw(e);
+            }
+        }
     }
     return child;
 }
@@ -63,7 +83,7 @@ bool nnAppManager::createInternalObjects(std::wstring & conf_file_name, childApp
         miniXmlNode *conf_manager = configuration.getRoot().find(X("APP"));
         if (conf_manager != nullptr)
         {
-            size_t line = __LINE__;
+            //size_t line = __LINE__;
             miniXmlNode *size_default = conf_manager->find(X("DEFAULT_WIDTH"));
             if (size_default != nullptr)
             {
@@ -137,6 +157,11 @@ bool nnAppManager::createInternalObjects(std::wstring & conf_file_name, childApp
             throw(e);
         }
     }
+    else
+    {
+        appManagerConfigureFileUnknow  *e = new appManagerConfigureFileUnknow(conf_file_name);
+        throw(e);
+    }
     return res;
 }
 
@@ -144,6 +169,7 @@ bool nnAppManager::createInternalObjects(std::wstring & conf_file_name, childApp
 
 bool nnAppManager::routeEvents(IEvent * event)
 {
+    (event);
     return false;
 }
 

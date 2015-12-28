@@ -329,6 +329,7 @@ bool nnObjWire::connectFromUp(size_t num)
 
 bool nnObjWire::disconnectFromUp(size_t num)
 {
+    (num);
     bool res = false;
     switch (getWire())
     {
@@ -422,7 +423,8 @@ bool nnObjWire::connectFromDown(size_t num)
 
 bool nnObjWire::disconnectFromDown(size_t num)
 {
-    bool res = false;
+    (num);
+    bool res = false;    
     switch (getWire())
     {
     case eWire::wireTHorizUp:
@@ -605,6 +607,7 @@ bool nnObjWire::connectFromRight(size_t num)
 
 bool nnObjWire::disconnectFromRight(size_t num)
 {
+    (num);
     bool res = false;
     switch (getWire())
     {

@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "images.h"
 #include "n2miniXml.h"
 #include <map>
+#include "n2exception.h"
 
 
 
@@ -70,85 +71,4 @@ public:
 
 
 // no conf images 
-class imagesConfigurationException
-    :public std::runtime_error
-{
-public:
-    explicit imagesConfigurationException(void) throw()
-        :runtime_error("imagesConfigurationException") {}
-
-};
-
-
-class imagesConfigurationNoWireException
-    :public std::runtime_error
-{
-public:
-    explicit imagesConfigurationNoWireException(void) throw()
-        :runtime_error("imagesConfigurationNoWireException") {}
-};
-
-
-class imagesConfigurationNoContactException
-    :public std::runtime_error
-{
-public:
-    explicit class imagesConfigurationNoContactException(void) throw()
-        :runtime_error("imagesConfigurationNoContactException") {}
-};
-
-class imagesConfigurationNoCoilException
-    :public std::runtime_error
-{
-public:
-    explicit class imagesConfigurationNoCoilException(void) throw()
-        :runtime_error("imagesConfigurationNoCoilException") {}
-};
-
-
-class imagesConfigurationListEmptyException
-    :public std::runtime_error
-{
-public:
-    explicit class imagesConfigurationListEmptyException(void) throw()
-        :runtime_error("imagesConfigurationListEmptyException") {}
-};
-
-
-class imagesConfigurationBadSizeException
-    :public std::runtime_error
-{
-    size_t w, h;
-public:
-    explicit class imagesConfigurationBadSizeException(size_t _w, size_t _h) throw()
-        :runtime_error("imagesConfigurationBadSizeException"), w(_w), h(_h) {}
-};
-
-
-class imagesConfigurationBadFormatException
-    :public std::runtime_error
-{
-public:
-    explicit class imagesConfigurationBadFormatException(void) throw()
-        :runtime_error("imagesConfigurationBadFormatException") {}
-};
-
-
-class imagesConfigurationAlreadyLoadException
-    :public std::runtime_error
-{
-    size_t offset;
-public:
-    explicit class imagesConfigurationAlreadyLoadException(size_t off) throw()
-        :runtime_error("imagesConfigurationAlreadyLoadException") ,offset(off) {}
-};
-
-class imagesConfigurationUnknowFileException
-    :public std::runtime_error
-{
-    std::wstring filename;
-public:
-    explicit class imagesConfigurationUnknowFileException(std::wstring _filename) throw()
-        :runtime_error("imagesConfigurationUnknowFileException"), filename(_filename) {}
-};
 #endif

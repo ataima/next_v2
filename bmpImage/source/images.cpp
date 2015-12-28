@@ -362,6 +362,15 @@ bool bmpImage::isValid(void)
     return res;
 }
 
+
+unsigned long bmpImage::getTotalSize()
+{
+    if (m_hBitmap != nullptr)
+        return m_hBitmap->bfSize;
+    else
+        return 0;
+}
+
 bool bmpImage::clear(void)
 {
     bool res = false;
@@ -605,7 +614,7 @@ unsigned int bmpImage::getHeight(LPBITMAPFILEHEADER bI)
     return  res;
 }
 
-unsigned char * bmpImage::bmpImage::getScanLine(LPBITMAPFILEHEADER bI, unsigned scanline)
+unsigned char * bmpImage::getScanLine(LPBITMAPFILEHEADER bI, unsigned scanline)
 {
     if (bI)
     {

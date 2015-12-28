@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "n2imagemanager.h"
 #include "n2view.h"
 #include "n2viewglue.h"
+#include "n2utoatou.h"
 
 
 
@@ -86,7 +87,7 @@ class nnAppManager
     static size_t UID;
 public:
     nnAppManager();
-    ~nnAppManager();
+    ~nnAppManager();    
     childApps * createObjects(std::wstring & conf_file_name);
     bool routeEvents(IEvent * event);
     bool closeAll(void);
@@ -101,12 +102,5 @@ protected:
 
 
 
-class appManagerConfigureFileMissingNodeException
-    :public std::runtime_error
-{
-    std::wstring node;
-public:
-    explicit class appManagerConfigureFileMissingNodeException(std::wstring _node) throw()
-        :runtime_error("appManagerConfigureFileMissingNodeException"), node(_node) {}
-};
+
 #endif

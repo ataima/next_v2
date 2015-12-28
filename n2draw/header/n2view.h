@@ -41,6 +41,7 @@ public:
     virtual bool draw(IManager *manager, void * context) = 0;
     virtual bool createMainBitmap(size_t w, size_t h) = 0;
     virtual bmpImage & getMainBitmap(void) = 0;
+    virtual bool remapMainBitmap(size_t w,size_t h)=0;
 };
 
 
@@ -51,8 +52,9 @@ class nnTextView
     bmpImage image;
 public:
     bool draw(IManager * manager, void * context);
-    bool readConfiguration(miniXmlNode *node) { return false; }
-    virtual bool createMainBitmap(size_t w, size_t h) { return true; }
+    bool readConfiguration(miniXmlNode *node) { (node);return false; }
+    bool createMainBitmap(size_t w, size_t h) { (h);(w);return true; }
+    bool remapMainBitmap(size_t w,size_t h){(h);(w);return true;}
     virtual bmpImage & getMainBitmap(void) { return image; }
 };
 
@@ -65,8 +67,6 @@ class nnView
     int n_thread;
     bmpImage page;
     IImageManager *images;
-    size_t p_width;
-    size_t p_height;
 public:
     nnView(IImageManager *_images);
     ~nnView();
@@ -74,6 +74,7 @@ public:
     bool readConfiguration(miniXmlNode *node);
     bool createMainBitmap(size_t w, size_t h);
     inline bmpImage & getMainBitmap(void) { return page; }
+    bool remapMainBitmap(size_t w,size_t h);
 private:
     bool drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue *glue);
     bool drawBkg( size_t & x, size_t & y,  IViewGlue *glu);
@@ -81,16 +82,6 @@ private:
 
 
 
-// no conf phy view 
-class phyViewConfigurationException
-    :public std::runtime_error
-{
-    std::wstring node;
-public:
-    explicit phyViewConfigurationException(const wchar_t *_node) throw()
-        :runtime_error("phyGlueConfigurationException"), node(_node) {}
-
-};
 
 
 #endif

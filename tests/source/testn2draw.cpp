@@ -288,14 +288,15 @@ void test_n2draw_class::test11(void)
 	{
 		marshallObj<nnObjWire>(v,__func__,__LINE__);
 	}
-	catch (failMemoryException e)
+    catch (failMemoryException *e)
 	{
 #if (_MSC_VER < 1900)
-		CA_ASSERT(strcmp(e.fun, "test_n2draw_class::test11") == 0);
+        CA_ASSERT(strcmp(e->fun, "test_n2draw_class::test11") == 0);
 #else
-		CA_ASSERT(strcmp(e.fun, "test11")==0);		
+        CA_ASSERT(strcmp(e->fun, "test11")==0);
 #endif	
-		CA_ASSERT(e.line = 263);
+        CA_ASSERT(e->line = 263);
+        delete e;
 	}
 }
 

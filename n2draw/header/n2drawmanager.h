@@ -58,8 +58,8 @@ public:
     virtual size_t getHeight(void) = 0;
     virtual nnPoint getStartPoint(void) = 0;
     virtual nnPoint getStopPoint(void) = 0;
-    virtual void save(STRING & name) = 0;
-    virtual void load(STRING & name) = 0;
+    virtual bool save(STRING & name) = 0;
+    virtual bool load(STRING & name) = 0;
     virtual bool undo(void) = 0;
     virtual bool redo(void) = 0;
     virtual bool insertRow(size_t y_pos) = 0;
@@ -157,8 +157,8 @@ public:
     inline size_t getHeight(void) { return v_height; }
     nnPoint getStartPoint(void);
     nnPoint getStopPoint(void);
-    void save(STRING & name);
-    void load(STRING & name);
+    bool save(STRING & name);
+    bool load(STRING & name);
     bool undo(void);
     bool redo(void);
     bool insertRow(size_t y_pos);

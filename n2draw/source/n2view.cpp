@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 bool nnTextView::draw(IManager * manager, void * context)
 {
+    (context);
     if (manager != nullptr)
     {
         size_t h, w;
@@ -128,33 +129,37 @@ nnView::~nnView()
 bool nnView::draw(IManager * manager, void * context)
 {
     bool res = false;
+    bool empty = false;
     size_t x, y;
     size_t ix, iy;
     nnViewGlue *glue = (nnViewGlue *)(context);
-    x = y = -1;
+    ix = iy = 0;
     if (glue != nullptr)
     {
         nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
         nnPoint off = glue->getOffsetView();
         nnPoint map = glue->getMap();
+        empty=mn.empty();
         hashObjTable::iterator it = mn.begin();
         hashObjTable::iterator end = mn.end();
-        if (it != end)
+        if(!empty)
         {
-            do
+            if (it != end)
             {
-                mn.revIndexes((hashkey)(it->first), ix, iy);               
-            } while (ix < off.x && iy < off.y && it != end);
+                do
+                {
+                    mn.revIndexes((hashkey)(it->first), ix, iy);
+                } while (ix < off.x && iy < off.y && it != end);
+            }
         }
         InnObj *obj;
         res = true;
-        bool t = false;
         map += off;
-        for (y = off.y; y < map.y; y++)
+        for (y = off.y ; y < map.y ; y++)
         {
-            for (x =off.x ; x <map.x; x++)
+            for (x = off.x ; x < map.x ; x++)
             {
-                if (ix == x && iy == y)
+                if ( empty==false && ix == x && iy == y)
                 {
                     obj = it->second;
                     res &= drawObj(obj, x, y, glue);
@@ -199,8 +204,15 @@ bool nnView::readConfiguration(miniXmlNode * node)
 bool nnView::createMainBitmap(size_t w, size_t h)
 {
     bool res = false;
-    res = page.create(w, h, 0);
+    res = page.create((int)w, (int)h, 0);
     return res;
+}
+
+
+bool nnView::remapMainBitmap(size_t w,size_t h)
+{
+    page.clear();
+    return createMainBitmap(w,h);
 }
 
 bool nnView::drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue * glue)
@@ -228,7 +240,7 @@ bool nnView::drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue * glue)
             listImage::const_iterator it = mapImage->find(nImage);
             if (it != mapImage->end())
             {
-                res = page.drawSprite(*it->second, pos.x, pos.y);
+                res = page.drawSprite(*it->second, (int)pos.x, (int)pos.y);
             }
         }
 
@@ -249,7 +261,7 @@ bool nnView::drawBkg(size_t & x, size_t & y, IViewGlue * glue)
             listImage::const_iterator it = mapImage->find(0);
             if (it != mapImage->end())
             {
-                res = page.drawSprite(*it->second, pos.x, pos.y);
+                res = page.drawSprite(*it->second, (int)pos.x, (int)pos.y);
             }
         }
 

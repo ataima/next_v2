@@ -32,7 +32,7 @@ bool nnConnection::connectComponent(IManager * manager, nnPoint & p_src, nnPoint
 	bool res = false;
 	if (manager != nullptr)
 	{
-		InnObj *v = nullptr;
+        //InnObj *v = nullptr;
 		InnObj *src = manager->getObj(p_src.x, p_src.y);
 		InnObj *dst = manager->getObj(p_dst.x, p_dst.y);
 		if (src != nullptr && dst != nullptr)

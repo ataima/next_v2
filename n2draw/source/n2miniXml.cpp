@@ -590,7 +590,7 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
                 skipSpaces();
                 if (captureValue(token_value))
                 {
-                    miniXmlNode *oldPos = *node;
+                    //miniXmlNode *oldPos = *node;
                     if ((*firstNode) == false)
                     {
                         (*firstNode) = true;
@@ -642,7 +642,7 @@ bool miniXmlParse::findNextChar(XCHAR ch)
 bool miniXmlParse::captureToken(STRING & token)
 { // only token as <token>
     bool res = false;
-    XCHAR * pTemp = p_index;
+    //XCHAR * pTemp = p_index;
     while (*p_index != '>' && p_index < p_end)
     {
         token.push_back(*p_index);
@@ -657,7 +657,7 @@ bool miniXmlParse::captureToken(STRING & token)
 bool miniXmlParse::captureValue(STRING & token)
 { // only token as <token>
     bool res = false;
-    XCHAR * pTemp = p_index;
+    //XCHAR * pTemp = p_index;
     while (*p_index != '<' && p_index < p_end)
     {
         if (*p_index >= ' ')
