@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.5.1, 2015-12-30T12:53:31. -->
+<!-- Written by QtCreator 3.5.1, 2015-12-30T22:57:23. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -68,9 +68,9 @@
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">qt.55.gcc_kit</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">1</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/angelo/QT/next_v2/dist</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/angelo/QT/next_v2/build</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>

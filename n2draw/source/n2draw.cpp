@@ -3,6 +3,8 @@
 #include "n2draw.h"
 #include "n2miniXml.h"
 
+
+
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
 
@@ -28,9 +30,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-const std::wstring nnObj::toString(void) const
+const std::u16string nnObj::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     switch (v_context)
     {
     case objNone:  s << L"objNone"; break;
@@ -66,9 +68,9 @@ void nnObj::load(miniXmlNode *root)
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const  std::wstring nnObjPos::toString(void) const
+const  std::u16string nnObjPos::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     s << L"X:" << v_Xpos << L" - Y:" <<
         v_Ypos << " - " << nnObj::toString();
     return s.str();
@@ -661,30 +663,30 @@ void nnObjWire::setConnections(int n)
 }
 
 
-eWire nnObjWire::wireStringToEnum(const wchar_t *name)
+eWire nnObjWire::wireStringToEnum(const char16_t *name)
 {
-    std::wstring value = name;
-    if (value == L"wireHorizzontal")
+    std::u16string value = name;
+    if (value == X("wireHorizzontal"))
         return wireHorizzontal;
-    if (value == L"wireVertical")
+    if (value == X("wireVertical"))
         return wireVertical;
-    if (value == L"wireAngleUpRight")
+    if (value == X("wireAngleUpRight"))
         return wireAngleUpRight;
-    if (value == L"wireAngleUpLeft")
+    if (value == X("wireAngleUpLeft"))
         return wireAngleUpLeft;
-    if (value == L"wireAngleDownRight")
+    if (value == X("wireAngleDownRight"))
         return wireAngleDownRight;
-    if (value == L"wireAngleDownLeft")
+    if (value == X("wireAngleDownLeft"))
         return wireAngleDownLeft;
-    if (value == L"wireTHorizDown")
+    if (value == X("wireTHorizDown"))
         return wireTHorizDown;
-    if (value == L"wireTHorizUp")
+    if (value == X("wireTHorizUp"))
         return wireTHorizUp;
-    if (value == L"wireTVertRight")
+    if (value == X("wireTVertRight"))
         return wireTVertRight;
-    if (value == L"wireTVertLeft")
+    if (value == X("wireTVertLeft"))
         return wireTVertLeft;
-    if (value == L"wireCross")
+    if (value == X("wireCross"))
         return wireCross;
     return noWire;
 }
@@ -692,9 +694,9 @@ eWire nnObjWire::wireStringToEnum(const wchar_t *name)
 int nnObjConn::uid_num = 2;
 
 
-const std::wstring nnObjConn::toString(void) const
+const std::u16string nnObjConn::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     if (v_num.size() > 0)
         s << "N:" << v_num.front() << ":" << v_num.back() << " - " << nnObjPos::toString();
     else
@@ -732,7 +734,8 @@ void nnObjConn::load(miniXmlNode *root)
             if (value != nullptr && len>0 )
             {
                 do{
-                    int i = ATOL(value);
+                    UtoA toA(value);
+                    int i = ATOL(toA.utf8());
                     v_num.push_back(i);
                     while (*value!=' ' && len>0)
                     { 
@@ -745,9 +748,9 @@ void nnObjConn::load(miniXmlNode *root)
     }
 }
 
-const  std::wstring nnObjWire::toString(void) const
+const  std::u16string nnObjWire::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     s << nnObjConn::toString() << " - ";
     switch (v_wire)
     {
@@ -949,16 +952,16 @@ bool nnObjComponent::connectFromDown(int b)
     return res;
 }
 
-custom_obj nnObjComponent::getCustomizationFromName(const wchar_t * s)
+custom_obj nnObjComponent::getCustomizationFromName(const char16_t * s)
 {
-    std::wstring name = s;
-    if (name == L"contactGenericAnd")
+    std::u16string name = s;
+    if (name == X("contactGenericAnd"))
         return contactGenericAnd;
     else
-        if (name == L"contactGenericOr")
+        if (name == X("contactGenericOr"))
             return contactGenericOr;
         else
-            if (name == L"coilGeneric")
+            if (name == X("coilGeneric"))
                 return coilGeneric;
     return no_component;
 }
@@ -995,25 +998,25 @@ bool nnObjComponent::disconnectFromDown(void)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const  std::wstring nnObjContact::toString(void) const
+const  std::u16string nnObjContact::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     s << "CONTACT : ";
     s << nnObjComponent::toString()<< std::endl;
     s << nnObjVCPU::toString() << std::endl;
     return s.str();
 }
 
-const  std::wstring nnContactNO::toString(void) const
+const  std::u16string nnContactNO::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     s << "N.O. " << nnObjContact::toString();
     return s.str();
 }
 
-const  std::wstring nnContactNC::toString(void) const
+const  std::u16string nnContactNC::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     s << "N.C. " << nnObjContact::toString();
     return s.str();
 }
@@ -1043,18 +1046,18 @@ void nnObjContact::load(miniXmlNode *root)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const  std::wstring nnObjCoil::toString(void) const
+const  std::u16string nnObjCoil::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     s << "COIL : ";
     s << nnObjComponent::toString() << std::endl;
     s << nnObjVCPU::toString() << std::endl;
     return s.str();
 }
 
-const  std::wstring nnGenericCoil::toString(void) const
+const  std::u16string nnGenericCoil::toString(void) const
 {
-    std::wostringstream s;
+    u16stringstream s;
     s << "GEN " <<nnObjCoil::toString() << std::endl;
     return s.str();
 }
@@ -1082,9 +1085,9 @@ void nnObjCoil::load(miniXmlNode *root)
     }
 }
 
-const std::wstring nnObjVCPU::toString(void) const
+const std::u16string nnObjVCPU::toString(void) const
 {
-    std::wstringstream os;
+    u16stringstream os;
     if (v_vcpu != nullptr)
     {		
         for (auto i : v_reg)
@@ -1129,7 +1132,8 @@ void nnObjVCPU::load(miniXmlNode * root)
                 if (value != nullptr && len > 0)
                 {
                     do {
-                        int i = ATOL(value);
+                        UtoA toA(value);
+                        int i = ATOL(toA.utf8());
                         v_reg.push_back(i);
                         while (*value != ' ' && len > 0)
                         {

@@ -148,7 +148,7 @@ bool nnView::draw(IManager * manager, void * context)
             {
                 do
                 {
-                    mn.revIndexes((hashkey)(it->first), ix, iy);
+                    mn.revIndexes(const_cast<hashkey&>(it->first), ix, iy);
                 } while (ix < off.x && iy < off.y && it != end);
             }
         }
@@ -165,7 +165,7 @@ bool nnView::draw(IManager * manager, void * context)
                     res &= drawObj(obj, x, y, glue);
                     it++;
                     if(it!=end)
-                        mn.revIndexes((hashkey)(it->first), ix, iy);
+                        mn.revIndexes(const_cast<hashkey&>(it->first), ix, iy);
                 }
                 else
                 {

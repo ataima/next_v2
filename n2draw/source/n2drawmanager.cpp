@@ -285,17 +285,19 @@ bool nnObjManager::removeAll(void)
 
 
 
-bool nnObjManager::save(STRING & name)
+bool nnObjManager::save(const STRING & name)
 {
     bool res=false;
     int num_obj = 0;
     if (!name.empty())
     {
+        UtoA toA(name.c_str());
+        std::string fname=toA.utf8();
 #ifdef _MSC_VER
             FILE *out = nullptr;
-            FOPEN(&out, name.c_str(), X("w+"));
+            FOPEN(&out, fname.c_str(), X("w+"));
 #else
-            FILE *out = FOPEN(name.c_str(), "w+");
+            FILE *out = FOPEN(fname.c_str(), "w+");
 #endif
             if (out != NULL)
             {
@@ -322,7 +324,7 @@ return res;
 
 
 
-bool nnObjManager::load(STRING & name)
+bool nnObjManager::load(const STRING & name)
 {
     bool res=false;
     if (!name.empty())
@@ -395,10 +397,9 @@ bool nnObjManager::genHashKey(int x, int y, hashkey &key)
     y |= 1;
     x &= mask_width;
     y &= mask_height;
-    key = x;
-    key <<= 29;
-    key |= y;
-    res = key != 0;
+    key.v2 = y;
+    key.v1 = x;
+    res =( key.v12 != 0);
     return res;
 }
 
@@ -629,9 +630,8 @@ bool nnObjManager::swapObj(nnPoint from, nnPoint to)
 bool nnObjManager::revHashKey(hashkey & key, int & x, int &y)
 {
     bool res = false;
-    y = key & 0xfffffff;
-    y = y / 2;
-    x = (key >> 30) & 0xfffffff;
+    y = (key.v2)>>1 ;
+    x = (key.v1)>>1 ;
     res = (y != 0 && x != 0);
     return res;
 }

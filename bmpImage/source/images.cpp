@@ -4,11 +4,19 @@
 #include <string.h>
 #endif
 #include "images.h"
-
+#include <codecvt>
+#include <locale>
 
 
 #ifndef _MSC_VER
-#define _wfopen_s wfopen
+#define FOPEN fopen
+#define _fileno fileno
+#define _stat stat
+#define _fstat fstat
+#include <sys/stat.h>
+#else
+#define FOPEN _wfopen
+
 #endif
 
 
@@ -153,125 +161,10 @@ convertLine32To24(unsigned char  *target, unsigned char  *source, int width_in_p
     }
 }
 
-static inline   void
-convertLine24To32(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    for (int cols = 0; cols < width_in_pixels; cols++) {
-        target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE];
-        target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN];
-        target[ID_RGBA_RED] = source[ID_RGBA_RED];
-        target[ID_RGBA_ALPHA] = 0;
-        target += 4;
-        source += 3;
-    }
-}
 
 
-static inline   void
-convertLine1To8(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    for (unsigned cols = 0; cols < (unsigned)width_in_pixels; cols++)
-        target[cols] = (source[cols >> 3] & (0x80 >> (cols & 0x07))) != 0 ? 255 : 0;
-}
-
-static inline   void
-convertLine4To8(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    unsigned count_new = 0;
-    unsigned count_org = 0;
-    bool hinibble = true;
-
-    while (count_new < (unsigned)width_in_pixels) {
-        if (hinibble) {
-            target[count_new] = (source[count_org] >> 4);
-        }
-        else {
-            target[count_new] = (source[count_org] & 0x0F);
-            count_org++;
-        }
-        hinibble = !hinibble;
-        count_new++;
-    }
-}
 
 
-static inline   void
-convertLine24To8(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    for (unsigned cols = 0; cols < (unsigned)width_in_pixels; cols++) {
-        target[cols] = GREY(source[ID_RGBA_RED], source[ID_RGBA_GREEN], source[ID_RGBA_BLUE]);
-        source += 3;
-    }
-}
-
-static inline   void
-convertLine32To8(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    for (unsigned cols = 0; cols < (unsigned)width_in_pixels; cols++) {
-        target[cols] = GREY(source[ID_RGBA_RED], source[ID_RGBA_GREEN], source[ID_RGBA_BLUE]);
-        source += 4;
-    }
-}
-
-
-static inline   void
-convertLine1To4(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    bool hinibble = true;
-    for (int cols = 0; cols < width_in_pixels; cols++) {
-        if (hinibble == true) {
-            target[cols >> 1] = ((source[cols >> 3] & (0x80 >> (cols & 0x07))) != 0 ? 15 : 0) << 4;
-        }
-        else {
-            target[cols >> 1] |= ((source[cols >> 3] & (0x80 >> (cols & 0x07))) != 0 ? 15 : 0);
-        }
-        hinibble = !hinibble;
-    }
-}
-
-static inline   void
-convertLine8To4(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette) {
-    bool hinibble = true;
-    unsigned char  index;
-
-    for (int cols = 0; cols < width_in_pixels; cols++) {
-        index = GREY(palette[source[cols]].rgbRed, palette[source[cols]].rgbGreen, palette[source[cols]].rgbBlue);
-        if (hinibble) {
-            target[cols >> 1] = (index & 0xF0);
-        }
-        else {
-            target[cols >> 1] |= (index >> 4);
-        }
-        hinibble = !hinibble;
-    }
-}
-
-
-static inline   void
-convertLine24To4(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    bool hinibble = true;
-
-    for (int cols = 0; cols < width_in_pixels; cols++) {
-        if (hinibble) {
-            target[cols >> 1] = GREY(source[ID_RGBA_RED], source[ID_RGBA_GREEN], source[ID_RGBA_BLUE]) & 0xF0;
-        }
-        else {
-            target[cols >> 1] |= GREY(source[ID_RGBA_RED], source[ID_RGBA_GREEN], source[ID_RGBA_BLUE]) >> 4;
-        }
-        source += 3;
-        hinibble = !hinibble;
-    }
-}
-
-static inline   void
-convertLine32To4(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    bool hinibble = true;
-
-    for (int cols = 0; cols < width_in_pixels; cols++) {
-        if (hinibble) {
-            target[cols >> 1] = GREY(source[ID_RGBA_RED], source[ID_RGBA_GREEN], source[ID_RGBA_BLUE]) & 0xF0;
-        }
-        else {
-            target[cols >> 1] |= GREY(source[ID_RGBA_RED], source[ID_RGBA_GREEN], source[ID_RGBA_BLUE]) >> 4;
-        }
-        source += 4;
-        hinibble = !hinibble;
-    }
-}
 
 
 static inline  void
@@ -1656,17 +1549,19 @@ bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t l
 }
 
 
-bool bmpImage::copyFromFile(const wchar_t *name)
+bool bmpImage::copyFromFile(const char16_t *name)
 {
     bool res = false;
     try {
         FILE *file = nullptr;
-        size_t err = _wfopen_s(&file, name, L"r");
-        if (err == 0 && file != nullptr)
+        std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
+        std::string sname = convert.to_bytes(name);
+        file = FOPEN(sname.c_str(),"r");
+        if ( file != nullptr)
         {
             short mask = 0;
-            struct stat  file_status;
-            err = _fstat(_fileno(file), &file_status);
+            struct _stat  file_status;
+            int err = _fstat(_fileno(file), &file_status);
             if (err == 0)
             {
                 err = fread(&mask, 1, sizeof(short), file);
@@ -1675,8 +1570,8 @@ bool bmpImage::copyFromFile(const wchar_t *name)
             }
             if (err == sizeof(short) && mask == 0x4d42)
             {
-                err = _wfopen_s(&file, name, L"r");
-                if (err == 0 && file != nullptr)
+                file = FOPEN(sname.c_str(),"r");
+                if ( file != nullptr)
                 {
                     if (file_status.st_size > 0 && file_status.st_size < (1024 * 1024 * 32)) //32Mbit max
                     {
@@ -1713,17 +1608,19 @@ bool bmpImage::copyFromFile(const wchar_t *name)
 }
 
 
-bool bmpImage::copyToFile(const wchar_t *name)
+bool bmpImage::copyToFile(const char16_t *name)
 {
     bool res = false;
     if (isValid())
     {
         try {
             FILE *file = nullptr;
-            size_t err = _wfopen_s(&file, name, L"w+");
-            if (err == 0 && file != nullptr)
+            std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
+            std::string sname = convert.to_bytes(name);
+            file = FOPEN(sname.c_str(), "w+");
+            if ( file != nullptr)
             {
-                err = fwrite(m_hBitmap, 1, m_hBitmap->bfSize, file);
+                auto err = fwrite(m_hBitmap, 1, m_hBitmap->bfSize, file);
                 fflush(file);
                 fclose(file);
                 res = (err == m_hBitmap->bfSize);

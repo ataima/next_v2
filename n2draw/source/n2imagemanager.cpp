@@ -1,6 +1,13 @@
+#include "stdio.h"
 #include "images.h"
 #include "n2draw.h"
-#include "n2ImageManager.h"
+#include "n2imagemanager.h"
+
+#ifndef _MSC_VER
+#include <unistd.h>
+#define _MAX_PATH  4096
+#endif
+
 
 nnImageManager::nnImageManager()
 {
@@ -16,14 +23,14 @@ nnImageManager::~nnImageManager()
     path.clear();
 }
 #if (_WIN32 || _WIN64)
-#define wgetcwd  _wgetcwd
+#define getcwd  _getcwd
 #endif
 
 bool nnImageManager::readConfiguration(miniXmlNode * node)
 {
     bool res = false;
     long offset;
-    std::wstring filename;
+    std::u16string filename;
     miniXmlNode *conf = node->find(X("IMAGES"));
 
     if (conf)
@@ -31,12 +38,13 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
         miniXmlNode *xpath = conf->find(X("PATH"));
         if (xpath)
         {
-            XCHAR buff[_MAX_PATH];
+            char buff[_MAX_PATH];
             const XCHAR *v = xpath->getValue();
-            if(wgetcwd(buff,_MAX_PATH))
+            if(getcwd(buff,_MAX_PATH))
             {
-             std::wstringstream ss;
-             ss<<buff<<"/"<<v;
+                AtoU toU(buff);
+             u16stringstream ss;
+             ss<<toU.utf16()<<"/"<<v;
              path=ss.str().c_str();
             }
             else
@@ -185,14 +193,14 @@ bool nnImageManager::loadImages(int w, int h)
     bool res = false;
     if (availObj.size() > 0)
     {
-        std::wstring filenameabs;
+        std::u16string filenameabs;
         objImageList::iterator it = availObj.begin();
         objImageList::iterator _end = availObj.end();
         while (it != _end)
         {
             bmpImage image;
             filenameabs = path;
-            filenameabs += L"\\";
+            filenameabs += X("\\");
             filenameabs += it->second;
             if (image.copyFromFile(filenameabs.c_str()))
             {

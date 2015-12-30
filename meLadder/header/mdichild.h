@@ -53,9 +53,9 @@
 
 #include "mdiselector.h"
 
-#include "n2drawManager.h"
+#include "n2drawmanager.h"
 #include "n2miniXml.h"
-#include "n2ImageManager.h"
+#include "n2imagemanager.h"
 #include "n2viewglue.h"
 #include "n2appmanager.h"
 #include "n2connection.h"
@@ -96,21 +96,21 @@ protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 private slots:
     void documentWasModified(bool v);
-    void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent *) override;
 private:
     bool maybeSave();
     void setCurrentFile(const QString &fileName);
     QString strippedName(const QString &fullFileName);
-    void paintEvent(QPaintEvent * /* event */);
+    void paintEvent(QPaintEvent * /* event */) override;
     void refreshPixmap();
     void destroyObjects(void);
-    void mouseMoveEvent( QMouseEvent *event );
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *);
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
     void resizeSelector(void);
     void errorSelector(void);
-    void keyPressEvent(QKeyEvent *event);
-    void adjustScrollBars(nnPoint &pos);
+    void keyPressEvent(QKeyEvent *event) override;
+    void adjustScrollBars(const nnPoint &pos);
 };
 
 

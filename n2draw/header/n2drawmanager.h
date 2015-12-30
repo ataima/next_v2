@@ -34,9 +34,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "n2miniXml.h"
 #include "n2draw.h"
 #include "n2miniXml.h"
+#include <stdint.h>
+typedef union tag_hash_key
+{
+uint32_t v1;
+uint32_t v2;
+uint64_t v12;
+} hashkey;
 
-typedef unsigned long long int hashkey;
-typedef std::map<hashkey, InnObj *> hashObjTable;
+
+struct lessHashKey : public std::binary_function<hashkey ,hashkey  , bool>
+  {
+    bool
+    operator()(const hashkey & a, const hashkey & b) const
+    { return a.v12 < b.v12; }
+  };
+
+typedef std::map<hashkey, InnObj *,lessHashKey> hashObjTable;
 class nnObjCoil;
 class nnObjContact;
 class IManager
@@ -58,8 +72,8 @@ public:
     virtual int getHeight(void) = 0;
     virtual nnPoint getStartPoint(void) = 0;
     virtual nnPoint getStopPoint(void) = 0;
-    virtual bool save(STRING & name) = 0;
-    virtual bool load(STRING & name) = 0;
+    virtual bool save(const STRING & name) = 0;
+    virtual bool load(const STRING & name) = 0;
     virtual bool undo(void) = 0;
     virtual bool redo(void) = 0;
     virtual bool insertRow(int y_pos) = 0;
@@ -72,6 +86,7 @@ public:
     virtual bool Resize(int w, int h) = 0;
     virtual bool readConfiguration(miniXmlNode & node) = 0;
     virtual bool revIndexes(hashkey & key,int & x, int & y) = 0;
+    virtual ~IManager(){}
     
 };
 
@@ -81,6 +96,7 @@ class IUndoRedo
 public :
     virtual bool undo(void) = 0;
     virtual bool redo(void) = 0;
+    virtual ~IUndoRedo(){}
 };
 
 
@@ -99,7 +115,7 @@ typedef struct tag_action
     int x_pos;
     int y_pos;
     tag_action(eAction a, int x, int y, InnObj* _obj = nullptr)
-        : action(a), x_pos(x), y_pos(y), obj(_obj) {}
+        : action(a), obj(_obj), x_pos(x), y_pos(y) {}
 } undo_redo_unit;
 
 typedef std::list<undo_redo_unit> vectorUR;
@@ -157,8 +173,8 @@ public:
     inline int getHeight(void) { return v_height; }
     nnPoint getStartPoint(void);
     nnPoint getStopPoint(void);
-    bool save(STRING & name);
-    bool load(STRING & name);
+    bool save(const STRING & name);
+    bool load(const STRING & name);
     bool undo(void);
     bool redo(void);
     bool insertRow(int y_pos);

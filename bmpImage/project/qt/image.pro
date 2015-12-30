@@ -17,7 +17,7 @@ SOURCES += ../../source/images.cpp
 
 HEADERS += ../../header/images.h
 
-DESTDIR = ../../../../../../dist
+DESTDIR = ../../../../dist
 
 TARGET = bmpImage
 

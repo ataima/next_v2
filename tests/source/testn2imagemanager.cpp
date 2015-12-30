@@ -2,7 +2,7 @@
 #include "CPPtester.h"
 #include "images.h"
 #include "n2miniXml.h"
-#include "n2ImageManager.h"
+#include "n2imagemanager.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi

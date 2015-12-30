@@ -1,6 +1,8 @@
 #include "stdio.h"
 #include "CPPtester.h"
 #include "images.h"
+#include "n2miniXml.h"
+
 #ifdef _MSC_VER
 #define SRCCOPY             (unsigned long)0x00CC0020 /* dest = source                   */
 #define SRCPAINT            (unsigned long)0x00EE0086 /* dest = source OR dest           */
@@ -155,10 +157,10 @@ void test_bmpImage_class::test5(void)
     bmpImage s;
     s.create(100, 100,  255);
     draw(&s);
-    bool res = s.copyToFile(L"./whiteImage.bmp");
+    bool res = s.copyToFile(X("./whiteImage.bmp"));
     CA_ASSERT(res==true);
     bmpImage t;
-    t.copyFromFile(L"./whiteImage.bmp");
+    t.copyFromFile(X("./whiteImage.bmp"));
     int res1 = memcmp((LPBITMAPFILEHEADER)s, (LPBITMAPFILEHEADER)t, ((LPBITMAPFILEHEADER)(s))->bfSize);
     CA_ASSERT(res1==0);
     draw(&t);

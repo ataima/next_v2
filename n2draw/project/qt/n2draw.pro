@@ -8,7 +8,7 @@ QT       -= gui
 
 TARGET = n2draw
 TEMPLATE = lib
-
+CONFIG += staticlib
 
 DEFINES += N2DRAW_LIBRARY
 DEFINES += _UNICODE
@@ -42,7 +42,7 @@ HEADERS += \
 
 
 
-DESTDIR =../../../../../../dist
+DESTDIR =../../../../dist
 
 TARGET = n2draw
 

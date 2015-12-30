@@ -42,6 +42,7 @@ public:
     virtual bool createMainBitmap(int w, int h) = 0;
     virtual bmpImage & getMainBitmap(void) = 0;
     virtual bool remapMainBitmap(int w,int h)=0;
+    virtual ~IView(){}
 };
 
 

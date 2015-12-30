@@ -45,6 +45,7 @@ class ICommander
 public:
     virtual bool readConfiguration(miniXmlNode *node) = 0;
     virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
+    virtual ~ICommander(){}
 };
 
 typedef std::vector<commandItem> listCommandItem;

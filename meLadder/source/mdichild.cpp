@@ -122,8 +122,8 @@ bool MdiChild::loadFile(const QString &fileName)
         if(n2client)
         {
             QApplication::setOverrideCursor(Qt::WaitCursor);
-            try {
-                res=n2client->object_manager->load(fileName.toStdWString());
+            try {                
+                res=n2client->object_manager->load(fileName.toStdU16String());
             }
             catch(n2exception *e)
             {
@@ -179,7 +179,7 @@ bool MdiChild::saveFile(const QString &fileName)
         {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             try {
-                res=n2client->object_manager->save(fileName.toStdWString());
+                res=n2client->object_manager->save(fileName.toStdU16String());
             }
             catch(n2exception *e)
             {
@@ -491,7 +491,7 @@ void MdiChild::mouseReleaseEvent(QMouseEvent *event)
 
 }
 
-void MdiChild::adjustScrollBars(nnPoint & pos)
+void MdiChild::adjustScrollBars(const nnPoint & pos)
 {
     if(hScroll)
         hScroll->setValue((int)pos.x);

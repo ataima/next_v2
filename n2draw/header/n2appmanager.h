@@ -53,6 +53,7 @@ class IEvent
 public:
     //stub for windows
     virtual bool create(unsigned int  message, unsigned int wparam, unsigned long lparam) = 0;
+    virtual ~IEvent(){}
 };
 
 
@@ -68,11 +69,12 @@ public:
 class IAppManager
 {
 public:
-    virtual childApps * createObjects(std::wstring & conf_file_name) = 0;
+    virtual childApps * createObjects(std::u16string & conf_file_name) = 0;
     virtual bool routeEvents(IEvent * event) = 0;
     virtual bool closeAll(void) = 0;
     virtual childApps *activate(int v) = 0;
     virtual childApps *active(void) = 0;
+    virtual ~IAppManager(){}
 };
 
 typedef std::map<int, childApps *> listChild;
@@ -88,14 +90,14 @@ class nnAppManager
 public:
     nnAppManager();
     ~nnAppManager();    
-    childApps * createObjects(std::wstring & conf_file_name);
+    childApps * createObjects(std::u16string & conf_file_name);
     bool routeEvents(IEvent * event);
     bool closeAll(void);
     childApps *activate(int v);
     childApps *active(void);
 protected:
     bool clean(void);
-    bool createInternalObjects(std::wstring & conf_file_name, childApps & child);
+    bool createInternalObjects(std::u16string & conf_file_name, childApps & child);
 
 };
 

@@ -210,7 +210,7 @@ void test_miniXml_class::test6(void)
     root1.load(X(".\\test6.xml"), &root1);
     root1.print(stdout);
     remove(".\\test6.xml");
-    CA_ASSERT(STRCMP(root1.getValue(),X("1000")) ==0);
+    CA_ASSERT(STRCMP(root1.getValue(),X("1000"),4) ==0);
     CA_ASSERT(root1.find(X("child1")) != NULL);
 	CA_ASSERT(root1.find(X("child1"))->getLong() ==1000);
 	CA_ASSERT(root1.find(X("child2")) != NULL);

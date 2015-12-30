@@ -94,6 +94,7 @@ public:
     virtual int getPageWidth(void)=0;
     virtual int getPageHeight(void)=0;
     virtual nnPoint getPageSize(void)=0;
+    virtual ~IViewGlue(){}
 };
 
 

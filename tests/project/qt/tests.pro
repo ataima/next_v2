@@ -1,5 +1,7 @@
 QT += core
 
+
+
 TARGET = tests
 CONFIG += console
 CONFIG -= app_bundle
@@ -27,13 +29,17 @@ HEADERS += \
         ../../header/docMacro.h
 
 
-DESTDIR =  ../../../../../../dist
+DESTDIR =  ../../../../dist
 
-LIBS +=  ../../../../../../dist/n2draw.lib
-LIBS +=  ../../../../../../dist/bmpImage.lib
+windows{
+LIBS +=   $$DESTDIR/n2draw.lib
+LIBS +=   $$DESTDIR/bmpImage.lib
+}
 
-
-
+linux {
+LIBS +=   $$DESTDIR/libn2draw.a
+LIBS +=   $$DESTDIR/libbmpImage.a
+}
 
 INCLUDEPATH +=../../header
 INCLUDEPATH +=../../../bmpImage/header

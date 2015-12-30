@@ -29,22 +29,25 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #define  BUFFLENGTH  512
 #include <string>
+#include <sstream>
+
+typedef std::basic_stringstream<char16_t> 	u16stringstream;
 
 #ifdef _UNICODE
 //#include <tchar.h>
-#define  XCHAR wchar_t
-#define  STRSTR   wcsstr
-#define  STRLEN   wcslen
-#define  STRING   std::wstring
-#define  SSTRING  std::wstringstream
-#define  STRCMP   wcscmp
-#define  ATOL     _wtol
+#define  XCHAR char16_t
+#define  STRSTR   std::char_traits<char16_t>::find
+#define  STRLEN   std::char_traits<char16_t>::length
+#define  STRING   std::u16string
+#define  SSTRING  u16stringstream
+#define  STRCMP   std::char_traits<char16_t>::compare
+#define  ATOL     atol
 #ifdef _MSC_VER
-#define  FOPEN    _wfopen_s
+#define  FOPEN    fopen_s
 #else
-#define  FOPEN    wfopen
+#define  FOPEN    fopen
 #endif
-#define  X(msg)   _T(msg)
+#define  X(msg)   u##msg
 #else
 #define  XCHAR    char
 #define  STRSTR   strstr
@@ -122,7 +125,7 @@ public:
     inline const XCHAR  * getName(void) { return name; }
     friend bool swapNode(miniXmlNode *src, miniXmlNode* dst);
 private:
-    int xsprintf(XCHAR *buff,  const XCHAR* format, ...);
+    //int xsprintf(XCHAR *buff,  const XCHAR* format, ...);
 };
 
 

@@ -70,9 +70,9 @@ public:
     bmpImage(bmpImage & b);
     ~bmpImage();
     unsigned long getTotalSize();
-    bool copyFromFile(const wchar_t *name);
+    bool copyFromFile(const char16_t *name);
     bool copyFrombmpImage(bmpImage & b);
-    bool copyToFile(const wchar_t *name);
+    bool copyToFile(const char16_t *name);
     bool create(int width, int height,  unsigned char  color);
     bool isValid(void);
     bool clear(void);

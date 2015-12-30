@@ -25,17 +25,24 @@ HEADERS  += \
 
 
 
-DESTDIR = ../../../../../../dist
+DESTDIR = ../../../../dist
+windows{
+LIBS += $$DESTDIR/n2draw.lib
+LIBS += $$DESTDIR/bmpImage.lib
+}
 
-LIBS += ../../../../../../dist/n2draw.lib
-LIBS += ../../../../../../dist/bmpImage.lib
-
-
+linux{
+LIBS += $$DESTDIR/libn2draw.a
+LIBS += $$DESTDIR/libbmpImage.a
+}
 
 
 INCLUDEPATH +=../../header
 INCLUDEPATH +=../../../bmpImage/header
 INCLUDEPATH +=../../../n2draw/header
+linux {
+INCLUDEPATH += /usr/include
+}
 
 RESOURCES += \
     ../../resource/mela.qrc

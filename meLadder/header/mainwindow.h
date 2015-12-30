@@ -56,9 +56,9 @@ QT_END_NAMESPACE
 
 #include "images.h"
 #include "n2draw.h"
-#include "n2drawManager.h"
+#include "n2drawmanager.h"
 #include "n2miniXml.h"
-#include "n2ImageManager.h"
+#include "n2imagemanager.h"
 #include "n2viewglue.h"
 #include "n2appmanager.h"
 #include "n2connection.h"

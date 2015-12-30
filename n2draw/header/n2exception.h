@@ -60,9 +60,9 @@ public:
 class appManagerConfigureFileMissingNodeException
     :public n2exception
 {
-    std::wstring node;
+    std::u16string node;
 public:
-    explicit class appManagerConfigureFileMissingNodeException(std::wstring _node) throw()
+    explicit appManagerConfigureFileMissingNodeException(std::u16string _node) throw()
         :n2exception("appManagerConfigureFileMissingNodeException"), node(_node) {}
 };
 
@@ -70,7 +70,7 @@ class appManagerConfigureLoadImageException
     :public n2exception
 {
 public:
-    explicit class appManagerConfigureLoadImageException() throw()
+    explicit appManagerConfigureLoadImageException() throw()
         :n2exception("appManagerConfigureLoadImageException"){}
 };
 
@@ -78,14 +78,14 @@ public:
 class appManagerConfigureFileUnknow
         :public n2exception
     {
-        std::wstring file;
+        std::u16string file;
     public:
-        explicit class appManagerConfigureFileUnknow(std::wstring w) throw()
+        explicit appManagerConfigureFileUnknow(std::u16string w) throw()
             :n2exception("appManagerConfigureFileUnknow"),file(w){}
-        char const* what() const
+        char const* what() const noexcept
         {
             std::stringstream ss;
-            UtoA<_MAX_PATH> f(file);
+            UtoA f(file);
             if(f.good())
             ss<<"exception:"<<runtime_error::what()<<std::endl<<" Cannot find or open file :"<<f.utf8()<<std::endl;
             else
@@ -166,7 +166,7 @@ class imagesConfigurationNoContactException
     :public n2exception
 {
 public:
-    explicit class imagesConfigurationNoContactException(void) throw()
+    explicit  imagesConfigurationNoContactException(void) throw()
         :n2exception("imagesConfigurationNoContactException") {}
 };
 
@@ -174,7 +174,7 @@ class imagesConfigurationNoCoilException
     :public n2exception
 {
 public:
-    explicit class imagesConfigurationNoCoilException(void) throw()
+    explicit  imagesConfigurationNoCoilException(void) throw()
         :n2exception("imagesConfigurationNoCoilException") {}
 };
 
@@ -183,7 +183,7 @@ class imagesConfigurationListEmptyException
     :public n2exception
 {
 public:
-    explicit class imagesConfigurationListEmptyException(void) throw()
+    explicit  imagesConfigurationListEmptyException(void) throw()
         :n2exception("imagesConfigurationListEmptyException") {}
 };
 
@@ -193,7 +193,7 @@ class imagesConfigurationBadSizeException
 {
     int w, h;
 public:
-    explicit class imagesConfigurationBadSizeException(int _w, int _h) throw()
+    explicit  imagesConfigurationBadSizeException(int _w, int _h) throw()
         :n2exception("imagesConfigurationBadSizeException"), w(_w), h(_h) {}
 };
 
@@ -202,7 +202,7 @@ class imagesConfigurationBadFormatException
     :public n2exception
 {
 public:
-    explicit class imagesConfigurationBadFormatException(void) throw()
+    explicit  imagesConfigurationBadFormatException(void) throw()
         :n2exception("imagesConfigurationBadFormatException") {}
 };
 
@@ -212,16 +212,16 @@ class imagesConfigurationAlreadyLoadException
 {
     int offset;
 public:
-    explicit class imagesConfigurationAlreadyLoadException(int off) throw()
+    explicit  imagesConfigurationAlreadyLoadException(int off) throw()
         :n2exception("imagesConfigurationAlreadyLoadException") ,offset(off) {}
 };
 
 class imagesConfigurationUnknowFileException
     :public n2exception
 {
-    std::wstring filename;
+    std::u16string filename;
 public:
-    explicit class imagesConfigurationUnknowFileException(std::wstring _filename) throw()
+    explicit  imagesConfigurationUnknowFileException(std::u16string _filename) throw()
         :n2exception("imagesConfigurationUnknowFileException"), filename(_filename) {}
 };
 
@@ -230,9 +230,9 @@ public:
 class phyViewConfigurationException
     :public n2exception
 {
-    std::wstring node;
+    std::u16string node;
 public:
-    explicit phyViewConfigurationException(const wchar_t *_node) throw()
+    explicit phyViewConfigurationException(const char16_t *_node) throw()
         :n2exception("phyGlueConfigurationException"), node(_node) {}
 
 };
@@ -242,9 +242,9 @@ public:
 class phyGlueConfigurationException
     :public n2exception
 {
-    std::wstring node;
+    std::u16string node;
 public:
-    explicit phyGlueConfigurationException(const wchar_t *_node) throw()
+    explicit phyGlueConfigurationException(const char16_t *_node) throw()
         :n2exception("phyGlueConfigurationException"),node(_node) {}
 
 };
@@ -254,9 +254,9 @@ public:
 class commanderConfigurationException
     :public n2exception
 {
-    std::wstring node;
+    std::u16string node;
 public:
-    explicit commanderConfigurationException(const wchar_t *_node) throw()
+    explicit commanderConfigurationException(const char16_t *_node) throw()
         :n2exception("commanderConfigurationException"),node(_node) {}
 
 };

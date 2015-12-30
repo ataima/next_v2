@@ -2,15 +2,22 @@
 #include "CPPtester.h"
 #include "images.h"
 #include "n2draw.h"
-#include "n2drawManager.h"
+#include "n2drawmanager.h"
 #include "n2miniXml.h"
-#include "n2ImageManager.h"
+#include "n2imagemanager.h"
 #include "n2viewglue.h"
 #include "n2appmanager.h"
 #include "n2connection.h"
 #ifdef _MSC_VER
 #include <direct.h>
 #endif
+
+
+#ifndef _MSC_VER
+#define _mkdir mkdir
+#include <sys/stat.h>
+#endif
+
 
 /**************************************************************
 
@@ -94,7 +101,7 @@ void test_app_manager::test1(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnAppManager app;
-    std::wstring name(X("conf.xml"));
+    std::u16string name(X("conf.xml"));
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;
@@ -122,8 +129,8 @@ void test_app_manager::test1(void)
     CA_ASSERT(res == true);
     bmpImage &bdraw = childs->view->getDraw();
     draw(&bdraw);
-    _mkdir(".\\bmp");
-    bdraw.copyToFile(L".\\bmp\\test1_app.bmp");
+    _mkdir(".\\bmp",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    bdraw.copyToFile(X(".\\bmp\\test1_app.bmp"));
 }
 
 
@@ -136,7 +143,7 @@ void test_app_manager::test2(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnAppManager app;
-    std::wstring name(X("conf.xml"));
+    std::u16string name(X("conf.xml"));
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;

@@ -148,10 +148,11 @@ void test_n2ObjManager::test5(void)
     CA_ASSERT(c->getConnections().front() == (int)1);
     CA_ASSERT(c->getConnections().back() == (int)0);
     InnObj * p = mn.getObj(5, 0);
-    std::wstring w = p->toString();
-    std::wcout << w.c_str()<<std::endl;
+    CA_ASSERT(p!=nullptr);
+    std::u16string w = p->toString();
+    //std::wcout << w.c_str()<<std::endl;
     w = c->toString();
-    std::wcout << w.c_str() << std::endl;
+    //std::wcout << w.c_str() << std::endl;
 }
 
 
@@ -169,7 +170,7 @@ void test_n2ObjManager::test6(void)
     nnObjComponent *d = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 1, d);
     InnObj * p = mn.getObj(5, 0);
-    std::wstring w = p->toString();
+    std::u16string w = p->toString();
     std::wcout << w.c_str() << std::endl;
     w = c->toString();
     std::wcout << w.c_str() << std::endl;
@@ -435,9 +436,10 @@ void test_n2ObjManager::test15(void)
     {
         void revHashKey(hashkey & key, int & x, int &y)
         {
-            y = key & 0xfffffff;
+            y = key.v1;
             y = y / 2;
-            x = (key >> 30) & 0xfffffff;
+            x = key.v2;
+            x = x / 2;
         }
 
     };
@@ -476,9 +478,10 @@ void test_n2ObjManager::test16(void)
     {
         void revHashKey(hashkey & key, int & x, int &y)
         {
-            y = key & 0xfffffff;
+            y = key.v1;
             y = y / 2;
-            x = (key >> 30) & 0xfffffff;
+            x = key.v2;
+            x = x / 2;
         }
 
     };
