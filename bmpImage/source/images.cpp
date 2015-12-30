@@ -1,5 +1,8 @@
 #include <math.h>
 #include <time.h>
+#ifndef _MSC_VER
+#include <string.h>
+#endif
 #include "images.h"
 
 
@@ -323,9 +326,6 @@ bool bmpImage::copyFrombmpImage(bmpImage & b)
 {
     if (isValid())clear();
     m_hBitmap = cloneImage(b.m_hBitmap);
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return (m_hBitmap != nullptr);
 }
 
@@ -347,9 +347,6 @@ bool bmpImage::create(int width, int height, unsigned char  color)
         res = true;
     }
     catch (...) {}
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return res;
 }
 
@@ -445,9 +442,6 @@ bool bmpImage::landscape(bool mirror)
 
 bool bmpImage::check(unsigned int Width, unsigned int Height)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return (Width == getWidth() && Height == getHeight());
 }
 
@@ -789,9 +783,6 @@ unsigned int bmpImage::getColorType(LPBITMAPFILEHEADER bI)
 
 bool bmpImage::invert(void)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (hasPixels)
     {
@@ -907,9 +898,6 @@ void bmpImage::freeBitmap(LPBITMAPFILEHEADER bI)
 
 bool bmpImage::convertTo24Bits(void)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (hasPixels)
     {
@@ -992,9 +980,6 @@ bool bmpImage::convertTo24Bits(void)
 
 bool bmpImage::rotate(double angle)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (isValid() && hasPixels && getBitsPerPixel() == bitPerPlane)
     {
@@ -1002,9 +987,6 @@ bool bmpImage::rotate(double angle)
         res = replace(rotated);
 
     }
-#ifdef _DEBUG
-    TRACE("OUT:%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return res;
 }
 
@@ -1253,9 +1235,6 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
 
 bool bmpImage::flipHorizontal(void)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (hasPixels)
     {
@@ -1342,9 +1321,6 @@ bool bmpImage::flipHorizontal(void)
 
 bool bmpImage::flipVertical(void)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (hasPixels)
     {
@@ -1487,10 +1463,6 @@ LPBITMAPFILEHEADER bmpImage::rotateInt(LPBITMAPFILEHEADER bI, double angle)
 
 bool bmpImage::pasteSubImage(LPBITMAPFILEHEADER src, int left, int top)
 {
-
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return pasteSubImage(m_hBitmap, src, left, top);
 }
 
@@ -1572,7 +1544,7 @@ bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, siz
 
 static inline   void
 copyMaskLine24(unsigned char  *target, unsigned char  *source,char  mask, unsigned int width_in_pixels) {
-    for (int cols = 0; cols < width_in_pixels; cols++) {
+    for (unsigned int cols = 0; cols < width_in_pixels; cols++) {
         if(source[ID_RGBA_BLUE]!=mask)
             target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE] ;
         if(source[ID_RGBA_GREEN]!=mask)
@@ -1693,8 +1665,8 @@ bool bmpImage::copyFromFile(const wchar_t *name)
         if (err == 0 && file != nullptr)
         {
             short mask = 0;
-            struct _stati64  file_status;
-            err = _fstati64(_fileno(file), &file_status);
+            struct stat  file_status;
+            err = _fstat(_fileno(file), &file_status);
             if (err == 0)
             {
                 err = fread(&mask, 1, sizeof(short), file);
@@ -1727,8 +1699,6 @@ bool bmpImage::copyFromFile(const wchar_t *name)
                                 clear();
                             }
                         }
-
-
                     }
                     fflush(file);
                     fclose(file);
@@ -1738,20 +1708,13 @@ bool bmpImage::copyFromFile(const wchar_t *name)
     }
     catch (...)
     {
-        TRACE("I/O exception\n");
     }
-#ifdef _DEBUG
-    TRACE("OUT:%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return res = (m_hBitmap != nullptr);
 }
 
 
 bool bmpImage::copyToFile(const wchar_t *name)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (isValid())
     {
@@ -1768,7 +1731,6 @@ bool bmpImage::copyToFile(const wchar_t *name)
         }
         catch (...)
         {
-            TRACE("I/O exception\n");
         }
     }
     return res;
@@ -1817,9 +1779,6 @@ void bmpImage::operator =(bmpImage & b)
 
 bool bmpImage::swaptoBGR(void)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (isValid())
     {
@@ -1831,17 +1790,11 @@ bool bmpImage::swaptoBGR(void)
         }
         res = swapto(m_hBitmap, 0, 2);
     }
-#ifdef _DEBUG
-    TRACE("OUT:%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return res;
 }
 
 bool bmpImage::swaptoRBG(void)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (isValid())
     {
@@ -1853,17 +1806,11 @@ bool bmpImage::swaptoRBG(void)
         }
         res = swapto(m_hBitmap, 1, 2);
     }
-#ifdef _DEBUG
-    TRACE("OUT:%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return res;
 }
 
 bool bmpImage::swaptoGRB(void)
 {
-#ifdef _DEBUG
-    TRACE("%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     bool res = false;
     if (isValid())
     {
@@ -1875,9 +1822,6 @@ bool bmpImage::swaptoGRB(void)
         }
         res = swapto(m_hBitmap, 0, 1);
     }
-#ifdef _DEBUG
-    TRACE("OUT:%s BMP: W(%d), H(%d), BPP(%d)\n", __func__, getWidth(), getHeight(), getBitsPerPixel());
-#endif
     return res;
 }
 

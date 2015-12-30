@@ -51,4 +51,6 @@ INCLUDEPATH +=../../header
 INCLUDEPATH +=../../../bmpImage/header
 
 
-
+linux {
+CONFIG += c++11
+}

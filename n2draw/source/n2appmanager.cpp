@@ -1,4 +1,4 @@
-#include "n2AppManager.h"
+#include "n2appmanager.h"
 
 bool WinEvent::create(unsigned int message, unsigned int wparam, unsigned long lparam)
 {

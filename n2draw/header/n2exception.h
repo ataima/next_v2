@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 #include <string>
+#include <strings.h>
 #include <stdexcept>
 #include <sstream>
 #include <vector>
