@@ -260,6 +260,18 @@ typedef struct tag_nn_rect
         res.set(left,top,right,bottom);
         return res;
     }
+    inline bool into(const nnPoint & b)
+    {
+        bool res=false;
+        if(start.x < b.x && stop.x > b.x)
+        {
+            if(start.y < b.y && stop.y > b.y)
+            {
+                res=true;
+            }
+        }
+        return res;
+    }
 
 } nnRect;
 

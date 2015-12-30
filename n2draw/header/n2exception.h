@@ -249,7 +249,16 @@ public:
 };
 
 
+// no conf phy view
+class commanderConfigurationException
+    :public n2exception
+{
+    std::wstring node;
+public:
+    explicit commanderConfigurationException(const wchar_t *_node) throw()
+        :n2exception("commanderConfigurationException"),node(_node) {}
 
+};
 
 #endif // N2EXCEPTION
 

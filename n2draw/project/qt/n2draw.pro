@@ -23,6 +23,7 @@ SOURCES += \
 ../../source/n2drawmanager.cpp           \
 ../../source/n2miniXml.cpp               \
 ../../source/n2viewglue.cpp              \
+../../source/n2commander.cpp             \
 
 
 HEADERS += \
@@ -37,6 +38,7 @@ HEADERS += \
 ../../header/n2view.h                  \
 ../../header/n2utoatou.h               \
 ../../header/n2exception.h             \
+../../header/n2commander.h             \
 
 
 
