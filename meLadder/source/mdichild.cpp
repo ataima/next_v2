@@ -77,20 +77,34 @@ void MdiChild::newFile()
     documentWasModified(false);
     if(n2client!=nullptr)
     {
-        size_t w=0,h=0;
+        int w=0,h=0;
         if(n2client->view->needScrollBarHorz())
         {
-            hScroll->setMinimum(0);
             w=n2client->view->getScrollableHorzSize();
-            hScroll->setMaximum((int)w);
-            hScroll->show();
+            if(w)
+            {
+                hScroll->setMinimum(0);
+                hScroll->setMaximum(w);
+                hScroll->show();
+            }
+            else
+            {
+                hScroll->hide();
+            }
         }
         if(n2client->view->needScrollBarHorz())
         {
-            vScroll->setMinimum(0);
             h=n2client->view->getScrollableVertSize();
-            vScroll->setMaximum((int)h);
-            vScroll->show();
+            if(h)
+            {
+                vScroll->setMinimum(0);
+                vScroll->setMaximum((int)h);
+                vScroll->show();
+            }
+            else
+            {
+                vScroll->hide();
+            }
         }
         QSize m=maximumSize();
         m/=3;
@@ -280,24 +294,39 @@ void MdiChild::resizeEvent(QResizeEvent *e)
         if(hScroll)
         {
             size_t w=n2client->view->getScrollableHorzSize();
-            hScroll->setMaximum((int)w);
-            hScroll->move(s.width()/3,s.height()-DEF_SCR_XY);
-            hScroll->resize(s.width()/3,DEF_SCR_XY);
-
+            if(w)
+            {
+                hScroll->setMaximum((int)w);
+                hScroll->move(s.width()/3,s.height()-DEF_SCR_XY);
+                hScroll->resize(s.width()/3,DEF_SCR_XY);
+                hScroll->show();
+            }
+            else
+            {
+                hScroll->hide();
+            }
         }
         if(vScroll)
         {
             size_t  h=n2client->view->getScrollableVertSize();
-            vScroll->setMaximum((int)h);
-            if (getMainWnd()->layoutDirection() == Qt::LeftToRight)
+            if(h)
             {
-                vScroll->move(0,s.height()/3);
+                vScroll->setMaximum((int)h);
+                if (getMainWnd()->layoutDirection() == Qt::LeftToRight)
+                {
+                    vScroll->move(0,s.height()/3);
+                }
+                else
+                {
+                    vScroll->move(s.width()-DEF_SCR_XY,s.height()/3);
+                }
+                vScroll->resize(DEF_SCR_XY,s.height()/3);
+                vScroll->show();
             }
             else
             {
-                vScroll->move(s.width()-DEF_SCR_XY,s.height()/3);
+                vScroll->hide();
             }
-            vScroll->resize(DEF_SCR_XY,s.height()/3);
         }
         refreshPixmap();
     }
@@ -367,6 +396,7 @@ void MdiChild::resizeSelector(void)
         nnPoint start,stop;
         if(n2client->view->isSelectAreaPhyVisible(result,start,stop))
         {
+            selector->setError(false);
             selector->SetArea(result,start,stop);
             selector->show();
             refreshPixmap();
@@ -378,6 +408,16 @@ void MdiChild::resizeSelector(void)
         }
     }
 }
+
+void MdiChild::errorSelector(void)
+{
+    if(n2client && selector && selector->getStatus())
+    {
+        selector->setError(true);
+        refreshPixmap();
+    }
+}
+
 
 void MdiChild::mouseMoveEvent( QMouseEvent *event )
 {
@@ -544,11 +584,14 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
                     if(needScroll)
                     {
                         adjustScrollBars( n2client->view->getOffsetView());
-                    }
-                    qDebug()<<"KEY START:"<<start.x<<" - "<<start.y;
-                    qDebug()<<"KEY STOP:"<<stop.x<<" - "<<stop.y;
+                    }                    
                     getMainWnd()->updatePosCursor(start,stop);
                     resizeSelector();
+                }
+                else
+                {
+                    //at border red
+                    errorSelector();
                 }
             }
         }

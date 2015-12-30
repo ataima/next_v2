@@ -94,7 +94,7 @@ void test_app_manager::test1(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnAppManager app;
-    std::wstring name(X("..\\..\\images\\conf.xml"));
+    std::wstring name(X("conf.xml"));
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;
@@ -127,6 +127,8 @@ void test_app_manager::test1(void)
 }
 
 
+
+
 void test_app_manager::test2(void)
 {
     _START();
@@ -134,7 +136,7 @@ void test_app_manager::test2(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnAppManager app;
-    std::wstring name(X("..\\..\\images\\conf.xml"));
+    std::wstring name(X("conf.xml"));
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;

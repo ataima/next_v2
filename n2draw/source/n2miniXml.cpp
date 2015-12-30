@@ -86,7 +86,7 @@ void miniXmlNode::clearNode(void)
 /// xPath for crossing from iinternal child nodes
 /// path separator is assumend the point '.'
 
-miniXmlNode *miniXmlNode::add(const XCHAR  *name, size_t idx, size_t value)
+miniXmlNode *miniXmlNode::add(const XCHAR  *name, int idx, int value)
 {
     XCHAR  buff1[BUFFLENGTH];
     XCHAR buff[BUFFLENGTH];
@@ -96,7 +96,7 @@ miniXmlNode *miniXmlNode::add(const XCHAR  *name, size_t idx, size_t value)
 }
 
 
-miniXmlNode * miniXmlNode::add(const XCHAR *name, size_t value)
+miniXmlNode * miniXmlNode::add(const XCHAR *name, int value)
 {
     XCHAR buff[BUFFLENGTH];
     if (name != nullptr)
@@ -131,7 +131,7 @@ miniXmlNode * miniXmlNode::add(const XCHAR *name, XCHAR *value)
     {
         // has Xpath
         XCHAR buff[BUFFLENGTH];
-        size_t offset = (size_t)(ptr - name);
+        int offset = (int)(ptr - name);
         if (offset < BUFFLENGTH)
         {
             memcpy(buff, name, sizeof(XCHAR)*offset);
@@ -220,7 +220,7 @@ miniXmlNode * miniXmlNode::findNext(const XCHAR *_name)
     return res;
 }
 
-miniXmlNode *miniXmlNode::find(const XCHAR *name, size_t idx)
+miniXmlNode *miniXmlNode::find(const XCHAR *name, int idx)
 {
     XCHAR buff1[BUFFLENGTH];
     xsprintf(buff1, X("%s%d"), name, idx);
@@ -262,7 +262,7 @@ miniXmlNode * miniXmlNode::find(const XCHAR *_name)
     {
         // has Xpath
         XCHAR buff[BUFFLENGTH];
-        size_t offset = (size_t)(ptr - _name);
+        int offset = (int)(ptr - _name);
         if (offset < BUFFLENGTH)
         {
 
@@ -294,8 +294,8 @@ void miniXmlNode::print(FILE *out)
         if (value != nullptr)
         {
             const XCHAR * as[] = { " &lt; ", " &gt; ", " &amp; ", " &apos; ", " &quot; ", " " };
-            size_t len = STRLEN(value);
-            size_t i;
+            int len = STRLEN(value);
+            int i;
             for (i = 0; i < len; i++)
             {
                 //	&lt;	<	less than

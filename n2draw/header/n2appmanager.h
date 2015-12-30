@@ -75,7 +75,7 @@ public:
     virtual childApps *active(void) = 0;
 };
 
-typedef std::map<size_t, childApps *> listChild;
+typedef std::map<int, childApps *> listChild;
 
 
 class nnAppManager
@@ -84,7 +84,7 @@ class nnAppManager
     listChild childs;
     xmlConfig configuration; 
     int selected;
-    static size_t UID;
+    static int UID;
 public:
     nnAppManager();
     ~nnAppManager();    

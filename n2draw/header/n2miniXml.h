@@ -86,8 +86,8 @@ public:
     /// xPath for crossing from iinternal child nodes
     /// path separator is assumend the point '.'
     miniXmlNode * add(const XCHAR *name, XCHAR *value);
-    miniXmlNode * add(const XCHAR *name, size_t value);
-    miniXmlNode * add(const XCHAR *name, size_t idx, size_t value);
+    miniXmlNode * add(const XCHAR *name, int value);
+    miniXmlNode * add(const XCHAR *name, int idx, int value);
     /// this function link at this node a child xmlNode
     miniXmlNode * link(XCHAR *name, miniXmlNode  *_child);
     /// this function add a value at already existent value
@@ -103,7 +103,7 @@ public:
     /// this function return a next node 
     miniXmlNode * findNext(const XCHAR *_name);
     /// this function return a specified node 
-    miniXmlNode * find(const XCHAR *name, size_t idx);
+    miniXmlNode * find(const XCHAR *name, int idx);
     miniXmlNode * find(const XCHAR *_name);
     /// generate a XML file
     void print(FILE *out);

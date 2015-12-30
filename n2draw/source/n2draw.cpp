@@ -130,7 +130,7 @@ eWireDirection nnObjPos::getDirection(InnObj * pb)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool nnObjConn::powerConnect(size_t num)
+bool nnObjConn::powerConnect(int num)
 {
     bool res = false;
     if (num == 1)
@@ -275,7 +275,7 @@ bool nnObjWire::connect(InnObj * pb)
 
 
 
-bool nnObjWire::connectFromUp(size_t num)
+bool nnObjWire::connectFromUp(int num)
 {
     bool res = false;
     switch (getWire())
@@ -327,7 +327,7 @@ bool nnObjWire::connectFromUp(size_t num)
 
 
 
-bool nnObjWire::disconnectFromUp(size_t num)
+bool nnObjWire::disconnectFromUp(int num)
 {
     (num);
     bool res = false;
@@ -370,7 +370,7 @@ bool nnObjWire::disconnectFromUp(size_t num)
 
 
 
-bool nnObjWire::connectFromDown(size_t num)
+bool nnObjWire::connectFromDown(int num)
 {
     bool res = false;
     switch (getWire())
@@ -421,7 +421,7 @@ bool nnObjWire::connectFromDown(size_t num)
 
 
 
-bool nnObjWire::disconnectFromDown(size_t num)
+bool nnObjWire::disconnectFromDown(int num)
 {
     (num);
     bool res = false;    
@@ -465,7 +465,7 @@ bool nnObjWire::disconnectFromDown(size_t num)
 
 
 
-bool nnObjWire::connectFromLeft(size_t num)
+bool nnObjWire::connectFromLeft(int num)
 {
     bool res = false;
     switch (getWire())
@@ -515,7 +515,7 @@ bool nnObjWire::connectFromLeft(size_t num)
 }
 
 
-bool nnObjWire::disconnectFromLeft(size_t num)
+bool nnObjWire::disconnectFromLeft(int num)
 {
     bool res = false;
     switch (getWire())
@@ -553,7 +553,7 @@ bool nnObjWire::disconnectFromLeft(size_t num)
 }
 
 
-bool nnObjWire::connectFromRight(size_t num)
+bool nnObjWire::connectFromRight(int num)
 {
     bool res = false;
     switch (getWire())
@@ -605,7 +605,7 @@ bool nnObjWire::connectFromRight(size_t num)
 
 
 
-bool nnObjWire::disconnectFromRight(size_t num)
+bool nnObjWire::disconnectFromRight(int num)
 {
     (num);
     bool res = false;
@@ -647,7 +647,7 @@ bool nnObjWire::disconnectFromRight(size_t num)
 }
 
 
-void nnObjWire::setConnections(size_t n)
+void nnObjWire::setConnections(int n)
 {
     if (v_num.size() == 0)
     {
@@ -689,7 +689,7 @@ eWire nnObjWire::wireStringToEnum(const wchar_t *name)
     return noWire;
 }
 
-size_t nnObjConn::uid_num = 2;
+int nnObjConn::uid_num = 2;
 
 
 const std::wstring nnObjConn::toString(void) const
@@ -879,7 +879,7 @@ bool nnObjComponent::connect(InnObj * from)
     {
         if (from->isComponent())
         {
-            size_t nconn = nnObjConn::getUI();
+            int nconn = nnObjConn::getUI();
             nnObjComponent *comp = dynamic_cast<nnObjComponent *>(from);
             if (comp != nullptr)
             {
@@ -898,7 +898,7 @@ bool nnObjComponent::connect(InnObj * from)
         {
             if (from->isComponent())
             {
-                size_t nconn = nnObjConn::getUI();
+                int nconn = nnObjConn::getUI();
                 nnObjComponent *comp = dynamic_cast<nnObjComponent *>(from);
                 if (comp != nullptr)
                 {
@@ -916,7 +916,7 @@ bool nnObjComponent::connect(InnObj * from)
     return result;
 }
 
-bool nnObjComponent::connectFromUp(size_t b)
+bool nnObjComponent::connectFromUp(int b)
 {
     bool res = false;
     if (v_num.size() == 0)
@@ -931,7 +931,7 @@ bool nnObjComponent::connectFromUp(size_t b)
     return res;
 }
 
-bool nnObjComponent::connectFromDown(size_t b)
+bool nnObjComponent::connectFromDown(int b)
 {
     bool res = false;
     if (v_num.size() == 0)

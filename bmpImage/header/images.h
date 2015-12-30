@@ -110,6 +110,7 @@ public:
     bool swaptoGRB(void);
     bool copyBits(bmpImage & dst, size_t left,size_t top,size_t right,size_t bottom);
     bool drawSprite(bmpImage & sprite, int left, int top);
+    bool drawMaskSprite(bmpImage & sprite, int left, int top,char mask);
 protected:
     bool replace(LPBITMAPFILEHEADER new_dib);
     static size_t getInternalImageSize(unsigned int width, unsigned int height);
@@ -137,6 +138,7 @@ protected:
     static bool copyBits(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER src,size_t left, size_t top, size_t width, size_t height);
     static bool swapto(LPBITMAPFILEHEADER pI, int iSorg, int iDest);
     static bool drawSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, size_t left, size_t top);
+    static bool drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, size_t left, size_t top,char mask);
 protected:
     BITMAPFILEHEADER * m_hBitmap;
 };

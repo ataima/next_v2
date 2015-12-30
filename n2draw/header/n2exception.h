@@ -101,8 +101,9 @@ class wireConnectionException
     :public n2exception
 {
 public:
-    std::vector<size_t > up, down;
-    explicit wireConnectionException(std::vector<size_t > _up, std::vector<size_t > _down) throw()
+    std::vector<int > up;
+    std::vector<int > down;
+    explicit wireConnectionException(std::vector<int > _up, std::vector<int > _down) throw()
         :n2exception("wireConnectionException"), up(_up), down(_down) {}
 
 };
@@ -111,8 +112,8 @@ class positionBusyException
     :public n2exception
 {
 public:
-    size_t x, y;
-    explicit positionBusyException(size_t _x, size_t _y) throw()
+    int x, y;
+    explicit positionBusyException(int _x, int _y) throw()
         :n2exception("positionBusyException"), x(_x), y(_y) {}
 };
 
@@ -189,9 +190,9 @@ public:
 class imagesConfigurationBadSizeException
     :public n2exception
 {
-    size_t w, h;
+    int w, h;
 public:
-    explicit class imagesConfigurationBadSizeException(size_t _w, size_t _h) throw()
+    explicit class imagesConfigurationBadSizeException(int _w, int _h) throw()
         :n2exception("imagesConfigurationBadSizeException"), w(_w), h(_h) {}
 };
 
@@ -208,9 +209,9 @@ public:
 class imagesConfigurationAlreadyLoadException
     :public n2exception
 {
-    size_t offset;
+    int offset;
 public:
-    explicit class imagesConfigurationAlreadyLoadException(size_t off) throw()
+    explicit class imagesConfigurationAlreadyLoadException(int off) throw()
         :n2exception("imagesConfigurationAlreadyLoadException") ,offset(off) {}
 };
 

@@ -9,7 +9,11 @@
 nnViewGlue::nnViewGlue(IManager  *_manager,IImageManager *_images)
     :manager(_manager),images(_images)
 {
-    const_x = const_y = p_width = p_height = offset_x = offset_y = 0;
+    select_start.set(-1);
+    select_stop.set(-1);
+    const_Size.set(0);
+    phy_Size.set(0);
+    offset_Pos.set(0);
     unselect();
 }
 
@@ -27,7 +31,11 @@ bool nnViewGlue::unselect()
 
 nnViewGlue::~nnViewGlue()
 {
-    const_x = const_y = p_width = p_height = offset_x = offset_y = 0;
+    select_start.set(-1);
+    select_stop.set(-1);
+    const_Size.set(0);
+    phy_Size.set(0);
+    offset_Pos.set(0);
 }
 
 
@@ -35,24 +43,24 @@ nnViewGlue::~nnViewGlue()
 nnPoint nnViewGlue::getCoordPhy(nnPoint & logPoint)
 {
     nnPoint res(0, 0);
-    res.x = logPoint.x*const_x;
-    res.y = logPoint.y*const_y;
+    res.x = logPoint.x*const_Size.x;
+    res.y = logPoint.y*const_Size.y;
     return res;
 }
 
-nnPoint nnViewGlue::getCoordPhy(size_t x,size_t y)
+nnPoint nnViewGlue::getCoordPhy(int x,int y)
 {
     nnPoint res(0, 0);
-    res.x = (x*const_x);
-    res.y = (y*const_y);
+    res.x = (x*const_Size.x);
+    res.y = (y*const_Size.y);
     return res;
 }
 
-nnPoint nnViewGlue::getMirrorCoordPhy(size_t x, size_t y)
+nnPoint nnViewGlue::getMirrorCoordPhy(int x, int y)
 {
     nnPoint res(0, 0);
-    res.x = p_width-(x*const_x)-const_x;
-    res.y = p_height-(y*const_y) - const_y;
+    res.x = phy_Size.x-(x*const_Size.x) - const_Size.x;
+    res.y = phy_Size.y-(y*const_Size.y) - const_Size.y;
     return res;
 }
 
@@ -61,8 +69,9 @@ nnPoint nnViewGlue::getMirrorCoordPhy(size_t x, size_t y)
 nnPoint nnViewGlue::getCoordLog(nnPoint & phyPoint)
 {
     nnPoint res(0, 0);
-    res.x = offset_x+phyPoint.x / const_x;
-    res.y = offset_y+phyPoint.y / const_y;
+    res=offset_Pos+(phyPoint/const_Size);
+    //res.x = offset_Pos.x+phyPoint.x / const_Size.x;
+    //res.y = offset_Pos.y+phyPoint.y / const_Size.y;
     return res;
 }
 
@@ -101,7 +110,7 @@ bool nnViewGlue::readConfiguration(miniXmlNode & node)
         t = conf->find(X("X"));
         if (t)
         {
-            const_x = t->getLong();
+            const_Size.x = t->getLong();
         }
         else
         {
@@ -111,7 +120,7 @@ bool nnViewGlue::readConfiguration(miniXmlNode & node)
         t = conf->find(X("Y"));
         if (t)
         {
-            const_y = t->getLong();
+            const_Size.y = t->getLong();
         }
         else
         {
@@ -121,7 +130,7 @@ bool nnViewGlue::readConfiguration(miniXmlNode & node)
         t = conf->find(X("WIDTH"));
         if (t)
         {
-            p_width = t->getLong();
+            phy_Size.x = t->getLong();
         }
         else
         {
@@ -131,14 +140,14 @@ bool nnViewGlue::readConfiguration(miniXmlNode & node)
         t = conf->find(X("HEIGHT"));
         if (t)
         {
-            p_height = t->getLong();
+            phy_Size.y = t->getLong();
         }
         else
         {
             phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("HEIGHT"));
             throw (pe);
         }
-        res = view->createMainBitmap(p_width, p_height);
+        res = view->createMainBitmap(phy_Size.x, phy_Size.y);
     }
     else
     {
@@ -158,7 +167,7 @@ bool nnViewGlue::readConfiguration(miniXmlNode & node)
 }
 
 //TestviewGlue.cpp : T3
-bool nnViewGlue::selectStart(size_t xpos, size_t ypos)
+bool nnViewGlue::selectStart(int xpos, int ypos)
 {
     bool res = false;
     nnPoint p(xpos, ypos);
@@ -166,7 +175,7 @@ bool nnViewGlue::selectStart(size_t xpos, size_t ypos)
     return res;
 }
 //TestviewGlue.cpp : T3
-bool nnViewGlue::selectStop(size_t xpos, size_t ypos)
+bool nnViewGlue::selectStop(int xpos, int ypos)
 {
     bool res = false;
     nnPoint p(xpos, ypos);
@@ -179,8 +188,8 @@ bool nnViewGlue::selectStart(nnPoint pos)
     bool res = false;
     if (manager != nullptr)
     {
-        size_t log_height = manager->getHeight(); //logic coord
-        size_t log_width = manager->getWidth(); //logic coord
+        int log_height = manager->getHeight(); //logic coord
+        int log_width = manager->getWidth(); //logic coord
         if (pos.x < log_width && pos.y < log_height)
         {
             select_start = pos;
@@ -195,8 +204,8 @@ bool nnViewGlue::selectStop(nnPoint pos)
     bool res = false;
     if (manager != nullptr)
     {
-        size_t log_height = manager->getHeight(); //logic coord
-        size_t log_width = manager->getWidth(); //logic coord
+        int log_height = manager->getHeight(); //logic coord
+        int log_width = manager->getWidth(); //logic coord
         if (pos.x < log_width && pos.y < log_height)
         {
             select_stop = pos;
@@ -207,7 +216,7 @@ bool nnViewGlue::selectStop(nnPoint pos)
 }
 
 //TestviewGlue.cpp : T1 T3
-bool nnViewGlue::getSelectAreaPhy(size_t & width, size_t & height)
+bool nnViewGlue::getSelectAreaPhy(int & width, int & height)
 {
     bool res = false;
     if (select_start != select_stop)
@@ -236,8 +245,8 @@ bool nnViewGlue::getSelectAreaPhy(size_t & width, size_t & height)
         }
         else if (isStartValid() && !isStopValid())
         {
-            width = const_x;
-            height = const_y;
+            width = const_Size.x;
+            height = const_Size.y;
             res = true;
         }
         else
@@ -250,8 +259,8 @@ bool nnViewGlue::getSelectAreaPhy(size_t & width, size_t & height)
     {
         if (isStartValid())
         {
-            width = const_x;
-            height = const_y;
+            width = const_Size.x;
+            height = const_Size.y;
             res = true;
         }
         else
@@ -264,15 +273,16 @@ bool nnViewGlue::getSelectAreaPhy(size_t & width, size_t & height)
 }
 
 //TestviewGlue.cpp : T1 T3
-bool nnViewGlue::getSelectStartPhy(size_t & x, size_t & y)
+bool nnViewGlue::getSelectStartPhy(int & x, int & y)
 {
     nnPoint p(-1, -1);
     bool res = false;
     if (isStartValid() && isStopValid())
     {
         p = select_start.intersect(select_stop);
-        p.x -= offset_x;
-        p.y -= offset_y;
+        p-=offset_Pos;
+        //p.x -= offset_Pos.x;
+        //p.y -= offset_Pos.y;
         p = getCoordPhy(p);
         x = p.x;
         y = p.y;
@@ -281,8 +291,9 @@ bool nnViewGlue::getSelectStartPhy(size_t & x, size_t & y)
     else if (isStartValid() && !isStopValid())
     {
         p = select_start;
-        p.x -= offset_x;
-        p.y -= offset_y;
+        p-=offset_Pos;
+        //p.x -= offset_Pos.x;
+        //p.y -= offset_Pos.y;
         p = getCoordPhy(p);
         x = p.x;
         y = p.y;
@@ -291,8 +302,9 @@ bool nnViewGlue::getSelectStartPhy(size_t & x, size_t & y)
     else if (!isStartValid() && isStopValid())
     {
         p = select_stop;
-        p.x -= offset_x;
-        p.y -= offset_y;
+        p-=offset_Pos;
+        //p.x -= offset_Pos.x;
+        //p.y -= offset_Pos.y;
         p = getCoordPhy(p);
         x = p.x;
         y = p.y;
@@ -353,7 +365,7 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
         select_stop = select_start;
         getSelectArea(start,stop);
         res=true;
-    }
+    }    
     return res;
 }
 
@@ -384,18 +396,18 @@ bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint
     return res;
 }
 
-bool nnViewGlue::handlerScrollHorz(size_t pos)
+bool nnViewGlue::handlerScrollHorz(int pos)
 {
     //abs position
     bool res = false;
     if(pos>=0)
     {
-        size_t w = getScrollableHorzSize();
+        int w = getScrollableHorzSize();
         if(pos>w)
             pos=w;
-        if (manager != nullptr && offset_x != pos )
+        if (manager != nullptr && offset_Pos.x != pos )
         {
-            offset_x = pos;
+            offset_Pos.x = pos;
             updateDraw();
             res=true;
         }
@@ -403,18 +415,18 @@ bool nnViewGlue::handlerScrollHorz(size_t pos)
     return res;
 }
 
-bool nnViewGlue::handlerScrollVert(size_t pos)
+bool nnViewGlue::handlerScrollVert(int pos)
 {
     //abs position
     bool res = false;
     if(pos>=0)
     {
-        size_t h = getScrollableVertSize();
+        int h = getScrollableVertSize();
         if(pos>h)
             pos=h;
-        if (manager != nullptr && offset_y != pos )
+        if (manager != nullptr && offset_Pos.y != pos )
         {
-            offset_y = pos;
+            offset_Pos.y = pos;
             updateDraw();
             res=true;
         }
@@ -424,12 +436,12 @@ bool nnViewGlue::handlerScrollVert(size_t pos)
 
 
 
-bool nnViewGlue::resize(size_t w, size_t h)
+bool nnViewGlue::resize(int w, int h)
 {
     bool res=false;
-    p_height=((h/const_y)+1)*const_y;
-    p_width=((w/const_x)+1)*const_x;
-    res=view->remapMainBitmap(p_width,p_height);
+    phy_Size.y=((h/const_Size.y)+1)*const_Size.y;
+    phy_Size.x=((w/const_Size.x)+1)*const_Size.x;
+    res=view->remapMainBitmap(phy_Size.x,phy_Size.y);
     if(res)
         res=updateDraw();
     return res;
@@ -438,14 +450,14 @@ bool nnViewGlue::resize(size_t w, size_t h)
 
 bool nnViewGlue::needScrollBarHorz(void)
 {
-    size_t w=manager->getWidth()*const_x;
-    return (p_width<w);
+    int w=manager->getWidth()*const_Size.x;
+    return (phy_Size.x<w);
 }
 
 bool nnViewGlue::needScrollBarVert(void)
 {
-    size_t h=manager->getHeight()*const_y;
-    return (p_height<h);
+    int h=manager->getHeight()*const_Size.y;
+    return (phy_Size.y<h);
 }
 
 
@@ -459,19 +471,15 @@ bool nnViewGlue::isSelectAreaPhyVisible(nnRect &result, nnPoint &start, nnPoint 
         {
             if(getSelectArea(start,stop))
             {
-                //stop+=1;
                 nnRect sel(start,stop);
                 //sel=area.in(sel);
                 if(sel.isValid())
                 {
-                    sel.start.x-=offset_x;
-                    sel.stop.x-=offset_x;
-                    sel.start.y-=offset_y;
-                    sel.stop.y-=offset_y;
+                    sel.start-=offset_Pos;
+                    sel.stop-=offset_Pos;
                     result.start=getCoordPhy(sel.start);
                     result.stop=getCoordPhy(sel.stop);
-                    result.stop.x+=const_x;
-                    result.stop.y+=const_y;
+                    result.stop+=const_Size;
                     res=true;
                 }
             }
@@ -484,33 +492,33 @@ bool nnViewGlue::isSelectAreaPhyVisible(nnRect &result, nnPoint &start, nnPoint 
 
 bool nnViewGlue::getVisibleArea(nnRect & area)
 {
-    area.set(offset_x,offset_y,offset_x+getPageWidth(),offset_y+getPageHeight());
+    area.set(offset_Pos.x,offset_Pos.y,offset_Pos.x+getPageWidth(),offset_Pos.y+getPageHeight());
     return true;
 }
 
 
-size_t nnViewGlue::getScrollableHorzSize(void)
+int nnViewGlue::getScrollableHorzSize(void)
 {
+    int res=0;
     if(manager)
     {
-        return manager->getWidth()-getPageWidth()+1;
+        res = manager->getWidth()-getPageWidth()+1;
+        if(res<0)
+            res=0;
     }
-    else
-    {
-        return 0;
-    }
+    return res;
 }
 
-size_t nnViewGlue::getScrollableVertSize(void)
+int nnViewGlue::getScrollableVertSize(void)
 {
+    int res=0;
     if(manager)
     {
-        return manager->getHeight()-getPageHeight()+1;
+        res = manager->getHeight()-getPageHeight()+1;
+        if(res<0)
+            res=0;
     }
-    else
-    {
-        return 0;
-    }
+    return res;
 }
 
 
@@ -535,10 +543,11 @@ bool nnViewGlue::handlerHomeButton(bool shitf, bool ctrl, bool alt, nnPoint &pos
     {
         if (manager != nullptr )
         {
-            offset_x=offset_y=0;
+            offset_Pos.x=offset_Pos.y=0;
             updateDraw();
-            pos.x=offset_x;
-            pos.y=offset_y;
+            pos=offset_Pos;
+            //pos.x=offset_Pos.x;
+            //pos.y=offset_Pos.y;
             res=true;
         }
     }
@@ -552,11 +561,12 @@ bool nnViewGlue::handlerEndButton(bool shitf, bool ctrl, bool alt, nnPoint &pos)
     {
         if (manager != nullptr )
         {
-            offset_x = getScrollableHorzSize();
-            offset_y = getScrollableVertSize();
+            offset_Pos.x = getScrollableHorzSize();
+            offset_Pos.y = getScrollableVertSize();
             updateDraw();
-            pos.x=offset_x;
-            pos.y=offset_y;
+            pos=offset_Pos;
+            //pos.x=offset_Pos.x;
+            //pos.y=offset_Pos.y;
             res=true;
         }
     }
@@ -570,14 +580,15 @@ bool nnViewGlue::handlerPageUpButton(bool shitf, bool ctrl, bool alt, nnPoint &p
     {
         if (manager != nullptr )
         {
-            size_t p=getPageHeight();
-            if(offset_y>p)
-                offset_y-=p;
+            int p=getPageHeight();
+            if(offset_Pos.y>p)
+                offset_Pos.y-=p;
             else
-                offset_y=0;
+                offset_Pos.y=0;
             updateDraw();
-            pos.x=offset_x;
-            pos.y=offset_y;
+            pos=offset_Pos;
+            //pos.x=offset_Pos.x;
+            //pos.y=offset_Pos.y;
             res=true;
         }
     }
@@ -591,14 +602,15 @@ bool nnViewGlue::handlerPageDownButton(bool shitf, bool ctrl, bool alt, nnPoint 
     {
         if (manager != nullptr )
         {
-            size_t h = getScrollableVertSize();
-            size_t p=getPageHeight();
-            offset_y+=p;
-            if(offset_y>h)
-                offset_y=h;
+            int h = getScrollableVertSize();
+            int p=getPageHeight();
+            offset_Pos.y+=p;
+            if(offset_Pos.y>h)
+                offset_Pos.y=h;
             updateDraw();
-            pos.x=offset_x;
-            pos.y=offset_y;
+            pos=offset_Pos;
+            //pos.x=offset_Pos.x;
+            //pos.y=offset_Pos.y;
             res=true;
         }
     }
@@ -731,53 +743,61 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
         nnRect vis;
         if(vx!=0)
         {
-            size_t sw = getScrollableHorzSize();
-            size_t w = manager->getWidth();
-            select_start.adjustX(1,w,vx);
-            select_stop.adjustX(1,w,vx);
-            getVisibleArea(vis);
-            if(vx>0 && select_start.x>=vis.stop.x && select_start.x<w)
+            int sw = getScrollableHorzSize();
+            int w = manager->getWidth()-1;
+            if( (vx>0 && select_start.x<w && select_stop.x<w) ||
+                    (vx<0 && select_start.x>0 && select_stop.x>0) )
             {
-                offset_x+=(vx);
-                if(offset_x>sw)
-                    offset_x=sw;
-                updateDraw();
-                needScroll=true;
+                select_start.x+=vx;
+                select_stop.x+=vx;
+                getVisibleArea(vis);
+                if(vx>0 && select_stop.x>=(vis.stop.x-1) && offset_Pos.x<w)
+                {
+                    offset_Pos.x+=(vx);
+                    if(offset_Pos.x>sw)
+                        offset_Pos.x=sw;
+                    updateDraw();
+                    needScroll=true;
+                }
+                if(vx<0 && select_start.x<=(vis.start.x-1) && offset_Pos.x>0)
+                {
+                    offset_Pos.x+=(vx);
+                    if(offset_Pos.x<0)
+                        offset_Pos.x=0;
+                    updateDraw();
+                    needScroll=true;
+                }
+                res=true;
             }
-            if(vx<0 && select_start.x<=vis.start.x && select_start.x>0)
-            {
-                offset_x+=(vx);
-                if(offset_x<0)
-                    offset_x=0;
-                updateDraw();
-                needScroll=true;
-            }
-            res=true;
         }
         if(vy!=0)
         {
-            size_t sh = getScrollableVertSize();
-            size_t h = manager->getHeight();
-            select_start.adjustY(1,h,vy);
-            select_stop.adjustY(1,h,vy);
-            getVisibleArea(vis);
-            if(vy>0 && select_start.y>=vis.stop.y && select_start.y<h)
+            int sh = getScrollableVertSize();
+            int h = manager->getHeight()-1;
+            if( (vy>0 && select_start.y<h && select_stop.y<h) ||
+                    (vy<0 && select_start.y>0 && select_stop.y>0) )
             {
-                offset_y+=(vy);
-                if(offset_y>sh)
-                    offset_y=sh;
-                updateDraw();
-                needScroll=true;
+                select_start.y+=vy;
+                select_stop.y+=vy;
+                getVisibleArea(vis);
+                if(vy>0 && select_stop.y>=(vis.stop.y-1) && offset_Pos.y<h)
+                {
+                    offset_Pos.y+=(vy);
+                    if(offset_Pos.y>sh)
+                        offset_Pos.y=sh;
+                    updateDraw();
+                    needScroll=true;
+                }
+                if(vy<0 && select_start.y<=vis.start.y && offset_Pos.y>0)
+                {
+                    offset_Pos.y+=(vy);
+                    if(offset_Pos.y<0)
+                        offset_Pos.y=0;
+                    updateDraw();
+                    needScroll=true;
+                }
+                res=true;
             }
-            if(vy<0 && select_start.y<=vis.start.y && select_start.y>0)
-            {
-                offset_y-=(vy);
-                if(offset_y<0)
-                    offset_y=0;
-                updateDraw();
-                needScroll=true;
-            }
-            res=true;
         }
     }
     return res;
@@ -787,50 +807,54 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
 bool nnViewGlue::resizeSelectArea(const int vx,const int vy)
 {
     bool res=false;
-    if(select_start.isValid() && select_stop.isValid())
+    if(select_start.isValid() && select_stop.isValid() && manager)
     {
         if(vx!=0)
         {
-            size_t w=manager->getWidth();
+            int w=manager->getWidth()-1;
             if(vx<0)
             {
                 nnPoint diff=select_stop-select_start;
                 if(diff.x>0)
                 {
-                    select_stop.adjustX(1,w,-1);
+                    select_stop.x+=vx;
                     res=true;
                 }
             }
             if(vx>0)
             {
-                if(manager)
-                {
-                    select_stop.adjustX(1,w,1);
-                    res=true;
-                }
+                if(select_stop.x<w)
+                    select_stop.x+=vx;
+                res=true;
             }
         }
         if(vy!=0)
         {
-            size_t h=manager->getHeight();
+            int h=manager->getHeight()-1;
             if(vy<0)
             {
                 nnPoint diff=select_stop-select_start;
                 if(diff.y>0)
                 {
-                    select_stop.adjustY(1,h,-1);
+                    select_stop.y+=vy;
                     res=true;
                 }
             }
             if(vy>0)
             {
-                if(manager)
-                {
-                    select_stop.adjustY(1,h,1);
-                    res=true;
-                }
+                if(select_stop.y <h)
+                    select_stop.y+=vy;
+                res=true;
             }
         }
     }
     return res;
 }
+
+
+ bool nnViewGlue::handlerRequestCommand(nnPoint phyPoint)
+ {
+     bool res=false;
+
+     return res;
+ }

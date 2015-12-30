@@ -38,7 +38,7 @@ bool nnTextView::draw(IManager * manager, void * context)
     (context);
     if (manager != nullptr)
     {
-        size_t h, w;
+        int h, w;
         nnPoint start = manager->getStartPoint();
         nnPoint stop = manager->getStopPoint();
         for (h = start.y; h <= stop.y; h++)
@@ -130,8 +130,8 @@ bool nnView::draw(IManager * manager, void * context)
 {
     bool res = false;
     bool empty = false;
-    size_t x, y;
-    size_t ix, iy;
+    int x, y;
+    int ix, iy;
     nnViewGlue *glue = (nnViewGlue *)(context);
     ix = iy = 0;
     if (glue != nullptr)
@@ -201,7 +201,7 @@ bool nnView::readConfiguration(miniXmlNode * node)
     return res;
 }
 
-bool nnView::createMainBitmap(size_t w, size_t h)
+bool nnView::createMainBitmap(int w, int h)
 {
     bool res = false;
     res = page.create((int)w, (int)h, 0);
@@ -209,13 +209,13 @@ bool nnView::createMainBitmap(size_t w, size_t h)
 }
 
 
-bool nnView::remapMainBitmap(size_t w,size_t h)
+bool nnView::remapMainBitmap(int w,int h)
 {
     page.clear();
     return createMainBitmap(w,h);
 }
 
-bool nnView::drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue * glue)
+bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
 {
     bool res = false;
     unsigned int nImage;
@@ -248,7 +248,7 @@ bool nnView::drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue * glue)
     return res;
 }
 
-bool nnView::drawBkg(size_t & x, size_t & y, IViewGlue * glue)
+bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
 {
     bool res = false;
     if (images != nullptr)
@@ -259,6 +259,7 @@ bool nnView::drawBkg(size_t & x, size_t & y, IViewGlue * glue)
         if (mapImage)
         {
             listImage::const_iterator it = mapImage->find(0);
+
             if (it != mapImage->end())
             {
                 res = page.drawSprite(*it->second, (int)pos.x, (int)pos.y);

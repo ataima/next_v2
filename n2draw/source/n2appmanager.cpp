@@ -9,7 +9,7 @@ bool WinEvent::create(unsigned int message, unsigned int wparam, unsigned long l
 }
 
 
-size_t nnAppManager::UID = 1;
+int nnAppManager::UID = 1;
 
 nnAppManager::nnAppManager():selected(-1)
 {
@@ -83,16 +83,16 @@ bool nnAppManager::createInternalObjects(std::wstring & conf_file_name, childApp
         miniXmlNode *conf_manager = configuration.getRoot().find(X("APP"));
         if (conf_manager != nullptr)
         {
-            //size_t line = __LINE__;
+            //int line = __LINE__;
             miniXmlNode *size_default = conf_manager->find(X("DEFAULT_WIDTH"));
             if (size_default != nullptr)
             {
-                size_t default_w = size_default->getLong();
+                int default_w = size_default->getLong();
                 size_default = conf_manager->find(X("DEFAULT_HEIGHT"));
                 if (size_default != nullptr)
                 {
-                    size_t default_h = size_default->getLong();
-                    size_t line = __LINE__;
+                    int default_h = size_default->getLong();
+                    int line = __LINE__;
                     child.object_manager = new nnObjManager(default_w, default_h);
                     MEMCHK(IManager, child.object_manager);
                     conf_manager = configuration.getRoot().find(X("MANAGER"));

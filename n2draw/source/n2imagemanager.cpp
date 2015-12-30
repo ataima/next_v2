@@ -180,7 +180,7 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
     return res= !availObj.empty();
 }
 
-bool nnImageManager::loadImages(size_t w, size_t h)
+bool nnImageManager::loadImages(int w, int h)
 {
     bool res = false;
     if (availObj.size() > 0)

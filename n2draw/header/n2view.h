@@ -39,9 +39,9 @@ class IView
 public:
     virtual bool readConfiguration(miniXmlNode *node) = 0;
     virtual bool draw(IManager *manager, void * context) = 0;
-    virtual bool createMainBitmap(size_t w, size_t h) = 0;
+    virtual bool createMainBitmap(int w, int h) = 0;
     virtual bmpImage & getMainBitmap(void) = 0;
-    virtual bool remapMainBitmap(size_t w,size_t h)=0;
+    virtual bool remapMainBitmap(int w,int h)=0;
 };
 
 
@@ -53,8 +53,8 @@ class nnTextView
 public:
     bool draw(IManager * manager, void * context);
     bool readConfiguration(miniXmlNode *node) { (node);return false; }
-    bool createMainBitmap(size_t w, size_t h) { (h);(w);return true; }
-    bool remapMainBitmap(size_t w,size_t h){(h);(w);return true;}
+    bool createMainBitmap(int w, int h) { (h);(w);return true; }
+    bool remapMainBitmap(int w,int h){(h);(w);return true;}
     virtual bmpImage & getMainBitmap(void) { return image; }
 };
 
@@ -72,12 +72,12 @@ public:
     ~nnView();
     bool draw(IManager * manager, void * context);
     bool readConfiguration(miniXmlNode *node);
-    bool createMainBitmap(size_t w, size_t h);
+    bool createMainBitmap(int w, int h);
     inline bmpImage & getMainBitmap(void) { return page; }
-    bool remapMainBitmap(size_t w,size_t h);
+    bool remapMainBitmap(int w,int h);
 private:
-    bool drawObj(InnObj * obj, size_t & x, size_t & y, IViewGlue *glue);
-    bool drawBkg( size_t & x, size_t & y,  IViewGlue *glu);
+    bool drawObj(InnObj * obj, int & x, int & y, IViewGlue *glue);
+    bool drawBkg( int & x, int & y,  IViewGlue *glu);
 };
 
 

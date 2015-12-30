@@ -43,35 +43,35 @@ class IManager
 {
 public:
     // 
-    virtual bool addCoil(size_t x,  nnObjCoil * obj) = 0;
-    virtual bool addWire(size_t x, size_t y, InnObj * obj) = 0;
-    virtual bool addContact(size_t x, size_t y, nnObjContact * obj) = 0;
-    virtual bool addObj(size_t x, size_t y, InnObj * obj) = 0;
-    virtual bool removeObj(size_t x, size_t y) = 0;
-    virtual InnObj * getObj(size_t x, size_t y) = 0;
-    virtual InnObj * outObj(size_t x, size_t y) = 0;
-    virtual bool replaceObj(size_t x, size_t y, InnObj * obj) = 0;
+    virtual bool addCoil(int x,  nnObjCoil * obj) = 0;
+    virtual bool addWire(int x, int y, InnObj * obj) = 0;
+    virtual bool addContact(int x, int y, nnObjContact * obj) = 0;
+    virtual bool addObj(int x, int y, InnObj * obj) = 0;
+    virtual bool removeObj(int x, int y) = 0;
+    virtual InnObj * getObj(int x, int y) = 0;
+    virtual InnObj * outObj(int x, int y) = 0;
+    virtual bool replaceObj(int x, int y, InnObj * obj) = 0;
     virtual bool removeAll(void) = 0;
     virtual bool moveObj(nnPoint from, nnPoint to) = 0;
     virtual bool swapObj(nnPoint from, nnPoint to) = 0;
-    virtual size_t getWidth(void) = 0;
-    virtual size_t getHeight(void) = 0;
+    virtual int getWidth(void) = 0;
+    virtual int getHeight(void) = 0;
     virtual nnPoint getStartPoint(void) = 0;
     virtual nnPoint getStopPoint(void) = 0;
     virtual bool save(STRING & name) = 0;
     virtual bool load(STRING & name) = 0;
     virtual bool undo(void) = 0;
     virtual bool redo(void) = 0;
-    virtual bool insertRow(size_t y_pos) = 0;
-    virtual bool insertCol(size_t x_pos) = 0;
-    virtual bool removeRow(size_t y_pos) = 0;
-    virtual bool removeCol(size_t x_pos) = 0;
+    virtual bool insertRow(int y_pos) = 0;
+    virtual bool insertCol(int x_pos) = 0;
+    virtual bool removeRow(int y_pos) = 0;
+    virtual bool removeCol(int x_pos) = 0;
     virtual bool removeEmptyCol(void) = 0;
-    virtual bool ResizeHeight(size_t h) = 0;
-    virtual bool ResizeWidth(size_t w) = 0;
-    virtual bool Resize(size_t w, size_t h) = 0;
+    virtual bool ResizeHeight(int h) = 0;
+    virtual bool ResizeWidth(int w) = 0;
+    virtual bool Resize(int w, int h) = 0;
     virtual bool readConfiguration(miniXmlNode & node) = 0;
-    virtual bool revIndexes(hashkey & key,size_t & x, size_t & y) = 0;
+    virtual bool revIndexes(hashkey & key,int & x, int & y) = 0;
     
 };
 
@@ -96,9 +96,9 @@ typedef struct tag_action
 {
     eAction action;
     InnObj *obj;
-    size_t x_pos;
-    size_t y_pos;
-    tag_action(eAction a, size_t x, size_t y, InnObj* _obj = nullptr)
+    int x_pos;
+    int y_pos;
+    tag_action(eAction a, int x, int y, InnObj* _obj = nullptr)
         : action(a), x_pos(x), y_pos(y), obj(_obj) {}
 } undo_redo_unit;
 
@@ -133,56 +133,56 @@ class nnObjManager
     : public IManager
     , public hashObjTable
 {
-    size_t v_width;
-    size_t v_height;
-    size_t mask_width;
-    size_t mask_height;
+    int v_width;
+    int v_height;
+    int mask_width;
+    int mask_height;
     nnObjUndoRedo managerUR;
 
 public:
-    nnObjManager(size_t x, size_t y);
+    nnObjManager(int x, int y);
     ~nnObjManager();
-    InnObj * getObj(size_t x, size_t y);
-    InnObj * outObj(size_t x, size_t y);
-    bool addCoil(size_t x,  nnObjCoil * obj);
-    bool addWire(size_t x, size_t y, InnObj * obj);
-    bool addContact(size_t x, size_t y, nnObjContact * obj);
-    bool addObj(size_t x, size_t y, InnObj * obj);
-    bool removeObj(size_t x, size_t y);
-    bool replaceObj(size_t x, size_t y, InnObj * obj);
+    InnObj * getObj(int x, int y);
+    InnObj * outObj(int x, int y);
+    bool addCoil(int x,  nnObjCoil * obj);
+    bool addWire(int x, int y, InnObj * obj);
+    bool addContact(int x, int y, nnObjContact * obj);
+    bool addObj(int x, int y, InnObj * obj);
+    bool removeObj(int x, int y);
+    bool replaceObj(int x, int y, InnObj * obj);
     bool removeAll(void);
     bool moveObj(nnPoint from, nnPoint to);
     bool swapObj(nnPoint from, nnPoint to);
-    inline size_t getWidth(void) { return v_width; }
-    inline size_t getHeight(void) { return v_height; }
+    inline int getWidth(void) { return v_width; }
+    inline int getHeight(void) { return v_height; }
     nnPoint getStartPoint(void);
     nnPoint getStopPoint(void);
     bool save(STRING & name);
     bool load(STRING & name);
     bool undo(void);
     bool redo(void);
-    bool insertRow(size_t y_pos);
-    bool insertCol(size_t x_pos);
-    bool removeRow(size_t y_pos);
-    bool removeCol(size_t x_pos);
+    bool insertRow(int y_pos);
+    bool insertCol(int x_pos);
+    bool removeRow(int y_pos);
+    bool removeCol(int x_pos);
     bool removeEmptyCol(void);
     inline vectorUR & getUndoObjs(void) { return managerUR.getUndoObjs(); }
     inline vectorUR & geRedoObjs(void) { return managerUR.getRedoObjs(); }
-    bool ResizeHeight(size_t h);
-    bool ResizeWidth(size_t w);
-    bool Resize(size_t w, size_t h);
+    bool ResizeHeight(int h);
+    bool ResizeWidth(int w);
+    bool Resize(int w, int h);
     bool readConfiguration(miniXmlNode & node) ;
-    inline bool revIndexes(hashkey & key, size_t & x, size_t & y) 
+    inline bool revIndexes(hashkey & key, int & x, int & y)
                 { return revHashKey(key, x, y); }
 
 protected:
-    bool genHashKey(size_t x, size_t y, hashkey & key);
-    bool revHashKey(hashkey & key, size_t & x, size_t &y);
-    bool range(size_t x, size_t y); 
-    bool rangeContact(size_t x, size_t y);
-    bool linkObj(size_t x, size_t y, InnObj *obj);
-    bool unlinkObj(size_t x, size_t y, InnObj *obj);
-    bool checkRemovableCol(size_t x);
+    bool genHashKey(int x, int y, hashkey & key);
+    bool revHashKey(hashkey & key, int & x, int &y);
+    bool range(int x, int y);
+    bool rangeContact(int x, int y);
+    bool linkObj(int x, int y, InnObj *obj);
+    bool unlinkObj(int x, int y, InnObj *obj);
+    bool checkRemovableCol(int x);
     bool computeMask(void);
 };
 

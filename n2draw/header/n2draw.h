@@ -34,9 +34,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct tag_nn_point
 {
-    size_t x;
-    size_t y;
-    tag_nn_point(size_t _x = 0, size_t _y = 0) :x(_x), y(_y) {}
+    int x;
+    int y;
+    tag_nn_point(int _x = 0, int _y = 0) :x(_x), y(_y) {}
     inline void operator = (const struct tag_nn_point b)
     {
         x = b.x;
@@ -50,7 +50,7 @@ typedef struct tag_nn_point
     {
         return (x != b.x) || (y != b.y);
     }
-    inline bool operator != (const size_t v)
+    inline bool operator != (const int v)
     {
         return (x != v) || (y != v);
     }
@@ -58,10 +58,15 @@ typedef struct tag_nn_point
     {
         return (x != -1 && y != -1);
     }
-    inline void set(size_t _x, size_t _y)
+    inline void set(int _x, int _y)
     {
         x = _x;
         y = _y;
+    }
+    inline void set(int _v)
+    {
+        x = _v;
+        y = _v;
     }
 
     tag_nn_point intersect(const tag_nn_point & p)
@@ -72,11 +77,32 @@ typedef struct tag_nn_point
         res.y = y < p.y ? y : p.y;
         return res;
     }
+    friend tag_nn_point operator+(const tag_nn_point & a, const tag_nn_point & b)
+    {
+        tag_nn_point res;
+        res.x=a.x+b.x;
+        res.y=a.y+b.y;
+        return res;
+    }
     friend tag_nn_point operator-(const tag_nn_point & a, const tag_nn_point & b)
     {
         tag_nn_point res;
         res.x=a.x-b.x;
         res.y=a.y-b.y;
+        return res;
+    }
+    friend tag_nn_point operator/(const tag_nn_point & a, const tag_nn_point & b)
+    {
+        tag_nn_point res;
+        res.x=a.x/b.x;
+        res.y=a.y/b.y;
+        return res;
+    }
+    friend tag_nn_point operator*(const tag_nn_point & a, const tag_nn_point & b)
+    {
+        tag_nn_point res;
+        res.x=a.x*b.x;
+        res.y=a.y*b.y;
         return res;
     }
 
@@ -113,50 +139,40 @@ typedef struct tag_nn_point
         x += a.x;
         y += a.y;
     }
-    inline void operator += (const size_t v)
+    inline void operator -= (const tag_nn_point & a)
+    {
+        x -= a.x;
+        y -= a.y;
+    }
+    inline void operator += (const int v)
     {
         x += v;
         y += v;
     }
-    inline void adjustX (size_t minV,size_t maxV,int val)
+    /*
+    inline bool intoX (int minV,int maxV)
     {
-        if(x==0 && val<0)
-        {
-
-        }
-        else
-        {
-        x+=val;
-        if(x>maxV)
-            x=maxV;
-        if(x<minV)
-            x=minV;
-        }
+        bool res=false;
+        if(x>minV && x<maxV)
+            res=true;
+        return res;
     }
-    inline void adjustY (size_t minV,size_t maxV,int val)
+    inline bool  intoY (int minV,int maxV)
     {
-        if(y==0 && val<0)
-        {
-
-        }
-        else
-        {
-        y+=val;
-        if(y>maxV)
-            y=maxV;
-        if(y<minV)
-            y=minV;
-        }
+        bool res=false;
+        if(x>=minV && x<maxV)
+            res=true;
+        return res;
     }
+    */
 } nnPoint;
-
 
 
 typedef struct tag_nn_rect
 {
     nnPoint start;
     nnPoint stop;
-    tag_nn_rect(size_t top=-1, size_t left=- 1, size_t down= -1, size_t right= -1)
+    tag_nn_rect(int top=-1, int left=- 1, int down= -1, int right= -1)
         :start(top, left), stop(down, right) {}
     tag_nn_rect(const nnPoint& p1, const nnPoint & p2)
         :start(p1), stop(p2) {}
@@ -169,7 +185,7 @@ typedef struct tag_nn_rect
     {
         return (start != b.start) || (stop != b.stop);
     }
-    inline bool operator != (const size_t v)
+    inline bool operator != (const int v)
     {
         return (start != v) || (stop != v);
     }
@@ -177,7 +193,7 @@ typedef struct tag_nn_rect
     {
         return (start.isValid()) && (stop.isValid());
     }
-    inline void set(size_t _left, size_t _top, size_t _right, size_t _down)
+    inline void set(int _left, int _top, int _right, int _down)
     {
         start.set(_left,_top);
         stop.set( _right,_down);
@@ -187,14 +203,14 @@ typedef struct tag_nn_rect
         start=p1;
         stop=p2;
     }
-    inline size_t width(void)
+    inline int width(void)
     {
         if(start.x<stop.x)
             return stop.x-start.x;
         else
             return start.x-stop.x;
     }
-    inline size_t height(void)
+    inline int height(void)
     {
         if(start.y<stop.y)
             return stop.y-start.y;
@@ -214,7 +230,7 @@ typedef struct tag_nn_rect
     tag_nn_rect in(const tag_nn_rect & b)
     {
         tag_nn_rect res;
-        size_t left,top,right,bottom;
+        int left,top,right,bottom;
         left=b.start.x;
         right=b.stop.x;
         top=b.start.y;
@@ -274,7 +290,7 @@ enum tag_wire_direction
 
 typedef tag_wire_direction  eWireDirection;
 
-typedef std::vector<size_t >  eConnections;
+typedef std::vector<int >  eConnections;
 
 class miniXmlNode;
 
@@ -283,17 +299,17 @@ class  InnObj
 public:
     virtual ObjContext getContext(void) = 0;
     virtual void setContext(ObjContext & c) = 0;
-    virtual size_t getXpos(void) = 0;
-    virtual size_t getYpos(void) = 0;
-    virtual void setXpos(size_t pX) = 0;
-    virtual void setYpos(size_t pY) = 0;
-    virtual void setPos(size_t pX, size_t pY) = 0;
+    virtual int getXpos(void) = 0;
+    virtual int getYpos(void) = 0;
+    virtual void setXpos(int pX) = 0;
+    virtual void setYpos(int pY) = 0;
+    virtual void setPos(int pX, int pY) = 0;
     virtual const std::wstring toString(void) const = 0;
     virtual eWireDirection getDirection(InnObj * b) = 0;
     virtual eConnections & getConnections(void) = 0;
-    virtual void setConnections(size_t  v) = 0;
+    virtual void setConnections(int  v) = 0;
     virtual bool connect(InnObj* b) = 0;
-    virtual bool powerConnect(size_t num) = 0;
+    virtual bool powerConnect(int num) = 0;
     virtual bool disconnect(InnObj* b) = 0;
     virtual bool isComponent(void) = 0;
     virtual void save(miniXmlNode *root) = 0;
@@ -326,23 +342,23 @@ class  nnObjPos
     :public nnObj
 {
 protected:
-    size_t v_Xpos;
-    size_t v_Ypos;
+    int v_Xpos;
+    int v_Ypos;
 public:
     nnObjPos(ObjContext c) :nnObj(c), v_Xpos(0), v_Ypos(0) { }
-    inline  size_t getXpos(void) {
+    inline  int getXpos(void) {
         return v_Xpos;
     }
-    inline  size_t getYpos(void) {
+    inline  int getYpos(void) {
         return v_Ypos;
     }
-    inline  void setXpos(size_t pX) {
+    inline  void setXpos(int pX) {
         v_Xpos = pX;
     }
-    inline  void setYpos(size_t pY) {
+    inline  void setYpos(int pY) {
         v_Ypos = pY;
     }
-    inline  void setPos(size_t pX, size_t pY) {
+    inline  void setPos(int pX, int pY) {
         v_Xpos = pX;
         v_Ypos = pY;
     }
@@ -424,14 +440,14 @@ class  nnObjConn
 {
 protected:
     eConnections v_num;
-    static size_t uid_num;
+    static int uid_num;
 
 public:
     nnObjConn(ObjContext c) :nnObjPos(c), v_num(0) {}
     inline eConnections & getConnections(void) {
         return v_num;
     }
-    virtual inline void setConnections(size_t n) {
+    virtual inline void setConnections(int n) {
         v_num.push_back(n);
     }
     const  std::wstring toString(void) const;
@@ -440,13 +456,13 @@ public:
     static void resetUI(void) {
         uid_num = 2;
     }
-    static size_t getUI(void) {
+    static int getUI(void) {
         return ++uid_num;
     }
     static void setUI(long u) {
         uid_num = u;
     }
-    bool powerConnect(size_t num);
+    bool powerConnect(int num);
     static InnObj * getObjFromIds(custom_obj specific, ObjContext context);
 
 };
@@ -476,19 +492,19 @@ public:
     }
     bool connect(InnObj * b);
     bool disconnect(InnObj * b);
-    bool connectFromUp(size_t b);
-    bool connectFromDown(size_t b);
-    void setConnections(size_t n);
+    bool connectFromUp(int b);
+    bool connectFromDown(int b);
+    void setConnections(int n);
     static eWire wireStringToEnum(const wchar_t *name);
 protected:
 
-    bool connectFromLeft(size_t b);
-    bool connectFromRight(size_t b);
+    bool connectFromLeft(int b);
+    bool connectFromRight(int b);
 
-    bool disconnectFromUp(size_t b);
-    bool disconnectFromDown(size_t b);
-    bool disconnectFromLeft(size_t b);
-    bool disconnectFromRight(size_t b);
+    bool disconnectFromUp(int b);
+    bool disconnectFromDown(int b);
+    bool disconnectFromLeft(int b);
+    bool disconnectFromRight(int b);
 };
 
 
@@ -506,8 +522,8 @@ public:
     }
     bool connect(InnObj *b);
     bool disconnect(InnObj *b);
-    bool connectFromUp(size_t b);
-    bool connectFromDown(size_t b);
+    bool connectFromUp(int b);
+    bool connectFromDown(int b);
     inline custom_obj getCustomization(void) {
         return v_spec;
     }
@@ -518,7 +534,7 @@ protected:
     bool disconnectFromDown(void);
 };
 
-typedef std::vector<size_t > eVCPUregister;
+typedef std::vector<unsigned int > eVCPUregister;
 
 
 #include "MerlinoVCPU.h"

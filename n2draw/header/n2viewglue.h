@@ -49,20 +49,20 @@ class IViewGlue
 {
 public:
     virtual nnPoint getCoordPhy(nnPoint & logPoint) = 0;
-    virtual nnPoint getCoordPhy(size_t x,size_t y) = 0;
-    virtual nnPoint getMirrorCoordPhy(size_t x, size_t y) = 0;
+    virtual nnPoint getCoordPhy(int x,int y) = 0;
+    virtual nnPoint getMirrorCoordPhy(int x, int y) = 0;
     virtual nnPoint getCoordLog(nnPoint & phyPoint) = 0;
     virtual bool readConfiguration(miniXmlNode & node) = 0;
-    virtual bool selectStart(size_t xpos, size_t ypos) = 0;
-    virtual bool selectStop(size_t xpos1, size_t ypos1) = 0;
+    virtual bool selectStart(int xpos, int ypos) = 0;
+    virtual bool selectStop(int xpos1, int ypos1) = 0;
     virtual bool selectStart(nnPoint pos) = 0;
     virtual bool selectStop(nnPoint pos1) = 0;
     virtual bool select(nnPoint pos1, nnPoint pos2) = 0;
     virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
     virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
     virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
-    virtual bool handlerScrollHorz(size_t pos) = 0;
-    virtual bool handlerScrollVert(size_t pos) = 0;
+    virtual bool handlerScrollHorz(int pos) = 0;
+    virtual bool handlerScrollVert(int pos) = 0;
     virtual bool handlerEscapeButton(bool shift,bool ctrl,bool alt,nnPoint &start, nnPoint & stop) = 0;
     virtual bool handlerHomeButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
     virtual bool handlerEndButton(bool shitf,bool ctrl,bool alt,nnPoint &pos)=0;
@@ -72,9 +72,10 @@ public:
     virtual bool handlerRightButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
     virtual bool handlerUpButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
     virtual bool handlerDownButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
+    virtual bool handlerRequestCommand(nnPoint phyPoint)=0;
     virtual bool unselect() = 0;
-    virtual bool getSelectAreaPhy(size_t & width, size_t & height) = 0;
-    virtual bool getSelectStartPhy(size_t & x, size_t & y) = 0;
+    virtual bool getSelectAreaPhy(int & width, int & height) = 0;
+    virtual bool getSelectStartPhy(int & x, int & y) = 0;
     virtual bool isStartValid(void) = 0;
     virtual bool isStopValid(void) = 0;
     virtual IManager *getManager(void) = 0;
@@ -84,14 +85,15 @@ public:
     virtual bool updateDraw(void) = 0;
     virtual nnPoint getOffsetView(void) = 0;
     virtual nnPoint getMap(void) = 0;
-    virtual bool resize(size_t w, size_t h) = 0;
+    virtual bool resize(int w, int h) = 0;
     virtual bool needScrollBarHorz(void)=0;
     virtual bool needScrollBarVert(void)=0;
     virtual bool isSelectAreaPhyVisible(nnRect & result,nnPoint & start,nnPoint & stop)=0;
-    virtual size_t getScrollableHorzSize(void)=0;
-    virtual size_t getScrollableVertSize(void)=0;
-    virtual size_t getPageWidth(void)=0;
-    virtual size_t getPageHeight(void)=0;
+    virtual int getScrollableHorzSize(void)=0;
+    virtual int getScrollableVertSize(void)=0;
+    virtual int getPageWidth(void)=0;
+    virtual int getPageHeight(void)=0;
+    virtual nnPoint getPageSize(void)=0;
 };
 
 
@@ -112,12 +114,10 @@ class nnViewGlue
 
     nnPoint select_start;
     nnPoint select_stop;
-    size_t const_x;
-    size_t const_y;
-    size_t p_width;
-    size_t p_height;
-    size_t offset_x;
-    size_t offset_y;
+    nnPoint const_Size;
+    nnPoint phy_Size;
+    nnPoint offset_Pos;
+
 
     IManager  *manager;
     IImageManager *images;
@@ -129,22 +129,23 @@ public:
     nnViewGlue(IManager  *_manager, IImageManager *_images);
     ~nnViewGlue();
     nnPoint getCoordPhy(nnPoint & logPoint);
-    nnPoint getCoordPhy(size_t x, size_t y);
-    nnPoint getMirrorCoordPhy(size_t x, size_t y);
+    nnPoint getCoordPhy(int x, int y);
+    nnPoint getMirrorCoordPhy(int x, int y);
     nnPoint getCoordLog(nnPoint & phyPoint);
     bool readConfiguration(miniXmlNode & node);
-    bool selectStart(size_t xpos, size_t ypos);
-    bool selectStop(size_t xpos1, size_t ypos1);
+    bool selectStart(int xpos, int ypos);
+    bool selectStop(int xpos1, int ypos1);
     bool selectStart(nnPoint pos);
     bool selectStop(nnPoint pos);
     bool unselect();
-    bool getSelectAreaPhy(size_t & width, size_t & height);
-    bool getSelectStartPhy(size_t & x, size_t & y);
+    bool getSelectAreaPhy(int & width, int & height);
+    bool getSelectStartPhy(int & x, int & y);
     bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
     bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
     bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
-    bool handlerScrollHorz(size_t pos);
-    bool handlerScrollVert(size_t pos);
+    bool handlerScrollHorz(int pos);
+    bool handlerScrollVert(int pos);
+    bool handlerRequestCommand(nnPoint phyPoint);
     bool handlerEscapeButton(bool shift,bool ctrl,bool alt,nnPoint &start, nnPoint & stop);
     bool handlerHomeButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
     bool handlerEndButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
@@ -162,16 +163,17 @@ public:
     inline bool getSelectArea(nnPoint &start, nnPoint &stop) { start = select_start; stop = select_stop; return true; }
     bmpImage & getDraw(void);
     bool updateDraw(void);
-    inline nnPoint getOffsetView(void) { return nnPoint(offset_x, offset_y); }
-    inline nnPoint getMap(void) { return nnPoint((p_width / const_x), (p_height / const_y)); }
-    bool resize(size_t w, size_t h);
+    inline nnPoint getOffsetView(void) { return nnPoint(offset_Pos.x, offset_Pos.y); }
+    inline nnPoint getMap(void) { return nnPoint((phy_Size.x / const_Size.x), (phy_Size.y / const_Size.y)); }
+    bool resize(int w, int h);
     bool needScrollBarHorz(void);
     bool needScrollBarVert(void);
     bool isSelectAreaPhyVisible(nnRect & result,nnPoint & start,nnPoint & stop);
-    size_t getScrollableHorzSize(void);
-    size_t getScrollableVertSize(void);
-    inline size_t getPageWidth(void) { return p_width / const_x;  }
-    inline size_t getPageHeight(void){ return p_height / const_y; }
+    int getScrollableHorzSize(void);
+    int getScrollableVertSize(void);
+    inline int getPageWidth(void) { return phy_Size.x / const_Size.x;  }
+    inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
+    inline nnPoint getPageSize(void) { return phy_Size / const_Size; }
 
 private:
     bool getVisibleArea(nnRect & area);

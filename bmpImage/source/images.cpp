@@ -33,7 +33,7 @@ typedef enum tag_free_color_type {
     FIC_PALETTE = 3,		//! color map indexed
     FIC_RGBALPHA = 4,		//! RGB color model with alpha channel
     FIC_CMYK = 5		//! CMYK color model
-}FREE_IMAGE_COLOR_TYPE;
+} FREE_IMAGE_COLOR_TYPE;
 
 /// Max function
 template <class T> T tMAX(const T &a, const T &b) {
@@ -59,35 +59,35 @@ template <class T> T tMIN(const T &a, const T &b) {
         ((unsigned *)palette)[i] = v; \
                                         }
 
-inline unsigned char
+static inline  unsigned char
 HINIBBLE(unsigned char byte) {
     return byte & 0xF0;
 }
 
-inline unsigned char
+static inline  unsigned char
 LOWNIBBLE(unsigned char byte) {
     return byte & 0x0F;
 }
 
-inline unsigned char *
+static inline  unsigned char *
 CalculateScanLine(unsigned char *bits, unsigned pitch, int scanline) {
     return bits ? (bits + ((size_t)pitch * scanline)) : nullptr;
 }
 
 
 
-inline unsigned
+static inline  unsigned
 CalculateLine(unsigned width, unsigned bitdepth) {
     return (unsigned)(((unsigned long long)width * bitdepth + 7) / 8);
 }
 
-inline unsigned
+static inline  unsigned
 CalculatePitch(unsigned line) {
     return line + 3 & ~3;
 }
 
 
-inline void
+static inline  void
 convertLine1To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette) {
     for (int cols = 0; cols < width_in_pixels; cols++) {
         unsigned char  index = (source[cols >> 3] & (0x80 >> (cols & 0x07))) != 0 ? 1 : 0;
@@ -100,7 +100,7 @@ convertLine1To24(unsigned char  *target, unsigned char  *source, int width_in_pi
     }
 }
 
-inline  void
+static inline   void
 convertLine4To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette) {
     bool low_nibble = false;
     int x = 0;
@@ -125,7 +125,7 @@ convertLine4To24(unsigned char  *target, unsigned char  *source, int width_in_pi
     }
 }
 
-inline  void
+static inline   void
 convertLine8To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette) {
     for (int cols = 0; cols < width_in_pixels; cols++) {
         target[ID_RGBA_BLUE] = palette[source[cols]].rgbBlue;
@@ -138,7 +138,7 @@ convertLine8To24(unsigned char  *target, unsigned char  *source, int width_in_pi
 
 
 
-inline  void
+static inline   void
 convertLine32To24(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     for (int cols = 0; cols < width_in_pixels; cols++) {
         target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE];
@@ -150,7 +150,7 @@ convertLine32To24(unsigned char  *target, unsigned char  *source, int width_in_p
     }
 }
 
-inline  void
+static inline   void
 convertLine24To32(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     for (int cols = 0; cols < width_in_pixels; cols++) {
         target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE];
@@ -163,13 +163,13 @@ convertLine24To32(unsigned char  *target, unsigned char  *source, int width_in_p
 }
 
 
-inline  void
+static inline   void
 convertLine1To8(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     for (unsigned cols = 0; cols < (unsigned)width_in_pixels; cols++)
         target[cols] = (source[cols >> 3] & (0x80 >> (cols & 0x07))) != 0 ? 255 : 0;
 }
 
-inline  void
+static inline   void
 convertLine4To8(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     unsigned count_new = 0;
     unsigned count_org = 0;
@@ -189,7 +189,7 @@ convertLine4To8(unsigned char  *target, unsigned char  *source, int width_in_pix
 }
 
 
-inline  void
+static inline   void
 convertLine24To8(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     for (unsigned cols = 0; cols < (unsigned)width_in_pixels; cols++) {
         target[cols] = GREY(source[ID_RGBA_RED], source[ID_RGBA_GREEN], source[ID_RGBA_BLUE]);
@@ -197,7 +197,7 @@ convertLine24To8(unsigned char  *target, unsigned char  *source, int width_in_pi
     }
 }
 
-inline  void
+static inline   void
 convertLine32To8(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     for (unsigned cols = 0; cols < (unsigned)width_in_pixels; cols++) {
         target[cols] = GREY(source[ID_RGBA_RED], source[ID_RGBA_GREEN], source[ID_RGBA_BLUE]);
@@ -206,7 +206,7 @@ convertLine32To8(unsigned char  *target, unsigned char  *source, int width_in_pi
 }
 
 
-inline  void
+static inline   void
 convertLine1To4(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     bool hinibble = true;
     for (int cols = 0; cols < width_in_pixels; cols++) {
@@ -220,7 +220,7 @@ convertLine1To4(unsigned char  *target, unsigned char  *source, int width_in_pix
     }
 }
 
-inline  void
+static inline   void
 convertLine8To4(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette) {
     bool hinibble = true;
     unsigned char  index;
@@ -238,7 +238,7 @@ convertLine8To4(unsigned char  *target, unsigned char  *source, int width_in_pix
 }
 
 
-inline  void
+static inline   void
 convertLine24To4(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     bool hinibble = true;
 
@@ -254,7 +254,7 @@ convertLine24To4(unsigned char  *target, unsigned char  *source, int width_in_pi
     }
 }
 
-inline  void
+static inline   void
 convertLine32To4(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
     bool hinibble = true;
 
@@ -271,7 +271,7 @@ convertLine32To4(unsigned char  *target, unsigned char  *source, int width_in_pi
 }
 
 
-inline void
+static inline  void
 AssignPixel(unsigned char * dst, const unsigned char * src, unsigned bytesperpixel) {
     switch (bytesperpixel) {
     case 1:
@@ -1391,29 +1391,29 @@ LPBITMAPFILEHEADER bmpImage::RotateAny(LPBITMAPFILEHEADER src, double dAngle)
             dAngle -= 360;
         }
         while (dAngle < 0) {
-            // Bring angle to range of [0 .. 360) 
+            // Bring angle to range of [0 .. 360)
             dAngle += 360;
         }
         if ((dAngle > 45) && (dAngle <= 135)) {
-            // Angle in (45 .. 135] 
+            // Angle in (45 .. 135]
             // Rotate image by 90 degrees into temporary image,
-            // so it requires only an extra rotation angle 
+            // so it requires only an extra rotation angle
             // of -45 .. +45 to complete rotation.
             image = Rotate90(src);
             dAngle -= 90;
         }
         else if ((dAngle > 135) && (dAngle <= 225)) {
-            // Angle in (135 .. 225] 
+            // Angle in (135 .. 225]
             // Rotate image by 180 degrees into temporary image,
-            // so it requires only an extra rotation angle 
+            // so it requires only an extra rotation angle
             // of -45 .. +45 to complete rotation.
             image = Rotate180(src);
             dAngle -= 180;
         }
         else if ((dAngle > 225) && (dAngle <= 315)) {
-            // Angle in (225 .. 315] 
+            // Angle in (225 .. 315]
             // Rotate image by 270 degrees into temporary image,
-            // so it requires only an extra rotation angle 
+            // so it requires only an extra rotation angle
             // of -45 .. +45 to complete rotation.
             image = Rotate270(src);
             dAngle -= 270;
@@ -1511,6 +1511,12 @@ bool bmpImage::drawSprite(bmpImage & sprite, int left, int top)
     return drawSprite(m_hBitmap, sprite, left, top);
 }
 
+bool bmpImage::drawMaskSprite(bmpImage & sprite, int left, int top,char mask)
+{
+    return drawMaskSprite(m_hBitmap, sprite, left, top,mask);
+}
+
+
 bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, size_t left, size_t top)
 {
     bool bResult = false;
@@ -1533,7 +1539,75 @@ bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, siz
 
         if (dst_info != nullptr  && src_info != nullptr  && dst_info->biBitCount == src_info->biBitCount)
         {
-            size_t height, width;
+            unsigned int height, width;
+            if (( left < dst_width) && ( top < dst_height)) {
+                unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
+                unsigned char  *src_bits = getBits(sprite);
+                // combine images
+                if (top + src_height > dst_height)
+                    height = dst_height - top;
+                else
+                    height = src_height;
+
+                if (left + src_width>dst_width)
+                    width = dst_width - left;
+                else
+                    width = src_width;
+                unsigned int sizeR= width*depth;
+                for (unsigned int rows = 0; rows < height; rows++) {
+                    memcpy(dst_bits, src_bits, sizeR);
+                    dst_bits += dst_pitch;
+                    src_bits += src_pitch;
+                }
+                bResult = true;
+            }
+        }
+    }
+    return bResult;
+}
+
+
+
+
+
+static inline   void
+copyMaskLine24(unsigned char  *target, unsigned char  *source,char  mask, unsigned int width_in_pixels) {
+    for (int cols = 0; cols < width_in_pixels; cols++) {
+        if(source[ID_RGBA_BLUE]!=mask)
+            target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE] ;
+        if(source[ID_RGBA_GREEN]!=mask)
+            target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN] ;
+        if(source[ID_RGBA_RED]!=mask)
+            target[ID_RGBA_RED] = source[ID_RGBA_RED];
+        ;
+        target += 3;
+        source += 3;
+    }
+}
+
+bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, size_t left, size_t top, char mask)
+{
+    bool bResult = false;
+    if (sprite != nullptr  && dst != nullptr)
+    {
+        unsigned int src_width = getWidth(sprite);
+        unsigned int src_height = getHeight(sprite);
+        unsigned int src_pitch = getPitch(sprite);
+        unsigned int src_line = getLine(sprite);
+        unsigned int dst_width = getWidth(dst);
+        unsigned int dst_height = getHeight(dst);
+        unsigned int dst_pitch = getPitch(dst);
+        LPBITMAPINFOHEADER dst_info = getInfoHeader(dst);
+        unsigned int dst_line = getLine(dst);
+        LPBITMAPINFOHEADER src_info = getInfoHeader(sprite);
+        unsigned  int depth = dst_line / dst_width;
+        if (depth != src_line / src_width)
+            return false;
+        // check the size of src image
+
+        if (dst_info != nullptr  && src_info != nullptr  && dst_info->biBitCount == src_info->biBitCount)
+        {
+            unsigned int height, width;
             if (( left < dst_width) && ( top < dst_height)) {
                 unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
                 unsigned char  *src_bits = getBits(sprite);
@@ -1548,8 +1622,9 @@ bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, siz
                     width = dst_width - left;
                 else
                     width = src_width;
-                for (unsigned int rows = 0; rows < height; rows++) {
-                    memcpy(dst_bits, src_bits, width*depth);
+                for (unsigned int rows = 0; rows < height; rows++)
+                {
+                    copyMaskLine24(dst_bits, src_bits, mask,width);
                     dst_bits += dst_pitch;
                     src_bits += src_pitch;
                 }
@@ -1558,8 +1633,8 @@ bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, siz
         }
     }
     return bResult;
-
 }
+
 
 
 bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t left, size_t top, size_t width, size_t height)
@@ -1836,7 +1911,7 @@ bool bmpImage::swapto(LPBITMAPFILEHEADER pI, int iSorg, int iDest)
 
 
 
-///////////////////////////////////////////////////////////////// IMAGE LIST 
+///////////////////////////////////////////////////////////////// IMAGE LIST
 listImage::listImage(unsigned int w, unsigned int h)
     : Width(w), Height(h)
 {
@@ -1894,7 +1969,7 @@ bool bmpSprite::fromImages(bmpImage & obj, bmpImage & mask)
 }
 
 
-inline  void
+static inline   void
 maskLine24(unsigned char  *target, unsigned char  *source, unsigned char  *mask, int width_in_pixels) {
     for (int cols = 0; cols < width_in_pixels; cols++) {
         target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE] & mask[ID_RGBA_BLUE];

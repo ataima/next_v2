@@ -48,6 +48,7 @@ mdiSelector::mdiSelector(void)
 {
     pos.set(-1,-1,0,0);
     hide();
+    error=false;
 }
 
 void  mdiSelector::SetArea(nnRect &rect, nnPoint &_start, nnPoint &_stop)
@@ -69,10 +70,14 @@ void mdiSelector::draw(QPainter &p)
         QRect v,r;
         QFont oldfont,nfont("Courier", 8, QFont::Bold, true);
         QPen gray(Qt::gray, 2, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin);
+        QPen red(Qt::red, 2, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin);
         r.setRect(pos.start.x,pos.start.y,pos.width(),pos.height());
         oldfont=p.font();
         p.setFont(nfont);
-        p.setPen(gray);
+        if(error)
+            p.setPen(red);
+        else
+            p.setPen(gray);
         p.drawRect(r);
         v=r;
         nnPoint diff = stop-start;

@@ -11,6 +11,7 @@ class mdiSelector : public QObject
     nnRect pos;
     nnPoint stop,start;
     bool visible;
+    bool error;
 public :
     mdiSelector(void);
     /* mdi child area coord */
@@ -19,6 +20,7 @@ public :
     inline void hide(void) {visible=false;}
     inline void show(void){visible=true;}
     inline bool getStatus(void) {return visible;}
+    inline void setError(bool st)  {error=st;}
 };
 
 

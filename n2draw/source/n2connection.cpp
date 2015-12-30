@@ -89,7 +89,7 @@ bool nnConnection::connectComponent(IManager * manager, nnPoint & p_src, nnPoint
 bool nnConnection::connectVertComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst)
 {
 	bool res = false;
-	size_t u;
+    int u;
 	InnObj *v = nullptr;
 	//vert connection
 	if (p_src.y > p_dst.y)
@@ -138,7 +138,7 @@ bool nnConnection::connectVertComponent(IManager *manager, nnPoint &p_src, nnPoi
 bool nnConnection::connectHorzIncrUpSideComponet(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
-	size_t  i, num;
+    int  i, num;
 	InnObj *v = nullptr;
 	InnObj *near_src = nullptr;
 	InnObj *near_dst = nullptr;
@@ -218,7 +218,7 @@ bool nnConnection::connectHorzIncrUpSideComponet(IManager * manager, nnPoint & p
 bool nnConnection::connectHorzIncrDownSideComponet(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
-	size_t  i, num;
+    int  i, num;
 	InnObj *v = nullptr;
 	InnObj *near_src = nullptr;
 	InnObj *near_dst = nullptr;
@@ -301,7 +301,7 @@ bool nnConnection::connectHorzIncrDownSideComponet(IManager * manager, nnPoint &
 bool nnConnection::connectHorzDecrUpSideComponet(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
-	size_t  i, num;
+    int  i, num;
 	InnObj *v = nullptr;
 	InnObj *near_src = nullptr;
 	InnObj *near_dst = nullptr;
@@ -381,7 +381,7 @@ bool nnConnection::connectHorzDecrUpSideComponet(IManager * manager, nnPoint & p
 bool nnConnection::connectHorzDecrDownSideComponet(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
 	bool res = false;
-	size_t  i, num;
+    int  i, num;
 	InnObj *v = nullptr;
 	InnObj *near_src = nullptr;
 	InnObj *near_dst = nullptr;
@@ -462,9 +462,9 @@ bool nnConnection::connectHorzDecrDownSideComponet(IManager * manager, nnPoint &
 bool nnConnection::connectVertWireComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst)
 {
 	bool res = false;
-	size_t u;
+    int u;
 	InnObj *v = nullptr;
-	size_t num = 0;
+    int num = 0;
 	InnObj *src = manager->getObj(p_src.x, p_src.y);
 	InnObj *dst = manager->getObj(p_dst.x, p_dst.y);
 	if (src != nullptr && !src->isComponent())

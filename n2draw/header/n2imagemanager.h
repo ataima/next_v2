@@ -37,7 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-typedef  std::map<size_t, std::wstring> objImageList;
+typedef  std::map<int, std::wstring> objImageList;
 
 
 class IImageManager
@@ -45,7 +45,7 @@ class IImageManager
 public:
     virtual std::wstring  getDefaulPath(void) const = 0;
     virtual bool readConfiguration(miniXmlNode *node) = 0;
-    virtual bool loadImages(size_t w, size_t h) = 0;
+    virtual bool loadImages(int w, int h) = 0;
     virtual const listImage * getImageList(void) = 0;
     virtual const  objImageList * getAvailObj(void) = 0;
 };
@@ -64,7 +64,7 @@ public:
     ~nnImageManager();
     inline  std::wstring  getDefaulPath(void) const { return path; };
     bool readConfiguration(miniXmlNode *node);
-    bool loadImages(size_t w, size_t h);
+    bool loadImages(int w, int h);
     inline  const listImage * getImageList(void) { return &allImages; }
     inline  const objImageList * getAvailObj(void) { return &availObj; }
 };

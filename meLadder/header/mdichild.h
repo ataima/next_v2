@@ -108,6 +108,7 @@ private:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *);
     void resizeSelector(void);
+    void errorSelector(void);
     void keyPressEvent(QKeyEvent *event);
     void adjustScrollBars(nnPoint &pos);
 };

@@ -130,8 +130,8 @@ void test_n2ObjManager::test4(void)
     nnObjManager mn(50, 20);
     nnObjComponent *c = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 0, c);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
     CA_ASSERT(mn.size() == 1);
 
 }
@@ -145,8 +145,8 @@ void test_n2ObjManager::test5(void)
     nnObjManager mn(50, 20);
     nnObjComponent *c = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 0, c);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
     InnObj * p = mn.getObj(5, 0);
     std::wstring w = p->toString();
     std::wcout << w.c_str()<<std::endl;
@@ -164,8 +164,8 @@ void test_n2ObjManager::test6(void)
     nnObjManager mn(50, 20);
     nnObjComponent *c = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 0, c);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
     nnObjComponent *d = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 1, d);
     InnObj * p = mn.getObj(5, 0);
@@ -175,10 +175,10 @@ void test_n2ObjManager::test6(void)
     std::wcout << w.c_str() << std::endl;
     w = d->toString();
     std::wcout << w.c_str() << std::endl;
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);
-    CA_ASSERT(d->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);
+    CA_ASSERT(d->getConnections().back() == (int)0);
 }
 
 void test_n2ObjManager::test7(void)
@@ -190,17 +190,17 @@ void test_n2ObjManager::test7(void)
     nnObjManager mn(50, 20);
     nnObjComponent *c = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 0, c);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
     nnObjComponent *d = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 1, d);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);
-    CA_ASSERT(d->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);
+    CA_ASSERT(d->getConnections().back() == (int)0);
     mn.removeObj(5, 1);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
 }
 
 
@@ -214,27 +214,27 @@ void test_n2ObjManager::test8(void)
     nnObjManager mn(50, 20);
     nnObjComponent *c = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 0, c);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
     nnObjComponent *d = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 1, d);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);
-    CA_ASSERT(d->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);
+    CA_ASSERT(d->getConnections().back() == (int)0);
     nnObjComponent *e = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 2, e);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);
-    CA_ASSERT(d->getConnections().back() == (size_t)4);
-    CA_ASSERT(e->getConnections().front() == (size_t)4);
-    CA_ASSERT(e->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);
+    CA_ASSERT(d->getConnections().back() == (int)4);
+    CA_ASSERT(e->getConnections().front() == (int)4);
+    CA_ASSERT(e->getConnections().back() == (int)0);
     mn.removeObj(5, 1);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
-    CA_ASSERT(e->getConnections().front() == (size_t)0);
-    CA_ASSERT(e->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
+    CA_ASSERT(e->getConnections().front() == (int)0);
+    CA_ASSERT(e->getConnections().back() == (int)0);
 }
 
 
@@ -248,25 +248,25 @@ void test_n2ObjManager::test9(void)
     nnObjManager mn(50, 20);
     nnObjComponent* c = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 0, c);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
     nnObjWire *d = new nnObjWire(eWire::noWire);
     mn.addObj(5, 1, d);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);;
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);;
     nnObjComponent *e = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 2, e);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);
-    CA_ASSERT(e->getConnections().front() == (size_t)3);
-    CA_ASSERT(e->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);
+    CA_ASSERT(e->getConnections().front() == (int)3);
+    CA_ASSERT(e->getConnections().back() == (int)0);
     mn.removeObj(5,1);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
-    CA_ASSERT(e->getConnections().front() == (size_t)0);
-    CA_ASSERT(e->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
+    CA_ASSERT(e->getConnections().front() == (int)0);
+    CA_ASSERT(e->getConnections().back() == (int)0);
 }
 
 void test_n2ObjManager::test10(void)
@@ -279,32 +279,32 @@ void test_n2ObjManager::test10(void)
     nnObjManager mn(50, 20);
     nnObjComponent* c = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 0, c);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
     nnObjWire *d = new nnObjWire(eWire::noWire);
     mn.addObj(5, 1, d);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);
     nnObjWire *e = new nnObjWire(eWire::noWire);
     mn.addObj(5, 2, e);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);
-    CA_ASSERT(e->getConnections().front() == (size_t)3);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);
+    CA_ASSERT(e->getConnections().front() == (int)3);
     nnObjComponent *f = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 3, f);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)3);
-    CA_ASSERT(d->getConnections().front() == (size_t)3);
-    CA_ASSERT(e->getConnections().front() == (size_t)3);
-    CA_ASSERT(f->getConnections().front() == (size_t)3);
-    CA_ASSERT(f->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)3);
+    CA_ASSERT(d->getConnections().front() == (int)3);
+    CA_ASSERT(e->getConnections().front() == (int)3);
+    CA_ASSERT(f->getConnections().front() == (int)3);
+    CA_ASSERT(f->getConnections().back() == (int)0);
     mn.removeObj(5, 1);
-    CA_ASSERT(c->getConnections().front() == (size_t)1);
-    CA_ASSERT(c->getConnections().back() == (size_t)0);
-    CA_ASSERT(f->getConnections().front() == (size_t)0);
-    CA_ASSERT(f->getConnections().back() == (size_t)0);
+    CA_ASSERT(c->getConnections().front() == (int)1);
+    CA_ASSERT(c->getConnections().back() == (int)0);
+    CA_ASSERT(f->getConnections().front() == (int)0);
+    CA_ASSERT(f->getConnections().back() == (int)0);
     CA_ASSERT(mn.size() == 2);
 }
 
@@ -433,7 +433,7 @@ void test_n2ObjManager::test15(void)
 {
     struct tag_check
     {
-        void revHashKey(hashkey & key, size_t & x, size_t &y)
+        void revHashKey(hashkey & key, int & x, int &y)
         {
             y = key & 0xfffffff;
             y = y / 2;
@@ -461,7 +461,7 @@ void test_n2ObjManager::test15(void)
     CA_ASSERT(mn.getObj(10, 15) == c);	
     nnObjManager::iterator it = mn.begin();
     tag_check css;
-    size_t x, y;
+    int x, y;
     hashkey k = it->first;
     css.revHashKey(k, x, y);
     CA_ASSERT(x == 10);
@@ -474,7 +474,7 @@ void test_n2ObjManager::test16(void)
 {
     struct tag_check
     {
-        void revHashKey(hashkey & key, size_t & x, size_t &y)
+        void revHashKey(hashkey & key, int & x, int &y)
         {
             y = key & 0xfffffff;
             y = y / 2;
@@ -502,7 +502,7 @@ void test_n2ObjManager::test16(void)
     CA_ASSERT(mn.getObj(13, 12) == c);
     nnObjManager::iterator it = mn.begin();
     tag_check css;
-    size_t x, y;
+    int x, y;
     hashkey k = it->first;
     css.revHashKey(k, x, y);
     CA_ASSERT(x == 13);

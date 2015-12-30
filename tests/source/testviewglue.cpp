@@ -68,7 +68,7 @@ void test_viewglue::test1(void)
     bool res = mn.addObj(10, 12, v);
     CA_ASSERT(res == true);
     nnViewGlue gphy(&mn,nullptr);
-    size_t w, h;
+    int w, h;
     CA_ASSERT(gphy.getSelectAreaPhy(w, h) == true);
     CA_ASSERT(w == 0);
     CA_ASSERT(h == 0);
@@ -126,7 +126,7 @@ void test_viewglue::test3(void)
     gphy.selectStop(10, 10);
     CA_ASSERT(gphy.isStartValid() == true);
     CA_ASSERT(gphy.isStopValid() == true);
-    size_t w, h;
+    int w, h;
     res = gphy.getSelectAreaPhy(w, h);
     CA_ASSERT(res == true);
     CA_ASSERT(w == 24);

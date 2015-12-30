@@ -30,7 +30,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-nnObjManager::nnObjManager(size_t x, size_t y)
+nnObjManager::nnObjManager(int x, int y)
     : v_width(x), v_height(y),
     mask_width(0), mask_height(0)
 {
@@ -47,7 +47,7 @@ nnObjManager::~nnObjManager()
 bool nnObjManager::computeMask(void)
 {
     nnObjWire::resetUI();
-    size_t i = v_width & 0x0fffffff;
+    int i = v_width & 0x0fffffff;
     mask_width = 1;
     while (i > 0)
     {
@@ -68,7 +68,7 @@ bool nnObjManager::computeMask(void)
 }
 
 
-InnObj * nnObjManager::getObj(size_t x, size_t y)
+InnObj * nnObjManager::getObj(int x, int y)
 {
     nnObj * res = nullptr;
     hashkey hkey;
@@ -82,7 +82,7 @@ InnObj * nnObjManager::getObj(size_t x, size_t y)
     return res;
 }
 
-bool nnObjManager::addObj(size_t x, size_t y, InnObj * obj)
+bool nnObjManager::addObj(int x, int y, InnObj * obj)
 {
     bool res = false;
     hashkey hkey;
@@ -102,7 +102,7 @@ bool nnObjManager::addObj(size_t x, size_t y, InnObj * obj)
     return res;
 }
 
-bool nnObjManager::removeObj(size_t x, size_t y)
+bool nnObjManager::removeObj(int x, int y)
 {
     bool res = false;
     hashkey hkey;
@@ -124,7 +124,7 @@ bool nnObjManager::removeObj(size_t x, size_t y)
 }
 
 
-InnObj * nnObjManager::outObj(size_t x, size_t y)
+InnObj * nnObjManager::outObj(int x, int y)
 {
     InnObj * obj = nullptr;
     hashkey hkey;
@@ -144,14 +144,14 @@ InnObj * nnObjManager::outObj(size_t x, size_t y)
     return obj;
 }
 
-bool nnObjManager::addCoil(size_t x, nnObjCoil * obj)
+bool nnObjManager::addCoil(int x, nnObjCoil * obj)
 {
     bool res = false;
     if (obj->getContext() == objCoil)
     {
         if (getObj(x, v_height-1) == nullptr)
         {
-            size_t i,fp;
+            int i,fp;
             // y pos is relative :
             // coil pos = y-1, for first empty position to y-1 wire to connect
             // find first empty cell
@@ -189,7 +189,7 @@ bool nnObjManager::addCoil(size_t x, nnObjCoil * obj)
     return res;
 }
 
-bool nnObjManager::addWire(size_t x, size_t y, InnObj * obj)
+bool nnObjManager::addWire(int x, int y, InnObj * obj)
 {
     bool res = false;
     if (obj->getContext() == objWire)
@@ -214,7 +214,7 @@ bool nnObjManager::addWire(size_t x, size_t y, InnObj * obj)
     return res;
 }
 
-bool nnObjManager::addContact(size_t x, size_t y, nnObjContact * obj)
+bool nnObjManager::addContact(int x, int y, nnObjContact * obj)
 {
     bool res = false;
     if (obj->getContext() == objContact)
@@ -240,7 +240,7 @@ bool nnObjManager::addContact(size_t x, size_t y, nnObjContact * obj)
 }
 
 
-bool nnObjManager::replaceObj(size_t x, size_t y, InnObj * obj)
+bool nnObjManager::replaceObj(int x, int y, InnObj * obj)
 {
     bool res = false;
     hashkey hkey;
@@ -288,7 +288,7 @@ bool nnObjManager::removeAll(void)
 bool nnObjManager::save(STRING & name)
 {
     bool res=false;
-    size_t num_obj = 0;
+    int num_obj = 0;
     if (!name.empty())
     {
 #ifdef _MSC_VER
@@ -303,7 +303,7 @@ bool nnObjManager::save(STRING & name)
                 root.add(X("Wire_UID"), nnObjConn::getUI());
                 root.add(X("Width"), v_width);
                 root.add(X("Height"), v_height);
-                root.add(X("Size"), size() + 1);
+                root.add(X("Size"), (int)(size()) + 1);
                 hashObjTable::iterator it = begin();
                 hashObjTable::iterator _end = end();
                 while (it != _end)
@@ -353,7 +353,7 @@ bool nnObjManager::load(STRING & name)
                 miniXmlNode *size = root.find(X("Size"));
                 if (size != nullptr)
                 {
-                    size_t i, numObj = size->getLong();
+                    int i, numObj = size->getLong();
                     for (i = 1; i < numObj; i++)
                     {
                         miniXmlNode *child = root.find(X("Obj_UID_"), i);
@@ -386,7 +386,7 @@ bool nnObjManager::load(STRING & name)
     return res;
 }
 
-bool nnObjManager::genHashKey(size_t x, size_t y, hashkey &key)
+bool nnObjManager::genHashKey(int x, int y, hashkey &key)
 {
     bool res = false;
     x <<= 1;
@@ -402,14 +402,14 @@ bool nnObjManager::genHashKey(size_t x, size_t y, hashkey &key)
     return res;
 }
 
-bool nnObjManager::range(size_t x, size_t y)
+bool nnObjManager::range(int x, int y)
 {
     bool res = false;
     if (x < v_width && y < v_height)
         res = true;
     return res;
 }
-bool nnObjManager::rangeContact(size_t x, size_t y)
+bool nnObjManager::rangeContact(int x, int y)
 {
     bool res = false;
     if (x < v_width && y < v_height - 1)
@@ -417,7 +417,7 @@ bool nnObjManager::rangeContact(size_t x, size_t y)
     return res;
 }
 
-bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
+bool nnObjManager::linkObj(int x, int y, InnObj *obj)
 {
     bool res = false;
     if (obj != nullptr)
@@ -545,7 +545,7 @@ bool nnObjManager::linkObj(size_t x, size_t y, InnObj *obj)
     return res;
 }
 
-bool nnObjManager::unlinkObj(size_t x, size_t y, InnObj *obj)
+bool nnObjManager::unlinkObj(int x, int y, InnObj *obj)
 {
     bool res = false;
     InnObj *neighbour = nullptr;
@@ -626,7 +626,7 @@ bool nnObjManager::swapObj(nnPoint from, nnPoint to)
 }
 
 
-bool nnObjManager::revHashKey(hashkey & key, size_t & x, size_t &y)
+bool nnObjManager::revHashKey(hashkey & key, int & x, int &y)
 {
     bool res = false;
     y = key & 0xfffffff;
@@ -638,7 +638,7 @@ bool nnObjManager::revHashKey(hashkey & key, size_t & x, size_t &y)
 
 nnPoint  nnObjManager::getStartPoint(void)
 {
-    size_t x, y;
+    int x, y;
     hashObjTable::iterator it = begin();
     hashkey key = it->first;
     revHashKey(key, x, y);
@@ -649,7 +649,7 @@ nnPoint  nnObjManager::getStartPoint(void)
 
 nnPoint  nnObjManager::getStopPoint(void)
 {
-    size_t x, y;
+    int x, y;
     hashObjTable::reverse_iterator r_it = rbegin();
     r_it++;
     hashObjTable::iterator it = r_it.base();
@@ -672,14 +672,14 @@ bool nnObjManager::redo(void)
     return managerUR.redo();
 }
 
-bool nnObjManager::insertRow(size_t y_pos)
+bool nnObjManager::insertRow(int y_pos)
 {
     bool res = false;
     iterator it = begin();
     iterator _end = end();
     while (it != _end)
     {
-        size_t x, y;
+        int x, y;
         hashkey *key = (hashkey *)&it->first;
         revHashKey(*key, x, y);
         if (y >= y_pos)
@@ -698,14 +698,14 @@ bool nnObjManager::insertRow(size_t y_pos)
     return res;
 }
 
-bool nnObjManager::insertCol(size_t x_pos)
+bool nnObjManager::insertCol(int x_pos)
 {
     bool res = false;
     iterator it = begin();
     iterator _end = end();
     while (it != _end)
     {
-        size_t x, y;
+        int x, y;
         hashkey *key = (hashkey *)&it->first;
         revHashKey(*key, x, y);
         if (x >= x_pos)
@@ -725,10 +725,10 @@ bool nnObjManager::insertCol(size_t x_pos)
 }
 
 
-bool nnObjManager::removeRow(size_t y_pos)
+bool nnObjManager::removeRow(int y_pos)
 {
     bool res = false;
-    size_t x;
+    int x;
     for (x = 0; x < v_width; x++)
     {
         InnObj *obj = getObj(x, y_pos);
@@ -762,7 +762,7 @@ bool nnObjManager::removeRow(size_t y_pos)
         iterator _end = end();
         while (it != _end)
         {
-            size_t x, y;
+            int x, y;
             hashkey *key = (hashkey *)&it->first;
             revHashKey(*key, x, y);
             if (y <= y_pos)
@@ -778,10 +778,10 @@ bool nnObjManager::removeRow(size_t y_pos)
     return res;
 }
 
-bool nnObjManager::checkRemovableCol(size_t x_pos)
+bool nnObjManager::checkRemovableCol(int x_pos)
 {
     bool res = false;
-    size_t y;
+    int y;
     for (y = 0; y < v_height; y++)
     {
         InnObj *obj = getObj(x_pos, y);
@@ -800,12 +800,12 @@ bool nnObjManager::checkRemovableCol(size_t x_pos)
     return res;
 }
 
-bool nnObjManager::removeCol(size_t x_pos)
+bool nnObjManager::removeCol(int x_pos)
 {
     bool res = checkRemovableCol(x_pos);
     if (res)
     {
-        size_t y;
+        int y;
         for (y = 0; y < v_height; y++)
         {
             InnObj *obj = getObj(x_pos, y);
@@ -824,7 +824,7 @@ bool nnObjManager::removeCol(size_t x_pos)
         iterator _end = end();
         while (it != _end)
         {
-            size_t x, y;
+            int x, y;
             hashkey *key = (hashkey *)&it->first;
             revHashKey(*key, x, y);
             if (x >= x_pos)
@@ -843,13 +843,13 @@ bool nnObjManager::removeCol(size_t x_pos)
 bool nnObjManager::removeEmptyCol(void)
 {
     bool res = false;
-    size_t vx;
+    int vx;
     for (vx = v_width - 1; vx > 0; vx--)
     {
         res = checkRemovableCol(vx);
         if (res)
         {
-            size_t y;
+            int y;
             for (y = 0; y < v_height; y++)
             {
                 InnObj *obj = getObj(vx, y);
@@ -868,7 +868,7 @@ bool nnObjManager::removeEmptyCol(void)
             iterator _end = end();
             while (it != _end)
             {
-                size_t x, y;
+                int x, y;
                 hashkey *key = (hashkey *)&it->first;
                 revHashKey(*key, x, y);
                 if (x >= vx)
@@ -886,7 +886,7 @@ bool nnObjManager::removeEmptyCol(void)
 }
 
 
-bool nnObjManager::ResizeHeight(size_t h)
+bool nnObjManager::ResizeHeight(int h)
 {
     bool res = false;
     if (v_height != h)
@@ -916,7 +916,7 @@ bool nnObjManager::ResizeHeight(size_t h)
     return res;
 }
 
-bool nnObjManager::ResizeWidth(size_t w)
+bool nnObjManager::ResizeWidth(int w)
 {
     bool res = false;
     if (v_width != w)
@@ -961,7 +961,7 @@ bool nnObjManager::ResizeWidth(size_t w)
     return res;
 }
 
-bool nnObjManager::Resize(size_t w, size_t h)
+bool nnObjManager::Resize(int w, int h)
 {
     bool res = false;
     res = ResizeWidth(w);
