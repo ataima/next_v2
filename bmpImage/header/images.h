@@ -127,7 +127,7 @@ protected:
     static unsigned int getPitch(LPBITMAPFILEHEADER bI);
     static unsigned int getLine(LPBITMAPFILEHEADER bI);
     static LPBITMAPFILEHEADER rotateInt(LPBITMAPFILEHEADER bI, double angle);
-    static unsigned int bmpImage::getColorType(LPBITMAPFILEHEADER bI);
+    static unsigned int getColorType(LPBITMAPFILEHEADER bI);
     static unsigned int getColorsUsed(LPBITMAPFILEHEADER bI);
     static LPBITMAPFILEHEADER RotateAny(LPBITMAPFILEHEADER src, double dAngle);
     static LPBITMAPFILEHEADER Rotate90(LPBITMAPFILEHEADER src);

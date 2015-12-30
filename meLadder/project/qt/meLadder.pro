@@ -39,3 +39,8 @@ INCLUDEPATH +=../../../n2draw/header
 
 RESOURCES += \
     ../../resource/mela.qrc
+
+
+linux {
+CONFIG += c++11
+}

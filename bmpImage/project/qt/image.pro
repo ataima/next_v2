@@ -23,3 +23,6 @@ TARGET = bmpImage
 
 INCLUDEPATH +=../../header
 
+linux {
+CONFIG += c++11
+}

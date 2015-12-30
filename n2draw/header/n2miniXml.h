@@ -31,7 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 #ifdef _UNICODE
-#include <tchar.h>
+//#include <tchar.h>
 #define  XCHAR wchar_t
 #define  STRSTR   wcsstr
 #define  STRLEN   wcslen

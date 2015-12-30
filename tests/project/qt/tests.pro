@@ -39,3 +39,7 @@ INCLUDEPATH +=../../header
 INCLUDEPATH +=../../../bmpImage/header
 INCLUDEPATH +=../../../n2draw/header
 
+
+linux {
+CONFIG += c++11
+}
