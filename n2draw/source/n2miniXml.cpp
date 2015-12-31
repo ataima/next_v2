@@ -70,8 +70,7 @@ template class _CRTIMP2_PURE num_put<char32_t,
 
  END FIX A:COPPI
 ********************************************************************/
-
-
+std::locale::id std::codecvt<char16_t,char,struct _Mbstatet>::id;
 
 
 miniXmlNode::miniXmlNode(const XCHAR  *_name, XCHAR  *_value,
