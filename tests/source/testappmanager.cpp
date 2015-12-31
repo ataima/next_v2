@@ -14,8 +14,10 @@
 
 
 #ifndef _MSC_VER
-#define _mkdir mkdir
+#define MKDIR(a,b) mkdir(a,b)
 #include <sys/stat.h>
+#else
+#define MKDIR(a,b) mkdir(a)
 #endif
 
 
@@ -129,7 +131,7 @@ void test_app_manager::test1(void)
     CA_ASSERT(res == true);
     bmpImage &bdraw = childs->view->getDraw();
     draw(&bdraw);
-    _mkdir(".\\bmp",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    MKDIR(".\\bmp",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     bdraw.copyToFile(X(".\\bmp\\test1_app.bmp"));
 }
 

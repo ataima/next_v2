@@ -43,7 +43,7 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #define  STRCMP   std::char_traits<char16_t>::compare
 #define  ATOL     atol
 #ifdef _MSC_VER
-#define  FOPEN    fopen_s
+#define  FOPEN    fopen
 #else
 #define  FOPEN    fopen
 #endif

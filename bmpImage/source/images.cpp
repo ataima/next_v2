@@ -15,8 +15,7 @@
 #define _fstat fstat
 #include <sys/stat.h>
 #else
-#define FOPEN _wfopen
-
+#define FOPEN fopen
 #endif
 
 

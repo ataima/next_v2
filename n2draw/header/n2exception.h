@@ -27,7 +27,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 #include <string>
-#include <strings.h>
 #include <stdexcept>
 #include <sstream>
 #include <vector>
@@ -35,6 +34,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include "n2utoatou.h"
 
+
+#ifndef _MSC_VER
+#include <strings.h>
+#endif
 
 class n2exception
         :public std::runtime_error

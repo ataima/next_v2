@@ -39,6 +39,41 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
+
+/**************************************************************
+ *WARNING !!!!!!!!!!!!!!!!!
+ * TO COMPILE THIS FILE AND BUILD THE LIBRARY YOU MUST EDIT
+ * XLOCNUM INCLUDE FILE BECAUSE ARE MISSING SOME DEFINITIONS
+ * AND CL.EXE  RUTURN ERROR  (CLANG AND GCC WORK FINE ....)
+ * INSERT THE FOLLOWING TEMPLATE DEFINITION ON LINE 1574
+ * OF FILE XLOCNUM (INSTALLDIR MSVC1400/VC/INCLUDE/XLOCNUM
+ *
+ A.Coppi FIX!!!! char16_t, char32_t for error
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xlocnum:259: error: C2491: 'std::numpunct<_Elem>::id': definizione di dllimport membro dati statici non consentita
+with
+[
+    _Elem=char16_t
+]
+
+template __PURE_APPDOMAIN_GLOBAL locale::id numpunct<char16_t>::id;
+template class _CRTIMP2_PURE num_get<char16_t,
+    istreambuf_iterator<char16_t, char_traits<char16_t> > >;
+template class _CRTIMP2_PURE num_put<char16_t,
+    ostreambuf_iterator<char16_t, char_traits<char16_t> > >;
+
+
+template __PURE_APPDOMAIN_GLOBAL locale::id numpunct<char32_t>::id;
+template class _CRTIMP2_PURE num_get<char32_t,
+    istreambuf_iterator<char32_t, char_traits<char32_t> > >;
+template class _CRTIMP2_PURE num_put<char32_t,
+    ostreambuf_iterator<char32_t, char_traits<char32_t> > >;
+
+ END FIX A:COPPI
+********************************************************************/
+
+
+
+
 miniXmlNode::miniXmlNode(const XCHAR  *_name, XCHAR  *_value,
     miniXmlNode *_parent, miniXmlNode *_child, miniXmlNode *_next)
     : parent(_parent),
@@ -360,11 +395,11 @@ void miniXmlNode::print(FILE *out)
         //xsprintf(buff, X("</%ws>\n"), name);
         SSTRING ss;
         ss<<X("<")<<name<<X(">\n");
-        auto len=BUFFLENGTH-1;
+        size_t len=BUFFLENGTH-1;
         if(ss.str().size()<len)
             len=ss.str().size();
         memcpy(buff,ss.str().c_str(),len);
-        for (int i = 0; i < len; i++)
+        for (size_t i = 0; i < len; i++)
         {
             if (buff[i] == '>')
                 break;
@@ -401,8 +436,7 @@ bool miniXmlNode::save(const XCHAR *out, miniXmlNode * root)
     {
         UtoA toA(out);
 #ifdef _MSC_VER
-        FILE *out = nullptr;
-        FOPEN(&out, toA.utf8(), "w+");
+        FILE *out = FOPEN(toA.utf8(), "w+");
 #else
         FILE *out = FOPEN(toA.utf8(), "w+");
 #endif
@@ -513,8 +547,7 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
         root = _root;
         UtoA toA(_in);
 #ifdef _MSC_VER
-        FILE *in = nullptr;
-        FOPEN(&in, toA.utf8(), "r+");
+        FILE *in =FOPEN(toA.utf8(), "r+");
 #else
         FILE *in = FOPEN(toA.utf8(), "r+");
 #endif

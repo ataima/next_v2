@@ -292,12 +292,10 @@ bool nnObjManager::save(const STRING & name)
     if (!name.empty())
     {
         UtoA toA(name.c_str());
-        std::string fname=toA.utf8();
 #ifdef _MSC_VER
-            FILE *out = nullptr;
-            FOPEN(&out, fname.c_str(), X("w+"));
+            FILE *out = FOPEN(toA.utf8(),"w+");
 #else
-            FILE *out = FOPEN(fname.c_str(), "w+");
+            FILE *out = FOPEN(toA.utf8(), "w+");
 #endif
             if (out != NULL)
             {

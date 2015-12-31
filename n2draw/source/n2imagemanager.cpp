@@ -6,6 +6,8 @@
 #ifndef _MSC_VER
 #include <unistd.h>
 #define _MAX_PATH  4096
+#else
+#include <direct.h>
 #endif
 
 
@@ -23,7 +25,7 @@ nnImageManager::~nnImageManager()
     path.clear();
 }
 #if (_WIN32 || _WIN64)
-#define getcwd  _getcwd
+//#define getcwd  _getcwd
 #endif
 
 bool nnImageManager::readConfiguration(miniXmlNode * node)
