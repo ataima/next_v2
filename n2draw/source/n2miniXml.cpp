@@ -624,10 +624,10 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
         STRING token_value;
         XCHAR *p_temp = p_index;
         skipSpaces();
-        if (*p_index == X('<'))
+        if (*p_index == u'<')
         {
             p_index++;
-            if (*p_index == X('/'))
+            if (*p_index == u'/')
             { //end previous token
                 p_index = p_temp;
                 return false;
@@ -638,7 +638,7 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
             }
         }
 
-        if (findNextChar('<'))
+        if (findNextChar(u'<'))
         {
             if (captureToken(token_name))
             {
@@ -667,10 +667,10 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
             }
         }
         p_temp = p_index;
-        if (*p_index == '<')
+        if (*p_index == u'<')
         {
             p_index++;
-            if (*p_index == '/')
+            if (*p_index == u'/')
             { //end previous token
                 p_index++;
                 if (skipSpaces())
@@ -698,7 +698,7 @@ bool miniXmlParse::captureToken(STRING & token)
 { // only token as <token>
     bool res = false;
     //XCHAR * pTemp = p_index;
-    while (*p_index != '>' && p_index < p_end)
+    while (*p_index != u'>' && p_index < p_end)
     {
         token.push_back(*p_index);
         p_index++;
@@ -713,9 +713,9 @@ bool miniXmlParse::captureValue(STRING & token)
 { // only token as <token>
     bool res = false;
     //XCHAR * pTemp = p_index;
-    while (*p_index != '<' && p_index < p_end)
+    while (*p_index != u'<' && p_index < p_end)
     {
-        if (*p_index >= ' ')
+        if (*p_index >= u' ')
             token.push_back(*p_index);
         p_index++;
     }
@@ -732,7 +732,8 @@ bool miniXmlParse::skipSpaces(void)
 
         bool check(XCHAR p)
         {
-            if (p < (' ') || p > 126)
+            XCHAR space=u' ';
+            if (p ==space )
                 return true;
             return false;
         }

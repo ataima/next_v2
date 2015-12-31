@@ -94,7 +94,9 @@ void MainWindow::newFile()
     childApps * client=nullptr;
     MdiChild *child = createMdiChild();
     try {
-        std::u16string conf(X("conf.xml"));
+        QString   path=qApp->applicationDirPath();
+        path+="/conf.xml";
+        std::u16string conf=path.toStdU16String();
         client=n2app->createObjects(conf);
     }
     catch(n2exception *e)
