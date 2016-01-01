@@ -4,10 +4,12 @@
 #include <locale>
 #include <string>
 #include <stdarg.h>
+#include "n2draw.h"
 #include "n2miniXml.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <n2utoatou.h>
+#include "n2utoatou.h"
+#include "n2exception.h"
 
 #ifndef _MSC_VER
 #include <unistd.h> 
@@ -124,27 +126,29 @@ void miniXmlNode::clearNode(void)
 
 miniXmlNode *miniXmlNode::add(const XCHAR  *name, int idx, int value)
 {
-    //XCHAR  buff1[BUFFLENGTH];
-    //XCHAR buff[BUFFLENGTH];
-    //xsprintf(buff1, X("%s%d"), name, idx);
-    //xsprintf(buff, X("%d"), value);
-    SSTRING ss1;
-    SSTRING ss2;
-    ss1<<name<<idx;
-    ss2<<value;
-    return add(ss1.str().c_str(), const_cast<XCHAR *>(ss2.str().c_str()));
+    XCHAR buff1[BUFFLENGTH];
+    XCHAR buff[BUFFLENGTH];
+    xsprintf(buff1, X("%s%d"), name, idx);
+    xsprintf(buff, X("%d"), value);
+    //SSTREAM ss1;
+    //SSTREAM ss2;
+    //ss1<<name<<idx;
+    //ss2<<value;
+    //return add(ss1.str().c_str(), const_cast<XCHAR *>(ss2.str().c_str()));
+    return add(buff, buff1);
 }
 
 
 miniXmlNode * miniXmlNode::add(const XCHAR *name, int value)
 {
-    //XCHAR buff[BUFFLENGTH];
+    XCHAR buff[BUFFLENGTH];
     if (name != nullptr)
     {
-        SSTRING ss;
-        ss<<value;
-        //xsprintf(buff, X("%d"), value);
-        return add(name, const_cast <XCHAR *>(ss.str().c_str()));
+        //SSTREAM ss;
+        //ss<<value;
+        xsprintf(buff, X("%d"), value);
+        //return add(name, const_cast <XCHAR *>(ss.str().c_str()));
+        return add(name, buff);
     }
     return nullptr;
 }
@@ -221,7 +225,8 @@ const XCHAR * miniXmlNode::getValue(void)
 
 long miniXmlNode::getLong(void)
 {
-    UtoA toA(value);
+    STRING v(value);
+    UtoA toA(v);
     return ATOL(toA.utf8());
 }
 /// walking from child , return the child with has next field set a  nullptr pointer
@@ -265,11 +270,12 @@ miniXmlNode * miniXmlNode::findNext(const XCHAR *_name)
 
 miniXmlNode *miniXmlNode::find(const XCHAR *name, int idx)
 {
-    //XCHAR buff1[BUFFLENGTH];
-    SSTRING ss;
-    //xsprintf(buff1, X("%s%d"), name, idx);
-    ss<<name<<idx;
-    return find(ss.str().c_str());
+    XCHAR buff1[BUFFLENGTH];
+    //SSTREAM ss;
+    xsprintf(buff1, X("%s%d"), name, idx);
+    //ss<<name<<idx;
+    //return find(ss.str().c_str());
+    return find(buff1);
 }
 
 miniXmlNode * miniXmlNode::find(const XCHAR *_name)
@@ -333,10 +339,11 @@ void miniXmlNode::print(FILE *out)
         setlocale(LC_ALL, "");
 #endif
         // name not set ->only container
-        //xsprintf(buff, X("<%ws>\n"), name);
-        SSTRING ss;
-        ss<<X("<")<<name<<X(">\n");
-        fwrite(ss.str().c_str(), ss.str().size(), sizeof(XCHAR), out);
+        xsprintf(buff, X("<%ws>\n"), name);
+        //SSTREAM ss;
+        //ss<<X("<")<<name<<X(">\n");
+        //fwrite(ss.str().c_str(), ss.str().size(), sizeof(XCHAR), out);
+        fwrite(buff, STRLEN(buff), sizeof(XCHAR), out);
         /* No replace
         if (value != nullptr)
         {
@@ -381,23 +388,27 @@ void miniXmlNode::print(FILE *out)
         */
         if (value != nullptr  && STRLEN(value) > 0)
         {
-            SSTRING ss;
-            ss<<value<<X("\n");
-            //xsprintf(buff, X("%ws\n"), value);
-            fwrite(ss.str().c_str(), ss.str().size(), sizeof(XCHAR), out);
+            //SSTREAM ss;
+            //ss<<value<<X("\n");
+            xsprintf(buff, X("%ws\n"), value);
+            //fwrite(ss.str().c_str(), ss.str().size(), sizeof(XCHAR), out);
+            fwrite(buff, STRLEN(buff), sizeof(XCHAR), out);
         }
     }
     if (child != nullptr)
         child->print(out);
     if (name != nullptr)
     {
-        //xsprintf(buff, X("</%ws>\n"), name);
-        SSTRING ss;
-        ss<<X("<")<<name<<X(">\n");
-        size_t len=BUFFLENGTH-1;
-        if(ss.str().size()<len)
-            len=ss.str().size();
-        memcpy(buff,ss.str().c_str(),len);
+        xsprintf(buff, X("</%ws>\n"), name);
+        //SSTREAM ss;
+        //ss<<X("<")<<name<<X(">\n");
+        size_t t,len=BUFFLENGTH-1;
+        //if(ss.str().size()<len)
+        //    len=ss.str().size();
+        t=STRLEN(buff);
+        if(t<len)
+            len=t;
+        //memcpy(buff,ss.str().c_str(),len);
         for (size_t i = 0; i < len; i++)
         {
             if (buff[i] == '>')
@@ -433,7 +444,8 @@ bool miniXmlNode::save(const XCHAR *out, miniXmlNode * root)
     bool res = false;
     if (out != nullptr && root != nullptr)
     {
-        UtoA toA(out);
+        STRING fileout(out);
+        UtoA toA(fileout);
 #ifdef _MSC_VER
         FILE *out = FOPEN(toA.utf8(), "w+");
 #else
@@ -478,9 +490,8 @@ void miniXmlNode::setValue(XCHAR *_value)
 }
 
 
-/*
 int  miniXmlNode::xsprintf(XCHAR *buff, const XCHAR* format, ...)
-{254
+{
     int Result;
     va_list ArgList;
 #ifdef _UNICODE        
@@ -506,7 +517,7 @@ int  miniXmlNode::xsprintf(XCHAR *buff, const XCHAR* format, ...)
 #endif
         return Result;
 }
-*/
+
 bool swapNode(miniXmlNode *src, miniXmlNode* dst)
 {
     bool res = false;
@@ -544,7 +555,10 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
     if (_in != nullptr && _root != nullptr)
     {
         root = _root;
-        UtoA toA(_in);
+        STRING filename_in(_in);
+        UtoA toA(filename_in);
+        try
+        {
 #ifdef _MSC_VER
         FILE *in =FOPEN(toA.utf8(), "r+");
 #else
@@ -584,6 +598,11 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
             root = nullptr;
             buff = nullptr;
         }
+        }catch(...)
+        {
+            appManagerConfigureFileUnknow  *e = new appManagerConfigureFileUnknow(_in);
+            throw(e);
+        }
     }
     else
     {
@@ -610,6 +629,7 @@ bool miniXmlParse::parse(void)
         do
         {
             res = getTokens(&current, &first);
+            root->print(stdout);
         } while (res == true && p_index < p_end);
     }
     return res;
@@ -623,10 +643,10 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
         STRING token_value;
         XCHAR *p_temp = p_index;
         skipSpaces();
-        if (*p_index == u'<')
+        if (*p_index == X('<'))
         {
             p_index++;
-            if (*p_index == u'/')
+            if (*p_index ==X('/'))
             { //end previous token
                 p_index = p_temp;
                 return false;
@@ -637,7 +657,7 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
             }
         }
 
-        if (findNextChar(u'<'))
+        if (findNextChar(X('<')))
         {
             if (captureToken(token_name))
             {
@@ -654,7 +674,7 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
                             (*node)->setValue((XCHAR*)token_value.c_str());
                     }
                     else
-                    {
+                    {                      
                         *node = (*node)->add(token_name.c_str(), (XCHAR*)token_value.c_str());
                     }
                     while (getTokens(node, firstNode))
@@ -666,10 +686,10 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
             }
         }
         p_temp = p_index;
-        if (*p_index == u'<')
+        if (*p_index == X('<'))
         {
             p_index++;
-            if (*p_index == u'/')
+            if (*p_index == X('/'))
             { //end previous token
                 p_index++;
                 if (skipSpaces())
@@ -697,7 +717,7 @@ bool miniXmlParse::captureToken(STRING & token)
 { // only token as <token>
     bool res = false;
     //XCHAR * pTemp = p_index;
-    while (*p_index != u'>' && p_index < p_end)
+    while (*p_index != X('>') && p_index < p_end)
     {
         token.push_back(*p_index);
         p_index++;
@@ -712,9 +732,9 @@ bool miniXmlParse::captureValue(STRING & token)
 { // only token as <token>
     bool res = false;
     //XCHAR * pTemp = p_index;
-    while (*p_index != u'<' && p_index < p_end)
+    while (*p_index != X('<') && p_index < p_end)
     {
-        if (*p_index >= u' ')
+        if (*p_index >= X(' '))
             token.push_back(*p_index);
         p_index++;
     }
@@ -730,9 +750,13 @@ bool miniXmlParse::skipSpaces(void)
     {
 
         bool check(XCHAR p)
-        {
-            XCHAR space=u' ';
-            if (p ==space )
+        {           
+            int v=(int)p;
+            if ( v < (int)(' ') )
+                return true;
+            if(v==65279)
+                return true;
+            if(v==65535)
                 return true;
             return false;
         }

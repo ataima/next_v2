@@ -316,7 +316,7 @@ public:
     virtual void setXpos(int pX) = 0;
     virtual void setYpos(int pY) = 0;
     virtual void setPos(int pX, int pY) = 0;
-    virtual const std::u16string toString(void) const = 0;
+    virtual const STRING toString(void) const = 0;
     virtual eWireDirection getDirection(InnObj * b) = 0;
     virtual eConnections & getConnections(void) = 0;
     virtual void setConnections(int  v) = 0;
@@ -345,7 +345,7 @@ public:
     inline void setContext(ObjContext & c) {
         v_context = c;
     }
-    const std::u16string toString(void) const;
+    const STRING toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);
 };
@@ -375,7 +375,7 @@ public:
         v_Xpos = pX;
         v_Ypos = pY;
     }
-    const  std::u16string toString(void) const;
+    const  STRING toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);
     eWireDirection getDirection(InnObj * pb);
@@ -464,7 +464,7 @@ public:
     virtual inline void setConnections(int n) {
         v_num.push_back(n);
     }
-    const  std::u16string toString(void) const;
+    const  STRING toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);
     static void resetUI(void) {
@@ -498,7 +498,7 @@ public:
     inline virtual void setWire(eWire c) {
         v_wire = c;
     }
-    const  std::u16string toString(void) const;
+    const  STRING toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);
     inline bool isComponent(void) {
@@ -509,7 +509,7 @@ public:
     bool connectFromUp(int b);
     bool connectFromDown(int b);
     void setConnections(int n);
-    static eWire wireStringToEnum(const char16_t *name);
+    static eWire wireStringToEnum(const XCHAR *name);
 protected:
 
     bool connectFromLeft(int b);
@@ -541,7 +541,7 @@ public:
     inline custom_obj getCustomization(void) {
         return v_spec;
     }
-    static custom_obj getCustomizationFromName(const char16_t * s);
+    static custom_obj getCustomizationFromName(const XCHAR * s);
 
 protected:
     bool disconnectFromUp(void);
@@ -559,7 +559,7 @@ class InnVCPU
 public:
     virtual eVCPUregister &getVCPUregister(void) = 0;
     virtual void setVCPUregister(eVCPUregister & r) = 0;
-    virtual const std::u16string toString(void) const = 0;
+    virtual const STRING toString(void) const = 0;
     virtual void save(miniXmlNode *root) = 0;
     virtual void load(miniXmlNode *root) = 0;
     virtual void setBaseVCPU(pMerlinoVCPU vcpu) = 0;
@@ -584,7 +584,7 @@ public:
         v_reg.clear();
         v_reg = r;
     }
-    const std::u16string toString(void) const;
+    const STRING toString(void) const;
     void save(miniXmlNode *root);
     void load(miniXmlNode *root);
     virtual void setBaseVCPU(pMerlinoVCPU _vcpu) {
@@ -608,7 +608,7 @@ public:
         nnObjComponent(ObjContext::objContact) {
         v_spec = _v;
     }
-    const  std::u16string toString(void) const;
+    const  STRING toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);
 
@@ -619,7 +619,7 @@ class nnContactNO
 {
 public:
     nnContactNO():nnObjContact(contactGenericAnd) {}
-    const  std::u16string toString(void) const;
+    const  STRING toString(void) const;
 };
 
 class nnContactNC
@@ -627,7 +627,7 @@ class nnContactNC
 {
 public:
     nnContactNC() :nnObjContact(contactGenericOr) {}
-    const  std::u16string toString(void) const;
+    const  STRING toString(void) const;
 };
 
 
@@ -641,7 +641,7 @@ public:
         nnObjComponent(ObjContext::objCoil) {
         v_spec = _v;
     }
-    const  std::u16string toString(void) const;
+    const  STRING toString(void) const;
     virtual void save(miniXmlNode *root);
     virtual void load(miniXmlNode *root);
 };
@@ -653,7 +653,7 @@ class nnGenericCoil
 {
 public:
     nnGenericCoil() :nnObjCoil(coilGeneric) {}
-    const  std::u16string toString(void) const;
+    const  STRING toString(void) const;
 };
 
 

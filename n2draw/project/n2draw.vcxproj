@@ -29,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="..\header\MerlinoVCPU.h" />
     <ClInclude Include="..\header\n2appmanager.h" />
+    <ClInclude Include="..\header\n2commander.h" />
     <ClInclude Include="..\header\n2miniXml.h" />
     <ClInclude Include="..\header\n2connection.h" />
     <ClInclude Include="..\header\n2draw.h" />
@@ -39,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2appmanager.cpp" />
+    <ClCompile Include="..\source\n2commander.cpp" />
     <ClCompile Include="..\source\n2imagemanager.cpp" />
     <ClCompile Include="..\source\n2miniXml.cpp" />
     <ClCompile Include="..\source\n2connection.cpp" />
@@ -155,6 +157,8 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);$(SolutionDir)bmpimage\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,6 +172,8 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);$(SolutionDir)bmpimage\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -207,6 +213,8 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);$(SolutionDir)bmpimage\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -220,6 +228,8 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)..\header;$(IntDir);$(SolutionDir)bmpimage\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

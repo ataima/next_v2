@@ -11,6 +11,7 @@
 #define wctombs wcstombs
 #endif
 
+#ifdef _UNICODE
 
 class UtoA
 {
@@ -38,7 +39,22 @@ private:
     std::string u8;
     bool _good;
 };
+#else
+class UtoA
+{
+public:
+    inline UtoA(const std::string & v)
+    {
+        u8=v.c_str();
+    }
+    inline const char *utf8(){return u8;}
+    inline bool good(){return true;}
+private:
+    const char *u8;
+};
+#endif
 
+#ifdef _UNICODE
 class AtoU
 {
 public:
@@ -66,5 +82,20 @@ private:
     bool _good;
 };
 
+#else
+class AtoU
+{
+public:
+    AtoU(const std::string & v)
+    {
+        u16=v.c_str();
+    }
+    inline const char *utf16(){return u16;}
+    inline bool good(){return true;}
+private:
+    const char *u16;
+};
+
+#endif
 #endif // UTOATOU
 

@@ -7,7 +7,6 @@
 #include <codecvt>
 #include <locale>
 
-
 #ifndef _MSC_VER
 #define FOPEN fopen
 #define _fileno fileno
@@ -1548,12 +1547,12 @@ bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t l
 }
 
 
-bool bmpImage::copyFromFile(const char16_t *name)
+bool bmpImage::copyFromFile(const XCHAR *name)
 {
     bool res = false;
     try {
         FILE *file = nullptr;
-        std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
+        std::wstring_convert<std::codecvt_utf8_utf16<XCHAR>,XCHAR> convert;
         std::string sname = convert.to_bytes(name);
         file = FOPEN(sname.c_str(),"r");
         if ( file != nullptr)
@@ -1607,14 +1606,14 @@ bool bmpImage::copyFromFile(const char16_t *name)
 }
 
 
-bool bmpImage::copyToFile(const char16_t *name)
+bool bmpImage::copyToFile(const XCHAR *name)
 {
     bool res = false;
     if (isValid())
     {
         try {
             FILE *file = nullptr;
-            std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
+            std::wstring_convert<std::codecvt_utf8_utf16<XCHAR>,XCHAR> convert;
             std::string sname = convert.to_bytes(name);
             file = FOPEN(sname.c_str(), "w+");
             if ( file != nullptr)

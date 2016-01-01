@@ -149,7 +149,7 @@ void test_n2ObjManager::test5(void)
     CA_ASSERT(c->getConnections().back() == (int)0);
     InnObj * p = mn.getObj(5, 0);
     CA_ASSERT(p!=nullptr);
-    std::u16string w = p->toString();
+    STRING w = p->toString();
     //std::wcout << w.c_str()<<std::endl;
     w = c->toString();
     //std::wcout << w.c_str() << std::endl;
@@ -170,7 +170,7 @@ void test_n2ObjManager::test6(void)
     nnObjComponent *d = new nnObjComponent(ObjContext::objContact);
     mn.addObj(5, 1, d);
     InnObj * p = mn.getObj(5, 0);
-    std::u16string w = p->toString();
+    STRING w = p->toString();
     std::wcout << w.c_str() << std::endl;
     w = c->toString();
     std::wcout << w.c_str() << std::endl;

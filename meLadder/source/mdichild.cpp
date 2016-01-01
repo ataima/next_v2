@@ -122,12 +122,14 @@ bool MdiChild::loadFile(const QString &fileName)
         if(n2client)
         {
             QApplication::setOverrideCursor(Qt::WaitCursor);
-            try {                
-                res=n2client->object_manager->load(fileName.toStdU16String());
+            try {
+                res=n2client->object_manager->load(fileName.FROMQSTRING());
             }
             catch(n2exception *e)
             {
                 error=e->msg();
+                delete e->msg();
+                delete e;
             }
             catch(...)
             {
@@ -179,11 +181,13 @@ bool MdiChild::saveFile(const QString &fileName)
         {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             try {
-                res=n2client->object_manager->save(fileName.toStdU16String());
+                res=n2client->object_manager->save(fileName.FROMQSTRING());
             }
             catch(n2exception *e)
             {
                 error=e->msg();
+                delete e->msg();
+                delete e;
             }
             catch(...)
             {
@@ -195,6 +199,7 @@ bool MdiChild::saveFile(const QString &fileName)
                                      tr("Cannot write file %1:\n%2.")
                                      .arg(fileName)
                                      .arg(error));
+
             }
             QApplication::restoreOverrideCursor();
         }
@@ -584,7 +589,7 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
                     if(needScroll)
                     {
                         adjustScrollBars( n2client->view->getOffsetView());
-                    }                    
+                    }
                     getMainWnd()->updatePosCursor(start,stop);
                     resizeSelector();
                 }

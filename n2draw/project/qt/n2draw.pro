@@ -11,7 +11,8 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 DEFINES += N2DRAW_LIBRARY
-DEFINES += _UNICODE
+
+
 windows{
 DEFINES += _STATIC_CPPLIB
 }

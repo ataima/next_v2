@@ -10,7 +10,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = meLa
 TEMPLATE = app
-DEFINES += _UNICODE
+
+
+
 windows{
 DEFINES += _STATIC_CPPLIB
 }

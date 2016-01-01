@@ -32,7 +32,7 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
 {
     bool res = false;
     long offset;
-    std::u16string filename;
+    STRING filename;
     miniXmlNode *conf = node->find(X("IMAGES"));
 
     if (conf)
@@ -44,10 +44,10 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
             const XCHAR *v = xpath->getValue();
             if(getcwd(buff,_MAX_PATH))
             {
-                AtoU toU(buff);
-             u16stringstream ss;
-             ss<<toU.utf16()<<"/"<<v;
-             path=ss.str().c_str();
+                path=buff;
+                path+=X("/");
+                path+=v;
+                path+=X("/");
             }
             else
             {
@@ -195,7 +195,7 @@ bool nnImageManager::loadImages(int w, int h)
     bool res = false;
     if (availObj.size() > 0)
     {
-        std::u16string filenameabs;
+        STRING filenameabs;
         objImageList::iterator it = availObj.begin();
         objImageList::iterator _end = availObj.end();
         while (it != _end)

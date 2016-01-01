@@ -95,18 +95,22 @@ void MainWindow::newFile()
     MdiChild *child = createMdiChild();
     try {
         QString   path=qApp->applicationDirPath();
-        path+="/conf.xml";
-        std::u16string conf=path.toStdU16String();
+#ifdef _UNICODE
+        path+="/conf_utf16.xml";
+#else
+        path+="/conf_ut8.xml";
+#endif
+        STRING conf=path.FROMQSTRING();
         client=n2app->createObjects(conf);
     }
     catch(n2exception *e)
     {
         if(e!=nullptr)
         {
-            const char *msg=e->what();
+            const char *msg=e->msg();
             QMessageBox m(QMessageBox::Icon::Critical,
                           "ERROR",
-                          e->what(),
+                          msg,
                           QMessageBox::StandardButton::Ok);
             m.exec();
             if(msg!=nullptr)

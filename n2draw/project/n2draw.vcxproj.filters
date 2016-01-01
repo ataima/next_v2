@@ -36,6 +36,9 @@
     <ClInclude Include="..\header\n2imagemanager.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\n2commander.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2draw.cpp">
@@ -60,6 +63,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\n2appmanager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2commander.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

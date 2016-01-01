@@ -33,17 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <algorithm>
 #include "n2utoatou.h"
-
+#include "n2miniXml.h"
 
 #ifndef _MSC_VER
 #include <strings.h>
 #endif
 
 class n2exception
-        :public std::runtime_error
+    :public std::runtime_error
 {
 public:
-    n2exception(const char *what):runtime_error(what){}
+    n2exception(const char *what):runtime_error(what) {}
     virtual const char *msg()
     {
         char *buff=nullptr;
@@ -63,10 +63,29 @@ public:
 class appManagerConfigureFileMissingNodeException
     :public n2exception
 {
-    std::u16string node;
+    STRING  node;
 public:
-    explicit appManagerConfigureFileMissingNodeException(std::u16string _node) throw()
-        :n2exception("appManagerConfigureFileMissingNodeException"), node(_node) {}
+    explicit appManagerConfigureFileMissingNodeException(STRING  _node) throw()
+        :n2exception("appManagerConfigureFileMissingNodeException"), node(_node)
+    {
+
+    }
+    char const* msg()
+    {
+        std::stringstream ss;
+        UtoA f(node);
+        const char *b_msg=n2exception::msg();
+        if(f.good())
+            ss<<"exception:"<<b_msg<<std::endl<<" Cannot find XML Node :"<<f.utf8()<<std::endl;
+        else
+            ss<<"exception:"<<b_msg<<std::endl;
+        delete b_msg;
+        int size=ss.str().size();
+        char *buff=new char[size+2];
+        memcpy(buff,ss.str().c_str(),size);
+        buff[size]='\0';
+        return buff;
+    }
 };
 
 class appManagerConfigureLoadImageException
@@ -74,32 +93,60 @@ class appManagerConfigureLoadImageException
 {
 public:
     explicit appManagerConfigureLoadImageException() throw()
-        :n2exception("appManagerConfigureLoadImageException"){}
+        :n2exception("appManagerConfigureLoadImageException") {}
 };
 
 
 class appManagerConfigureFileUnknow
-        :public n2exception
+    :public n2exception
+{
+    STRING  file;
+public:
+    explicit appManagerConfigureFileUnknow(STRING  w) throw()
+        :n2exception("appManagerConfigureFileUnknow"),file(w) {}
+    char const* msg()
     {
-        std::u16string file;
-    public:
-        explicit appManagerConfigureFileUnknow(std::u16string w) throw()
-            :n2exception("appManagerConfigureFileUnknow"),file(w){}
-        char const* what() const noexcept
-        {
-            std::stringstream ss;
-            UtoA f(file);
-            if(f.good())
-            ss<<"exception:"<<runtime_error::what()<<std::endl<<" Cannot find or open file :"<<f.utf8()<<std::endl;
-            else
-                ss<<"exception:"<<runtime_error::what()<<std::endl;
-            char * buff = new char [ss.str().size()+2];
-            memcpy(buff,ss.str().c_str(),ss.str().size());
-            buff[ss.str().size()]=0;
-            return buff;
-        }
-    };
+        std::stringstream ss;
+        UtoA f(file);
+        const char *b_msg=n2exception::msg();
+        if(f.good())
+            ss<<"exception:"<<b_msg<<std::endl<<" Cannot find or open file :"<<f.utf8()<<std::endl;
+        else
+            ss<<"exception:"<<b_msg<<std::endl;
+        delete b_msg;
+        int size=ss.str().size();
+        char *buff=new char[size+2];
+        memcpy(buff,ss.str().c_str(),size);
+        buff[size]='\0';
+        return buff;
+    }
+};
 
+class appManagerConfigureParseXmlFileException
+    :public n2exception
+{
+    STRING  file;
+public:
+    explicit appManagerConfigureParseXmlFileException(STRING  w) throw()
+        :n2exception("appManagerConfigureParseXmlFileException"),file(w) {}
+
+    char const* msg()
+    {
+        std::stringstream ss;
+        UtoA f(file);
+        const char *b_msg=n2exception::msg();
+        if(f.good())
+            ss<<"exception:"<<b_msg<<std::endl<<" Cannot parse configuration file :"<<f.utf8()<<std::endl;
+        else
+            ss<<"exception:"<<b_msg<<std::endl;
+        delete b_msg;
+        int size=ss.str().size();
+        char *buff=new char[size+2];
+        memcpy(buff,ss.str().c_str(),size);
+        buff[size]='\0';
+        return buff;
+    }
+};
 
 class wireConnectionException
     :public n2exception
@@ -222,10 +269,26 @@ public:
 class imagesConfigurationUnknowFileException
     :public n2exception
 {
-    std::u16string filename;
+    STRING  filename;
 public:
-    explicit  imagesConfigurationUnknowFileException(std::u16string _filename) throw()
+    explicit  imagesConfigurationUnknowFileException(STRING  _filename) throw()
         :n2exception("imagesConfigurationUnknowFileException"), filename(_filename) {}
+    char const* msg()
+    {
+        std::stringstream ss;
+        UtoA f(filename);
+        const char *b_msg=n2exception::msg();
+        if(f.good())
+            ss<<"exception:"<<b_msg<<std::endl<<" Cannot parse configuration file :"<<f.utf8()<<std::endl;
+        else
+            ss<<"exception:"<<b_msg<<std::endl;
+        delete b_msg;
+        int size=ss.str().size();
+        char *buff=new char[size+2];
+        memcpy(buff,ss.str().c_str(),size);
+        buff[size]='\0';
+        return buff;
+    }
 };
 
 
@@ -233,9 +296,9 @@ public:
 class phyViewConfigurationException
     :public n2exception
 {
-    std::u16string node;
+    STRING  node;
 public:
-    explicit phyViewConfigurationException(const char16_t *_node) throw()
+    explicit phyViewConfigurationException(const XCHAR *_node) throw()
         :n2exception("phyGlueConfigurationException"), node(_node) {}
 
 };
@@ -245,9 +308,9 @@ public:
 class phyGlueConfigurationException
     :public n2exception
 {
-    std::u16string node;
+    STRING  node;
 public:
-    explicit phyGlueConfigurationException(const char16_t *_node) throw()
+    explicit phyGlueConfigurationException(const XCHAR *_node) throw()
         :n2exception("phyGlueConfigurationException"),node(_node) {}
 
 };
@@ -257,9 +320,9 @@ public:
 class commanderConfigurationException
     :public n2exception
 {
-    std::u16string node;
+    STRING  node;
 public:
-    explicit commanderConfigurationException(const char16_t *_node) throw()
+    explicit commanderConfigurationException(const XCHAR *_node) throw()
         :n2exception("commanderConfigurationException"),node(_node) {}
 
 };

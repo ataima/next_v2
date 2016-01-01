@@ -69,7 +69,7 @@ public:
 class IAppManager
 {
 public:
-    virtual childApps * createObjects(std::u16string & conf_file_name) = 0;
+    virtual childApps * createObjects(STRING & conf_file_name) = 0;
     virtual bool routeEvents(IEvent * event) = 0;
     virtual bool closeAll(void) = 0;
     virtual childApps *activate(int v) = 0;
@@ -90,14 +90,14 @@ class nnAppManager
 public:
     nnAppManager();
     ~nnAppManager();    
-    childApps * createObjects(std::u16string & conf_file_name);
+    childApps * createObjects(STRING & conf_file_name);
     bool routeEvents(IEvent * event);
     bool closeAll(void);
     childApps *activate(int v);
     childApps *active(void);
 protected:
     bool clean(void);
-    bool createInternalObjects(std::u16string & conf_file_name, childApps & child);
+    bool createInternalObjects(STRING & conf_file_name, childApps & child);
 
 };
 

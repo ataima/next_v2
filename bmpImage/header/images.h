@@ -61,6 +61,12 @@ typedef BITMAPINFO *LPBITMAPINFO;
 #endif
 
 
+#ifdef _UNICODE
+#define  XCHAR char16_t
+#else
+#define  XCHAR char
+#endif
+
 
 class  bmpImage
 {
@@ -70,9 +76,9 @@ public:
     bmpImage(bmpImage & b);
     ~bmpImage();
     unsigned long getTotalSize();
-    bool copyFromFile(const char16_t *name);
+    bool copyFromFile(const XCHAR *name);
     bool copyFrombmpImage(bmpImage & b);
-    bool copyToFile(const char16_t *name);
+    bool copyToFile(const XCHAR *name);
     bool create(int width, int height,  unsigned char  color);
     bool isValid(void);
     bool clear(void);

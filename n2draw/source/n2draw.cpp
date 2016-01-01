@@ -30,9 +30,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-const std::u16string nnObj::toString(void) const
+const STRING nnObj::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     switch (v_context)
     {
     case objNone:  s << L"objNone"; break;
@@ -68,9 +68,9 @@ void nnObj::load(miniXmlNode *root)
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const  std::u16string nnObjPos::toString(void) const
+const  STRING nnObjPos::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     s << L"X:" << v_Xpos << L" - Y:" <<
         v_Ypos << " - " << nnObj::toString();
     return s.str();
@@ -663,9 +663,9 @@ void nnObjWire::setConnections(int n)
 }
 
 
-eWire nnObjWire::wireStringToEnum(const char16_t *name)
+eWire nnObjWire::wireStringToEnum(const XCHAR *name)
 {
-    std::u16string value = name;
+    STRING value = name;
     if (value == X("wireHorizzontal"))
         return wireHorizzontal;
     if (value == X("wireVertical"))
@@ -694,9 +694,9 @@ eWire nnObjWire::wireStringToEnum(const char16_t *name)
 int nnObjConn::uid_num = 2;
 
 
-const std::u16string nnObjConn::toString(void) const
+const STRING nnObjConn::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     if (v_num.size() > 0)
         s << "N:" << v_num.front() << ":" << v_num.back() << " - " << nnObjPos::toString();
     else
@@ -748,9 +748,9 @@ void nnObjConn::load(miniXmlNode *root)
     }
 }
 
-const  std::u16string nnObjWire::toString(void) const
+const  STRING nnObjWire::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     s << nnObjConn::toString() << " - ";
     switch (v_wire)
     {
@@ -952,9 +952,9 @@ bool nnObjComponent::connectFromDown(int b)
     return res;
 }
 
-custom_obj nnObjComponent::getCustomizationFromName(const char16_t * s)
+custom_obj nnObjComponent::getCustomizationFromName(const XCHAR * s)
 {
-    std::u16string name = s;
+    STRING name = s;
     if (name == X("contactGenericAnd"))
         return contactGenericAnd;
     else
@@ -998,25 +998,25 @@ bool nnObjComponent::disconnectFromDown(void)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const  std::u16string nnObjContact::toString(void) const
+const  STRING nnObjContact::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     s << "CONTACT : ";
     s << nnObjComponent::toString()<< std::endl;
     s << nnObjVCPU::toString() << std::endl;
     return s.str();
 }
 
-const  std::u16string nnContactNO::toString(void) const
+const  STRING nnContactNO::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     s << "N.O. " << nnObjContact::toString();
     return s.str();
 }
 
-const  std::u16string nnContactNC::toString(void) const
+const  STRING nnContactNC::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     s << "N.C. " << nnObjContact::toString();
     return s.str();
 }
@@ -1046,18 +1046,18 @@ void nnObjContact::load(miniXmlNode *root)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const  std::u16string nnObjCoil::toString(void) const
+const  STRING nnObjCoil::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     s << "COIL : ";
     s << nnObjComponent::toString() << std::endl;
     s << nnObjVCPU::toString() << std::endl;
     return s.str();
 }
 
-const  std::u16string nnGenericCoil::toString(void) const
+const  STRING nnGenericCoil::toString(void) const
 {
-    u16stringstream s;
+    SSTREAM s;
     s << "GEN " <<nnObjCoil::toString() << std::endl;
     return s.str();
 }
@@ -1085,9 +1085,9 @@ void nnObjCoil::load(miniXmlNode *root)
     }
 }
 
-const std::u16string nnObjVCPU::toString(void) const
+const STRING nnObjVCPU::toString(void) const
 {
-    u16stringstream os;
+    SSTREAM os;
     if (v_vcpu != nullptr)
     {		
         for (auto i : v_reg)
@@ -1106,7 +1106,7 @@ void nnObjVCPU::save(miniXmlNode * root)
     if (root != nullptr)
     {
         miniXmlNode *child=root->add(X("VCPU"),(XCHAR *)X(""));
-        SSTRING s;
+        SSTREAM s;
         for (auto i : v_reg)
         {
             s << i << " ";

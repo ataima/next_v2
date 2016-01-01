@@ -11,7 +11,10 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 DEFINES += BMPIMAGE_LIBRARY
-DEFINES += _UNICODE
+
+windows{
+DEFINES += _STATIC_CPPLIB
+}
 
 SOURCES += ../../source/images.cpp
 

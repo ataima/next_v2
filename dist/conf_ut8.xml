@@ -1,0 +1,82 @@
+<APP>
+	<DEFAULT_WIDTH>200</DEFAULT_WIDTH>
+	<DEFAULT_HEIGHT>20</DEFAULT_HEIGHT>
+</APP>
+<MANAGER>
+</MANAGER>
+<PHY_MAP>
+	<TYPE>1</TYPE>
+	<X>40</X>
+	<Y>48</Y>
+	<HEIGHT>480</HEIGHT>
+	<WIDTH>800</WIDTH>
+</PHY_MAP>
+<IMAGES>
+	<PATH>old</PATH>
+	<WIRE>
+		<OBJ>
+			<VALUE>noWire</VALUE>
+			<FILE>BORDER.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireHorizzontal</VALUE>
+			<FILE>HORZ.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireVertical</VALUE>
+			<FILE>VERT.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireAngleUpRight</VALUE>
+			<FILE>L3.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireAngleUpLeft</VALUE>
+			<FILE>L4.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireAngleDownRight</VALUE>
+			<FILE>L2.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireAngleDownLeft</VALUE>
+			<FILE>L1.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireTHorizDown</VALUE>
+			<FILE>T1.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireTHorizUp</VALUE>
+			<FILE>T2.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireTVertRight</VALUE>
+			<FILE>T3.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireTVertLeft</VALUE>
+			<FILE>T4.BMP</FILE>
+		</OBJ>
+		<OBJ>
+			<VALUE>wireCross</VALUE>
+			<FILE>CROSS.BMP</FILE>
+		</OBJ>
+	</WIRE>
+	<CONTACT>
+		<OBJ>
+			<VALUE>contactGenericAnd</VALUE>
+			<FILE>AND.BMP</FILE>
+		</OBJ>	
+		<OBJ>
+			<VALUE>contactGenericOr</VALUE>
+			<FILE>OR.BMP</FILE>
+		</OBJ>
+	</CONTACT>
+	<COIL>
+		<OBJ>
+			<VALUE>coilGeneric</VALUE>
+			<FILE>RELE.BMP</FILE>
+		</OBJ>	
+	</COIL>
+</IMAGES>

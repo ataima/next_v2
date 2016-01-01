@@ -103,7 +103,11 @@ void test_app_manager::test1(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnAppManager app;
-    std::u16string name(X("conf.xml"));
+#ifdef _UNICODE
+    STRING name(X("conf_utf16.xml"));
+#else
+    STRING name(X("conf_ut8.xml"));
+#endif
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;
@@ -145,7 +149,11 @@ void test_app_manager::test2(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnAppManager app;
-    std::u16string name(X("conf.xml"));
+#ifdef _UNICODE
+    STRING name(X("conf_utf16.xml"));
+#else
+    STRING name(X("conf_ut8.xml"));
+#endif
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;

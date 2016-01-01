@@ -22,7 +22,7 @@ nnAppManager::~nnAppManager()
 }
 
 
-childApps * nnAppManager::createObjects(std::u16string & conf_file_name)
+childApps * nnAppManager::createObjects(STRING & conf_file_name)
 {
     bool res = false;
     childApps * child = new childApps();
@@ -74,7 +74,7 @@ childApps * nnAppManager::createObjects(std::u16string & conf_file_name)
     return child;
 }
 
-bool nnAppManager::createInternalObjects(std::u16string & conf_file_name, childApps & child)
+bool nnAppManager::createInternalObjects(STRING & conf_file_name, childApps & child)
 {
     bool res = false;
     res = configuration.readConfiguration(conf_file_name.c_str());
@@ -159,7 +159,7 @@ bool nnAppManager::createInternalObjects(std::u16string & conf_file_name, childA
     }
     else
     {
-        appManagerConfigureFileUnknow  *e = new appManagerConfigureFileUnknow(conf_file_name);
+        appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf_file_name);
         throw(e);
     }
     return res;

@@ -66,7 +66,7 @@ bool nnCommander::readConfiguration(miniXmlNode &node)
             int i=0;
             while(numItem>0)
             {
-                SSTRING name;
+                SSTREAM name;
                 name<<"ITEM_"<<i;
                 t=conf->find(name.str().c_str());
                 if(t)

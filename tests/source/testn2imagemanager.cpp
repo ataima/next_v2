@@ -82,7 +82,11 @@ void test_image_manager::test1(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     miniXmlNode  node;
-    bool res = miniXmlNode::load(X("conf.xml"),&node);
+#ifdef _UNICODE
+    bool res = miniXmlNode::load(X("conf_utf16.xml"),&node);
+#else
+    bool res = miniXmlNode::load(X("conf_utf8.xml"),&node);
+#endif
     CA_ASSERT(res == true);
     nnImageManager im;
     res = im.readConfiguration(&node);

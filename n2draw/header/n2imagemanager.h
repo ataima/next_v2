@@ -37,13 +37,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-typedef  std::map<int, std::u16string> objImageList;
+typedef  std::map<int, STRING> objImageList;
 
 
 class IImageManager
 {
 public:
-    virtual std::u16string  getDefaulPath(void) const = 0;
+    virtual STRING  getDefaulPath(void) const = 0;
     virtual bool readConfiguration(miniXmlNode *node) = 0;
     virtual bool loadImages(int w, int h) = 0;
     virtual const listImage * getImageList(void) = 0;
@@ -57,13 +57,13 @@ public:
 class nnImageManager
     : public IImageManager
 {
-    std::u16string path;
+    STRING path;
     objImageList availObj;
     listImage allImages;
 public:
     nnImageManager();
     ~nnImageManager();
-    inline  std::u16string  getDefaulPath(void) const { return path; };
+    inline  STRING  getDefaulPath(void) const { return path; };
     bool readConfiguration(miniXmlNode *node);
     bool loadImages(int w, int h);
     inline  const listImage * getImageList(void) { return &allImages; }
