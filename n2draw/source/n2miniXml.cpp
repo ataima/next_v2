@@ -72,8 +72,9 @@ template class _CRTIMP2_PURE num_put<char32_t,
 
  END FIX A:COPPI
 ********************************************************************/
+#if defined(_MSC_VER ) && defined(_UNICODE)
 std::locale::id std::codecvt<char16_t,char,struct _Mbstatet>::id;
-
+#endif
 
 miniXmlNode::miniXmlNode(const XCHAR  *_name, XCHAR  *_value,
     miniXmlNode *_parent, miniXmlNode *_child, miniXmlNode *_next)

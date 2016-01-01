@@ -202,13 +202,12 @@ bool nnImageManager::loadImages(int w, int h)
         {
             bmpImage image;
             filenameabs = path;
-            filenameabs += X("\\");
             filenameabs += it->second;
             if (image.copyFromFile(filenameabs.c_str()))
             {
                 if (image.getWidth() != w || image.getHeight() != h)
                 {
-                    imagesConfigurationBadSizeException *pe=new imagesConfigurationBadSizeException(image.getWidth(),image.getHeight());
+                    imagesConfigurationBadSizeException *pe=new imagesConfigurationBadSizeException(filenameabs.c_str(),image.getWidth(),image.getHeight());
                     throw (pe);
                 }
                 else

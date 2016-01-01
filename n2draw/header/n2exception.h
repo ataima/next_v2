@@ -242,9 +242,25 @@ class imagesConfigurationBadSizeException
     :public n2exception
 {
     int w, h;
+    STRING filename;
 public:
-    explicit  imagesConfigurationBadSizeException(int _w, int _h) throw()
-        :n2exception("imagesConfigurationBadSizeException"), w(_w), h(_h) {}
+    explicit  imagesConfigurationBadSizeException(const XCHAR *_filename,int _w, int _h) throw()
+        :n2exception("imagesConfigurationBadSizeException"),filename(_filename), w(_w), h(_h) {}
+
+    char const* msg()
+    {
+        std::stringstream ss;
+        const char *b_msg=n2exception::msg();
+        UtoA  f(filename);
+        ss<<"exception:"<<b_msg<<std::endl<<" Error bad image ("<<f.utf8()
+         <<") size W :"<<w<< " H :"<<h<<std::endl;
+        delete b_msg;
+        int size=ss.str().size();
+        char *buff=new char[size+2];
+        memcpy(buff,ss.str().c_str(),size);
+        buff[size]='\0';
+        return buff;
+    }
 };
 
 
