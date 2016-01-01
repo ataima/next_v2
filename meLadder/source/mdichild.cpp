@@ -437,8 +437,8 @@ void MdiChild::mouseMoveEvent( QMouseEvent *event )
             nnPoint pos(p.x(),p.y());
             if(n2client->view->handlerMouseMove((nn_mouse_buttons)bt,pos,start,stop))
             {
-                qDebug()<<"START:"<<start.x<<" - "<<start.y;
-                qDebug()<<"STOP:"<<stop.x<<" - "<<stop.y;
+                qDebug()<<"MOUSE MOVE START:"<<start.x<<" - "<<start.y;
+                qDebug()<<"MOUSE MOVE STOP:"<<stop.x<<" - "<<stop.y;
                 getMainWnd()->updatePosCursor(start,stop);
                 resizeSelector();
             }
@@ -468,8 +468,8 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
         nnPoint pos(p.x(),p.y());
         if(n2client->view->handlerMouseButtonDown((nn_mouse_buttons)bt,pos,start,stop))
         {
-            qDebug()<<"START:"<<start.x<<" - "<<start.y;
-            qDebug()<<"STOP:"<<stop.x<<" - "<<stop.y;
+            qDebug()<<"MOUSE PRESS START:"<<start.x<<" - "<<start.y;
+            qDebug()<<"MOUSE PRESS STOP:"<<stop.x<<" - "<<stop.y;
             getMainWnd()->updatePosCursor(start,stop);
             resizeSelector();
         }
@@ -487,8 +487,8 @@ void MdiChild::mouseReleaseEvent(QMouseEvent *event)
         nnPoint pos(p.x(),p.y());
         if(n2client->view->handlerMouseButtonUp((nn_mouse_buttons)bt,pos,start,stop))
         {
-            qDebug()<<"START:"<<start.x<<" - "<<start.y;
-            qDebug()<<"STOP:"<<stop.x<<" - "<<stop.y;
+            qDebug()<<" START RELEASE :"<<start.x<<" - "<<start.y;
+            qDebug()<<"STOP RELEASE :"<<stop.x<<" - "<<stop.y;
             getMainWnd()->updatePosCursor(start,stop);
             resizeSelector();
         }

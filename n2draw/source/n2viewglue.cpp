@@ -381,6 +381,7 @@ bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint
         {
             select_stop = p;
         }
+        getSelectArea(start,stop);
         status = selected;
     }
     else if (status == start_activate)
