@@ -27,52 +27,13 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-#define  BUFFLENGTH  512
-#include <string>
-#include <sstream>
+#include "n2interfaces.h"
 
-typedef std::basic_stringstream<char16_t> 	u16stringstream;
-
-#ifdef _UNICODE
-#define  XCHAR char16_t
-#define  STRSTR   std::char_traits<char16_t>::find
-#define  STRLEN   std::char_traits<char16_t>::length
-#define  STRING   std::u16string
-#define  SSTREAM  u16stringstream
-#define  STRCMP   std::char_traits<char16_t>::compare
-#define  ATOL     atol
-#define  FROMQSTRING()   toStdU16String()
-#ifdef _MSC_VER
-#define  FOPEN    fopen
-#else
-#define  FOPEN    fopen
-#endif
-#define  X(msg)   u##msg
-#else
-#define  XCHAR    char
-#define  STRSTR   std::char_traits<char>::find
-#define  STRLEN   std::char_traits<char>::length
-#define  STRING   std::string
-#define  SSTREAM  std::stringstream
-#define  ATOL     atol
-#define  FROMQSTRING()   toStdString()
-#ifdef _MSC_VER
-#define  FOPEN    fopen
-#else
-#define  FOPEN    fopen
-#endif
-#define  STRCMP   std::char_traits<char>::compare
-#define  X(msg)   msg
-#endif
-
-
-#if (_MSC_VER < 1900)
-#define snprintf  _snprintf
-#endif		
 ///simple xml for key<.key.....> - value pair 
 /// warning : no replace symbols as standard xml ex < -> &lt
 /// warning : unsupport attrib key value
 class miniXmlNode
+        :public IXmlNode
 {
     miniXmlNode * parent;	/// the father of this node
     miniXmlNode * child;	/// the child of this node
@@ -89,9 +50,9 @@ public:
     /// add a child node a this node. _name as
     /// xPath for crossing from iinternal child nodes
     /// path separator is assumend the point '.'
-    miniXmlNode * add(const XCHAR *name, XCHAR *value);
-    miniXmlNode * add(const XCHAR *name, int value);
-    miniXmlNode * add(const XCHAR *name, int idx, int value);
+    IXmlNode * add(const XCHAR *name, XCHAR *value);
+    IXmlNode * add(const XCHAR *name, int value);
+    IXmlNode * add(const XCHAR *name, int idx, int value);
     /// this function link at this node a child xmlNode
     miniXmlNode * link(XCHAR *name, miniXmlNode  *_child);
     /// this function add a value at already existent value
@@ -120,13 +81,12 @@ public:
     /// assigne a requested value
     void setValue(XCHAR *_value);
     /// in line return parent
-    inline miniXmlNode * getParent(void) { return parent; }
-    inline miniXmlNode * getChild(void) { return child; }
-    inline miniXmlNode * getNext(void) { return next; }
+    inline IXmlNode * getParent(void) { return parent; }
+    inline IXmlNode * getChild(void) { return child; }
+    inline IXmlNode * getNext(void) { return next; }
     inline const XCHAR  * getName(void) { return name; }
     friend bool swapNode(miniXmlNode *src, miniXmlNode* dst);
 private:
-    int xsprintf(XCHAR *buff,  const XCHAR* format, ...);
 };
 
 
@@ -143,20 +103,13 @@ public:
     bool parse(void);
 protected:
     bool findNextChar(XCHAR ch);
-    bool getTokens( miniXmlNode **currrent,bool *firstNode);
+    bool getTokens(miniXmlNode **currrent, bool *firstNode);
     bool captureToken(STRING & token);
     bool captureValue(STRING & token);
     bool skipSpaces(void);
     inline bool isEnd(void){ return ((size_t)(p_index) < (size_t)(p_end));}
 };
 
-class IConfig
-{
-public:
-    virtual bool readConfiguration(const XCHAR *name) = 0;
-    virtual bool writeConfiguration(const XCHAR *name) = 0;
-    virtual miniXmlNode & getRoot(void) = 0;
-};
 
 
 
@@ -167,7 +120,7 @@ class xmlConfig
 public:
     bool readConfiguration(const XCHAR *name);
     bool writeConfiguration(const XCHAR *name);
-    inline  miniXmlNode & getRoot(void) { return conf; }
+    inline  IXmlNode * getRoot(void) { return &conf; }
 };
 
 

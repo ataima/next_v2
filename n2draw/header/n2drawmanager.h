@@ -26,21 +26,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-
-#include <map>
+#include "n2interfaces.h"
 
 #include <list>
-
-#include "n2miniXml.h"
-#include "n2draw.h"
-#include "n2miniXml.h"
-#include <stdint.h>
-typedef union tag_hash_key
-{
-uint32_t v1;
-uint32_t v2;
-uint64_t v12;
-} hashkey;
 
 
 struct lessHashKey : public std::binary_function<hashkey ,hashkey  , bool>
@@ -51,53 +39,7 @@ struct lessHashKey : public std::binary_function<hashkey ,hashkey  , bool>
   };
 
 typedef std::map<hashkey, InnObj *,lessHashKey> hashObjTable;
-class nnObjCoil;
-class nnObjContact;
-class IManager
-{
-public:
-    // 
-    virtual bool addCoil(int x,  nnObjCoil * obj) = 0;
-    virtual bool addWire(int x, int y, InnObj * obj) = 0;
-    virtual bool addContact(int x, int y, nnObjContact * obj) = 0;
-    virtual bool addObj(int x, int y, InnObj * obj) = 0;
-    virtual bool removeObj(int x, int y) = 0;
-    virtual InnObj * getObj(int x, int y) = 0;
-    virtual InnObj * outObj(int x, int y) = 0;
-    virtual bool replaceObj(int x, int y, InnObj * obj) = 0;
-    virtual bool removeAll(void) = 0;
-    virtual bool moveObj(nnPoint from, nnPoint to) = 0;
-    virtual bool swapObj(nnPoint from, nnPoint to) = 0;
-    virtual int getWidth(void) = 0;
-    virtual int getHeight(void) = 0;
-    virtual nnPoint getStartPoint(void) = 0;
-    virtual nnPoint getStopPoint(void) = 0;
-    virtual bool save(const STRING & name) = 0;
-    virtual bool load(const STRING & name) = 0;
-    virtual bool undo(void) = 0;
-    virtual bool redo(void) = 0;
-    virtual bool insertRow(int y_pos) = 0;
-    virtual bool insertCol(int x_pos) = 0;
-    virtual bool removeRow(int y_pos) = 0;
-    virtual bool removeCol(int x_pos) = 0;
-    virtual bool removeEmptyCol(void) = 0;
-    virtual bool ResizeHeight(int h) = 0;
-    virtual bool ResizeWidth(int w) = 0;
-    virtual bool Resize(int w, int h) = 0;
-    virtual bool readConfiguration(miniXmlNode & node) = 0;
-    virtual bool revIndexes(hashkey & key,int & x, int & y) = 0;
-    virtual ~IManager(){}
-    
-};
 
-
-class IUndoRedo
-{
-public :
-    virtual bool undo(void) = 0;
-    virtual bool redo(void) = 0;
-    virtual ~IUndoRedo(){}
-};
 
 
 typedef enum tag_action_type
@@ -187,10 +129,9 @@ public:
     bool ResizeHeight(int h);
     bool ResizeWidth(int w);
     bool Resize(int w, int h);
-    bool readConfiguration(miniXmlNode & node) ;
     inline bool revIndexes(hashkey & key, int & x, int & y)
                 { return revHashKey(key, x, y); }
-
+    bool readConfiguration(IXmlNode *node);
 protected:
     bool genHashKey(int x, int y, hashkey & key);
     bool revHashKey(hashkey & key, int & x, int &y);

@@ -56,8 +56,6 @@ void  mdiSelector::SetArea(nnRect &rect, nnPoint &_start, nnPoint &_stop)
     pos=rect;
     start=_start;
     stop=_stop;
-    qDebug()<<"START("<<start.x<<","<<start.y<<")";
-    qDebug()<<"STOP("<<stop.x<<","<<stop.y<<")";
 }
 
 

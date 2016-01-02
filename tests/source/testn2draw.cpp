@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "CPPtester.h"
+#include "n2exception.h"
 #include "n2draw.h"
 
 

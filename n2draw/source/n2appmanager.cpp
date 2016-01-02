@@ -1,24 +1,24 @@
+#include "n2draw.h"
 #include "n2appmanager.h"
-
-bool WinEvent::create(unsigned int message, unsigned int wparam, unsigned long lparam)
-{
-    (message);
-    (wparam);
-    (lparam);
-    return false;
-}
+#include "n2miniXml.h"
+#include "n2drawmanager.h"
+#include "n2imagemanager.h"
+#include "n2view.h"
+#include "n2viewglue.h"
 
 
 int nnAppManager::UID = 1;
 
 nnAppManager::nnAppManager():selected(-1)
 {
-    
+    configuration = new xmlConfig();
 }
 
 nnAppManager::~nnAppManager()
 {
     clean();
+    delete configuration;
+    configuration=nullptr;
 }
 
 
@@ -77,101 +77,108 @@ childApps * nnAppManager::createObjects(STRING & conf_file_name)
 bool nnAppManager::createInternalObjects(STRING & conf_file_name, childApps & child)
 {
     bool res = false;
-    res = configuration.readConfiguration(conf_file_name.c_str());
-    if (res == true)
+    if(configuration!=nullptr)
     {
-        miniXmlNode *conf_manager = configuration.getRoot().find(X("APP"));
-        if (conf_manager != nullptr)
+        res = configuration->readConfiguration(conf_file_name.c_str());
+        if (res == true)
         {
-            //int line = __LINE__;
-            miniXmlNode *size_default = conf_manager->find(X("DEFAULT_WIDTH"));
-            if (size_default != nullptr)
+            IXmlNode * root=configuration->getRoot();
+            if(root!=nullptr)
             {
-                int default_w = size_default->getLong();
-                size_default = conf_manager->find(X("DEFAULT_HEIGHT"));
-                if (size_default != nullptr)
+                IXmlNode *conf_manager = root->find(X("APP"));
+                if (conf_manager != nullptr)
                 {
-                    int default_h = size_default->getLong();
-                    int line = __LINE__;
-                    child.object_manager = new nnObjManager(default_w, default_h);
-                    MEMCHK(IManager, child.object_manager);
-                    conf_manager = configuration.getRoot().find(X("MANAGER"));
-                    if (conf_manager)
+                    //int line = __LINE__;
+                    IXmlNode *size_default = conf_manager->find(X("DEFAULT_WIDTH"));
+                    if (size_default != nullptr)
                     {
-                        res = child.object_manager->readConfiguration(*conf_manager);
-                        if (res)
+                        int default_w = size_default->getLong();
+                        size_default = conf_manager->find(X("DEFAULT_HEIGHT"));
+                        if (size_default != nullptr)
                         {
-                            line = __LINE__;
-                            child.imageManager = new nnImageManager();
-                            MEMCHK(IImageManager, child.imageManager);
-                            conf_manager = configuration.getRoot().find(X("IMAGES"));
+                            int default_h = size_default->getLong();
+                            int line = __LINE__;
+                            child.object_manager = new nnObjManager(default_w, default_h);
+                            MEMCHK(IManager, child.object_manager);
+                            conf_manager = root->find(X("MANAGER"));
                             if (conf_manager)
                             {
-                                res = child.imageManager->readConfiguration(conf_manager);
+                                res = child.object_manager->readConfiguration(conf_manager);
+                                if (res)
+                                {
+                                    line = __LINE__;
+                                    child.imageManager = new nnImageManager();
+                                    MEMCHK(IImageManager, child.imageManager);
+                                    conf_manager = root->find(X("IMAGES"));
+                                    if (conf_manager)
+                                    {
+                                        res = child.imageManager->readConfiguration(conf_manager);
+                                    }
+                                    else
+                                    {
+                                        xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("IMAGES"));
+                                        throw(e);
+                                    }
+                                    if (res)
+                                    {
+                                        conf_manager = root->find(X("PHY_MAP"));
+                                        if (conf_manager)
+                                        {
+                                            line = __LINE__;
+                                            child.view = new nnViewGlue(child.object_manager, child.imageManager );
+                                            IViewGlue *viewglue = child.view;
+                                            MEMCHK(IViewGlue, viewglue);
+                                            res = viewglue->readConfiguration(conf_manager);
+                                        }
+                                        else
+                                        {
+                                            xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("PHY_MAP"));
+                                            throw(e);
+                                        }
+                                    }
+                                }
                             }
                             else
                             {
-                                appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("IMAGES"));
+                                xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("MANAGER"));
                                 throw(e);
                             }
-                            if (res)
-                            {
-                                conf_manager = configuration.getRoot().find(X("PHY_MAP"));
-                                if (conf_manager)
-                                {
-                                    line = __LINE__;
-                                    child.view = new nnViewGlue(child.object_manager, child.imageManager );
-                                    IViewGlue *viewglue = child.view;
-                                    MEMCHK(IViewGlue, viewglue);
-                                    res = viewglue->readConfiguration(*conf_manager);
-                                }
-                                else
-                                {
-                                    appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("PHY_MAP"));
-                                    throw(e);
-                                }
-                            }
+                        }
+                        else
+                        {
+                            xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("DEFAULT_HEIGHT"));
+                            throw(e);
                         }
                     }
                     else
                     {
-                        appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("MANAGER"));
+                        xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("DEFAULT_WIDTH"));
                         throw(e);
                     }
                 }
                 else
                 {
-                    appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("DEFAULT_HEIGHT"));
+                    xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("MANAGER"));
                     throw(e);
                 }
             }
             else
             {
-                appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("DEFAULT_WIDTH"));
+                appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf_file_name);
                 throw(e);
             }
         }
         else
         {
-            appManagerConfigureFileMissingNodeException  *e = new appManagerConfigureFileMissingNodeException(X("MANAGER"));
+            appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf_file_name);
             throw(e);
         }
-    }
-    else
-    {
-        appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf_file_name);
-        throw(e);
     }
     return res;
 }
 
 
 
-bool nnAppManager::routeEvents(IEvent * event)
-{
-    (event);
-    return false;
-}
 
 bool nnAppManager::closeAll(void)
 {
@@ -252,4 +259,19 @@ bool nnAppManager::clean(void)
     return childs.empty();
 }
 
-
+bool nnAppManager::setExtHandler(childApps * child,
+                                 const char *_name,extHandler & _hook,void *unkObj)
+{
+    bool res=false;
+    if(child)
+    {
+        std::string name(_name);
+        if(name=="extRefreshViewHandler")
+        {
+            // to refresh a user bitmap : to viewglue
+            res=child->view->addExtHandler(handler_view_exec_refresh,
+                                           _name,_hook,unkObj);
+        }
+    }
+    return res;
+}

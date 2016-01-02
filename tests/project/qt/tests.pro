@@ -8,7 +8,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-
+DEFINES += _UNICODE
 
 SOURCES += \
         ../../source/mainApp.cpp\

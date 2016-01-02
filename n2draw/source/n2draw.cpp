@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "n2draw.h"
 #include "n2miniXml.h"
+#include "n2utoatou.h"
 
 
 
@@ -45,7 +46,7 @@ const STRING nnObj::toString(void) const
 }
 
 
-void nnObj::save(miniXmlNode *root)
+void nnObj::save(IXmlNode *root)
 {
     if (root != nullptr)
     {
@@ -55,11 +56,11 @@ void nnObj::save(miniXmlNode *root)
 
 
 
-void nnObj::load(miniXmlNode *root)
+void nnObj::load(IXmlNode *root)
 {
     if (root != nullptr)
     {
-        miniXmlNode * node=root->find(X("Context"));
+        IXmlNode * node=root->find(X("Context"));
         if (node != nullptr)
         {
             v_context = (ObjContext)node->getLong();
@@ -78,7 +79,7 @@ const  STRING nnObjPos::toString(void) const
 
 
 
-void nnObjPos::save(miniXmlNode *root)
+void nnObjPos::save(IXmlNode *root)
 {
     if (root != nullptr)
     {
@@ -88,12 +89,12 @@ void nnObjPos::save(miniXmlNode *root)
     }
 }
 
-void nnObjPos::load(miniXmlNode *root)
+void nnObjPos::load(IXmlNode *root)
 {
     if (root != nullptr)
     {
         nnObj::load(root);
-        miniXmlNode * node = root->find(X("X_Position"));
+        IXmlNode * node = root->find(X("X_Position"));
         if (node != nullptr)
         {
             v_Xpos = node->getLong();
@@ -705,7 +706,7 @@ const STRING nnObjConn::toString(void) const
 }
 
 
-void nnObjConn::save(miniXmlNode *root)
+void nnObjConn::save(IXmlNode *root)
 {
     if (root != nullptr)
     {
@@ -720,12 +721,12 @@ void nnObjConn::save(miniXmlNode *root)
 }
 
 
-void nnObjConn::load(miniXmlNode *root)
+void nnObjConn::load(IXmlNode *root)
 {
     if (root != nullptr)
     {
         nnObjPos::load(root);
-        miniXmlNode * node = root->find(X("Connections"));
+        IXmlNode * node = root->find(X("Connections"));
         if (node != nullptr)
         {
             v_num.clear();
@@ -772,7 +773,7 @@ const  STRING nnObjWire::toString(void) const
 }
 
 
-void nnObjWire::save(miniXmlNode *root)
+void nnObjWire::save(IXmlNode *root)
 {
     if (root != nullptr)
     {
@@ -781,12 +782,12 @@ void nnObjWire::save(miniXmlNode *root)
     }
 }
 
-void nnObjWire::load(miniXmlNode *root)
+void nnObjWire::load(IXmlNode *root)
 {
     if (root != nullptr)
     {
         nnObjConn::load(root);
-        miniXmlNode *node = root->find(X("Connection_Type"));
+        IXmlNode *node = root->find(X("Connection_Type"));
         if (node != nullptr)
         {
             v_wire = (eWire)node->getLong();
@@ -1021,7 +1022,7 @@ const  STRING nnContactNC::toString(void) const
     return s.str();
 }
 
-void nnObjContact::save(miniXmlNode *root)
+void nnObjContact::save(IXmlNode *root)
 {
     if (root != nullptr)
     {
@@ -1031,11 +1032,11 @@ void nnObjContact::save(miniXmlNode *root)
     }
 }
 
-void nnObjContact::load(miniXmlNode *root)
+void nnObjContact::load(IXmlNode *root)
 {
     if (root != nullptr)
     {
-        miniXmlNode *node = root->find(X("Custom"));
+        IXmlNode *node = root->find(X("Custom"));
         if (node != nullptr)
         {
             v_spec = (custom_obj)node->getLong();
@@ -1063,7 +1064,7 @@ const  STRING nnGenericCoil::toString(void) const
 }
 
 
-void nnObjCoil::save(miniXmlNode *root)
+void nnObjCoil::save(IXmlNode *root)
 {
     if (root != nullptr)
     {
@@ -1072,11 +1073,11 @@ void nnObjCoil::save(miniXmlNode *root)
     }
 }
 
-void nnObjCoil::load(miniXmlNode *root)
+void nnObjCoil::load(IXmlNode *root)
 {
     if (root != nullptr)
     {
-        miniXmlNode *node = root->find(X("Custom"));
+        IXmlNode *node = root->find(X("Custom"));
         if (node != nullptr)
         {
             v_spec = (custom_obj)node->getLong();
@@ -1101,11 +1102,11 @@ const STRING nnObjVCPU::toString(void) const
     return os.str();
 }
 
-void nnObjVCPU::save(miniXmlNode * root)
+void nnObjVCPU::save(IXmlNode *root)
 {
     if (root != nullptr)
     {
-        miniXmlNode *child=root->add(X("VCPU"),(XCHAR *)X(""));
+        IXmlNode *child=root->add(X("VCPU"),(XCHAR *)X(""));
         SSTREAM s;
         for (auto i : v_reg)
         {
@@ -1115,12 +1116,12 @@ void nnObjVCPU::save(miniXmlNode * root)
     }
 }
 
-void nnObjVCPU::load(miniXmlNode * root)
+void nnObjVCPU::load(IXmlNode *root)
 {
     if (root != nullptr)
     {
 
-        miniXmlNode * node = root->find(X("VCPU"));
+        IXmlNode * node = root->find(X("VCPU"));
         if (node != nullptr)
         {
             node = node->find(X("Regs"));

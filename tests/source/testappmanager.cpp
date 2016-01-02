@@ -106,7 +106,7 @@ void test_app_manager::test1(void)
 #ifdef _UNICODE
     STRING name(X("conf_utf16.xml"));
 #else
-    STRING name(X("conf_ut8.xml"));
+    STRING name(X("conf_utf8.xml"));
 #endif
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);

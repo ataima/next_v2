@@ -27,9 +27,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-#include "images.h"
-#include "n2draw.h"
-#include <vector>
+#include "n2interfaces.h"
 
 
 typedef struct nn_tag_command_item
@@ -39,26 +37,18 @@ typedef struct nn_tag_command_item
 } commandItem;
 
 
-
-class ICommander
-{
-public:
-    virtual bool readConfiguration(miniXmlNode *node) = 0;
-    virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
-    virtual ~ICommander(){}
-};
-
 typedef std::vector<commandItem> listCommandItem;
 
 class nnCommander
+    :public ICommander
 {
 private:
-nnPoint const_Size;
-listCommandItem items;
+    nnPoint const_Size;
+    listCommandItem items;
 public:
     nnCommander();
     ~nnCommander();
-    bool readConfiguration(miniXmlNode &node) ;
+    bool readConfiguration(IXmlNode *node) ;
     bool handlerRequestCommand( nnPoint & pos,int & command);
 private:
     nnRect rectFromPos(nnPoint & pos);

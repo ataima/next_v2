@@ -26,75 +26,65 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-#include "n2miniXml.h"
-#include "n2draw.h"
-#include "n2drawmanager.h"
-#include "n2imagemanager.h"
-#include "n2view.h"
-#include "n2viewglue.h"
-#include "n2utoatou.h"
+
+#include "n2interfaces.h"
+#include "n2exception.h"
 
 
 
-
-
-typedef struct tag_app_child
+class nnExtHandler
 {
-    IManager                *object_manager;
-    IViewGlue               *view;
-    IImageManager           *imageManager;
-    void clean(void);
-} childApps;
+    extHandler hook;
+    void *unknow;
+    char name[128];
+public :
+    nnExtHandler(const char * _name,extHandler & _hook,void *unkObj)
+        :hook(_hook),unknow(unkObj)
+    {
+        strncpy(name,_name,126);
+    }
 
-
-
-class IEvent
-{
-public:
-    //stub for windows
-    virtual bool create(unsigned int  message, unsigned int wparam, unsigned long lparam) = 0;
-    virtual ~IEvent(){}
+    inline void doHandler(void )
+    {
+     if(hook && unknow)
+     {
+         try{
+             hook(unknow);
+         }
+         catch(...)
+         {
+             extHandlerException *e = new extHandlerException(name);
+             throw(e);
+         }
+     }
+    }
 };
 
 
 
-class WinEvent
-    :public IEvent
-{
-public:
-    bool create(unsigned int  message, unsigned int wparam, unsigned long lparam);
-};
 
 
-class IAppManager
-{
-public:
-    virtual childApps * createObjects(STRING & conf_file_name) = 0;
-    virtual bool routeEvents(IEvent * event) = 0;
-    virtual bool closeAll(void) = 0;
-    virtual childApps *activate(int v) = 0;
-    virtual childApps *active(void) = 0;
-    virtual ~IAppManager(){}
-};
 
-typedef std::map<int, childApps *> listChild;
 
 
 class nnAppManager
     :public IAppManager
 {
+
+typedef std::map<int, childApps *> listChild;
+
     listChild childs;
-    xmlConfig configuration; 
+    IConfig *configuration;
     int selected;
     static int UID;
 public:
     nnAppManager();
     ~nnAppManager();    
     childApps * createObjects(STRING & conf_file_name);
-    bool routeEvents(IEvent * event);
     bool closeAll(void);
     childApps *activate(int v);
     childApps *active(void);
+    bool setExtHandler(childApps *child,const char *_name,extHandler & _hook,void *unkObj);
 protected:
     bool clean(void);
     bool createInternalObjects(STRING & conf_file_name, childApps & child);

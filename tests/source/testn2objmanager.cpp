@@ -541,8 +541,6 @@ void test_n2ObjManager::test17(void)
     res = mn.addCoil(10,  u);
     CA_ASSERT(res == true);
     CA_ASSERT((int)mn.size() == (int)20);
-    nnTextView view;
-    view.draw(&mn, nullptr);
 }
 
 
@@ -562,11 +560,9 @@ void test_n2ObjManager::test18(void)
     CA_ASSERT(res == true);
     CA_ASSERT((int)mn.size() == (int)20);
     v = new nnObjContact();
-    nnTextView view;
     res = mn.addContact(12, 0, v);
     CA_ASSERT(res == true);
     nnPoint p1(12, 0);
     nnPoint p2(10, 0);
     nnConnection::connectComponent(&mn, p1, p2);
-    view.draw(&mn, nullptr);
 }

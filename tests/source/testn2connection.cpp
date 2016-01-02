@@ -3,6 +3,7 @@
 #include "n2draw.h"
 #include "n2drawmanager.h"
 #include "n2connection.h"
+#include "n2exception.h"
 #include "n2view.h"
 #include <iostream>
 
@@ -1144,6 +1145,4 @@ void test_nnConnection::test11(void)
     CA_ASSERT(res == true);
     res = nnConnection::connectComponent(&mn, p4, p5);
     CA_ASSERT(res == true);
-    nnTextView view;
-    view.draw(&mn, nullptr);
 }

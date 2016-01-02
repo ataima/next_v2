@@ -73,8 +73,8 @@ void test_miniXml_class::test1(void)
     _STOP();
 
     miniXmlNode root(X("ROOT"), (XCHAR*)X(""));
-    miniXmlNode* child1=root.add(X("child1"), (XCHAR*)X("1000"));
-    miniXmlNode* child2=child1->add(X("child2"), (XCHAR*)X("2000"));
+    miniXmlNode* child1=dynamic_cast<miniXmlNode*>(root.add(X("child1"), (XCHAR*)X("1000")));
+    miniXmlNode* child2=dynamic_cast<miniXmlNode*>(child1->add(X("child2"), (XCHAR*)X("2000")));
     root.print(stdout);
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
@@ -90,8 +90,8 @@ void test_miniXml_class::test2(void)
     _STOP();
 
     miniXmlNode root(X("ROOT"), (XCHAR*)"");
-    miniXmlNode* child1 = root.add(X("child1"),(XCHAR*) X("1000"));
-    miniXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
+    IXmlNode* child1 = root.add(X("child1"),(XCHAR*) X("1000"));
+    IXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
     root.print(stdout);
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
@@ -128,11 +128,11 @@ void test_miniXml_class::test4(void)
     _STOP();
 
     miniXmlNode root(X("ROOT"), (XCHAR*)"");
-    miniXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
-    miniXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
-    miniXmlNode* child3 = root.add(X("child3"), (XCHAR*)X("3000"));
-    miniXmlNode* child4 = root.add(X("child4"), (XCHAR*)X("4000"));
-    miniXmlNode* child5 = root.add(X("child5"), (XCHAR*)X("5000"));
+    IXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
+    IXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
+    IXmlNode* child3 = root.add(X("child3"), (XCHAR*)X("3000"));
+    IXmlNode* child4 = root.add(X("child4"), (XCHAR*)X("4000"));
+    IXmlNode* child5 = root.add(X("child5"), (XCHAR*)X("5000"));
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
     CA_ASSERT(root.getNext() == nullptr);
@@ -160,11 +160,11 @@ void test_miniXml_class::test5(void)
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     miniXmlNode root(X("ROOT"), (XCHAR*)"");
-    miniXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
-    miniXmlNode* child2 = root.add(X("child1.child2"), (XCHAR*)X("2000"));
-    miniXmlNode* child3 = root.add(X("child1.child2.child3"), (XCHAR*)X("3000"));
-    miniXmlNode* child4 = root.add(X("child1.child2.child3.child4"), (XCHAR*)X("4000"));
-    miniXmlNode* child5 = root.add(X("child1.child2.child3.child4.child5"), (XCHAR*)X("5000"));
+    IXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
+    IXmlNode* child2 = root.add(X("child1.child2"), (XCHAR*)X("2000"));
+    IXmlNode* child3 = root.add(X("child1.child2.child3"), (XCHAR*)X("3000"));
+    IXmlNode* child4 = root.add(X("child1.child2.child3.child4"), (XCHAR*)X("4000"));
+    IXmlNode* child5 = root.add(X("child1.child2.child3.child4.child5"), (XCHAR*)X("5000"));
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
     CA_ASSERT(root.getNext() == nullptr);
@@ -195,8 +195,8 @@ void test_miniXml_class::test6(void)
     _STOP();
 
     miniXmlNode root(X("ROOT"), (XCHAR*)X("1000"));
-    miniXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
-    miniXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
+    IXmlNode* child1 = root.add(X("child1"), (XCHAR*)X("1000"));
+    IXmlNode* child2 = root.add(X("child2"), (XCHAR*)X("2000"));
     CA_ASSERT(root.getParent() == nullptr);
     CA_ASSERT(root.getChild() == child1);
     CA_ASSERT(root.getNext() == nullptr);

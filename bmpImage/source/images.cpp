@@ -1555,7 +1555,7 @@ bool bmpImage::copyFromFile(const XCHAR *name)
         std::string sname;
 #ifdef _UNICODE
         std::wstring_convert<std::codecvt_utf8_utf16<XCHAR>,XCHAR> convert;
-        std::string sname = convert.to_bytes(name);
+        sname = convert.to_bytes(name);
 #else
         sname=name;
 #endif

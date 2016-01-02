@@ -98,7 +98,7 @@ void MainWindow::newFile()
 #ifdef _UNICODE
         path+="/conf_utf16.xml";
 #else
-        path+="/conf_ut8.xml";
+        path+="/conf_utf8.xml";
 #endif
         STRING conf=path.FROMQSTRING();
         client=n2app->createObjects(conf);

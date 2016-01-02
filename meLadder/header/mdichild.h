@@ -92,6 +92,7 @@ public:
     void paste(void);
     void cut(void);
     void copy(void);
+    static void updateViewEventRequest(MdiChild * dest);
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 private slots:

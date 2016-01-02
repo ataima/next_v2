@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include "n2drawmanager.h"
 #include <iostream>
-#include <vector>
 #include "n2miniXml.h"
-#include <stdarg.h> 
+#include <stdarg.h>
+#include "n2draw.h"
+#include "n2utoatou.h"
+#include "n2exception.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -32,7 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 nnObjManager::nnObjManager(int x, int y)
     : v_width(x), v_height(y),
-    mask_width(0), mask_height(0)
+      mask_width(0), mask_height(0)
 {
     computeMask();
 }
@@ -144,42 +146,45 @@ InnObj * nnObjManager::outObj(int x, int y)
     return obj;
 }
 
-bool nnObjManager::addCoil(int x, nnObjCoil * obj)
+bool nnObjManager::addCoil(int x, nnObjCoil *obj)
 {
     bool res = false;
-    if (obj->getContext() == objCoil)
+    if(obj!=nullptr)
     {
-        if (getObj(x, v_height-1) == nullptr)
+        if (obj->getContext() == objCoil)
         {
-            int i,fp;
-            // y pos is relative :
-            // coil pos = y-1, for first empty position to y-1 wire to connect
-            // find first empty cell
-            for (i = 0; i < v_height-1; i++)
-                if (getObj(x, i) == nullptr)break;
-            for (; i < v_height-1; i++)
+            if (getObj(x, v_height-1) == nullptr)
             {
-                nnObjWire *wire = new nnObjWire(eWire::wireVertical);
-                res = addWire(x, i, wire);
-                if (!res)break;
-            }
-            if (res)
-            {
-
-                fp = v_height - 1;
-                hashkey hkey;
-                if (range(x,fp) && obj != nullptr)
+                int i,fp;
+                // y pos is relative :
+                // coil pos = y-1, for first empty position to y-1 wire to connect
+                // find first empty cell
+                for (i = 0; i < v_height-1; i++)
+                    if (getObj(x, i) == nullptr)break;
+                for (; i < v_height-1; i++)
                 {
-                    if (genHashKey(x, fp, hkey)) {
-                        hashObjTable::iterator it = find(hkey);
-                        if (it == end()) {
-                            std::pair<hashkey, InnObj *> p(hkey, obj);
-                            insert(p);
-                            obj->setXpos(x);
-                            obj->setYpos(fp);
-                            res = linkObj(x, fp, obj);
-                            undo_redo_unit u(eAction::removeObjAction, x, fp, nullptr);
-                            managerUR.record(u);
+                    nnObjWire *wire = new nnObjWire(eWire::wireVertical);
+                    res = addWire(x, i, wire);
+                    if (!res)break;
+                }
+                if (res)
+                {
+
+                    fp = v_height - 1;
+                    hashkey hkey;
+                    if (range(x,fp) && obj != nullptr)
+                    {
+                        if (genHashKey(x, fp, hkey)) {
+                            hashObjTable::iterator it = find(hkey);
+                            if (it == end()) {
+                                std::pair<hashkey, InnObj *> p(hkey, obj);
+                                insert(p);
+                                obj->setXpos(x);
+                                obj->setYpos(fp);
+                                res = linkObj(x, fp, obj);
+                                undo_redo_unit u(eAction::removeObjAction, x, fp, nullptr);
+                                managerUR.record(u);
+                            }
                         }
                     }
                 }
@@ -214,24 +219,27 @@ bool nnObjManager::addWire(int x, int y, InnObj * obj)
     return res;
 }
 
-bool nnObjManager::addContact(int x, int y, nnObjContact * obj)
+bool nnObjManager::addContact(int x, int y, nnObjContact *obj)
 {
     bool res = false;
-    if (obj->getContext() == objContact)
+    if(obj!=nullptr)
     {
-        hashkey hkey;
-        if (rangeContact(x, y) && obj != nullptr)
+        if (obj->getContext() == objContact)
         {
-            if (genHashKey(x, y, hkey)) {
-                hashObjTable::iterator it = find(hkey);
-                if (it == end()) {
-                    std::pair<hashkey, InnObj *> p(hkey, obj);
-                    insert(p);
-                    obj->setXpos(x);
-                    obj->setYpos(y);
-                    res = linkObj(x, y, obj);
-                    undo_redo_unit u(eAction::removeObjAction, x, y, nullptr);
-                    managerUR.record(u);
+            hashkey hkey;
+            if (rangeContact(x, y) && obj != nullptr)
+            {
+                if (genHashKey(x, y, hkey)) {
+                    hashObjTable::iterator it = find(hkey);
+                    if (it == end()) {
+                        std::pair<hashkey, InnObj *> p(hkey, obj);
+                        insert(p);
+                        obj->setXpos(x);
+                        obj->setYpos(y);
+                        res = linkObj(x, y, obj);
+                        undo_redo_unit u(eAction::removeObjAction, x, y, nullptr);
+                        managerUR.record(u);
+                    }
                 }
             }
         }
@@ -293,31 +301,31 @@ bool nnObjManager::save(const STRING & name)
     {
         UtoA toA(name.c_str());
 #ifdef _MSC_VER
-            FILE *out = FOPEN(toA.utf8(),"w+");
+        FILE *out = FOPEN(toA.utf8(),"w+");
 #else
-            FILE *out = FOPEN(toA.utf8(), "w+");
+        FILE *out = FOPEN(toA.utf8(), "w+");
 #endif
-            if (out != NULL)
+        if (out != NULL)
+        {
+            miniXmlNode root(X("next_v2"), (XCHAR *)X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));
+            root.add(X("Wire_UID"), nnObjConn::getUI());
+            root.add(X("Width"), v_width);
+            root.add(X("Height"), v_height);
+            root.add(X("Size"), (int)(size()) + 1);
+            hashObjTable::iterator it = begin();
+            hashObjTable::iterator _end = end();
+            while (it != _end)
             {
-                miniXmlNode root(X("next_v2"), (XCHAR *)X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));
-                root.add(X("Wire_UID"), nnObjConn::getUI());
-                root.add(X("Width"), v_width);
-                root.add(X("Height"), v_height);
-                root.add(X("Size"), (int)(size()) + 1);
-                hashObjTable::iterator it = begin();
-                hashObjTable::iterator _end = end();
-                while (it != _end)
-                {
-                    miniXmlNode *child = root.add(X("Obj_UID_"), ++num_obj, num_obj);
-                    it->second->save(child);
-                    it++;
-                }
-                root.print(out);
-                fclose(out);
-                res=true;
+                IXmlNode *child = root.add(X("Obj_UID_"), ++num_obj, num_obj);
+                it->second->save(child);
+                it++;
             }
+            root.print(out);
+            fclose(out);
+            res=true;
+        }
     }
-return res;
+    return res;
 }
 
 
@@ -328,60 +336,60 @@ bool nnObjManager::load(const STRING & name)
     if (!name.empty())
     {
         removeAll();
-            miniXmlNode root;
-            root.load(name.c_str(), &root);
-            STRING name = root.getName();
-            STRING value = root.getValue();
-            if (name == X("next_v2") && value == X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"))
+        miniXmlNode root;
+        root.load(name.c_str(), &root);
+        STRING name = root.getName();
+        STRING value = root.getValue();
+        if (name == X("next_v2") && value == X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"))
+        {
+            IXmlNode *t = root.find(X("Wire_UID"));
+            if (t != nullptr)
             {
-                miniXmlNode *t = root.find(X("Wire_UID"));
-                if (t != nullptr)
+                nnObjConn::setUI(t->getLong());
+            }
+            t = root.find(X("Width"));
+            if (t != nullptr)
+            {
+                v_width = t->getLong();
+            }
+            t = root.find(X("Height"));
+            if (t != nullptr)
+            {
+                v_height = t->getLong();
+            }
+            computeMask();
+            IXmlNode *size = root.find(X("Size"));
+            if (size != nullptr)
+            {
+                int i, numObj = size->getLong();
+                for (i = 1; i < numObj; i++)
                 {
-                    nnObjConn::setUI(t->getLong());
-                }
-                t = root.find(X("Width"));
-                if (t != nullptr)
-                {
-                    v_width = t->getLong();
-                }
-                t = root.find(X("Height"));
-                if (t != nullptr)
-                {
-                    v_height = t->getLong();
-                }
-                computeMask();
-                miniXmlNode *size = root.find(X("Size"));
-                if (size != nullptr)
-                {
-                    int i, numObj = size->getLong();
-                    for (i = 1; i < numObj; i++)
+                    IXmlNode *child = root.find(X("Obj_UID_"), i);
+                    if (child != nullptr)
                     {
-                        miniXmlNode *child = root.find(X("Obj_UID_"), i);
-                        if (child != nullptr)
+                        if (i == child->getLong())
                         {
-                            if (i == child->getLong())
+                            IXmlNode *spec = child->find(X("Custom"));
+                            if (spec != nullptr)
                             {
-                                miniXmlNode *spec = child->find(X("Custom"));
-                                if (spec != nullptr)
+                                IXmlNode *context = child->find(X("Context"));
+                                if (context != nullptr)
                                 {
-                                    miniXmlNode *context = child->find(X("Context"));
-                                    if (context != nullptr)
+                                    InnObj *obj = nnObjConn::getObjFromIds((custom_obj)spec->getLong(), (ObjContext)context->getLong());
+                                    if (obj != nullptr)
                                     {
-                                        InnObj *obj = nnObjConn::getObjFromIds((custom_obj)spec->getLong(), (ObjContext)context->getLong());
-                                        if (obj != nullptr)
-                                        {
-                                            obj->load(child);
-                                            addObj(obj->getXpos(), obj->getYpos(), obj);
-                                        }
+                                        obj->load(child);
+                                        addObj(obj->getXpos(), obj->getYpos(), obj);
                                     }
                                 }
                             }
                         }
                     }
                 }
-
             }
-            res=true;
+
+        }
+        res=true;
     }
     return res;
 }
@@ -459,84 +467,80 @@ bool nnObjManager::linkObj(int x, int y, InnObj *obj)
                     if (res)
                         res = neighbourUp->connect(obj);
                 }
-                else
-                    if (!neighbourUp->isComponent() && neighbourDw->isComponent())
-                    {
-                        res = obj->connect(neighbourUp);
-                        if (res)
-                            res = neighbourDw->connect(obj);
-                    }
-                    else
-                        if (neighbourUp->isComponent() && neighbourDw->isComponent())
-                        {
-                            obj->setConnections(nnObjConn::getUI());
-                            res = neighbourUp->connect(obj);
-                            if (res)
-                                res = neighbourDw->connect(obj);
-                        }
-                        else
-                        {
-                            InnObj *w1 = dynamic_cast<InnObj *>(neighbourUp);
-                            InnObj *w2 = dynamic_cast<InnObj *>(neighbourDw);
-                            wireConnectionException *pe= new wireConnectionException(w1->getConnections(), w2->getConnections());
-                            throw (pe);
-                        }
-            }
-            else
-                if (neighbourUp != nullptr)
+                else if (!neighbourUp->isComponent() && neighbourDw->isComponent())
                 {
-                    if (neighbourUp->isComponent())
-                    {
-                        if (obj->getConnections().empty())
-                        {
-                            obj->setConnections(nnObjConn::getUI());
-                        }
-                        res = neighbourUp->connect(obj);
-                        if (res)
-                            res = obj->connect(neighbourUp);
-                    }
-                    else
-                    {
-                        obj->connect(neighbourUp);
-                    }
+                    res = obj->connect(neighbourUp);
+                    if (res)
+                        res = neighbourDw->connect(obj);
+                }
+                else if (neighbourUp->isComponent() && neighbourDw->isComponent())
+                {
+                    obj->setConnections(nnObjConn::getUI());
+                    res = neighbourUp->connect(obj);
+                    if (res)
+                        res = neighbourDw->connect(obj);
                 }
                 else
-                    if (neighbourDw != nullptr)
+                {
+                    InnObj *w1 = dynamic_cast<InnObj *>(neighbourUp);
+                    InnObj *w2 = dynamic_cast<InnObj *>(neighbourDw);
+                    wireConnectionException *pe= new wireConnectionException(w1->getConnections(), w2->getConnections());
+                    throw (pe);
+                }
+            }
+            else if (neighbourUp != nullptr)
+            {
+                if (neighbourUp->isComponent())
+                {
+                    if (obj->getConnections().empty())
                     {
-                        if (neighbourDw->isComponent())
-                        {
-                            if (obj->getConnections().empty())
-                            {
-                                obj->setConnections(nnObjConn::getUI());
-                            }
-                            res = neighbourDw->connect(obj);
-                            if (res)
-                                res = obj->connect(neighbourDw);
-                        }
-                        else
-                        {
-                            obj->connect(neighbourDw);
-                        }
+                        obj->setConnections(nnObjConn::getUI());
                     }
-                    else
+                    res = neighbourUp->connect(obj);
+                    if (res)
+                        res = obj->connect(neighbourUp);
+                }
+                else
+                {
+                    obj->connect(neighbourUp);
+                }
+            }
+            else if (neighbourDw != nullptr)
+            {
+                if (neighbourDw->isComponent())
+                {
+                    if (obj->getConnections().empty())
                     {
-                        //up & down =null 
-                        // check for horizzontal connection on wire
-                        InnObj *neighbourLeft = nullptr;
-                        InnObj *neighbourRight = nullptr;
-                        if (x > 0)
-                        {
-                            neighbourLeft = getObj(x - 1, y);
-                        }
-                        if (x + 1 < v_width)
-                        {
-                            neighbourRight = getObj(x + 1, y);
-                        }
-                        if (neighbourLeft != nullptr && !neighbourLeft->isComponent())
-                            res = obj->connect(neighbourLeft);
-                        if (neighbourRight != nullptr && !neighbourRight->isComponent())
-                            res = obj->connect(neighbourRight);
+                        obj->setConnections(nnObjConn::getUI());
                     }
+                    res = neighbourDw->connect(obj);
+                    if (res)
+                        res = obj->connect(neighbourDw);
+                }
+                else
+                {
+                    obj->connect(neighbourDw);
+                }
+            }
+            else
+            {
+                //up & down =null
+                // check for horizzontal connection on wire
+                InnObj *neighbourLeft = nullptr;
+                InnObj *neighbourRight = nullptr;
+                if (x > 0)
+                {
+                    neighbourLeft = getObj(x - 1, y);
+                }
+                if (x + 1 < v_width)
+                {
+                    neighbourRight = getObj(x + 1, y);
+                }
+                if (neighbourLeft != nullptr && !neighbourLeft->isComponent())
+                    res = obj->connect(neighbourLeft);
+                if (neighbourRight != nullptr && !neighbourRight->isComponent())
+                    res = obj->connect(neighbourRight);
+            }
             res = true;
         }
 
@@ -968,18 +972,13 @@ bool nnObjManager::Resize(int w, int h)
     return res;
 }
 
-bool nnObjManager::readConfiguration(miniXmlNode & node)
-{
-    (node);
-    return true;
-}
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
-nnObjUndoRedo::nnObjUndoRedo(IManager *_manager) 
+nnObjUndoRedo::nnObjUndoRedo(IManager *_manager)
     :manager(_manager),
-    undoredoMode(false)
+     undoredoMode(false)
 {
 
 }
@@ -1102,4 +1101,10 @@ void nnObjUndoRedo::clearRedoObjs(void)
         }
         redoObjs.clear();
     }
+}
+
+
+bool nnObjManager::readConfiguration(IXmlNode *node)
+{
+    return true;
 }

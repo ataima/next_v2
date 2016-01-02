@@ -30,37 +30,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "images.h"
 #include "n2imagemanager.h"
+#include "n2interfaces.h"
 
 
 
-// interface
-class IView
-{
-public:
-    virtual bool readConfiguration(miniXmlNode *node) = 0;
-    virtual bool draw(IManager *manager, void * context) = 0;
-    virtual bool createMainBitmap(int w, int h) = 0;
-    virtual bmpImage & getMainBitmap(void) = 0;
-    virtual bool remapMainBitmap(int w,int h)=0;
-    virtual ~IView(){}
-};
 
-
-
-class nnTextView
-    :public IView
-{
-    bmpImage image;
-public:
-    bool draw(IManager * manager, void * context);
-    bool readConfiguration(miniXmlNode *node) { (node);return false; }
-    bool createMainBitmap(int w, int h) { (h);(w);return true; }
-    bool remapMainBitmap(int w,int h){(h);(w);return true;}
-    virtual bmpImage & getMainBitmap(void) { return image; }
-};
-
-
-class IViewGlue;
 
 class nnView
     :public IView
@@ -72,7 +46,7 @@ public:
     nnView(IImageManager *_images);
     ~nnView();
     bool draw(IManager * manager, void * context);
-    bool readConfiguration(miniXmlNode *node);
+    bool readConfiguration(IXmlNode *node);
     bool createMainBitmap(int w, int h);
     inline bmpImage & getMainBitmap(void) { return page; }
     bool remapMainBitmap(int w,int h);

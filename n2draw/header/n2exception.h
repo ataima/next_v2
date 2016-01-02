@@ -26,18 +26,10 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-#include <string>
-#include <stdexcept>
-#include <sstream>
-#include <vector>
-#include <string.h>
-#include <algorithm>
+#include "n2interfaces.h"
 #include "n2utoatou.h"
-#include "n2miniXml.h"
 
-#ifndef _MSC_VER
-#include <strings.h>
-#endif
+
 
 class n2exception
     :public std::runtime_error
@@ -60,13 +52,13 @@ public:
 };
 
 
-class appManagerConfigureFileMissingNodeException
+class xmlConfigurationNodeException
     :public n2exception
 {
     STRING  node;
 public:
-    explicit appManagerConfigureFileMissingNodeException(STRING  _node) throw()
-        :n2exception("appManagerConfigureFileMissingNodeException"), node(_node)
+    explicit xmlConfigurationNodeException(STRING  _node) throw()
+        :n2exception("xmlConfigurationNodeException"), node(_node)
     {
 
     }
@@ -308,40 +300,50 @@ public:
 };
 
 
-// no conf phy view
-class phyViewConfigurationException
-    :public n2exception
-{
-    STRING  node;
-public:
-    explicit phyViewConfigurationException(const XCHAR *_node) throw()
-        :n2exception("phyGlueConfigurationException"), node(_node) {}
 
+
+
+
+class xmlBadFormatException
+        :public n2exception
+{
+public:
+    explicit xmlBadFormatException(void) throw()
+        :n2exception("xmlBadFormatException") {}
+    char const* msg()
+    {
+        const char *info="exception:xmlBadFormatException\n On unicode the xml must be in LITTLE ENDIAN mode";
+        int len=strlen(info);
+        char *buff=new char [len+2];
+        memcpy(buff,info,len);
+        buff[len]='\0';
+        return info;
+    }
 };
 
 
-// no conf phy view
-class phyGlueConfigurationException
+
+class extHandlerException
     :public n2exception
 {
-    STRING  node;
+    std::string  name;
 public:
-    explicit phyGlueConfigurationException(const XCHAR *_node) throw()
-        :n2exception("phyGlueConfigurationException"),node(_node) {}
-
+    explicit  extHandlerException(const char*  handlerName) throw()
+        :n2exception("extHandlerException"), name(handlerName) {}
+    char const* msg()
+    {
+        std::stringstream ss;
+        const char *b_msg=n2exception::msg();
+        ss<<"exception:"<<b_msg<<std::endl<<" An exception is occurred on requested handler:"<<name<<std::endl;
+        delete b_msg;
+        int size=ss.str().size();
+        char *buff=new char[size+2];
+        memcpy(buff,ss.str().c_str(),size);
+        buff[size]='\0';
+        return buff;
+    }
 };
 
-
-// no conf phy view
-class commanderConfigurationException
-    :public n2exception
-{
-    STRING  node;
-public:
-    explicit commanderConfigurationException(const XCHAR *_node) throw()
-        :n2exception("commanderConfigurationException"),node(_node) {}
-
-};
 
 #endif // N2EXCEPTION
 

@@ -35,6 +35,6 @@ struct cpu_tag {
 };
 
 
-
 typedef struct cpu_tag merlinoVCPU, *pMerlinoVCPU;
+
 #endif

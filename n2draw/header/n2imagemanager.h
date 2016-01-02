@@ -28,28 +28,11 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-#include <string>
-#include <vector>
 #include "images.h"
-#include "n2miniXml.h"
-#include <map>
-#include "n2exception.h"
+#include "n2interfaces.h"
 
 
 
-typedef  std::map<int, STRING> objImageList;
-
-
-class IImageManager
-{
-public:
-    virtual STRING  getDefaulPath(void) const = 0;
-    virtual bool readConfiguration(miniXmlNode *node) = 0;
-    virtual bool loadImages(int w, int h) = 0;
-    virtual const listImage * getImageList(void) = 0;
-    virtual const  objImageList * getAvailObj(void) = 0;
-    virtual ~IImageManager(){}
-};
 
 
 
@@ -63,13 +46,12 @@ class nnImageManager
 public:
     nnImageManager();
     ~nnImageManager();
-    inline  STRING  getDefaulPath(void) const { return path; };
-    bool readConfiguration(miniXmlNode *node);
+    inline  STRING  getDefaulPath(void) const { return path; }
+    bool readConfiguration(IXmlNode *node);
     bool loadImages(int w, int h);
     inline  const listImage * getImageList(void) { return &allImages; }
     inline  const objImageList * getAvailObj(void) { return &availObj; }
 };
 
 
-// no conf images 
 #endif

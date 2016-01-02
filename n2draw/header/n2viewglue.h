@@ -27,75 +27,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 
-#include "n2draw.h"
-#include "n2view.h"
 #include "images.h"
 #include "n2imagemanager.h"
+#include "n2interfaces.h"
 
 
 
-typedef enum tag_mouse_button_def
-{
-    nn_m_button_unknow = 0,
-    nn_m_button_left = 1,
-    nn_m_button_right = 2,
-    nn_m_button_middle = 4
-} nn_mouse_buttons;
-
-
-class miniXmlNode;
-
-class IViewGlue
-{
-public:
-    virtual nnPoint getCoordPhy(nnPoint & logPoint) = 0;
-    virtual nnPoint getCoordPhy(int x,int y) = 0;
-    virtual nnPoint getMirrorCoordPhy(int x, int y) = 0;
-    virtual nnPoint getCoordLog(nnPoint & phyPoint) = 0;
-    virtual bool readConfiguration(miniXmlNode & node) = 0;
-    virtual bool selectStart(int xpos, int ypos) = 0;
-    virtual bool selectStop(int xpos1, int ypos1) = 0;
-    virtual bool selectStart(nnPoint pos) = 0;
-    virtual bool selectStop(nnPoint pos1) = 0;
-    virtual bool select(nnPoint pos1, nnPoint pos2) = 0;
-    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
-    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
-    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
-    virtual bool handlerScrollHorz(int pos) = 0;
-    virtual bool handlerScrollVert(int pos) = 0;
-    virtual bool handlerEscapeButton(bool shift,bool ctrl,bool alt,nnPoint &start, nnPoint & stop) = 0;
-    virtual bool handlerHomeButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
-    virtual bool handlerEndButton(bool shitf,bool ctrl,bool alt,nnPoint &pos)=0;
-    virtual bool handlerPageUpButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
-    virtual bool handlerPageDownButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
-    virtual bool handlerLeftButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
-    virtual bool handlerRightButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
-    virtual bool handlerUpButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
-    virtual bool handlerDownButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
-    virtual bool handlerRequestCommand(nnPoint phyPoint)=0;
-    virtual bool unselect() = 0;
-    virtual bool getSelectAreaPhy(int & width, int & height) = 0;
-    virtual bool getSelectStartPhy(int & x, int & y) = 0;
-    virtual bool isStartValid(void) = 0;
-    virtual bool isStopValid(void) = 0;
-    virtual IManager *getManager(void) = 0;
-    virtual void setManager(IManager *mn) = 0;
-    virtual bool getSelectArea(nnPoint &start, nnPoint &stop) = 0;
-    virtual bmpImage & getDraw(void) = 0;
-    virtual bool updateDraw(void) = 0;
-    virtual nnPoint getOffsetView(void) = 0;
-    virtual nnPoint getMap(void) = 0;
-    virtual bool resize(int w, int h) = 0;
-    virtual bool needScrollBarHorz(void)=0;
-    virtual bool needScrollBarVert(void)=0;
-    virtual bool isSelectAreaPhyVisible(nnRect & result,nnPoint & start,nnPoint & stop)=0;
-    virtual int getScrollableHorzSize(void)=0;
-    virtual int getScrollableVertSize(void)=0;
-    virtual int getPageWidth(void)=0;
-    virtual int getPageHeight(void)=0;
-    virtual nnPoint getPageSize(void)=0;
-    virtual ~IViewGlue(){}
-};
 
 
 class nnViewGlue
@@ -123,7 +60,9 @@ class nnViewGlue
     IManager  *manager;
     IImageManager *images;
     IView     *view;
+    IToolView *toolview;
     status_select status;
+    bool show_cmd;
     
 
 public:
@@ -133,7 +72,7 @@ public:
     nnPoint getCoordPhy(int x, int y);
     nnPoint getMirrorCoordPhy(int x, int y);
     nnPoint getCoordLog(nnPoint & phyPoint);
-    bool readConfiguration(miniXmlNode & node);
+    bool readConfiguration(IXmlNode * node);
     bool selectStart(int xpos, int ypos);
     bool selectStop(int xpos1, int ypos1);
     bool selectStart(nnPoint pos);
@@ -146,7 +85,7 @@ public:
     bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
     bool handlerScrollHorz(int pos);
     bool handlerScrollVert(int pos);
-    bool handlerRequestCommand(nnPoint phyPoint);
+    bool handlerRequestCommand(nnPoint phyPoint, int &command);
     bool handlerEscapeButton(bool shift,bool ctrl,bool alt,nnPoint &start, nnPoint & stop);
     bool handlerHomeButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
     bool handlerEndButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
@@ -175,6 +114,8 @@ public:
     inline int getPageWidth(void) { return phy_Size.x / const_Size.x;  }
     inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
     inline nnPoint getPageSize(void) { return phy_Size / const_Size; }
+    bool addExtHandler(handler_exec_view type,
+              const char *_name,extHandler & _hook,void *unkObj);
 
 private:
     bool getVisibleArea(nnRect & area);

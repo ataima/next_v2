@@ -125,36 +125,28 @@ void miniXmlNode::clearNode(void)
 /// xPath for crossing from iinternal child nodes
 /// path separator is assumend the point '.'
 
-miniXmlNode *miniXmlNode::add(const XCHAR  *name, int idx, int value)
+IXmlNode *miniXmlNode::add(const XCHAR  *name, int idx, int value)
 {
-    XCHAR buff1[BUFFLENGTH];
-    XCHAR buff[BUFFLENGTH];
-    xsprintf(buff1, X("%s%d"), name, idx);
-    xsprintf(buff, X("%d"), value);
-    //SSTREAM ss1;
-    //SSTREAM ss2;
-    //ss1<<name<<idx;
-    //ss2<<value;
-    //return add(ss1.str().c_str(), const_cast<XCHAR *>(ss2.str().c_str()));
-    return add(buff, buff1);
+    SSTREAM ss1;
+    SSTREAM ss2;
+    ss1<<name<<idx;
+    ss2<<value;
+    return add(ss1.str().c_str(), const_cast<XCHAR *>(ss2.str().c_str()));
 }
 
 
-miniXmlNode * miniXmlNode::add(const XCHAR *name, int value)
+IXmlNode * miniXmlNode::add(const XCHAR *name, int value)
 {
-    XCHAR buff[BUFFLENGTH];
     if (name != nullptr)
     {
-        //SSTREAM ss;
-        //ss<<value;
-        xsprintf(buff, X("%d"), value);
-        //return add(name, const_cast <XCHAR *>(ss.str().c_str()));
-        return add(name, buff);
+        SSTREAM ss;
+        ss<<value;
+        return add(name, const_cast <XCHAR *>(ss.str().c_str()));
     }
     return nullptr;
 }
 
-miniXmlNode * miniXmlNode::add(const XCHAR *name, XCHAR *value)
+IXmlNode * miniXmlNode::add(const XCHAR *name, XCHAR *value)
 {
     // name as Xpath = A.B.C. es test.suite.doc
     const XCHAR *ptr = STRSTR(name,STRLEN(name),X('.'));
@@ -184,7 +176,7 @@ miniXmlNode * miniXmlNode::add(const XCHAR *name, XCHAR *value)
             memcpy(buff, name, sizeof(XCHAR)*offset);
             buff[offset] = X('\0');
         }
-        miniXmlNode *it = add(const_cast<const XCHAR *> (buff),nullptr);
+        IXmlNode *it = add(const_cast<const XCHAR *> (buff),nullptr);
         return it->add(++ptr, value);
     }
 }
@@ -271,12 +263,9 @@ miniXmlNode * miniXmlNode::findNext(const XCHAR *_name)
 
 miniXmlNode *miniXmlNode::find(const XCHAR *name, int idx)
 {
-    XCHAR buff1[BUFFLENGTH];
-    //SSTREAM ss;
-    xsprintf(buff1, X("%s%d"), name, idx);
-    //ss<<name<<idx;
-    //return find(ss.str().c_str());
-    return find(buff1);
+    SSTREAM ss;
+    ss<<name<<idx;
+    return find(ss.str().c_str());
 }
 
 miniXmlNode * miniXmlNode::find(const XCHAR *_name)
@@ -340,11 +329,9 @@ void miniXmlNode::print(FILE *out)
         setlocale(LC_ALL, "");
 #endif
         // name not set ->only container
-        xsprintf(buff, X("<%ws>\n"), name);
-        //SSTREAM ss;
-        //ss<<X("<")<<name<<X(">\n");
-        //fwrite(ss.str().c_str(), ss.str().size(), sizeof(XCHAR), out);
-        fwrite(buff, STRLEN(buff), sizeof(XCHAR), out);
+        SSTREAM ss;
+        ss<<X("<")<<name<<X(">\n");
+        fwrite(ss.str().c_str(), ss.str().size(), sizeof(XCHAR), out);
         /* No replace
         if (value != nullptr)
         {
@@ -389,27 +376,22 @@ void miniXmlNode::print(FILE *out)
         */
         if (value != nullptr  && STRLEN(value) > 0)
         {
-            //SSTREAM ss;
-            //ss<<value<<X("\n");
-            xsprintf(buff, X("%ws\n"), value);
-            //fwrite(ss.str().c_str(), ss.str().size(), sizeof(XCHAR), out);
-            fwrite(buff, STRLEN(buff), sizeof(XCHAR), out);
+            SSTREAM ss;
+            ss<<value<<X("\n");
+            fwrite(ss.str().c_str(), ss.str().size(), sizeof(XCHAR), out);
         }
     }
     if (child != nullptr)
         child->print(out);
     if (name != nullptr)
     {
-        xsprintf(buff, X("</%ws>\n"), name);
-        //SSTREAM ss;
-        //ss<<X("<")<<name<<X(">\n");
+        SSTREAM ss;
+        ss<<X("</")<<name<<X(">\n");
         size_t t,len=BUFFLENGTH-1;
-        //if(ss.str().size()<len)
-        //    len=ss.str().size();
-        t=STRLEN(buff);
+        t=ss.str().size();
         if(t<len)
             len=t;
-        //memcpy(buff,ss.str().c_str(),len);
+        memcpy(buff,ss.str().c_str(),len);
         for (size_t i = 0; i < len; i++)
         {
             if (buff[i] == '>')
@@ -436,6 +418,7 @@ bool miniXmlNode::load(const XCHAR *file_in, miniXmlNode *root)
         miniXmlParse parser(file_in, root);
         res = parser.parse();
     }
+    root->print(stdout);
     return res;
 }
 
@@ -491,33 +474,6 @@ void miniXmlNode::setValue(XCHAR *_value)
 }
 
 
-int  miniXmlNode::xsprintf(XCHAR *buff, const XCHAR* format, ...)
-{
-    int Result;
-    va_list ArgList;
-#ifdef _UNICODE        
-#ifdef _MSC_VER
-    __crt_va_start(ArgList, format);
-    Result = _vsnwprintf_s_l(buff, BUFFLENGTH, BUFFLENGTH - 1, format, NULL, ArgList);
-    __crt_va_end(ArgList);
-#else
-    va_start(ArgList, format);
-    Result = vswprintf(buff, BUFFLENGTH, format, ArgList);
-    va_end(ArgList);
-#endif
-#else
-#ifdef _MSC_VER
-    __crt_va_start(ArgList, format);
-    Result = _vsnprintf_s_l(buff, BUFFLENGTH, BUFFLENGTH - 1, format, NULL, ArgList);
-    __crt_va_end(ArgList);
-#else
-    va_start(ArgList, format);
-    Result = vsnprintf(buff, BUFFLENGTH, format, ArgList);
-    va_end(ArgList);
-#endif
-#endif
-        return Result;
-}
 
 bool swapNode(miniXmlNode *src, miniXmlNode* dst)
 {
@@ -575,13 +531,13 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
             if (fstat(fileno(in), &s) == 0)
 #endif                
             {
-                buff = new XCHAR[s.st_size];
+                buff = new XCHAR[s.st_size/sizeof(XCHAR)];
                 if (buff != nullptr)
                 {
-                    max_size = fread(buff, 1, s.st_size, in);
+                    max_size = fread(buff, sizeof(XCHAR), s.st_size/sizeof(XCHAR), in);
                     if (max_size != 0)
                     {
-                        max_size = s.st_size;
+                        max_size = s.st_size/sizeof(XCHAR);
                         p_index = buff;
                         p_end = &buff[max_size];
                     }
@@ -626,11 +582,28 @@ bool miniXmlParse::parse(void)
     if (buff != nullptr && max_size > 0 && root != nullptr)
     {
         miniXmlNode *current = root;
+        if(p_index!=nullptr)
+        {
+            if(*p_index!=X('<'))
+            {
+            XCHAR p=*p_index;
+            if((int)(p)==0xfffe)
+            {
+                //bad format of xml
+                xmlBadFormatException * e = new xmlBadFormatException();
+                throw(e);
+            }
+            else
+                if((int)(p)==0xfeff)
+                {
+                p_index++;
+                }
+            }
+        }
         bool first = false;
         do
         {
             res = getTokens(&current, &first);
-            root->print(stdout);
         } while (res == true && p_index < p_end);
     }
     return res;
@@ -676,11 +649,11 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
                     }
                     else
                     {                      
-                        *node = (*node)->add(token_name.c_str(), (XCHAR*)token_value.c_str());
+                        *node = dynamic_cast<miniXmlNode*>((*node)->add(token_name.c_str(), (XCHAR*)token_value.c_str()));
                     }
                     while (getTokens(node, firstNode))
                     {
-                        *node = (*node)->getParent();
+                        *node = dynamic_cast<miniXmlNode*>((*node)->getParent());
                     }
                 }
 
@@ -755,9 +728,7 @@ bool miniXmlParse::skipSpaces(void)
             int v=(int)p;
             if ( v < (int)(' ') )
                 return true;
-            if(v==65279)
-                return true;
-            if(v==65535)
+            if(v==0xfffe)
                 return true;
             return false;
         }

@@ -2,6 +2,7 @@
 #include "images.h"
 #include "n2draw.h"
 #include "n2imagemanager.h"
+#include "n2exception.h"
 
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -28,23 +29,24 @@ nnImageManager::~nnImageManager()
 //#define getcwd  _getcwd
 #endif
 
-bool nnImageManager::readConfiguration(miniXmlNode * node)
+bool nnImageManager::readConfiguration(IXmlNode *node)
 {
     bool res = false;
     long offset;
     STRING filename;
-    miniXmlNode *conf = node->find(X("IMAGES"));
-
+    IXmlNode *conf = node->find(X("IMAGES"));
     if (conf)
     {
-        miniXmlNode *xpath = conf->find(X("PATH"));
+        IXmlNode *xpath = conf->find(X("PATH"));
         if (xpath)
         {
             char buff[_MAX_PATH];
             const XCHAR *v = xpath->getValue();
             if(getcwd(buff,_MAX_PATH))
             {
-                path=buff;
+                std::string cpath(buff);
+                AtoU toU(cpath);
+                path=toU.utf16();
                 path+=X("/");
                 path+=v;
                 path+=X("/");
@@ -54,16 +56,16 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
                 path=v;
             }
         }
-        miniXmlNode *wire = conf->find(X("WIRE"));
+        IXmlNode *wire = conf->find(X("WIRE"));
         if (wire)
         {
-            miniXmlNode *t = wire->find(X("OBJ"));
+            IXmlNode *t = wire->find(X("OBJ"));
             if (t)
             {
                 do {
                     filename.clear();
                     offset = -1;
-                    miniXmlNode *e = t->find(X("VALUE"));
+                    IXmlNode *e = t->find(X("VALUE"));
                     if (e)
                     {
                         offset = nnObjWire::wireStringToEnum(e->getValue());
@@ -96,16 +98,16 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
             imagesConfigurationNoWireException *pe=new imagesConfigurationNoWireException();
             throw (pe);
         }
-        miniXmlNode *contact = conf->find(X("CONTACT"));
+        IXmlNode *contact = conf->find(X("CONTACT"));
         if (contact)
         {
-            miniXmlNode *t = contact->find(X("OBJ"));
+            IXmlNode *t = contact->find(X("OBJ"));
             if (t)
             {
                 do {
                     filename.clear();
                     offset = -1;
-                    miniXmlNode *e = t->find(X("VALUE"));
+                    IXmlNode *e = t->find(X("VALUE"));
                     if (e)
                     {
                         offset = nnObjComponent::getCustomizationFromName(e->getValue());
@@ -138,16 +140,16 @@ bool nnImageManager::readConfiguration(miniXmlNode * node)
             imagesConfigurationNoContactException *pe=new imagesConfigurationNoContactException();
             throw (pe);
         }
-        miniXmlNode *coil = conf->find(X("COIL"));
+        IXmlNode *coil = conf->find(X("COIL"));
         if (coil)
         {
-            miniXmlNode *t = coil->find(X("OBJ"));
+            IXmlNode *t = coil->find(X("OBJ"));
             if (t)
             {
                 do {
                     filename.clear();
                     offset = -1;
-                    miniXmlNode *e = t->find(X("VALUE"));
+                    IXmlNode *e = t->find(X("VALUE"));
                     if (e)
                     {
                         offset = nnObjComponent::getCustomizationFromName(e->getValue());

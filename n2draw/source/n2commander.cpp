@@ -1,6 +1,7 @@
 #include "n2miniXml.h"
 
 #include "n2commander.h"
+#include "n2exception.h"
 
 
 nnCommander::nnCommander()
@@ -14,25 +15,24 @@ nnCommander::~nnCommander()
 }
 
 
-bool nnCommander::readConfiguration(miniXmlNode &node)
+bool nnCommander::readConfiguration(IXmlNode *conf)
 {
-    int numItem;
     bool res = false;
-    miniXmlNode *conf = node.find(X("COMMANDER"));
-    if (conf)
+    if(conf)
     {
+        int numItem;
         // size of single buttons
-        miniXmlNode *t = conf->find(X("DIM"));
+        IXmlNode *t = conf->find(X("DIM"));
         if (t)
         {
-            miniXmlNode *v = t->find(X("WIDTH"));
+            IXmlNode *v = t->find(X("WIDTH"));
             if(v)
             {
                 const_Size.x=v->getLong();
             }
             else
             {
-                commanderConfigurationException *pe = new commanderConfigurationException(X("WIDTH"));
+                xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("WIDTH"));
                 throw (pe);
             }
             v = t->find(X("HEIGHT"));
@@ -42,13 +42,13 @@ bool nnCommander::readConfiguration(miniXmlNode &node)
             }
             else
             {
-                commanderConfigurationException *pe = new commanderConfigurationException(X("HEIGHT"));
+                xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("HEIGHT"));
                 throw (pe);
             }
         }
         else
         {
-            commanderConfigurationException *pe = new commanderConfigurationException(X("DIM"));
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("DIM"));
             throw (pe);
         }
         t=conf->find(X("ITEM_NUM"));
@@ -58,7 +58,7 @@ bool nnCommander::readConfiguration(miniXmlNode &node)
         }
         else
         {
-            commanderConfigurationException *pe = new commanderConfigurationException(X("ITEM_NUM"));
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("ITEM_NUM"));
             throw (pe);
         }
         if(numItem>0)
@@ -66,20 +66,18 @@ bool nnCommander::readConfiguration(miniXmlNode &node)
             int i=0;
             while(numItem>0)
             {
-                SSTREAM name;
-                name<<"ITEM_"<<i;
-                t=conf->find(name.str().c_str());
+                t=conf->find(X("ITEM_"),i);
                 if(t)
                 {
                     commandItem item;
-                    miniXmlNode *v = t->find(X("POS_X"));
+                    IXmlNode *v = t->find(X("POS_X"));
                     if(v)
                     {
                         item.pos.x=v->getLong();
                     }
                     else
                     {
-                        commanderConfigurationException *pe = new commanderConfigurationException(X("POS_X"));
+                        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("POS_X"));
                         throw (pe);
                     }
                     v = t->find(X("POS_Y"));
@@ -89,7 +87,7 @@ bool nnCommander::readConfiguration(miniXmlNode &node)
                     }
                     else
                     {
-                        commanderConfigurationException *pe = new commanderConfigurationException(X("POS_Y"));
+                        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("POS_Y"));
                         throw (pe);
                     }
                     v = t->find(X("COMMAND"));
@@ -99,14 +97,16 @@ bool nnCommander::readConfiguration(miniXmlNode &node)
                     }
                     else
                     {
-                        commanderConfigurationException *pe = new commanderConfigurationException(X("COMMAND"));
+                        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("COMMAND"));
                         throw (pe);
                     }
                     items.push_back(item);
                 }
                 else
                 {
-                    commanderConfigurationException *pe = new commanderConfigurationException(name.str().c_str());
+                    SSTREAM ss;
+                    ss<<X("ITEM_")<<i;
+                    xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(ss.str().c_str());
                     throw (pe);
                 }
                 i++;
@@ -128,12 +128,12 @@ bool nnCommander::handlerRequestCommand( nnPoint & pos,int & command)
     {
         nnRect rect=rectFromPos(pos);
         if(rect.into(it->pos))
-            {
-                command=it->command;
-                res=true;
-                break;
-            }
+        {
+            command=it->command;
+            res=true;
+            break;
         }
+    }
     return res;
 }
 

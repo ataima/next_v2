@@ -17,6 +17,8 @@ windows{
 DEFINES += _STATIC_CPPLIB
 }
 
+DEFINES += _UNICODE
+
 SOURCES += \
 ../../source/main.cpp\
 ../../source/mainwindow.cpp\

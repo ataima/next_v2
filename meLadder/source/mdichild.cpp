@@ -109,7 +109,6 @@ void MdiChild::newFile()
         QSize m=maximumSize();
         m/=3;
         setMinimumSize(m);
-        n2client->view->unselect();
     }
 }
 
@@ -145,7 +144,6 @@ bool MdiChild::loadFile(const QString &fileName)
             }
             QApplication::restoreOverrideCursor();
             setCurrentFile(fileName);
-            refreshPixmap();
         }
     }
     return res;
@@ -271,6 +269,14 @@ void MdiChild::paintEvent(QPaintEvent * /* event */)
 }
 
 
+void MdiChild::updateViewEventRequest(MdiChild * dest)
+{
+if(dest)
+    {
+    dest->refreshPixmap();
+    }
+}
+
 void MdiChild::refreshPixmap()
 {
     pixmap = QPixmap(size());
@@ -343,7 +349,6 @@ void MdiChild::updateDocPosHorz(void)
     if(hScroll)
     {
         pos_x=hScroll->value();
-        qDebug()<<"SCROLL_X :"<<pos_x;
     }
     if(n2client)
     {
@@ -358,7 +363,6 @@ void MdiChild::updateDocPosVert(void)
     if(vScroll)
     {
         pos_y=vScroll->value();
-        qDebug()<<"SCROLL_Y :"<<pos_y;
     }
     if(n2client)
     {
@@ -437,8 +441,6 @@ void MdiChild::mouseMoveEvent( QMouseEvent *event )
             nnPoint pos(p.x(),p.y());
             if(n2client->view->handlerMouseMove((nn_mouse_buttons)bt,pos,start,stop))
             {
-                qDebug()<<"MOUSE MOVE START:"<<start.x<<" - "<<start.y;
-                qDebug()<<"MOUSE MOVE STOP:"<<stop.x<<" - "<<stop.y;
                 getMainWnd()->updatePosCursor(start,stop);
                 resizeSelector();
             }
@@ -464,14 +466,15 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
     {
         QPoint p=event->globalPos();
         p=mapFromGlobal(p);
-        unsigned int bt=event->buttons();
+        nn_mouse_buttons bt=(nn_mouse_buttons)(unsigned int)event->buttons();
         nnPoint pos(p.x(),p.y());
-        if(n2client->view->handlerMouseButtonDown((nn_mouse_buttons)bt,pos,start,stop))
+        if(n2client->view->handlerMouseButtonDown(bt,pos,start,stop))
         {
-            qDebug()<<"MOUSE PRESS START:"<<start.x<<" - "<<start.y;
-            qDebug()<<"MOUSE PRESS STOP:"<<stop.x<<" - "<<stop.y;
+            if(bt==nn_m_button_left)
+            {
             getMainWnd()->updatePosCursor(start,stop);
             resizeSelector();
+            }
         }
     }
 }
@@ -511,7 +514,7 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
     if( n2client )
     {
         nnPoint start,stop,pos;
-        qDebug()<<"modifiers()="<<event->modifiers()<<"   Key()="<<event->key();
+//        qDebug()<<"modifiers()="<<event->modifiers()<<"   Key()="<<event->key();
         Qt::KeyboardModifiers mod=event->modifiers();
         Qt::Key keyb=(Qt::Key)event->key();
         bool alt=false,ctrl=false,shift=false;

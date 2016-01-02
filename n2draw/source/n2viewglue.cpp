@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <string>
+#include "n2appmanager.h"
 #include "n2miniXml.h"
 #include "n2imagemanager.h"
+#include "n2draw.h"
+#include "n2view.h"
 #include "n2drawmanager.h"
 #include "n2viewglue.h"
+#include "n2toolview.h"
 
 //TestviewGlue.cpp : T1
 nnViewGlue::nnViewGlue(IManager  *_manager,IImageManager *_images)
@@ -25,6 +29,7 @@ bool nnViewGlue::unselect()
     select_stop.x = -1;
     select_stop.y = -1;
     status = s_unselect;
+    show_cmd=false;
     return true;
 }
 
@@ -76,91 +81,114 @@ nnPoint nnViewGlue::getCoordLog(nnPoint & phyPoint)
 }
 
 //TestviewGlue.cpp : T2
-bool nnViewGlue::readConfiguration(miniXmlNode & node)
+bool nnViewGlue::readConfiguration(IXmlNode *node)
 {
     bool res = false;
-    miniXmlNode *conf = node.find(X("PHY_MAP"));
-    if (conf)
+    if(node)
     {
-        miniXmlNode *t = conf->find(X("TYPE"));
-        if (t)
-        {
-            switch (t->getLong())
-            {
-            case 0:
-                view = new nnTextView();
-                break;
-            case 1:
-                view = new nnView(images);
-                break;
-            default:
-            {
-                phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("TYPE"));
-                throw (pe);
-            }
-            break;
-            }
-            MEMCHK(IView, view);
-        }
-        else
-        {
-            phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("TYPE"));
-            throw (pe);
-        }
-        t = conf->find(X("X"));
-        if (t)
-        {
-            const_Size.x = t->getLong();
-        }
-        else
-        {
-            phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("X"));
-            throw (pe);
-        }
-        t = conf->find(X("Y"));
-        if (t)
-        {
-            const_Size.y = t->getLong();
-        }
-        else
-        {
-            phyGlueConfigurationException  *pe = new phyGlueConfigurationException(X("Y"));
-            throw (pe);
-        }
-        t = conf->find(X("WIDTH"));
-        if (t)
-        {
-            phy_Size.x = t->getLong();
-        }
-        else
-        {
-            phyGlueConfigurationException  *pe = new phyGlueConfigurationException(X("WIDTH"));
-            throw (pe);
-        }
-        t = conf->find(X("HEIGHT"));
-        if (t)
-        {
-            phy_Size.y = t->getLong();
-        }
-        else
-        {
-            phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("HEIGHT"));
-            throw (pe);
-        }
-        res = view->createMainBitmap(phy_Size.x, phy_Size.y);
-    }
-    else
-    {
-        phyGlueConfigurationException *pe = new phyGlueConfigurationException(X("PHY_MAP"));
-        throw (pe);
-    }
-    if (res)
-    {
-        conf = node.find(X("PHY_VIEW"));
+        IXmlNode *conf = node->find(X("PHY_MAP"));
         if (conf)
         {
-            if (view)
-                view->readConfiguration(conf);
+            IXmlNode *t = conf->find(X("TYPE"));
+            if (t)
+            {
+                switch (t->getLong())
+                {
+                case 1:
+                    view = new nnView(images);
+                    toolview = new nnToolView(images);
+                    break;
+                default:
+                {
+                    xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("TYPE"));
+                    throw (pe);
+                }
+                break;
+                }
+                MEMCHK(IView, view);
+                MEMCHK(IToolView, toolview);
+            }
+            else
+            {
+                xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("TYPE"));
+                throw (pe);
+            }
+            t = conf->find(X("X"));
+            if (t)
+            {
+                const_Size.x = t->getLong();
+            }
+            else
+            {
+                xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("X"));
+                throw (pe);
+            }
+            t = conf->find(X("Y"));
+            if (t)
+            {
+                const_Size.y = t->getLong();
+            }
+            else
+            {
+                xmlConfigurationNodeException  *pe = new xmlConfigurationNodeException(X("Y"));
+                throw (pe);
+            }
+            t = conf->find(X("WIDTH"));
+            if (t)
+            {
+                phy_Size.x = t->getLong();
+            }
+            else
+            {
+                xmlConfigurationNodeException  *pe = new xmlConfigurationNodeException(X("WIDTH"));
+                throw (pe);
+            }
+            t = conf->find(X("HEIGHT"));
+            if (t)
+            {
+                phy_Size.y = t->getLong();
+            }
+            else
+            {
+                xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("HEIGHT"));
+                throw (pe);
+            }
+            res = view->createMainBitmap(phy_Size.x, phy_Size.y);
+        }
+        else
+        {
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("PHY_MAP"));
+            throw (pe);
+        }
+        if (res)
+        {
+            conf = node->find(X("PHY_VIEW"));
+            if (conf)
+            {
+                if (view)
+                    res=view->readConfiguration(conf);
+            }
+            else
+            {
+                res=false;
+                xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("PHY_VIEW"));
+                throw (pe);
+            }
+            if(res)
+            {
+                conf = node->find(X("PHY_TOOLBARS"));
+                if (conf)
+                {
+                    if (toolview)
+                        res=toolview->readConfiguration(conf);
+                }
+                else
+                {
+                    res=false;
+                    xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("PHY_TOOLBARS"));
+                    throw (pe);
+                }
+            }
         }
     }
     return res;
@@ -365,7 +393,11 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
         select_stop = select_start;
         getSelectArea(start,stop);
         res=true;
-    }    
+    }
+    else if(buttons==nn_m_button_right)
+    {
+        res=true;
+    }
     return res;
 }
 
@@ -853,9 +885,22 @@ bool nnViewGlue::resizeSelectArea(const int vx,const int vy)
 }
 
 
- bool nnViewGlue::handlerRequestCommand(nnPoint phyPoint)
- {
-     bool res=false;
+bool nnViewGlue::handlerRequestCommand(nnPoint phyPoint,int & command)
+{
+    bool res=false;
+    if(toolview)
+    {
+        if(toolview->getActiveCommander()!=nullptr)
+        {
+            res=toolview->handlerRequestCommand(phyPoint,command);
+        }
+    }
+    return res;
+}
 
-     return res;
- }
+
+bool nnViewGlue::addExtHandler(handler_exec_view type,
+                               const char *_name,extHandler & _hook,void *unkObj)
+{
+    return false;
+}

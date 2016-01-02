@@ -28,306 +28,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 
-#include "n2exception.h"
+#include "n2interfaces.h"
 
-
-
-typedef struct tag_nn_point
-{
-    int x;
-    int y;
-    tag_nn_point(int _x = 0, int _y = 0) :x(_x), y(_y) {}
-    inline void operator = (const struct tag_nn_point b)
-    {
-        x = b.x;
-        y = b.y;
-    }
-    inline bool operator == (const struct tag_nn_point b)
-    {
-        return (x == b.x) || (y == b.y);
-    }
-    inline bool operator != (const struct tag_nn_point b)
-    {
-        return (x != b.x) || (y != b.y);
-    }
-    inline bool operator != (const int v)
-    {
-        return (x != v) || (y != v);
-    }
-    inline bool  isValid(void)
-    {
-        return (x != -1 && y != -1);
-    }
-    inline void set(int _x, int _y)
-    {
-        x = _x;
-        y = _y;
-    }
-    inline void set(int _v)
-    {
-        x = _v;
-        y = _v;
-    }
-
-    tag_nn_point intersect(const tag_nn_point & p)
-    {
-
-        tag_nn_point res;
-        res.x = x < p.x ? x : p.x;
-        res.y = y < p.y ? y : p.y;
-        return res;
-    }
-    friend tag_nn_point operator+(const tag_nn_point & a, const tag_nn_point & b)
-    {
-        tag_nn_point res;
-        res.x=a.x+b.x;
-        res.y=a.y+b.y;
-        return res;
-    }
-    friend tag_nn_point operator-(const tag_nn_point & a, const tag_nn_point & b)
-    {
-        tag_nn_point res;
-        res.x=a.x-b.x;
-        res.y=a.y-b.y;
-        return res;
-    }
-    friend tag_nn_point operator/(const tag_nn_point & a, const tag_nn_point & b)
-    {
-        tag_nn_point res;
-        res.x=a.x/b.x;
-        res.y=a.y/b.y;
-        return res;
-    }
-    friend tag_nn_point operator*(const tag_nn_point & a, const tag_nn_point & b)
-    {
-        tag_nn_point res;
-        res.x=a.x*b.x;
-        res.y=a.y*b.y;
-        return res;
-    }
-
-    friend bool operator<(const tag_nn_point & a, const tag_nn_point & b)
-    {
-        if (a.x < b.x)
-            if (a.y < b.y)
-                return true;
-        return false;
-    }
-    friend bool operator>(const tag_nn_point & a, const tag_nn_point & b)
-    {
-        if (a.x > b.x)
-            if (a.y > b.y)
-                return true;
-        return false;
-    }
-    friend bool operator<=(const tag_nn_point & a, const tag_nn_point & b)
-    {
-        if (a.x <= b.x)
-            if (a.y <= b.y)
-                return true;
-        return false;
-    }
-    friend bool operator>=(const tag_nn_point & a, const tag_nn_point & b)
-    {
-        if (a.x >= b.x)
-            if (a.y >= b.y)
-                return true;
-        return false;
-    }
-    inline void operator += (const tag_nn_point & a)
-    {
-        x += a.x;
-        y += a.y;
-    }
-    inline void operator -= (const tag_nn_point & a)
-    {
-        x -= a.x;
-        y -= a.y;
-    }
-    inline void operator += (const int v)
-    {
-        x += v;
-        y += v;
-    }
-    /*
-    inline bool intoX (int minV,int maxV)
-    {
-        bool res=false;
-        if(x>minV && x<maxV)
-            res=true;
-        return res;
-    }
-    inline bool  intoY (int minV,int maxV)
-    {
-        bool res=false;
-        if(x>=minV && x<maxV)
-            res=true;
-        return res;
-    }
-    */
-} nnPoint;
-
-
-typedef struct tag_nn_rect
-{
-    nnPoint start;
-    nnPoint stop;
-    tag_nn_rect(int top=-1, int left=- 1, int down= -1, int right= -1)
-        :start(top, left), stop(down, right) {}
-    tag_nn_rect(const nnPoint& p1, const nnPoint & p2)
-        :start(p1), stop(p2) {}
-    inline void operator = (const struct tag_nn_rect b)
-    {
-        start = b.start;
-        stop = b.stop;
-    }
-    inline bool operator != (const struct tag_nn_rect b)
-    {
-        return (start != b.start) || (stop != b.stop);
-    }
-    inline bool operator != (const int v)
-    {
-        return (start != v) || (stop != v);
-    }
-    inline bool  isValid(void)
-    {
-        return (start.isValid()) && (stop.isValid());
-    }
-    inline void set(int _left, int _top, int _right, int _down)
-    {
-        start.set(_left,_top);
-        stop.set( _right,_down);
-    }
-    inline void set(const tag_nn_point & p1, const tag_nn_point & p2)
-    {
-        start=p1;
-        stop=p2;
-    }
-    inline int width(void)
-    {
-        if(start.x<stop.x)
-            return stop.x-start.x;
-        else
-            return start.x-stop.x;
-    }
-    inline int height(void)
-    {
-        if(start.y<stop.y)
-            return stop.y-start.y;
-        else
-            return start.y-stop.y;
-    }
-
-    tag_nn_rect intersect(const tag_nn_rect & b)
-    {
-
-        tag_nn_rect res;
-        res.start = start.intersect(b.start);
-        res.stop = stop.intersect(b.stop);
-        return res;
-    }
-
-    tag_nn_rect in(const tag_nn_rect & b)
-    {
-        tag_nn_rect res;
-        int left,top,right,bottom;
-        left=b.start.x;
-        right=b.stop.x;
-        top=b.start.y;
-        bottom=b.stop.y;
-        //
-        if( left>stop.x ||
-                right< start.x ||
-                top>stop.y ||
-                bottom<start.y)
-        {
-            top=bottom=right=left=-1;
-        }
-        else
-        {
-            /*
-            if(left<start.x && right> start.x)
-                left=start.x;
-            if(left<stop.x && right>stop.x)
-                right=stop.y;
-            if(top<start.y && bottom> start.y)
-                top=start.y;
-            if(top<stop.y && bottom> stop.y)
-                bottom=stop.y;
-                */
-        }
-        //
-        res.set(left,top,right,bottom);
-        return res;
-    }
-    inline bool into(const nnPoint & b)
-    {
-        bool res=false;
-        if(start.x < b.x && stop.x > b.x)
-        {
-            if(start.y < b.y && stop.y > b.y)
-            {
-                res=true;
-            }
-        }
-        return res;
-    }
-
-} nnRect;
-
-
-enum tag_obj_context
-{
-    objNone = 0,
-    objWire,
-    objContact,
-    objCoil
-};
-
-
-typedef tag_obj_context ObjContext;
-
-
-enum tag_wire_direction
-{
-    //0,0,------N,0
-    //
-    //0,N-------N,N
-    direction_unknow,
-    wire_from_up,
-    wire_from_down,
-    wire_from_left,
-    wire_from_right,
-};
-
-typedef tag_wire_direction  eWireDirection;
-
-typedef std::vector<int >  eConnections;
-
-class miniXmlNode;
-
-class  InnObj
-{
-public:
-    virtual ObjContext getContext(void) = 0;
-    virtual void setContext(ObjContext & c) = 0;
-    virtual int getXpos(void) = 0;
-    virtual int getYpos(void) = 0;
-    virtual void setXpos(int pX) = 0;
-    virtual void setYpos(int pY) = 0;
-    virtual void setPos(int pX, int pY) = 0;
-    virtual const STRING toString(void) const = 0;
-    virtual eWireDirection getDirection(InnObj * b) = 0;
-    virtual eConnections & getConnections(void) = 0;
-    virtual void setConnections(int  v) = 0;
-    virtual bool connect(InnObj* b) = 0;
-    virtual bool powerConnect(int num) = 0;
-    virtual bool disconnect(InnObj* b) = 0;
-    virtual bool isComponent(void) = 0;
-    virtual void save(miniXmlNode *root) = 0;
-    virtual void load(miniXmlNode *root) = 0;
-    virtual ~InnObj(){}
-};
 
 
 class  nnObj
@@ -346,8 +48,8 @@ public:
         v_context = c;
     }
     const STRING toString(void) const;
-    virtual void save(miniXmlNode *root);
-    virtual void load(miniXmlNode *root);
+    virtual void save(IXmlNode *root);
+    virtual void load(IXmlNode *root);
 };
 
 
@@ -376,36 +78,9 @@ public:
         v_Ypos = pY;
     }
     const  STRING toString(void) const;
-    virtual void save(miniXmlNode *root);
-    virtual void load(miniXmlNode *root);
+    virtual void save(IXmlNode *root);
+    virtual void load(IXmlNode *root);
     eWireDirection getDirection(InnObj * pb);
-};
-
-enum tag_wire
-{
-    noWire = 0,
-    wireHorizzontal,
-    wireVertical,
-    wireAngleUpRight,
-    wireAngleUpLeft,
-    wireAngleDownRight,
-    wireAngleDownLeft,
-    wireTHorizDown,
-    wireTHorizUp,
-    wireTVertRight,
-    wireTVertLeft,
-    wireCross
-};
-
-typedef tag_wire eWire;
-
-
-class InnWire
-{
-public:
-    virtual eWire getWire(void) = 0;
-    virtual void setWire(eWire c) = 0;
-    virtual ~InnWire(){}
 };
 
 
@@ -465,8 +140,8 @@ public:
         v_num.push_back(n);
     }
     const  STRING toString(void) const;
-    virtual void save(miniXmlNode *root);
-    virtual void load(miniXmlNode *root);
+    virtual void save(IXmlNode *root);
+    virtual void load(IXmlNode *root);
     static void resetUI(void) {
         uid_num = 2;
     }
@@ -499,8 +174,8 @@ public:
         v_wire = c;
     }
     const  STRING toString(void) const;
-    virtual void save(miniXmlNode *root);
-    virtual void load(miniXmlNode *root);
+    virtual void save(IXmlNode *root);
+    virtual void load(IXmlNode *root);
     inline bool isComponent(void) {
         return false;
     }
@@ -548,26 +223,6 @@ protected:
     bool disconnectFromDown(void);
 };
 
-typedef std::vector<unsigned int > eVCPUregister;
-
-
-#include "MerlinoVCPU.h"
-
-
-class InnVCPU
-{
-public:
-    virtual eVCPUregister &getVCPUregister(void) = 0;
-    virtual void setVCPUregister(eVCPUregister & r) = 0;
-    virtual const STRING toString(void) const = 0;
-    virtual void save(miniXmlNode *root) = 0;
-    virtual void load(miniXmlNode *root) = 0;
-    virtual void setBaseVCPU(pMerlinoVCPU vcpu) = 0;
-    virtual pMerlinoVCPU getBaseVCPU(void) = 0;
-    virtual ~InnVCPU(){}
-
-};
-
 class nnObjVCPU
     :public InnVCPU
 {
@@ -585,8 +240,8 @@ public:
         v_reg = r;
     }
     const STRING toString(void) const;
-    void save(miniXmlNode *root);
-    void load(miniXmlNode *root);
+    void save(IXmlNode *root);
+    void load(IXmlNode *root);
     virtual void setBaseVCPU(pMerlinoVCPU _vcpu) {
         v_vcpu = _vcpu;
     };
@@ -609,8 +264,8 @@ public:
         v_spec = _v;
     }
     const  STRING toString(void) const;
-    virtual void save(miniXmlNode *root);
-    virtual void load(miniXmlNode *root);
+    virtual void save(IXmlNode *root);
+    virtual void load(IXmlNode *root);
 
 };
 
@@ -642,8 +297,8 @@ public:
         v_spec = _v;
     }
     const  STRING toString(void) const;
-    virtual void save(miniXmlNode *root);
-    virtual void load(miniXmlNode *root);
+    virtual void save(IXmlNode *root);
+    virtual void load(IXmlNode *root);
 };
 
 

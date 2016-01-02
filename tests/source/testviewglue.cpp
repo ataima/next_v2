@@ -91,7 +91,7 @@ void test_viewglue::test2(void)
     node.add(X("HEIGHT"), 800);
     node.add(X("WIDTH"), 1200);
     nnViewGlue gphy(nullptr, nullptr);
-    bool res = gphy.readConfiguration(node);
+    bool res = gphy.readConfiguration(&node);
     CA_ASSERT(res == true);
     nnPoint input(1, 1);
     nnPoint p = gphy.getCoordPhy(input);
@@ -118,7 +118,7 @@ void test_viewglue::test3(void)
     node.add(X("Y"), 32);
     node.add(X("HEIGHT"), 600);
     node.add(X("WIDTH"), 1200);
-    bool res = gphy.readConfiguration(node);
+    bool res = gphy.readConfiguration(&node);
     CA_ASSERT(res == true);
     CA_ASSERT(gphy.isStartValid() == false);
     CA_ASSERT(gphy.isStopValid() == false);
@@ -165,7 +165,7 @@ void test_viewglue::test4(void)
     node.add(X("Y"), 32);
     node.add(X("HEIGHT"), 600);
     node.add(X("WIDTH"), 1200);
-    bool res = gphy.readConfiguration(node);
+    bool res = gphy.readConfiguration(&node);
     CA_ASSERT(res == true);
     nn_mouse_buttons btn = nn_mouse_buttons::nn_m_button_left;
     nnPoint p(200, 140);
@@ -210,7 +210,7 @@ void test_viewglue::test5(void)
     node.add(X("Y"), 32);
     node.add(X("HEIGHT"), 600);
     node.add(X("WIDTH"), 1200);
-    bool res = gphy.readConfiguration(node);
+    bool res = gphy.readConfiguration(&node);
     CA_ASSERT(res == true);
     nn_mouse_buttons btn = nn_mouse_buttons::nn_m_button_left;
     nnPoint p(200, 140);

@@ -1,6 +1,7 @@
 #include "n2draw.h"
 #include "n2drawmanager.h"
 #include "n2connection.h"
+#include "n2exception.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
