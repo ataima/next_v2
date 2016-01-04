@@ -92,8 +92,9 @@ public:
     void paste(void);
     void cut(void);
     void copy(void);
-    static void updateViewEventRequest(MdiChild * dest);
 protected:
+    static void updateViewEventRequest(void *dest,size_t param);
+    static void externCommandRequest(void * dest, size_t param);
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 private slots:
     void documentWasModified(bool v);
@@ -103,7 +104,8 @@ private:
     void setCurrentFile(const QString &fileName);
     QString strippedName(const QString &fullFileName);
     void paintEvent(QPaintEvent * /* event */) override;
-    void refreshPixmap();
+    void refreshPixmap(size_t param);
+    void requestCommand(size_t param);
     void destroyObjects(void);
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mousePressEvent(QMouseEvent *event) override;

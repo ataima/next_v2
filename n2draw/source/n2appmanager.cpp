@@ -5,6 +5,7 @@
 #include "n2imagemanager.h"
 #include "n2view.h"
 #include "n2viewglue.h"
+#include "n2exception.h"
 
 
 int nnAppManager::UID = 1;
@@ -62,7 +63,15 @@ childApps * nnAppManager::createObjects(STRING & conf_file_name)
             res=child->imageManager->loadImages(p.x, p.y);
             if(!res)
             {
-
+                child->clean();
+                delete child;
+                child = nullptr;
+                appManagerConfigureLoadImageException *e=new appManagerConfigureLoadImageException();
+                throw(e);
+            }
+            res=child->view->loadImages(child->imageManager->getDefaulPath().c_str());
+            if(!res)
+            {
                 child->clean();
                 delete child;
                 child = nullptr;
@@ -259,19 +268,12 @@ bool nnAppManager::clean(void)
     return childs.empty();
 }
 
-bool nnAppManager::setExtHandler(childApps * child,
-                                 const char *_name,extHandler & _hook,void *unkObj)
+bool nnAppManager::setExtHandler(childApps * child, handler_exec type, extHandler _hook, void *unkObj)
 {
     bool res=false;
     if(child)
     {
-        std::string name(_name);
-        if(name=="extRefreshViewHandler")
-        {
-            // to refresh a user bitmap : to viewglue
-            res=child->view->addExtHandler(handler_view_exec_refresh,
-                                           _name,_hook,unkObj);
-        }
+       res=child->view->addExtHandler(type,_hook,unkObj);
     }
     return res;
 }

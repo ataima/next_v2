@@ -37,10 +37,10 @@ public:
 	static bool connectComponent(IManager *manager, nnPoint & src, nnPoint & dst);
 protected:
 	static bool connectVertComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst);
-	static bool connectHorzIncrUpSideComponet(IManager *manager, nnPoint & src, nnPoint & dst);
-	static bool connectHorzIncrDownSideComponet(IManager *manager, nnPoint & src, nnPoint & dst);
-	static bool connectHorzDecrUpSideComponet(IManager *manager, nnPoint & src, nnPoint & dst);
-	static bool connectHorzDecrDownSideComponet(IManager *manager, nnPoint & src, nnPoint & dst);
+    static bool connectHorzIncrUpSideComponent(IManager *manager, nnPoint & src, nnPoint & dst);
+    static bool connectHorzIncrDownSideComponent(IManager *manager, nnPoint & src, nnPoint & dst);
+    static bool connectHorzDecrUpSideComponent(IManager *manager, nnPoint & src, nnPoint & dst);
+    static bool connectHorzDecrDownSideComponent(IManager *manager, nnPoint & src, nnPoint & dst);
 
 	static bool connectVertWireComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst);
 };

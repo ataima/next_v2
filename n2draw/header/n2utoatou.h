@@ -46,6 +46,10 @@ public:
     {
         u8=v.c_str();
     }
+    inline UtoA(const char * v)
+    {
+        u8=v;
+    }
     inline const char *utf8(){return u8;}
     inline bool good(){return true;}
 private:
@@ -85,9 +89,13 @@ private:
 class AtoU
 {
 public:
-    AtoU(const std::string & v)
+    inline AtoU(const std::string & v)
     {
         u16=v.c_str();
+    }
+    inline AtoU(const char * v)
+    {
+        u16=v;
     }
     inline const char *utf16(){return u16;}
     inline bool good(){return true;}

@@ -42,6 +42,7 @@
 
 #include "mdichild.h"
 #include "mainwindow.h"
+#include "n2exception.h"
 
 MdiChild::MdiChild()
 {
@@ -106,6 +107,14 @@ void MdiChild::newFile()
                 vScroll->hide();
             }
         }
+        getn2App()->setExtHandler(n2client,handler_view_exec_refresh,
+                                  &MdiChild::updateViewEventRequest,
+                                  this
+                                 );
+        getn2App()->setExtHandler(n2client,handler_exec_command,
+                                  &MdiChild::externCommandRequest,
+                                  this
+                                 );
         QSize m=maximumSize();
         m/=3;
         setMinimumSize(m);
@@ -136,7 +145,7 @@ bool MdiChild::loadFile(const QString &fileName)
             }
             if(!res)
             {
-                QMessageBox::warning(this, tr("Draw"),
+                QMessageBox::warning(this, "meLadder",
                                      tr("Cannot read file %1:\n%2.")
                                      .arg(fileName)
                                      .arg(error));
@@ -193,7 +202,7 @@ bool MdiChild::saveFile(const QString &fileName)
             }
             if(!res)
             {
-                QMessageBox::warning(this, tr("Draw"),
+                QMessageBox::warning(this, "meLadder",
                                      tr("Cannot write file %1:\n%2.")
                                      .arg(fileName)
                                      .arg(error));
@@ -230,7 +239,7 @@ bool MdiChild::maybeSave()
 {
     /*if (document()->isModified())*/ {
         QMessageBox::StandardButton ret;
-        ret = QMessageBox::warning(this, tr("Draw"),
+        ret = QMessageBox::warning(this, "meLadder",
                                    tr("'%1' has been modified.\n"
                                       "Do you want to save your changes?")
                                    .arg(userFriendlyCurrentFile()),
@@ -269,16 +278,34 @@ void MdiChild::paintEvent(QPaintEvent * /* event */)
 }
 
 
-void MdiChild::updateViewEventRequest(MdiChild * dest)
+void MdiChild::updateViewEventRequest(void * dest, size_t param)
 {
-if(dest)
+    if(dest)
     {
-    dest->refreshPixmap();
+        MdiChild *child = static_cast< MdiChild *>(dest);
+        child->refreshPixmap(param);
     }
 }
 
-void MdiChild::refreshPixmap()
+
+void MdiChild::externCommandRequest(void * dest, size_t param)
 {
+    if(dest)
+    {
+        MdiChild *child = static_cast< MdiChild *>(dest);
+        child->requestCommand(param);
+    }
+}
+
+void MdiChild::requestCommand(size_t param)
+{
+}
+
+
+void MdiChild::refreshPixmap(size_t param)
+{
+    //param 0 internal refresh >0 from ext reqyest
+    (param);
     pixmap = QPixmap(size());
     if(n2client!=nullptr)
     {
@@ -339,7 +366,7 @@ void MdiChild::resizeEvent(QResizeEvent *e)
                 vScroll->hide();
             }
         }
-        refreshPixmap();
+        refreshPixmap(0);
     }
 }
 
@@ -408,12 +435,12 @@ void MdiChild::resizeSelector(void)
             selector->setError(false);
             selector->SetArea(result,start,stop);
             selector->show();
-            refreshPixmap();
+            refreshPixmap(0);
         }
         else
         {
             selector->hide();
-            refreshPixmap();
+            refreshPixmap(0);
         }
     }
 }
@@ -423,7 +450,7 @@ void MdiChild::errorSelector(void)
     if(n2client && selector && selector->getStatus())
     {
         selector->setError(true);
-        refreshPixmap();
+        refreshPixmap(0);
     }
 }
 
@@ -461,6 +488,7 @@ void MdiChild::mouseMoveEvent( QMouseEvent *event )
 
 void MdiChild::mousePressEvent(QMouseEvent *event)
 {
+    const char * error=nullptr;
     nnPoint start, stop;
     if(n2client)
     {
@@ -468,13 +496,33 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
         p=mapFromGlobal(p);
         nn_mouse_buttons bt=(nn_mouse_buttons)(unsigned int)event->buttons();
         nnPoint pos(p.x(),p.y());
-        if(n2client->view->handlerMouseButtonDown(bt,pos,start,stop))
-        {
-            if(bt==nn_m_button_left)
+        try {
+            if(n2client->view->handlerMouseButtonDown(bt,pos,start,stop))
             {
-            getMainWnd()->updatePosCursor(start,stop);
-            resizeSelector();
+                if(bt==nn_m_button_left)
+                {
+                    getMainWnd()->updatePosCursor(start,stop);
+                    resizeSelector();
+                }
             }
+
+        }
+        catch(n2exception *e)
+        {
+            error=e->msg();
+            delete e->msg();
+            delete e;
+        }
+        catch(...)
+        {
+            error="unknow exception";
+        }
+        if(error!=nullptr)
+        {
+            QMessageBox::warning(this,"meLadder",
+                                 tr("At draw toolbars\n%1.")
+                                 .arg(error));
+
         }
     }
 }
@@ -565,7 +613,7 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
         }
         if(res)
         {
-            refreshPixmap();
+            refreshPixmap(0);
         }
         else
         {

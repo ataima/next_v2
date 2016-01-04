@@ -124,7 +124,7 @@ void test_app_manager::test1(void)
     nnGenericCoil *u = new nnGenericCoil();
     res = mn->addCoil(10, u);
     CA_ASSERT(res == true);
-    CA_ASSERT((int)mn->size() == (int)10);
+    CA_ASSERT((int)mn->size() == (int)20);
     nnContactNC *v1 = new nnContactNC();
     res = mn->addContact(12, 0, v1);
     CA_ASSERT(res == true);
@@ -134,6 +134,14 @@ void test_app_manager::test1(void)
     res = childs->view->updateDraw();
     CA_ASSERT(res == true);
     bmpImage &bdraw = childs->view->getDraw();
+    for(unsigned int i=0;i<bdraw.getWidth();i+=100)
+        bdraw.line(i,0,i,bdraw.getHeight(),255,0,0);
+    for(unsigned int u=0;u<bdraw.getHeight();u+=100)
+        bdraw.line(0,u,bdraw.getWidth(),u,0,0,255);
+        bdraw.line(0,0,bdraw.getWidth(),bdraw.getHeight(),0,255,0);
+        bdraw.line(0,0,200,bdraw.getHeight(),0,255,255);
+    bdraw.frameRect(10,10,300,300,128,128,64);
+    bdraw.frameRect(50,50,250,250,128,128,64);
     draw(&bdraw);
     MKDIR(".\\bmp",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     bdraw.copyToFile(X(".\\bmp\\test1_app.bmp"));
@@ -170,7 +178,7 @@ void test_app_manager::test2(void)
     nnGenericCoil *u = new nnGenericCoil();
     res = mn->addCoil(10, u);
     CA_ASSERT(res == true);
-    CA_ASSERT((int)mn->size() == (int)10);
+    CA_ASSERT((int)mn->size() == (int)20);
     nnContactNC *v1 = new nnContactNC();
     res = mn->addContact(12, 0, v1);
     CA_ASSERT(res == true);

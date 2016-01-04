@@ -42,6 +42,7 @@
 
 #include "mainwindow.h"
 #include "mdichild.h"
+#include "n2exception.h"
 
 MainWindow *MainWindow::instance=nullptr;
 

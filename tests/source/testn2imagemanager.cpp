@@ -93,6 +93,7 @@ void test_image_manager::test1(void)
     CA_ASSERT(res == true);
     res = im.loadImages(40, 48);
     CA_ASSERT(res == true);
+    /*
     const listImage *images = im.getImageList();
     if (images != nullptr)
     {
@@ -104,4 +105,5 @@ void test_image_manager::test1(void)
             it++;
         }
     }
+    */
 }

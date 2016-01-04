@@ -115,8 +115,13 @@ public:
     bool swaptoRBG(void);
     bool swaptoGRB(void);
     bool copyBits(bmpImage & dst, size_t left,size_t top,size_t right,size_t bottom);
-    bool drawSprite(bmpImage & sprite, int left, int top);
-    bool drawMaskSprite(bmpImage & sprite, int left, int top,char mask);
+    bool drawSprite( bmpImage & sprite, int left, int top);
+    bool drawMaskSprite( bmpImage & sprite, int left, int top,
+                unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
+    bool setPixel(unsigned int _x,unsigned int _y,unsigned char red,unsigned char green,unsigned char blue);
+    bool getPixel(unsigned int _x,unsigned int _y,unsigned char  & red,unsigned char & green,unsigned char & blue);
+    bool line(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned char red, unsigned char green, unsigned char blue);
+    bool frameRect(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned char red, unsigned char green, unsigned char blue);
 protected:
     bool replace(LPBITMAPFILEHEADER new_dib);
     static size_t getInternalImageSize(unsigned int width, unsigned int height);
@@ -143,8 +148,15 @@ protected:
     static bool pasteSubImage(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER src, int left, int top);
     static bool copyBits(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER src,size_t left, size_t top, size_t width, size_t height);
     static bool swapto(LPBITMAPFILEHEADER pI, int iSorg, int iDest);
-    static bool drawSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, size_t left, size_t top);
-    static bool drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, size_t left, size_t top,char mask);
+    static bool drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, size_t left, size_t top);
+    static bool drawMaskSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, size_t left, size_t top,
+                      unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
+    //
+    static bool setPixel(LPBITMAPFILEHEADER dest,unsigned int x,unsigned int y,unsigned char red,unsigned char green,unsigned char blue);
+    static bool getPixel(LPBITMAPFILEHEADER dest, unsigned int x, unsigned int y, unsigned char  & red, unsigned char & green, unsigned char & blue);
+    static bool line(LPBITMAPFILEHEADER dest,unsigned int x1,unsigned int y1,unsigned int x2,unsigned int y2,
+                        unsigned char red,unsigned char green,unsigned char blue);
+
 protected:
     BITMAPFILEHEADER * m_hBitmap;
 };

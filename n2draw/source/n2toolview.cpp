@@ -34,8 +34,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 
-nnToolView::nnToolView(IImageManager *_images)
-    :images(_images),active(nullptr),pos_sel(0)
+nnToolView::nnToolView()
+    :active(nullptr),pos_sel(0)
 {
     commands.clear();
 }
@@ -105,17 +105,38 @@ bool nnToolView::readConfiguration(IXmlNode *node)
             }
         }
     }
-    else
+    if(res==true)
     {
-        res=true;
+        if(pos_sel<(int)commands.size())
+            active=commands.at(pos_sel);
     }
     return res;
 }
 
-bool nnToolView::draw(bmpImage & bkg, int x, int y, void * context)
+bool nnToolView::draw(bmpImage & bkg, nnPoint &pos, void * context)
 {
-
-    return false;
+    (context);
+    bool res=false;
+    if(active)
+    {
+        listCommandItem & items = active->getItems();
+        listCommandItem::iterator it=items.begin();
+        listCommandItem::iterator _end=items.end();
+        unsigned int height= bkg.getHeight();
+        while(it!=_end)
+        {
+            bmpImage & icon= *active->getImage(it->command);
+            unsigned int x= pos.x+it->pos.x;
+            unsigned int y=height-(pos.y+it->pos.y);
+            res = bkg.drawMaskSprite(icon, x,y,it->maskR,it->maskG,it->maskB);
+            //bkg.frameRect(x,y,x+icon.getWidth(),y+icon.getHeight(),255,0,0);
+            if(!res)
+                break;
+            it++;
+        }
+        res=(it==_end);
+    }
+    return res;
 }
 
 bool nnToolView::handlerRequestCommand( nnPoint & pos,int & command)
@@ -134,6 +155,24 @@ bool nnToolView::handlerRequestCommand( nnPoint & pos,int & command)
 }
 
 
+bool nnToolView::loadImages(const XCHAR  *path)
+{
+    bool res=false;
+    commanderList::iterator it= commands.begin();
+    commanderList::iterator _end= commands.end();
+    while(it!=_end)
+    {
+        ICommander *temp=*it;
+        res=temp->loadImages(path);
+        if(!res)
+        {
+            break;
+        }
+        it++;
+    }
+    res=(it==_end);
+    return res;
+}
 
 
 

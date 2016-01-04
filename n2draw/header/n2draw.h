@@ -132,7 +132,7 @@ protected:
     static int uid_num;
 
 public:
-    nnObjConn(ObjContext c) :nnObjPos(c), v_num(0) {}
+    nnObjConn(ObjContext c) :nnObjPos(c) {v_num.push_back(0);}
     inline eConnections & getConnections(void) {
         return v_num;
     }

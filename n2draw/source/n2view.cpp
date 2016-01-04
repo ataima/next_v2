@@ -88,7 +88,7 @@ bool nnView::draw(IManager * manager, void * context)
                 {
                     res &= drawBkg(x, y, glue);
                 }
-            }            
+            }
         }
     }
     return res;
@@ -152,14 +152,10 @@ bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
     if (images != nullptr)
     {
         nnPoint pos = glue->getMirrorCoordPhy(x, y);
-        const listImage *mapImage = images->getImageList();
-        if (mapImage)
+        bmpImage *sprite=images->getImage(nImage);
+        if(sprite)
         {
-            listImage::const_iterator it = mapImage->find(nImage);
-            if (it != mapImage->end())
-            {
-                res = page.drawSprite(*it->second, (int)pos.x, (int)pos.y);
-            }
+            res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
         }
 
     }
@@ -173,17 +169,11 @@ bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
     {
 
         nnPoint pos = glue->getMirrorCoordPhy(x, y);
-        const listImage *mapImage = images->getImageList();
-        if (mapImage)
+        bmpImage *sprite=images->getImage(0);
+        if(sprite)
         {
-            listImage::const_iterator it = mapImage->find(0);
-
-            if (it != mapImage->end())
-            {
-                res = page.drawSprite(*it->second, (int)pos.x, (int)pos.y);
-            }
+                res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
         }
-
     }
     return res;
 }

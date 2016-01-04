@@ -8,6 +8,8 @@
 #include "n2drawmanager.h"
 #include "n2viewglue.h"
 #include "n2toolview.h"
+#include "n2exception.h"
+#include "n2exthandler.h"
 
 //TestviewGlue.cpp : T1
 nnViewGlue::nnViewGlue(IManager  *_manager,IImageManager *_images)
@@ -19,6 +21,7 @@ nnViewGlue::nnViewGlue(IManager  *_manager,IImageManager *_images)
     phy_Size.set(0);
     offset_Pos.set(0);
     unselect();
+    handlers = new nnExtHandlerList();
 }
 
 //TestviewGlue.cpp : T3
@@ -41,6 +44,12 @@ nnViewGlue::~nnViewGlue()
     const_Size.set(0);
     phy_Size.set(0);
     offset_Pos.set(0);
+    if(handlers)
+    {
+        handlers->clear();
+        delete handlers;
+        handlers=nullptr;
+    }
 }
 
 
@@ -96,7 +105,7 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                 {
                 case 1:
                     view = new nnView(images);
-                    toolview = new nnToolView(images);
+                    toolview = new nnToolView();
                     break;
                 default:
                 {
@@ -362,7 +371,7 @@ bool nnViewGlue::updateDraw(void)
 bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop)
 {
     bool res = false;
-    if(buttons==nn_m_button_left)
+    if(buttons==nn_m_button_left && show_cmd==false)
     {
         if (status == start_activate)
             status = start_resize;
@@ -385,7 +394,7 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnP
 bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop)
 {
     bool res = false;
-    if(buttons==nn_m_button_left)
+    if(buttons==nn_m_button_left && show_cmd==false)
     {
         if (status == s_unselect || status == selected)
             status = start_activate;
@@ -394,9 +403,36 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
         getSelectArea(start,stop);
         res=true;
     }
-    else if(buttons==nn_m_button_right)
+    else
+    if(buttons==nn_m_button_left && show_cmd==true)
     {
-        res=true;
+        int command=0;
+        res=handlerRequestCommand(phyPoint,command);
+        if(res)
+        {
+                IExtHandler *refresh=handlers->get(handler_view_exec_refresh);
+                if(refresh)
+                {
+                    refresh->doHandler(action_draw_toolbar);
+                }
+        }
+    }
+    else if(buttons==nn_m_button_right && show_cmd==false)
+    {
+        if(toolview && view)
+        {
+            bmpImage & bkg= view->getMainBitmap();
+            res=toolview->draw(bkg,phyPoint,nullptr);
+            if(res)
+            {
+                IExtHandler *refresh=handlers->get(handler_view_exec_refresh);
+                if(refresh)
+                {
+                    refresh->doHandler(action_draw_toolbar);
+                }
+                show_cmd=true;
+            }
+        }
     }
     return res;
 }
@@ -899,8 +935,23 @@ bool nnViewGlue::handlerRequestCommand(nnPoint phyPoint,int & command)
 }
 
 
-bool nnViewGlue::addExtHandler(handler_exec_view type,
-                               const char *_name,extHandler & _hook,void *unkObj)
+bool nnViewGlue::addExtHandler(handler_exec type,
+                               extHandler  _hook,
+                               void *unkObj)
 {
-    return false;
+    bool res=false;
+    nnExtHandler  *nh= new nnExtHandler(type,_hook,unkObj);
+    res=handlers->add(type,nh);
+    return res;
+}
+
+
+bool nnViewGlue::loadImages(const XCHAR * _path)
+{
+    bool res=false;
+    if(toolview)
+    {
+        res=toolview->loadImages(_path);
+    }
+    return res;
 }

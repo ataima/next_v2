@@ -1,7 +1,5 @@
-
-#ifndef N2IMAGE_MANAGER__HEADER
-#define N2IMAGE_MANAGER__HEADER
-
+#ifndef N2EXTHANDLER
+#define N2EXTHANDLER
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -28,33 +26,35 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-#include "images.h"
+
 #include "n2interfaces.h"
 
 
-
-
-
-
-
-class nnImageManager
-    : public IImageManager
+class nnExtHandler
+        :public IExtHandler
 {
-    STRING path;
-    objImageList availObj;
-    listImage allImages;
-public:
-    nnImageManager(const XCHAR * _path=nullptr);
-    ~nnImageManager();
-    bool setPath(const XCHAR *_path);
-    inline STRING  & getDefaulPath(void) const { return *const_cast<STRING*>(&path); }
-    bool readConfiguration(IXmlNode *node);
-    bool loadImages(int w, int h);
-    bool loadImages(objImageList * extlist);
-    bmpImage * getImage(int id);
-    //inline  const listImage * getImageList(void) { return &allImages; }
-    inline  const objImageList * getAvailObj(void) { return &availObj; }
+    handler_exec type;
+    extHandler hook;
+    void *unknow;
+public :
+    nnExtHandler(handler_exec _type,
+                 extHandler & _hook,
+                 void *unkObj);
+    void doHandler(size_t param );
 };
 
 
-#endif
+
+class nnExtHandlerList
+        : public std::map<unsigned int , IExtHandler *>
+        , public IExtHandlerList
+{
+    public:
+    bool add(unsigned int type,IExtHandler *handler);
+    bool remove(unsigned int type);
+    bool clear(void);
+    IExtHandler *get(unsigned int type);
+};
+
+#endif // N2EXTHANDLER
+

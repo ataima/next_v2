@@ -92,6 +92,7 @@ void test_n2ObjManager::test1(void)
     bool res = mn.addObj(10, 12, v);
     CA_ASSERT(res == true);
     CA_ASSERT((int)mn.size() == (int)1);
+    CA_ASSERT(mn.getObj(10, 12)==v);
     res = mn.removeAll();
     CA_ASSERT(res == true);
 }
@@ -436,9 +437,9 @@ void test_n2ObjManager::test15(void)
     {
         void revHashKey(hashkey & key, int & x, int &y)
         {
-            y = key.v1;
+            y = key.i.v1;
             y = y / 2;
-            x = key.v2;
+            x = key.i.v2;
             x = x / 2;
         }
 
@@ -478,9 +479,9 @@ void test_n2ObjManager::test16(void)
     {
         void revHashKey(hashkey & key, int & x, int &y)
         {
-            y = key.v1;
+            y = key.i.v1;
             y = y / 2;
-            x = key.v2;
+            x = key.i.v2;
             x = x / 2;
         }
 

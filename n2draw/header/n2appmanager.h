@@ -28,40 +28,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include "n2interfaces.h"
-#include "n2exception.h"
-
-
-
-class nnExtHandler
-{
-    extHandler hook;
-    void *unknow;
-    char name[128];
-public :
-    nnExtHandler(const char * _name,extHandler & _hook,void *unkObj)
-        :hook(_hook),unknow(unkObj)
-    {
-        strncpy(name,_name,126);
-    }
-
-    inline void doHandler(void )
-    {
-     if(hook && unknow)
-     {
-         try{
-             hook(unknow);
-         }
-         catch(...)
-         {
-             extHandlerException *e = new extHandlerException(name);
-             throw(e);
-         }
-     }
-    }
-};
-
-
-
 
 
 
@@ -84,7 +50,8 @@ public:
     bool closeAll(void);
     childApps *activate(int v);
     childApps *active(void);
-    bool setExtHandler(childApps *child,const char *_name,extHandler & _hook,void *unkObj);
+    bool setExtHandler(childApps *child,handler_exec type,
+                       extHandler  _hook,void *unkObj);
 protected:
     bool clean(void);
     bool createInternalObjects(STRING & conf_file_name, childApps & child);

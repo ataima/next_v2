@@ -62,6 +62,7 @@ class nnViewGlue
     IView     *view;
     IToolView *toolview;
     status_select status;
+    IExtHandlerList * handlers;
     bool show_cmd;
     
 
@@ -114,9 +115,8 @@ public:
     inline int getPageWidth(void) { return phy_Size.x / const_Size.x;  }
     inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
     inline nnPoint getPageSize(void) { return phy_Size / const_Size; }
-    bool addExtHandler(handler_exec_view type,
-              const char *_name,extHandler & _hook,void *unkObj);
-
+    bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
+    bool loadImages(const XCHAR *_path);
 private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);

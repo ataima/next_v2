@@ -14,16 +14,16 @@ class nnToolView
         :public IToolView
 {
     commanderList commands;
-    IImageManager *images;
     ICommander *active;
     int pos_sel;
 public:
-    nnToolView(IImageManager *_images);
+    nnToolView();
     ~nnToolView();
     bool readConfiguration(IXmlNode *node);
-    bool draw(bmpImage & bkg,int x, int y,void * context);
+    bool draw(bmpImage & bkg,nnPoint & pos,void * context);
     bool handlerRequestCommand( nnPoint & pos,int & command);
     inline ICommander *getActiveCommander(void){return active;}
+    bool loadImages(const XCHAR *path);
 };
 
 

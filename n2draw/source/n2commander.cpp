@@ -2,16 +2,21 @@
 
 #include "n2commander.h"
 #include "n2exception.h"
-
+#include "n2imagemanager.h"
+#include "images.h"
 
 nnCommander::nnCommander()
 {
-
+    images= new nnImageManager();
 }
 
 nnCommander::~nnCommander()
 {
-
+    if(images!=nullptr)
+    {
+        delete images;
+        images=nullptr;
+    }
 }
 
 
@@ -21,37 +26,7 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
     if(conf)
     {
         int numItem;
-        // size of single buttons
-        IXmlNode *t = conf->find(X("DIM"));
-        if (t)
-        {
-            IXmlNode *v = t->find(X("WIDTH"));
-            if(v)
-            {
-                const_Size.x=v->getLong();
-            }
-            else
-            {
-                xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("WIDTH"));
-                throw (pe);
-            }
-            v = t->find(X("HEIGHT"));
-            if(v)
-            {
-                const_Size.y=v->getLong();
-            }
-            else
-            {
-                xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("HEIGHT"));
-                throw (pe);
-            }
-        }
-        else
-        {
-            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("DIM"));
-            throw (pe);
-        }
-        t=conf->find(X("ITEM_NUM"));
+        IXmlNode *t=conf->find(X("ITEM_NUM"));
         if(t)
         {
             numItem=t->getLong();
@@ -100,6 +75,55 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("COMMAND"));
                         throw (pe);
                     }
+                    v = t->find(X("MASK"));
+                    if(v)
+                    {
+                        IXmlNode *u = v->find(X("RED"));
+                        if(u)
+                        {
+                            item.maskR=u->getLong()&0xff;
+                        }
+                        else
+                        {
+                            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("RED"));
+                            throw (pe);
+                        }
+                        u = v->find(X("GREEN"));
+                        if(u)
+                        {
+                            item.maskG=u->getLong()&0xff;
+                        }
+                        else
+                        {
+                            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("GREEN"));
+                            throw (pe);
+                        }
+                        u = v->find(X("BLUE"));
+                        if(u)
+                        {
+                            item.maskB=u->getLong()&0xff;
+                        }
+                        else
+                        {
+                            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("BLUE"));
+                            throw (pe);
+                        }
+                    }
+                    else
+                    {
+                        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("MASK"));
+                        throw (pe);
+                    }
+                    v = t->find(X("FILE"));
+                    if(v)
+                    {
+                        item.file =v->getValue();
+                    }
+                    else
+                    {
+                        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("FILE"));
+                        throw (pe);
+                    }
                     items.push_back(item);
                 }
                 else
@@ -126,22 +150,63 @@ bool nnCommander::handlerRequestCommand( nnPoint & pos,int & command)
     listCommandItem::iterator end=items.end();
     while(it!=end)
     {
-        nnRect rect=rectFromPos(pos);
+        nnPoint start=pos;
+        start+=it->pos;
+        nnRect rect=rectFromPos(start,it->command);
         if(rect.into(it->pos))
         {
             command=it->command;
             res=true;
             break;
         }
+        it++;
     }
     return res;
 }
 
 
-nnRect nnCommander::rectFromPos(nnPoint & pos)
+nnRect nnCommander::rectFromPos(nnPoint & pos,int command)
 {
-    nnPoint start =(pos/const_Size)*const_Size;
-    nnPoint stop = start+const_Size;
-    nnRect res(start,stop);
+    nnPoint dim;
+    nnPoint stop = pos;
+    if(images)
+    {
+        bmpImage *image=images->getImage(command);
+        if(image)
+        {
+            dim.x=image->getWidth();
+            dim.y=image->getHeight();
+        }
+        stop+=dim;
+    }
+    nnRect res(pos,stop);
+    return res;
+}
+
+bool nnCommander::loadImages(const XCHAR *path)
+{
+    bool res=false;
+    if(images)
+    {
+        if(images->setPath(path))
+        {
+            objImageList toLoad;
+            for(auto i: items)
+            {
+                toLoad[i.command]=i.file;
+            }
+            res=images->loadImages(&toLoad);
+        }
+    }
+    return res;
+}
+
+bmpImage *nnCommander::getImage(int command)
+{
+    bmpImage * res=nullptr;
+    if(images)
+    {
+        res=images->getImage(command);
+    }
     return res;
 }

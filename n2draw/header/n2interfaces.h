@@ -8,21 +8,35 @@
 
 #include "n2point.h"
 //////////////////////////////////////////////////////
-typedef void (*extHandler)(void *);
+typedef void (*extHandler)(void *,size_t );
+
+typedef enum tag_handler_actions
+{
+    action_redraw,
+    action_draw_toolbar,
+} handlerAction;
 
 
 class IExtHandler
 {
 public:
-    virtual void doHandler(void)=0;
+    virtual void doHandler(size_t param)=0;
 };
 
+class IExtHandlerList
+{
+public:
+    virtual bool add(unsigned int type,IExtHandler *handler)=0;
+    virtual bool remove(unsigned int type)=0;
+    virtual bool clear(void)=0;
+    virtual IExtHandler *get(unsigned int type)=0;
+};
 
-
-typedef enum tag_handler_exec_view
+typedef enum tag_handler_exec
 {
     handler_view_exec_refresh,
-}handler_exec_view;
+    handler_exec_command,
+} handler_exec;
 
 //////////////////////////////////////////////////////
 
@@ -106,13 +120,29 @@ public:
 
 
 //////////////////////////////////////////////////////
+class bmpImage;
+
+typedef struct nn_tag_command_item
+{
+    nnPoint pos;
+    int  command;
+    unsigned char maskR;
+    unsigned char maskG;
+    unsigned char maskB;
+    std::string file;
+} commandItem;
+
+typedef std::vector<commandItem> listCommandItem;
 
 class ICommander
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
+    virtual listCommandItem & getItems(void)=0;
+    virtual bmpImage * getImage(int command)=0;
     virtual ~ICommander() {}
+    virtual bool loadImages(const XCHAR *path)=0;
 };
 
 //////////////////////////////////////////////////////
@@ -169,7 +199,7 @@ public:
     virtual bool isComponent(void) = 0;
     virtual void save(IXmlNode *root) = 0;
     virtual void load(IXmlNode *root) = 0;
-    virtual ~InnObj(){}
+    virtual ~InnObj() {}
 };
 
 //////////////////////////////////////////////////////
@@ -188,7 +218,7 @@ enum tag_wire
     wireTHorizUp,
     wireTVertRight,
     wireTVertLeft,
-    wireCross
+    wireCross,
 };
 
 typedef tag_wire eWire;
@@ -199,7 +229,7 @@ class InnWire
 public:
     virtual eWire getWire(void) = 0;
     virtual void setWire(eWire c) = 0;
-    virtual ~InnWire(){}
+    virtual ~InnWire() {}
 };
 
 
@@ -224,7 +254,7 @@ public:
     virtual void load(IXmlNode *root) = 0;
     virtual void setBaseVCPU(pMerlinoVCPU vcpu) = 0;
     virtual pMerlinoVCPU getBaseVCPU(void) = 0;
-    virtual ~InnVCPU(){}
+    virtual ~InnVCPU() {}
 
 };
 
@@ -232,9 +262,12 @@ public:
 
 typedef union tag_hash_key
 {
-uint32_t v1;
-uint32_t v2;
-uint64_t v12;
+    struct tag_int_key
+    {
+        uint32_t v1;
+        uint32_t v2;
+    } i;
+    uint64_t v12;
 } hashkey;
 
 class nnObjCoil;
@@ -272,7 +305,7 @@ public:
     virtual bool Resize(int w, int h) = 0;
     virtual bool revIndexes(hashkey & key,int & x, int & y) = 0;
     virtual bool readConfiguration(IXmlNode *node)=0;
-    virtual ~IManager(){}
+    virtual ~IManager() {}
 
 };
 
@@ -282,7 +315,7 @@ class IUndoRedo
 public :
     virtual bool undo(void) = 0;
     virtual bool redo(void) = 0;
-    virtual ~IUndoRedo(){}
+    virtual ~IUndoRedo() {}
 };
 
 //////////////////////////////////////////////////////
@@ -293,24 +326,27 @@ class listImage;
 class IImageManager
 {
 public:
-    virtual STRING  getDefaulPath(void) const = 0;
+    virtual bool setPath(const XCHAR * _path) =0;
+    virtual STRING  & getDefaulPath(void) const = 0;
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool loadImages(int w, int h) = 0;
-    virtual const listImage * getImageList(void) = 0;
+    virtual bool loadImages(objImageList *objs) = 0;
+    //virtual const listImage * getImageList(void) = 0;
+    virtual bmpImage * getImage(int id) = 0;
     virtual const  objImageList * getAvailObj(void) = 0;
-    virtual ~IImageManager(){}
+    virtual ~IImageManager() {}
 };
 
 //////////////////////////////////////////////////////
-class bmpImage;
 class IToolView
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
-    virtual bool draw(bmpImage & bkg,int x, int y,void * context) = 0;
+    virtual bool draw(bmpImage & bkg,nnPoint & pos,void * context) = 0;
     virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
     virtual ICommander *getActiveCommander(void)=0;
-    virtual ~IToolView(){}
+    virtual bool loadImages(const XCHAR *path)=0;
+    virtual ~IToolView() {}
 };
 
 //////////////////////////////////////////////////////
@@ -323,7 +359,7 @@ public:
     virtual bool createMainBitmap(int w, int h) = 0;
     virtual bmpImage & getMainBitmap(void) = 0;
     virtual bool remapMainBitmap(int w,int h)=0;
-    virtual ~IView(){}
+    virtual ~IView() {}
 };
 
 //////////////////////////////////////////////////////
@@ -384,9 +420,9 @@ public:
     virtual int getPageWidth(void)=0;
     virtual int getPageHeight(void)=0;
     virtual nnPoint getPageSize(void)=0;
-    virtual bool addExtHandler(handler_exec_view type,
-              const char *_name,extHandler & _hook,void *unkObj)=0;
-    virtual ~IViewGlue(){}
+    virtual bool addExtHandler(handler_exec type,extHandler  _hook,void *unkObj)=0;
+    virtual bool loadImages(const XCHAR *_path)=0;
+    virtual ~IViewGlue() {}
 };
 
 //////////////////////////////////////////////////////
@@ -409,8 +445,8 @@ public:
     virtual bool closeAll(void) = 0;
     virtual childApps *activate(int v) = 0;
     virtual childApps *active(void) = 0;
-    virtual bool setExtHandler(childApps *child,const char *_name,extHandler & _hook,void *unkObj)=0;
-    virtual ~IAppManager(){}
+    virtual bool setExtHandler(childApps *child,handler_exec type,extHandler  _hook,void *unkObj)=0;
+    virtual ~IAppManager() {}
 };
 
 

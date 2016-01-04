@@ -287,7 +287,7 @@ public:
         UtoA f(filename);
         const char *b_msg=n2exception::msg();
         if(f.good())
-            ss<<"exception:"<<b_msg<<std::endl<<" Cannot parse configuration file :"<<f.utf8()<<std::endl;
+            ss<<"exception:"<<b_msg<<std::endl<<" Cannot open image file :"<<f.utf8()<<std::endl;
         else
             ss<<"exception:"<<b_msg<<std::endl;
         delete b_msg;
@@ -298,7 +298,6 @@ public:
         return buff;
     }
 };
-
 
 
 
@@ -326,15 +325,25 @@ public:
 class extHandlerException
     :public n2exception
 {
-    std::string  name;
+    handler_exec type;
 public:
-    explicit  extHandlerException(const char*  handlerName) throw()
-        :n2exception("extHandlerException"), name(handlerName) {}
+    explicit  extHandlerException(handler_exec _type) throw()
+        :n2exception("extHandlerException"), type(_type) {}
     char const* msg()
     {
         std::stringstream ss;
         const char *b_msg=n2exception::msg();
-        ss<<"exception:"<<b_msg<<std::endl<<" An exception is occurred on requested handler:"<<name<<std::endl;
+        ss<<"exception:"<<b_msg<<std::endl<<" An exception is occurred on requested handler";
+        switch(type)
+        {
+        case handler_view_exec_refresh:
+            ss<<"handler_view_exec_refresh";
+            break;
+        case handler_exec_command:
+            ss<<"handler_exec_command";
+            break;
+        }
+        ss<<std::endl;
         delete b_msg;
         int size=ss.str().size();
         char *buff=new char[size+2];

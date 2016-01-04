@@ -418,7 +418,7 @@ bool miniXmlNode::load(const XCHAR *file_in, miniXmlNode *root)
         miniXmlParse parser(file_in, root);
         res = parser.parse();
     }
-    root->print(stdout);
+    //root->print(stdout);
     return res;
 }
 

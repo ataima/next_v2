@@ -30,28 +30,22 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "n2interfaces.h"
 
 
-typedef struct nn_tag_command_item
-{
-    nnPoint pos;
-    int  command;
-} commandItem;
-
-
-typedef std::vector<commandItem> listCommandItem;
-
 class nnCommander
     :public ICommander
 {
 private:
-    nnPoint const_Size;
     listCommandItem items;
+    IImageManager *images;
 public:
     nnCommander();
     ~nnCommander();
     bool readConfiguration(IXmlNode *node) ;
     bool handlerRequestCommand( nnPoint & pos,int & command);
+    inline listCommandItem & getItems(void) {return items;}
+    bool loadImages(const XCHAR *path);
+    bmpImage * getImage(int command);
 private:
-    nnRect rectFromPos(nnPoint & pos);
+    nnRect rectFromPos(nnPoint & pos,int command);
 };
 
 

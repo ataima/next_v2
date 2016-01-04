@@ -743,6 +743,11 @@ void nnObjConn::load(IXmlNode *root)
                         value++;
                         len--;
                     }
+                    while (*value==' ' && len>0)
+                    {
+                        value++;
+                        len--;
+                    }
                 } while (*value != X('\0') && len>0);
             }
         }		

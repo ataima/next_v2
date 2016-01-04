@@ -12,7 +12,7 @@ CONFIG += staticlib
 
 DEFINES += N2DRAW_LIBRARY
 
-DEFINES += _UNICODE
+# DEFINES += _UNICODE
 
 
 windows{
@@ -30,6 +30,10 @@ SOURCES += \
 ../../source/n2viewglue.cpp              \
 ../../source/n2commander.cpp             \
 ../../source/n2toolview.cpp              \
+../../source/n2exthandler.cpp            \
+
+
+
 
 HEADERS += \
 ../../header/MerlinoVCPU.h             \
@@ -47,6 +51,11 @@ HEADERS += \
 ../../header/n2commander.h             \
 ../../header/n2toolview.h              \
 ../../header/n2interfaces.h            \
+../../header/n2exthandler.h            \
+
+
+
+
 
 DESTDIR =../../../../dist
 

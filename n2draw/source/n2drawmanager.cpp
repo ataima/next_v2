@@ -160,7 +160,10 @@ bool nnObjManager::addCoil(int x, nnObjCoil *obj)
                 // coil pos = y-1, for first empty position to y-1 wire to connect
                 // find first empty cell
                 for (i = 0; i < v_height-1; i++)
-                    if (getObj(x, i) == nullptr)break;
+                {
+                    InnObj *obj=getObj(x, i);
+                    if (obj == nullptr)break;
+                }
                 for (; i < v_height-1; i++)
                 {
                     nnObjWire *wire = new nnObjWire(eWire::wireVertical);
@@ -299,7 +302,7 @@ bool nnObjManager::save(const STRING & name)
     int num_obj = 0;
     if (!name.empty())
     {
-        UtoA toA(name.c_str());
+        UtoA toA(name);
 #ifdef _MSC_VER
         FILE *out = FOPEN(toA.utf8(),"w+");
 #else
@@ -403,8 +406,8 @@ bool nnObjManager::genHashKey(int x, int y, hashkey &key)
     y |= 1;
     x &= mask_width;
     y &= mask_height;
-    key.v2 = y;
-    key.v1 = x;
+    key.i.v2 = y;
+    key.i.v1 = x;
     res =( key.v12 != 0);
     return res;
 }
@@ -632,8 +635,8 @@ bool nnObjManager::swapObj(nnPoint from, nnPoint to)
 bool nnObjManager::revHashKey(hashkey & key, int & x, int &y)
 {
     bool res = false;
-    y = (key.v2)>>1 ;
-    x = (key.v1)>>1 ;
+    y = (key.i.v2)>>1 ;
+    x = (key.i.v1)>>1 ;
     res = (y != 0 && x != 0);
     return res;
 }
@@ -1106,5 +1109,7 @@ void nnObjUndoRedo::clearRedoObjs(void)
 
 bool nnObjManager::readConfiguration(IXmlNode *node)
 {
+    // will need ?
+    (node);
     return true;
 }

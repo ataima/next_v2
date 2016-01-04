@@ -12,11 +12,13 @@
 #endif
 
 
-nnImageManager::nnImageManager()
+nnImageManager::nnImageManager(const XCHAR *_path)
 {
     availObj.clear();
     allImages.clear();
     path.clear();
+    if(_path)
+        path=_path;
 }
 
 nnImageManager::~nnImageManager()
@@ -207,7 +209,7 @@ bool nnImageManager::loadImages(int w, int h)
             filenameabs += it->second;
             if (image.copyFromFile(filenameabs.c_str()))
             {
-                if (image.getWidth() != w || image.getHeight() != h)
+                if (w!= -1 && h!=-1 && (image.getWidth() != w || image.getHeight() != h))
                 {
                     imagesConfigurationBadSizeException *pe=new imagesConfigurationBadSizeException(filenameabs.c_str(),image.getWidth(),image.getHeight());
                     throw (pe);
@@ -237,4 +239,36 @@ bool nnImageManager::loadImages(int w, int h)
     return res;
 }
 
+bool nnImageManager::loadImages(objImageList * extlist)
+{
+    bool res = false;
+    if(extlist)
+    {
+        if(availObj.size() > 0)
+            availObj.clear();
+        availObj=*extlist;
+        res=loadImages(-1,-1);
+    }
+    return res;
+}
 
+bmpImage * nnImageManager::getImage(int id)
+{
+    bmpImage *res=nullptr;
+    if (allImages.size()>0)
+    {
+        listImage::const_iterator it = allImages.find(id);
+        if (it != allImages.end())
+        {
+            res = it->second;
+        }
+    }
+    return res;
+}
+
+bool nnImageManager::setPath(const XCHAR *_path)
+{
+    path.clear();
+    path=_path;
+    return true;
+}
