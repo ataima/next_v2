@@ -80,11 +80,12 @@ public:
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
-private slots:
+public slots:
     void newFile();
     void open();
     void save();
     void saveAs();
+private slots:
     void about();
     void cut();
     void copy();
@@ -100,7 +101,6 @@ private:
     void destroyObjects();
     void createActions();
     void createMenus();
-    void createToolBars();
     void createStatusBar();
     void readSettings();
     void writeSettings();
@@ -114,8 +114,6 @@ private:
     QMenu *windowMenu;
     QMenu *helpMenu;
     QMenu *editMenu;
-    QToolBar *fileToolBar;
-    QToolBar *editToolBar;
     QAction *newAct;
     QAction *openAct;
     QAction *saveAct;

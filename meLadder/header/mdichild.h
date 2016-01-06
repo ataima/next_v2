@@ -51,7 +51,6 @@
 #include "images.h"
 #include "n2draw.h"
 
-#include "mdiselector.h"
 
 #include "n2drawmanager.h"
 #include "n2miniXml.h"
@@ -72,7 +71,6 @@ private:
     mdiScrollBar  *vScroll;
     mdiScrollBar  *hScroll;
     childApps   *n2client;
-    mdiSelector *selector;
     QString curFile;
     bool isUntitled;
     QPixmap pixmap;
@@ -93,8 +91,7 @@ public:
     void cut(void);
     void copy(void);
 protected:
-    static void updateViewEventRequest(void *dest,size_t param);
-    static void externCommandRequest(void * dest, size_t param);
+    static void externCommandRequest(void * dest, handlerAction type_param, size_t user_param);
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 private slots:
     void documentWasModified(bool v);
@@ -104,16 +101,14 @@ private:
     void setCurrentFile(const QString &fileName);
     QString strippedName(const QString &fullFileName);
     void paintEvent(QPaintEvent * /* event */) override;
-    void refreshPixmap(size_t param);
-    void requestCommand(size_t param);
+    void refreshPixmap(void);
+    void requestCommand(handlerAction type_param, size_t user_param);
+    void directCommand(size_t user_param);
     void destroyObjects(void);
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *) override;
-    void resizeSelector(void);
-    void errorSelector(void);
     void keyPressEvent(QKeyEvent *event) override;
-    void adjustScrollBars(const nnPoint &pos);
 };
 
 

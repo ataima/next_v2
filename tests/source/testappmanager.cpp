@@ -135,13 +135,13 @@ void test_app_manager::test1(void)
     CA_ASSERT(res == true);
     bmpImage &bdraw = childs->view->getDraw();
     for(unsigned int i=0;i<bdraw.getWidth();i+=100)
-        bdraw.line(i,0,i,bdraw.getHeight(),255,0,0);
+        bdraw.line(i,0,i,bdraw.getHeight(),255,0,0,0xfefefefe);
     for(unsigned int u=0;u<bdraw.getHeight();u+=100)
-        bdraw.line(0,u,bdraw.getWidth(),u,0,0,255);
-        bdraw.line(0,0,bdraw.getWidth(),bdraw.getHeight(),0,255,0);
-        bdraw.line(0,0,200,bdraw.getHeight(),0,255,255);
-    bdraw.frameRect(10,10,300,300,128,128,64);
-    bdraw.frameRect(50,50,250,250,128,128,64);
+        bdraw.line(0,u,bdraw.getWidth(),u,0,0,255,0xfefefefe);
+        bdraw.line(0,0,bdraw.getWidth(),bdraw.getHeight(),0,255,0,0xfefefefe);
+        bdraw.line(0,0,200,bdraw.getHeight(),0,255,255,0xfefefefe);
+    bdraw.frameRect(10,10,300,300,128,128,64,0xfefefefe);
+    bdraw.frameRect(50,50,250,250,128,128,64,0xfefefefe);
     draw(&bdraw);
     MKDIR(".\\bmp",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     bdraw.copyToFile(X(".\\bmp\\test1_app.bmp"));

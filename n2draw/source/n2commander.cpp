@@ -8,10 +8,12 @@
 nnCommander::nnCommander()
 {
     images= new nnImageManager();
+    curItem=nullptr;
 }
 
 nnCommander::~nnCommander()
 {
+    curItem=nullptr;
     if(images!=nullptr)
     {
         delete images;
@@ -124,6 +126,16 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("FILE"));
                         throw (pe);
                     }
+                    v = t->find(X("INFO"));
+                    if(v)
+                    {
+                        item.info =v->getValue();
+                    }
+                    else
+                    {
+                        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("FILE"));
+                        throw (pe);
+                    }
                     items.push_back(item);
                 }
                 else
@@ -142,6 +154,40 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
     return res;
 }
 
+bool nnCommander::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
+{
+    bool res=false;
+    // pos is zero referenced...
+    if(curItem==nullptr)
+    {
+        listCommandItem::iterator it=items.begin();
+        listCommandItem::iterator end=items.end();
+        while(it!=end)
+        {
+            if(it->rect.into(pos))
+            {
+                curItem=&(*it);
+                hook->doHandler(action_update_statusbars_info,(size_t)(curItem->info.c_str()));
+                res=true;
+                break;
+            }
+            it++;
+        }
+    }
+    else
+    {
+        if(curItem->rect.into(pos)==false)
+        {
+            curItem=nullptr;
+            hook->doHandler(action_update_statusbars_info,(size_t)" ... ");
+            res=true;
+        }
+    }
+    return res;
+}
+
+
+
 bool nnCommander::handlerRequestCommand( nnPoint & pos,int & command)
 {
     bool res=false;
@@ -150,10 +196,7 @@ bool nnCommander::handlerRequestCommand( nnPoint & pos,int & command)
     listCommandItem::iterator end=items.end();
     while(it!=end)
     {
-        nnPoint start=pos;
-        start+=it->pos;
-        nnRect rect=rectFromPos(start,it->command);
-        if(rect.into(it->pos))
+        if(it->rect.into(pos))
         {
             command=it->command;
             res=true;
@@ -165,23 +208,7 @@ bool nnCommander::handlerRequestCommand( nnPoint & pos,int & command)
 }
 
 
-nnRect nnCommander::rectFromPos(nnPoint & pos,int command)
-{
-    nnPoint dim;
-    nnPoint stop = pos;
-    if(images)
-    {
-        bmpImage *image=images->getImage(command);
-        if(image)
-        {
-            dim.x=image->getWidth();
-            dim.y=image->getHeight();
-        }
-        stop+=dim;
-    }
-    nnRect res(pos,stop);
-    return res;
-}
+
 
 bool nnCommander::loadImages(const XCHAR *path)
 {

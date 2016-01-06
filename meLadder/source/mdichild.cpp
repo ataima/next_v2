@@ -53,7 +53,6 @@ MdiChild::MdiChild()
     vScroll = new mdiScrollBar(Qt::Orientation::Vertical,this);
     hScroll->hide();
     vScroll->hide();
-    selector = new mdiSelector();
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
 }
@@ -107,10 +106,6 @@ void MdiChild::newFile()
                 vScroll->hide();
             }
         }
-        getn2App()->setExtHandler(n2client,handler_view_exec_refresh,
-                                  &MdiChild::updateViewEventRequest,
-                                  this
-                                 );
         getn2App()->setExtHandler(n2client,handler_exec_command,
                                   &MdiChild::externCommandRequest,
                                   this
@@ -273,39 +268,95 @@ void MdiChild::paintEvent(QPaintEvent * /* event */)
 {
     QStylePainter painter(this);
     painter.drawPixmap(0, 0, pixmap);
-    if(selector)
-        selector->draw(painter);
 }
 
 
-void MdiChild::updateViewEventRequest(void * dest, size_t param)
+
+
+void MdiChild::externCommandRequest(void * dest, handlerAction type_param,size_t user_param)
 {
     if(dest)
     {
         MdiChild *child = static_cast< MdiChild *>(dest);
-        child->refreshPixmap(param);
+        child->requestCommand(type_param,user_param);
     }
 }
 
 
-void MdiChild::externCommandRequest(void * dest, size_t param)
+void MdiChild::directCommand(size_t user_param)
 {
-    if(dest)
+    qDebug()<<"RX user param :"<<user_param;
+    // from conf...xml toolbars
+    switch(user_param)
     {
-        MdiChild *child = static_cast< MdiChild *>(dest);
-        child->requestCommand(param);
+    case 4000:
+        getMainWnd()->save();
+        break;
+    case 4001:
+        getMainWnd()->open();
+        break;
+    case 4002:
+        getMainWnd()->newFile();
+        break;
+    case 4003:
+        copy();
+        break;
+    case 4004:
+        cut();
+        break;
+    case 4005:
+        paste();
+        break;
     }
 }
 
-void MdiChild::requestCommand(size_t param)
+void MdiChild::requestCommand(handlerAction type_param,size_t user_param)
 {
+    switch(type_param)
+    {
+    case action_redraw:
+        refreshPixmap();
+        break;
+    case action_update_from_ext_scroolbars:
+        updateDocPosHorz();
+        updateDocPosVert();
+        break;
+    case action_host_command:
+        directCommand(user_param);
+        break;
+    case action_adjust_horz_scrollbar:
+        if(hScroll)
+            hScroll->setValue((int)user_param);
+        refreshPixmap();
+        break;
+    case action_adjust_vert_scrollbar:
+        if(vScroll)
+            vScroll->setValue((int)user_param);
+        refreshPixmap();
+        break;
+    case action_update_statusbars_info:
+    {
+         char *p=(char *)user_param;
+         getMainWnd()->statusBar()->showMessage(p);
+    }
+    break;
+    case action_update_statusbars_panes:
+    {
+        if(n2client && n2client->view)
+        {
+            nnPoint start,stop;
+            n2client->view->getSelectArea(start,stop);
+            getMainWnd()->updatePosCursor(start,stop);
+            refreshPixmap();
+        }
+    }
+    break;
+    }
 }
 
 
-void MdiChild::refreshPixmap(size_t param)
+void MdiChild::refreshPixmap(void)
 {
-    //param 0 internal refresh >0 from ext reqyest
-    (param);
     pixmap = QPixmap(size());
     if(n2client!=nullptr)
     {
@@ -366,7 +417,7 @@ void MdiChild::resizeEvent(QResizeEvent *e)
                 vScroll->hide();
             }
         }
-        refreshPixmap(0);
+        refreshPixmap();
     }
 }
 
@@ -380,7 +431,6 @@ void MdiChild::updateDocPosHorz(void)
     if(n2client)
     {
         n2client->view->handlerScrollHorz(pos_x);
-        resizeSelector();
     }
 }
 
@@ -394,7 +444,6 @@ void MdiChild::updateDocPosVert(void)
     if(n2client)
     {
         n2client->view->handlerScrollVert(pos_y);
-        resizeSelector();
     }
 }
 
@@ -420,67 +469,26 @@ void MdiChild::destroyObjects(void)
 {
     DESTROY_OBJ(hScroll);
     DESTROY_OBJ(vScroll);
-    DESTROY_OBJ(selector);
 }
 
-
-void MdiChild::resizeSelector(void)
-{
-    if(n2client && selector)
-    {
-        nnRect result;
-        nnPoint start,stop;
-        if(n2client->view->isSelectAreaPhyVisible(result,start,stop))
-        {
-            selector->setError(false);
-            selector->SetArea(result,start,stop);
-            selector->show();
-            refreshPixmap(0);
-        }
-        else
-        {
-            selector->hide();
-            refreshPixmap(0);
-        }
-    }
-}
-
-void MdiChild::errorSelector(void)
-{
-    if(n2client && selector && selector->getStatus())
-    {
-        selector->setError(true);
-        refreshPixmap(0);
-    }
-}
 
 
 void MdiChild::mouseMoveEvent( QMouseEvent *event )
 {
-    nnPoint start, stop;
     if(n2client)
     {
         QPoint p=event->globalPos();
         p=mapFromGlobal(p);
+        nnPoint pos(p.x(),p.y());
         if(event->buttons()==Qt::LeftButton)
         {
-            unsigned int bt=event->buttons();
-            nnPoint pos(p.x(),p.y());
-            if(n2client->view->handlerMouseMove((nn_mouse_buttons)bt,pos,start,stop))
-            {
-                getMainWnd()->updatePosCursor(start,stop);
-                resizeSelector();
-            }
+            n2client->view->handlerMouseMove(nn_m_button_left,pos);
         }
-        else if(event->buttons()==Qt::NoButton)
-        {
-            if(selector && selector->getStatus()==false)
+        else
+            if(event->buttons()==Qt::NoButton)
             {
-                nnPoint log,pos(p.x(),p.y());
-                log=n2client->view->getCoordLog(pos);
-                getMainWnd()->updatePosCursor(log,log);
+                n2client->view->handlerMouseMove(nn_m_button_unknow,pos);
             }
-        }
     }
 }
 
@@ -489,7 +497,6 @@ void MdiChild::mouseMoveEvent( QMouseEvent *event )
 void MdiChild::mousePressEvent(QMouseEvent *event)
 {
     const char * error=nullptr;
-    nnPoint start, stop;
     if(n2client)
     {
         QPoint p=event->globalPos();
@@ -497,15 +504,7 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
         nn_mouse_buttons bt=(nn_mouse_buttons)(unsigned int)event->buttons();
         nnPoint pos(p.x(),p.y());
         try {
-            if(n2client->view->handlerMouseButtonDown(bt,pos,start,stop))
-            {
-                if(bt==nn_m_button_left)
-                {
-                    getMainWnd()->updatePosCursor(start,stop);
-                    resizeSelector();
-                }
-            }
-
+            n2client->view->handlerMouseButtonDown(bt,pos);
         }
         catch(n2exception *e)
         {
@@ -522,7 +521,6 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
             QMessageBox::warning(this,"meLadder",
                                  tr("At draw toolbars\n%1.")
                                  .arg(error));
-
         }
     }
 }
@@ -536,24 +534,11 @@ void MdiChild::mouseReleaseEvent(QMouseEvent *event)
         p=mapFromGlobal(p);
         unsigned int bt=event->buttons();
         nnPoint pos(p.x(),p.y());
-        if(n2client->view->handlerMouseButtonUp((nn_mouse_buttons)bt,pos,start,stop))
-        {
-            qDebug()<<" START RELEASE :"<<start.x<<" - "<<start.y;
-            qDebug()<<"STOP RELEASE :"<<stop.x<<" - "<<stop.y;
-            getMainWnd()->updatePosCursor(start,stop);
-            resizeSelector();
-        }
+        n2client->view->handlerMouseButtonUp((nn_mouse_buttons)bt,pos);
     }
 
 }
 
-void MdiChild::adjustScrollBars(const nnPoint & pos)
-{
-    if(hScroll)
-        hScroll->setValue((int)pos.x);
-    if(vScroll)
-        vScroll->setValue((int)pos.y);
-}
 
 
 void MdiChild::keyPressEvent(QKeyEvent *event)
@@ -561,7 +546,6 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
     bool res=false;
     if( n2client )
     {
-        nnPoint start,stop,pos;
 //        qDebug()<<"modifiers()="<<event->modifiers()<<"   Key()="<<event->key();
         Qt::KeyboardModifiers mod=event->modifiers();
         Qt::Key keyb=(Qt::Key)event->key();
@@ -575,80 +559,37 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
         switch(keyb)
         {
         case Qt::Key_Escape:
-            res=n2client->view->handlerEscapeButton(shift,ctrl,alt,start,stop);
-            if(res)
-            {
-                selector->hide();
-                getMainWnd()->updatePosCursor(start,stop);
-            }
+            res=n2client->view->handlerEscapeButton(shift,ctrl,alt);            
             break;
         case Qt::Key_Home:
-            res=n2client->view->handlerHomeButton(shift,ctrl,alt,pos);
-            if(res)
-            {
-                adjustScrollBars(pos);
-            }
+            res=n2client->view->handlerHomeButton(shift,ctrl,alt);
             break;
         case Qt::Key_End:
-            res=n2client->view->handlerEndButton(shift,ctrl,alt,pos);
-            if(res)
-            {
-                adjustScrollBars(pos);
-            }
+            res=n2client->view->handlerEndButton(shift,ctrl,alt);
             break;
         case Qt::Key_PageUp:
-            res=n2client->view->handlerPageUpButton(shift,ctrl,alt,pos);
-            if(res)
-            {
-                adjustScrollBars(pos);
-            }
+            res=n2client->view->handlerPageUpButton(shift,ctrl,alt);
             break;
         case Qt::Key_PageDown:
-            res=n2client->view->handlerPageDownButton(shift,ctrl,alt,pos);
-            if(res)
-            {
-                adjustScrollBars(pos);
-            }
+            res=n2client->view->handlerPageDownButton(shift,ctrl,alt);
             break;
         }
-        if(res)
+        if(n2client->view->isStartValid())
         {
-            refreshPixmap(0);
-        }
-        else
-        {
-            if(n2client->view->isStartValid())
+            switch(keyb)
             {
-                bool needScroll;
-                switch(keyb)
-                {
-                case Qt::Key_Left:
-                    res=n2client->view->handlerLeftButton(shift,ctrl,alt,start,stop,needScroll);
-                    break;
-                case Qt::Key_Up:
-                    res=n2client->view->handlerUpButton(shift,ctrl,alt,start,stop,needScroll);
-                    break;
-                case Qt::Key_Right:
-                    res=n2client->view->handlerRightButton(shift,ctrl,alt,start,stop,needScroll);
-                    break;
-                case Qt::Key_Down:
-                    res=n2client->view->handlerDownButton(shift,ctrl,alt,start,stop,needScroll);
-                    break;
-                }
-                if(res)
-                {
-                    if(needScroll)
-                    {
-                        adjustScrollBars( n2client->view->getOffsetView());
-                    }
-                    getMainWnd()->updatePosCursor(start,stop);
-                    resizeSelector();
-                }
-                else
-                {
-                    //at border red
-                    errorSelector();
-                }
+            case Qt::Key_Left:
+                res=n2client->view->handlerLeftButton(shift,ctrl,alt);
+                break;
+            case Qt::Key_Up:
+                res=n2client->view->handlerUpButton(shift,ctrl,alt);
+                break;
+            case Qt::Key_Right:
+                res=n2client->view->handlerRightButton(shift,ctrl,alt);
+                break;
+            case Qt::Key_Down:
+                res=n2client->view->handlerDownButton(shift,ctrl,alt);
+                break;
             }
         }
     }

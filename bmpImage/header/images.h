@@ -120,8 +120,8 @@ public:
                 unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
     bool setPixel(unsigned int _x,unsigned int _y,unsigned char red,unsigned char green,unsigned char blue);
     bool getPixel(unsigned int _x,unsigned int _y,unsigned char  & red,unsigned char & green,unsigned char & blue);
-    bool line(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned char red, unsigned char green, unsigned char blue);
-    bool frameRect(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned char red, unsigned char green, unsigned char blue);
+    bool line( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned int mask);
+    bool frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue,unsigned int mask);
 protected:
     bool replace(LPBITMAPFILEHEADER new_dib);
     static size_t getInternalImageSize(unsigned int width, unsigned int height);
@@ -154,8 +154,8 @@ protected:
     //
     static bool setPixel(LPBITMAPFILEHEADER dest,unsigned int x,unsigned int y,unsigned char red,unsigned char green,unsigned char blue);
     static bool getPixel(LPBITMAPFILEHEADER dest, unsigned int x, unsigned int y, unsigned char  & red, unsigned char & green, unsigned char & blue);
-    static bool line(LPBITMAPFILEHEADER dest,unsigned int x1,unsigned int y1,unsigned int x2,unsigned int y2,
-                        unsigned char red,unsigned char green,unsigned char blue);
+    static bool line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
+                        unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot);
 
 protected:
     BITMAPFILEHEADER * m_hBitmap;

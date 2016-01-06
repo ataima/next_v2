@@ -63,6 +63,7 @@ class nnViewGlue
     IToolView *toolview;
     status_select status;
     IExtHandlerList * handlers;
+    ISelector *selector;
     bool show_cmd;
     
 
@@ -81,21 +82,21 @@ public:
     bool unselect();
     bool getSelectAreaPhy(int & width, int & height);
     bool getSelectStartPhy(int & x, int & y);
-    bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
-    bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
-    bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop);
+    bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint);
+    bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint);
+    bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint);
     bool handlerScrollHorz(int pos);
     bool handlerScrollVert(int pos);
     bool handlerRequestCommand(nnPoint phyPoint, int &command);
-    bool handlerEscapeButton(bool shift,bool ctrl,bool alt,nnPoint &start, nnPoint & stop);
-    bool handlerHomeButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
-    bool handlerEndButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
-    bool handlerPageUpButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
-    bool handlerPageDownButton(bool shitf,bool ctrl,bool alt,nnPoint & pos);
-    bool handlerLeftButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll);
-    bool handlerRightButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll);
-    bool handlerUpButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll);
-    bool handlerDownButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll);
+    bool handlerEscapeButton(bool shift,bool ctrl,bool alt);
+    bool handlerHomeButton(bool shitf, bool ctrl, bool alt);
+    bool handlerEndButton(bool shitf,bool ctrl,bool alt);
+    bool handlerPageUpButton(bool shitf,bool ctrl,bool alt);
+    bool handlerPageDownButton(bool shitf,bool ctrl,bool alt);
+    bool handlerLeftButton(bool shitf,bool ctrl,bool alt);
+    bool handlerRightButton(bool shitf, bool ctrl, bool alt);
+    bool handlerUpButton(bool shitf, bool ctrl, bool alt);
+    bool handlerDownButton(bool shitf, bool ctrl, bool alt);
     inline bool isStartValid(void) { return select_start != -1; }
     inline bool isStopValid(void) { return select_stop != -1; }
     inline IManager *getManager(void) { return manager; }
@@ -121,7 +122,7 @@ private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);
     bool resizeSelectArea(const int vx,const int vy);
-};
+ };
 
 
 #endif

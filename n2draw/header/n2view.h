@@ -35,12 +35,26 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
+class nnSelector
+        : public ISelector
+{
+    bool visible;
+    bool error;
+public :
+    nnSelector();
+    void draw(bmpImage & image,const nnPoint &start ,const nnPoint &stop );
+    inline void hide(void) {visible=false;}
+    inline void show(void){visible=true;}
+    inline bool getStatus(void) {return visible;}
+    inline void setError(bool st)  {error=st;}
+};
 
 class nnView
     :public IView
 {
     int n_thread;
     bmpImage page;
+    bmpImage copy;
     IImageManager *images;
 public:
     nnView(IImageManager *_images);
@@ -48,7 +62,7 @@ public:
     bool draw(IManager * manager, void * context);
     bool readConfiguration(IXmlNode *node);
     bool createMainBitmap(int w, int h);
-    inline bmpImage & getMainBitmap(void) { return page; }
+    bmpImage & getMainBitmap(void);
     bool remapMainBitmap(int w,int h);
 private:
     bool drawObj(InnObj * obj, int & x, int & y, IViewGlue *glue);

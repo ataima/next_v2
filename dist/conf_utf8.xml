@@ -14,8 +14,9 @@
 		<THREADS>1</THREADS>
 	</PHY_VIEW>
 	<PHY_TOOLBARS>
-		<TOOLBARS>1</TOOLBARS>
+		<TOOLBARS>4</TOOLBARS>
 		<TOOLBARS_0>
+			<ID>0</ID>
 			<COMMANDER>
 			<ITEM_NUM>3</ITEM_NUM>
 			<ITEM_0>
@@ -28,6 +29,7 @@
 					<BLUE>255</BLUE>
 				</MASK>
 				<FILE>CONTACT.BMP</FILE>
+				<INFO> Insert contacts ( any type ...)</INFO>
 			</ITEM_0>
 			<ITEM_1>
 				<POS_X>0</POS_X>
@@ -39,6 +41,7 @@
 					<BLUE>255</BLUE>
 				</MASK>
 				<FILE>COIL.BMP</FILE>
+				<INFO> Insert coils ( any type ...)</INFO>
 			</ITEM_1>
 			<ITEM_2>
 				<POS_X>-48</POS_X>
@@ -50,9 +53,124 @@
 					<BLUE>255</BLUE>
 				</MASK>
 				<FILE>SETTING.BMP</FILE>
+				<INFO>Setting ...</INFO>
 			</ITEM_2>
 			</COMMANDER>		
 		</TOOLBARS_0>
+		<TOOLBARS_1>
+			<ID>1000</ID>
+			<COMMANDER>
+			<ITEM_NUM>1</ITEM_NUM>
+			<ITEM_0>
+				<POS_X>0</POS_X>
+				<POS_Y>40</POS_Y>
+				<COMMAND>2000</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>CONTACT.BMP</FILE>
+				<INFO>General Memory Contact Normally Open</INFO>
+			</ITEM_0>
+			</COMMANDER>		
+		</TOOLBARS_1>
+		<TOOLBARS_2>
+			<ID>1001</ID>
+			<COMMANDER>
+			<ITEM_NUM>1</ITEM_NUM>
+			<ITEM_0>
+				<POS_X>0</POS_X>
+				<POS_Y>40</POS_Y>
+				<COMMAND>3000</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>COIL.BMP</FILE>
+				<INFO>General Memory Coil </INFO>
+			</ITEM_0>
+			</COMMANDER>		
+		</TOOLBARS_2>
+		<TOOLBARS_3>
+			<ID>1002</ID>
+			<COMMANDER>
+			<ITEM_NUM>6</ITEM_NUM>
+			<ITEM_0>
+				<POS_X>20</POS_X>
+				<POS_Y>0</POS_Y>
+				<COMMAND>4000</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>SAVE.BMP</FILE>
+				<INFO>Save Current File.... </INFO>
+			</ITEM_0>
+			<ITEM_1>
+				<POS_X>60</POS_X>
+				<POS_Y>0</POS_Y>
+				<COMMAND>4001</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>OPEN.BMP</FILE>
+				<INFO>Open  File.... </INFO>
+			</ITEM_1>
+			<ITEM_2>
+				<POS_X>100</POS_X>
+				<POS_Y>0</POS_Y>
+				<COMMAND>4002</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>NEW.BMP</FILE>
+				<INFO>Create New Draw... </INFO>
+			</ITEM_2>
+			<ITEM_3>
+				<POS_X>140</POS_X>
+				<POS_Y>0</POS_Y>
+				<COMMAND>4003</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>COPY.BMP</FILE>
+				<INFO>Copy current selection.... </INFO>
+			</ITEM_3>
+			<ITEM_4>
+				<POS_X>180</POS_X>
+				<POS_Y>0</POS_Y>
+				<COMMAND>4004</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>cut.BMP</FILE>
+				<INFO>Cut current selection.... </INFO>
+			</ITEM_4>
+			<ITEM_5>
+				<POS_X>220</POS_X>
+				<POS_Y>0</POS_Y>
+				<COMMAND>4005</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>PASTE.BMP</FILE>
+				<INFO>Paste current selection.... </INFO>
+			</ITEM_5>
+			</COMMANDER>		
+		</TOOLBARS_3>
 	</PHY_TOOLBARS>
 	<IMAGES>
 		<PATH>old</PATH>

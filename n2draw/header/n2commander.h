@@ -36,16 +36,16 @@ class nnCommander
 private:
     listCommandItem items;
     IImageManager *images;
+    commandItem * curItem;
 public:
     nnCommander();
     ~nnCommander();
     bool readConfiguration(IXmlNode *node) ;
     bool handlerRequestCommand( nnPoint & pos,int & command);
+    bool handlerMouseMove( nnPoint & pos,IExtHandler *hook);
     inline listCommandItem & getItems(void) {return items;}
     bool loadImages(const XCHAR *path);
     bmpImage * getImage(int command);
-private:
-    nnRect rectFromPos(nnPoint & pos,int command);
 };
 
 

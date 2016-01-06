@@ -40,7 +40,7 @@ public :
     nnExtHandler(handler_exec _type,
                  extHandler & _hook,
                  void *unkObj);
-    void doHandler(size_t param );
+    void doHandler(handlerAction Tparam, size_t Uparam=0);
 };
 
 
@@ -50,7 +50,7 @@ class nnExtHandlerList
         , public IExtHandlerList
 {
     public:
-    bool add(unsigned int type,IExtHandler *handler);
+    bool add(handler_exec type,IExtHandler *handler);
     bool remove(unsigned int type);
     bool clear(void);
     IExtHandler *get(unsigned int type);

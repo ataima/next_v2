@@ -336,9 +336,6 @@ public:
         ss<<"exception:"<<b_msg<<std::endl<<" An exception is occurred on requested handler";
         switch(type)
         {
-        case handler_view_exec_refresh:
-            ss<<"handler_view_exec_refresh";
-            break;
         case handler_exec_command:
             ss<<"handler_exec_command";
             break;

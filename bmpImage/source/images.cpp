@@ -1562,7 +1562,7 @@ bool bmpImage::copyFromFile(const XCHAR *name)
 #else
         sname=name;
 #endif
-        file = FOPEN(sname.c_str(),"r");
+        file = FOPEN(sname.c_str(),"rb");
         if ( file != nullptr)
         {
             short mask = 0;
@@ -1576,7 +1576,7 @@ bool bmpImage::copyFromFile(const XCHAR *name)
             }
             if (err == sizeof(short) && mask == 0x4d42)
             {
-                file = FOPEN(sname.c_str(),"r");
+                file = FOPEN(sname.c_str(),"rb");
                 if ( file != nullptr)
                 {
                     if (file_status.st_size > 0 && file_status.st_size < (1024 * 1024 * 32)) //32Mbit max
@@ -1590,7 +1590,7 @@ bool bmpImage::copyFromFile(const XCHAR *name)
                             size_t temp = (size_t)file_status.st_size;
                             size_t start = 0;
                             do {
-                                err = fread(&p[start], 1, temp, file);
+                                err = fread(&p[start], 1, 256, file);
                                 if (!err)
                                 {
                                     break;
@@ -1815,33 +1815,28 @@ bool bmpImage::getPixel(LPBITMAPFILEHEADER dest,unsigned int x,unsigned int y,un
     return res;
 }
 
-bool bmpImage::line(unsigned int x1,unsigned int y1,unsigned int x2,unsigned int y2,
-                    unsigned char red,unsigned char green,unsigned char blue)
+bool bmpImage::line( int x1, int y1, int x2, int y2,
+                    unsigned char red,unsigned char green,
+                     unsigned char blue,unsigned int mask)
 {
-    return line(m_hBitmap,x1,y1,x2,y2,red,green,blue);
+    return line(m_hBitmap,x1,y1,x2,y2,red,green,blue,mask);
 }
 
-bool bmpImage::line(LPBITMAPFILEHEADER dest,unsigned int x1,unsigned int y1,unsigned int x2,unsigned int y2,
-                    unsigned char red,unsigned char green,unsigned char blue)
+bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
+                    unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot)
 {
     bool res=false;
-    unsigned int width,height;
-    width=getWidth(dest);
-    height=getHeight(dest);
+    if(maskDot==0)return true;
+    int width,height;
+    width=(int)getWidth(dest);
+    height=(int)getHeight(dest);
     unsigned int pitch = getPitch(dest);
     unsigned int line = getLine(dest);
     unsigned  int depth = line / width;
     unsigned char  *bits = getBits(dest);
-    unsigned int dx,dy,end,x,y;
+    int dx,dy,end,x,y,mb;
+    mb=1;
     int p;
-    if(x1>width)
-        x1=width;
-    if(y1>height)
-        y1=height;
-    if(x2>width)
-        x2=width;
-    if(y2>height)
-        y2=height;
     if(y1>y2)
         dy=y1-y2;
     else
@@ -1891,22 +1886,40 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,unsigned int x1,unsigned int y1,unsi
     if(dy==0)
     {
         do {
+            if(x<0)goto skip_for_clipy;
+            if(x>=width)goto skip_for_clipy;
+            if(y>=height)break;
             register unsigned char  *pos=bits+(y * pitch) + (x * depth);
-            pos[ID_RGBA_BLUE]=blue;
-            pos[ID_RGBA_GREEN]=green;
-            pos[ID_RGBA_RED]=red;
+            if(mb&maskDot)
+            {
+                pos[ID_RGBA_BLUE]=blue;
+                pos[ID_RGBA_GREEN]=green;
+                pos[ID_RGBA_RED]=red;
+            }
+skip_for_clipy:
             x++;
+            mb<<=1;
+            if(!mb)mb=1;
         } while(x<end);
         res=true;
     }
     else if(dx==0)
     {
         do {
+            if(y<0)goto skip_for_clipx;
+            if(y>=height)goto skip_for_clipx;
+            if(x>=width)break;
             register unsigned char  *pos=bits+(y * pitch) + (x * depth);
-            pos[ID_RGBA_BLUE]=blue;
-            pos[ID_RGBA_GREEN]=green;
-            pos[ID_RGBA_RED]=red;
+            if(mb&maskDot)
+            {
+                pos[ID_RGBA_BLUE]=blue;
+                pos[ID_RGBA_GREEN]=green;
+                pos[ID_RGBA_RED]=red;
+            }
+skip_for_clipx:
             y++;
+            mb<<=1;
+            if(!mb)mb=1;
         } while(y<end);
         res=true;
     }
@@ -1916,11 +1929,21 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,unsigned int x1,unsigned int y1,unsi
         {
             p = 2 * dy - dx;
             do {
+                if(x<0)goto skip_for_clip1;
+                if(y<0)goto skip_for_clip1;
+                if(x>=width)goto skip_for_clip1;
+                if(y>=height)goto skip_for_clip1;
                 register unsigned char  *pos=bits+(y * pitch) + (x * depth);
-                pos[ID_RGBA_BLUE]=blue;
-                pos[ID_RGBA_GREEN]=green;
-                pos[ID_RGBA_RED]=red;
+                if(mb&maskDot)
+                {
+                    pos[ID_RGBA_BLUE]=blue;
+                    pos[ID_RGBA_GREEN]=green;
+                    pos[ID_RGBA_RED]=red;
+                }
+skip_for_clip1:
                 x++;
+                mb<<=1;
+                if(!mb)mb=1;
                 if(p < 0)
                 {
                     p = p + 2 * dy;
@@ -1937,11 +1960,21 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,unsigned int x1,unsigned int y1,unsi
         {
             p = 2 * dx - dy;
             do {
+                if(x<0)goto skip_for_clip2;
+                if(y<0)goto skip_for_clip2;
+                if(x>=width)goto skip_for_clip2;
+                if(y>=height)goto skip_for_clip2;
                 register unsigned char  *pos=bits+(y * pitch) + (x * depth);
-                pos[ID_RGBA_BLUE]=blue;
-                pos[ID_RGBA_GREEN]=green;
-                pos[ID_RGBA_RED]=red;
+                if(mb&maskDot)
+                {
+                    pos[ID_RGBA_BLUE]=blue;
+                    pos[ID_RGBA_GREEN]=green;
+                    pos[ID_RGBA_RED]=red;
+                }
+skip_for_clip2:
                 y++;
+                mb<<=1;
+                if(!mb)mb=1;
                 if(p < 0)
                 {
                     p = p + 2 * dx;
@@ -1959,16 +1992,16 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,unsigned int x1,unsigned int y1,unsi
     return res;
 }
 
-bool bmpImage::frameRect(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned char red, unsigned char green, unsigned char blue)
+bool bmpImage::frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue,unsigned int mask)
 {
     bool res=false;
-    if(line(x1,y1,x2,y1,red,green,blue))
+    if(line(x1,y1,x2,y1,red,green,blue,mask))
     {
-        if(line(x1,y2,x2,y2,red,green,blue))
+        if(line(x1,y2,x2,y2,red,green,blue,mask))
         {
-            if(line(x1,y1,x1,y2,red,green,blue))
+            if(line(x1,y1,x1,y2,red,green,blue,mask))
             {
-                res=line(x2,y1,x2,y2,red,green,blue);
+                res=line(x2,y1,x2,y2,red,green,blue,mask);
             }
         }
     }

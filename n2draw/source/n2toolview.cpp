@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 nnToolView::nnToolView()
-    :active(nullptr),pos_sel(0)
+    :active(nullptr)
 {
     commands.clear();
 }
@@ -46,12 +46,11 @@ nnToolView::~nnToolView()
     {
         for(auto v: commands)
         {
-            delete v;
+            delete v.second;
         }
         commands.clear();
     }
     active=nullptr;
-    pos_sel=-1;
 }
 
 bool nnToolView::readConfiguration(IXmlNode *node)
@@ -76,7 +75,18 @@ bool nnToolView::readConfiguration(IXmlNode *node)
             v=t->find(X("TOOLBARS_"),i);
             if(v)
             {
-                IXmlNode *h=v->find(X("COMMANDER"));
+                int id=0;
+                IXmlNode *h=v->find(X("ID"));
+                if (h)
+                {
+                    id=h->getLong();
+                }
+                else
+                {
+                    xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("ID"));
+                    throw (pe);
+                }
+                h=v->find(X("COMMANDER"));
                 if(h)
                 {
                     nnCommander *command= new nnCommander();
@@ -86,7 +96,7 @@ bool nnToolView::readConfiguration(IXmlNode *node)
                         res=command->readConfiguration(h);
                         if(!res)break;
                     }
-                    commands.push_back(command);
+                    commands[id]=command;
                 }
                 else
                 {
@@ -107,13 +117,20 @@ bool nnToolView::readConfiguration(IXmlNode *node)
     }
     if(res==true)
     {
-        if(pos_sel<(int)commands.size())
-            active=commands.at(pos_sel);
+        commanderList::iterator it=commands.find(0);
+        if(it!=commands.end())
+        {
+            active=it->second;
+        }
+        else
+        {
+            active=nullptr;
+        }
     }
     return res;
 }
 
-bool nnToolView::draw(bmpImage & bkg, nnPoint &pos, void * context)
+bool nnToolView::draw(bmpImage & bkg, void * context)
 {
     (context);
     bool res=false;
@@ -126,10 +143,10 @@ bool nnToolView::draw(bmpImage & bkg, nnPoint &pos, void * context)
         while(it!=_end)
         {
             bmpImage & icon= *active->getImage(it->command);
-            unsigned int x= pos.x+it->pos.x;
-            unsigned int y=height-(pos.y+it->pos.y);
+            unsigned int x= phyPos.x+it->pos.x;
+            unsigned int y= height-(phyPos.y+it->pos.y);
             res = bkg.drawMaskSprite(icon, x,y,it->maskR,it->maskG,it->maskB);
-            //bkg.frameRect(x,y,x+icon.getWidth(),y+icon.getHeight(),255,0,0);
+            it->rect.set(x,y,x+icon.getWidth(),y+icon.getHeight());
             if(!res)
                 break;
             it++;
@@ -145,11 +162,6 @@ bool nnToolView::handlerRequestCommand( nnPoint & pos,int & command)
     if(active)
     {
         res=active->handlerRequestCommand(pos,command);
-        if(res)
-        {
-            pos_sel=0;
-            active=nullptr;
-        }
     }
     return res;
 }
@@ -162,7 +174,7 @@ bool nnToolView::loadImages(const XCHAR  *path)
     commanderList::iterator _end= commands.end();
     while(it!=_end)
     {
-        ICommander *temp=*it;
+        ICommander *temp=it->second;
         res=temp->loadImages(path);
         if(!res)
         {
@@ -174,5 +186,33 @@ bool nnToolView::loadImages(const XCHAR  *path)
     return res;
 }
 
+
+bool nnToolView::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
+{
+    bool res=false;
+    if(active)
+    {
+        res=active->handlerMouseMove(pos,hook);
+    }
+    return res;
+}
+
+
+
+bool nnToolView::checkIntCommand(int command)
+{
+    bool res=false;
+    commanderList::iterator it=commands.find(command);
+    if(it!=commands.end())
+    {
+        active=it->second;
+    }
+    else
+    {
+        active=nullptr;
+    }
+    res=(active!=nullptr);
+    return res;
+}
 
 

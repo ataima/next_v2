@@ -4,39 +4,48 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <list>
 #include <map>
 
 #include "n2point.h"
 //////////////////////////////////////////////////////
-typedef void (*extHandler)(void *,size_t );
 
-typedef enum tag_handler_actions
+typedef enum tag_handler_Action
 {
     action_redraw,
-    action_draw_toolbar,
+    action_update_from_ext_scroolbars,
+    action_update_statusbars_info,
+    action_update_statusbars_panes,
+    action_adjust_horz_scrollbar,
+    action_adjust_vert_scrollbar,
+    action_host_command = 5000
 } handlerAction;
+
+
+typedef void (*extHandler)(void *,handlerAction ,size_t);
 
 
 class IExtHandler
 {
 public:
-    virtual void doHandler(size_t param)=0;
+    virtual void doHandler(handlerAction Tparam,size_t Uparam=0)=0;
 };
+
+typedef enum tag_handler_exec
+{
+    handler_exec_command,       // hook to host command
+} handler_exec;
+
 
 class IExtHandlerList
 {
 public:
-    virtual bool add(unsigned int type,IExtHandler *handler)=0;
+    virtual bool add(handler_exec type,IExtHandler *handler)=0;
     virtual bool remove(unsigned int type)=0;
     virtual bool clear(void)=0;
     virtual IExtHandler *get(unsigned int type)=0;
 };
 
-typedef enum tag_handler_exec
-{
-    handler_view_exec_refresh,
-    handler_exec_command,
-} handler_exec;
 
 //////////////////////////////////////////////////////
 
@@ -126,10 +135,12 @@ typedef struct nn_tag_command_item
 {
     nnPoint pos;
     int  command;
+    nnRect rect;
     unsigned char maskR;
     unsigned char maskG;
     unsigned char maskB;
     std::string file;
+    std::string info;
 } commandItem;
 
 typedef std::vector<commandItem> listCommandItem;
@@ -139,6 +150,7 @@ class ICommander
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
+    virtual bool handlerMouseMove( nnPoint & pos,IExtHandler *hook)=0;
     virtual listCommandItem & getItems(void)=0;
     virtual bmpImage * getImage(int command)=0;
     virtual ~ICommander() {}
@@ -342,15 +354,29 @@ class IToolView
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
-    virtual bool draw(bmpImage & bkg,nnPoint & pos,void * context) = 0;
+    virtual bool draw(bmpImage & bkg,void * context) = 0;
     virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
+    virtual bool handlerMouseMove( nnPoint & pos,IExtHandler *hook)=0;
     virtual ICommander *getActiveCommander(void)=0;
     virtual bool loadImages(const XCHAR *path)=0;
+    virtual bool checkIntCommand(int command)=0;
+    virtual void setDrawPosition(nnPoint & pos)=0;
     virtual ~IToolView() {}
 };
 
 //////////////////////////////////////////////////////
 
+class ISelector
+{
+public:
+    virtual void draw(bmpImage & image,const nnPoint &start ,const nnPoint &stop )=0;
+    virtual void hide(void)=0;
+    virtual void show(void)=0;
+    virtual bool getStatus(void)=0;
+    virtual void setError(bool st)=0;
+};
+
+//////////////////////////////////////////////////////
 class IView
 {
 public:
@@ -384,20 +410,20 @@ public:
     virtual bool selectStart(nnPoint pos) = 0;
     virtual bool selectStop(nnPoint pos1) = 0;
     virtual bool select(nnPoint pos1, nnPoint pos2) = 0;
-    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
-    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
-    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint,nnPoint &start,nnPoint & stop) = 0;
+    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
+    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
+    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
     virtual bool handlerScrollHorz(int pos) = 0;
     virtual bool handlerScrollVert(int pos) = 0;
-    virtual bool handlerEscapeButton(bool shift,bool ctrl,bool alt,nnPoint &start, nnPoint & stop) = 0;
-    virtual bool handlerHomeButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
-    virtual bool handlerEndButton(bool shitf,bool ctrl,bool alt,nnPoint &pos)=0;
-    virtual bool handlerPageUpButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
-    virtual bool handlerPageDownButton(bool shitf,bool ctrl,bool alt,nnPoint &pos )=0;
-    virtual bool handlerLeftButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
-    virtual bool handlerRightButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
-    virtual bool handlerUpButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
-    virtual bool handlerDownButton(bool shitf,bool ctrl,bool alt,nnPoint &start, nnPoint & stop,bool & needScroll)=0;
+    virtual bool handlerEscapeButton(bool shift,bool ctrl,bool alt) = 0;
+    virtual bool handlerHomeButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerEndButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerPageUpButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerPageDownButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerLeftButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerRightButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerUpButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerDownButton(bool shitf,bool ctrl,bool alt)=0;
     virtual bool handlerRequestCommand(nnPoint phyPoint,int & command)=0;
     virtual bool unselect() = 0;
     virtual bool getSelectAreaPhy(int & width, int & height) = 0;

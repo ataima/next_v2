@@ -142,22 +142,11 @@ typedef struct tag_nn_point
         x += v;
         y += v;
     }
-    /*
-    inline bool intoX (int minV,int maxV)
+    inline void operator -= (const int v)
     {
-        bool res=false;
-        if(x>minV && x<maxV)
-            res=true;
-        return res;
+        x -= v;
+        y -= v;
     }
-    inline bool  intoY (int minV,int maxV)
-    {
-        bool res=false;
-        if(x>=minV && x<maxV)
-            res=true;
-        return res;
-    }
-    */
 } nnPoint;
 
 

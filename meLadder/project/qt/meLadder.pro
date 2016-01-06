@@ -23,12 +23,10 @@ SOURCES += \
 ../../source/main.cpp\
 ../../source/mainwindow.cpp\
 ../../source/mdichild.cpp \
-../../source/mdiselector.cpp \
 
 HEADERS  += \
 ../../header/mainwindow.h\
 ../../header/mdichild.h\
-../../header/mdiselector.h\
 
 
 

@@ -6,12 +6,12 @@ nnExtHandler::nnExtHandler(handler_exec _type,extHandler & _hook, void *unkObj)
 {}
 
 
-void nnExtHandler::doHandler(size_t param )
+void nnExtHandler::doHandler(handlerAction Tparam , size_t Uparam)
 {
     if(hook && unknow)
     {
         try {
-            hook(unknow,param);
+            hook(unknow,Tparam,Uparam);
         }
         catch(...)
         {
@@ -25,7 +25,7 @@ void nnExtHandler::doHandler(size_t param )
 
 ////////////////////////////////////////////////////////
 
-bool nnExtHandlerList::add(unsigned int type,IExtHandler *handler)
+bool nnExtHandlerList::add( handler_exec type,IExtHandler *handler)
 {
     bool res=false;
     iterator it= find(type);

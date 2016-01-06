@@ -61,7 +61,6 @@ MainWindow::MainWindow()
     setAttribute(Qt::WA_KeyCompression,true);
     createActions();
     createMenus();
-    createToolBars();
     createStatusBar();
     updateMenus();
     readSettings();
@@ -363,18 +362,6 @@ void MainWindow::createMenus()
     editMenu->addAction(pasteAct);
 }
 
-void MainWindow::createToolBars()
-{
-    fileToolBar = addToolBar(tr("File"));
-    fileToolBar->addAction(newAct);
-    fileToolBar->addAction(openAct);
-    fileToolBar->addAction(saveAct);
-    editToolBar= addToolBar("Edit");
-    editToolBar->addAction(cutAct);
-    editToolBar->addAction(copyAct);
-    editToolBar->addAction(pasteAct);
-}
-
 void MainWindow::createStatusBar()
 {
     m_statusLeft = new QLabel("          ", this);
@@ -476,7 +463,6 @@ void MainWindow::destroyObjects()
     DESTROY_OBJ(fileMenu);
     DESTROY_OBJ(windowMenu);
     DESTROY_OBJ(helpMenu);
-    DESTROY_OBJ(fileToolBar);
     DESTROY_OBJ(newAct);
     DESTROY_OBJ(openAct);
     DESTROY_OBJ(saveAct);
@@ -494,7 +480,6 @@ void MainWindow::destroyObjects()
     DESTROY_OBJ(pasteAct);
     DESTROY_OBJ(copyAct);
     DESTROY_OBJ(cutAct);
-    DESTROY_OBJ(editToolBar);
     DESTROY_OBJ(editMenu);
     DESTROY_OBJ(n2app);
 }
@@ -529,14 +514,3 @@ void  MainWindow::updatePosCursor(nnPoint & start, nnPoint & stop)
     }
 }
 
-/*
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    MdiChild *child=activeMdiChild();
-    if(child  && event )
-        if(!child->keyEvent(event))
-        {
-            QMainWindow::keyPressEvent(event);
-        }
-}
-*/
