@@ -151,9 +151,9 @@ void test_n2ObjManager::test5(void)
     InnObj * p = mn.getObj(5, 0);
     CA_ASSERT(p!=nullptr);
     STRING w = p->toString();
-    //std::wcout << w.c_str()<<std::endl;
+    SSTREAMOUT << w.c_str()<<std::endl;
     w = c->toString();
-    //std::wcout << w.c_str() << std::endl;
+    SSTREAMOUT << w.c_str() << std::endl;
 }
 
 
@@ -437,10 +437,10 @@ void test_n2ObjManager::test15(void)
     {
         void revHashKey(hashkey & key, int & x, int &y)
         {
-            y = key.i.v1;
-            y = y / 2;
-            x = key.i.v2;
-            x = x / 2;
+            y = key.i.v2;
+            y /= 2;
+            x = key.i.v1;
+            x /= 2;
         }
 
     };
@@ -479,9 +479,9 @@ void test_n2ObjManager::test16(void)
     {
         void revHashKey(hashkey & key, int & x, int &y)
         {
-            y = key.i.v1;
+            y = key.i.v2;
             y = y / 2;
-            x = key.i.v2;
+            x = key.i.v1;
             x = x / 2;
         }
 

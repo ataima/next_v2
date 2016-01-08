@@ -454,10 +454,21 @@ bool nnObjManager::linkObj(int x, int y, InnObj *obj)
         // VERT
         if (obj->isComponent())
         {
-            if (neighbourUp != nullptr)
-                obj->connect(neighbourUp);
-            if (neighbourDw != nullptr)
-                obj->connect(neighbourDw);
+            if (neighbourUp == nullptr && neighbourDw == nullptr)
+            {
+                obj->setConnections(0);
+            }
+            else
+            {
+                if (neighbourUp != nullptr)
+                    obj->connect(neighbourUp);
+                else
+                    obj->setConnections(0);
+                if (neighbourDw != nullptr)
+                    obj->connect(neighbourDw);
+                else
+                    obj->setConnections(0);
+            }
             res = true;
         }
         else

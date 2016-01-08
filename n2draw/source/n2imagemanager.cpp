@@ -28,7 +28,7 @@ nnImageManager::~nnImageManager()
     path.clear();
 }
 #if (_WIN32 || _WIN64)
-//#define getcwd  _getcwd
+#define getcwd  _getcwd
 #endif
 
 bool nnImageManager::readConfiguration(IXmlNode *node)

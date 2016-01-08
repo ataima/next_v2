@@ -1,53 +1,104 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="header">
-      <UniqueIdentifier>{b301247d-4e84-4cd3-afd6-9257a47f2a8c}</UniqueIdentifier>
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="source">
-      <UniqueIdentifier>{2b3d5fee-1635-4eb5-a21e-c5febd9fc2e7}</UniqueIdentifier>
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\header\MerlinoVCPU.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2appmanager.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2commander.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2connection.h">
+      <Filter>header</Filter>
+    </ClInclude>
     <ClInclude Include="..\header\n2draw.h">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="..\header\n2drawmanager.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\n2connection.h">
+    <ClInclude Include="..\header\n2exception.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\n2view.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\MerlinoVCPU.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\n2viewglue.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\n2miniXml.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\n2appmanager.h">
+    <ClInclude Include="..\header\n2exthandler.h">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="..\header\n2imagemanager.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\n2commander.h">
+    <ClInclude Include="..\header\n2interfaces.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2miniXml.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2point.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2toolview.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2utoatou.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2view.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2viewglue.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2fontmanager.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2fontlist.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2selector.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\n2appmanager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2commander.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2connection.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\n2draw.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\n2drawmanager.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\n2connection.cpp">
+    <ClCompile Include="..\source\n2exthandler.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2imagemanager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2miniXml.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2toolview.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\n2view.cpp">
@@ -56,16 +107,13 @@
     <ClCompile Include="..\source\n2viewglue.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\n2miniXml.cpp">
+    <ClCompile Include="..\source\n2fontManager.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\n2imagemanager.cpp">
+    <ClCompile Include="..\source\n2fontlist.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\n2appmanager.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\n2commander.cpp">
+    <ClCompile Include="..\source\n2selector.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

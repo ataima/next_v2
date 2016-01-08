@@ -83,9 +83,9 @@ void test_image_manager::test1(void)
     _STOP();
     miniXmlNode  node;
 #ifdef _UNICODE
-    bool res = miniXmlNode::load(X("conf_utf16.xml"),&node);
+    bool res = miniXmlNode::load(X("..\\..\\conf_utf16.xml"),&node);
 #else
-    bool res = miniXmlNode::load(X("conf_utf8.xml"),&node);
+    bool res = miniXmlNode::load(X("..\\..\\conf_utf8.xml"),&node);
 #endif
     CA_ASSERT(res == true);
     nnImageManager im;

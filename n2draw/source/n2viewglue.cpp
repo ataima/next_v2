@@ -6,17 +6,39 @@
 #include "n2draw.h"
 #include "n2view.h"
 #include "n2drawmanager.h"
-#include "n2viewglue.h"
 #include "n2toolview.h"
 #include "n2exception.h"
 #include "n2exthandler.h"
+#include "n2selector.h"
+#include "n2viewglue.h"
 
 //TestviewGlue.cpp : T1
-nnViewGlue::nnViewGlue(IManager  *_manager,IImageManager *_images)
-    :manager(_manager),images(_images)
+nnViewGlue::nnViewGlue(IManager  *_manager,IImageManager *_images, IFontList *_fonts)
+    :manager(_manager),images(_images),fonts(_fonts)
 {
     handlers = new nnExtHandlerList();
     selector= new nnSelector();
+    if (fonts)
+    {
+        fontNameList f_list;
+        std::string fontName;
+        if (fonts->getFontNameList(f_list))
+        {
+            for (auto i : f_list)
+            {
+                if (i.find("810"))
+                {
+                    fontName = i;
+                    break;
+                }
+            }
+        }
+        if (fontName.size() > 0)
+        {
+            IFontManager *font=fonts->getManager(fontName.c_str());
+            selector->setFont(font);
+        }
+    }
     select_start.set(-1);
     select_stop.set(-1);
     const_Size.set(0);
@@ -55,6 +77,7 @@ nnViewGlue::~nnViewGlue()
     }
     if(selector)
     {
+        selector->setFont(nullptr);
         delete selector;
         selector=nullptr;
     }
@@ -374,7 +397,7 @@ bmpImage & nnViewGlue::getDraw(void)
             nnRect result;
             if(isSelectAreaPhyVisible(result, select_start, select_stop))
             {
-                selector->draw(image,result.start,result.stop);
+                selector->draw(image,result.start,result.stop,select_start,select_stop);
                 selector->show();
             }
             else
@@ -412,7 +435,7 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
                 if (p != select_stop)
                 {
                     select_stop = p;
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     //getSelectArea(start,stop);
                     res=true;
                 }
@@ -444,8 +467,7 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
             status = start_activate;
         selectStart(getCoordLog(phyPoint));
         select_stop = select_start;
-        hook->doHandler(action_update_statusbars_panes,0);
-        //getSelectArea(start,stop);
+        if(hook)hook->doHandler(action_update_statusbars_panes,0);
         res=true;
     }
     else if(buttons==nn_m_button_left && show_cmd==true)
@@ -468,14 +490,14 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
                 else
                 {
                     res=toolview->checkIntCommand(0);
-                    hook->doHandler(action_host_command,command);
+                    if(hook)hook->doHandler(action_host_command,command);
                     show_cmd=false;
                 }
             }
             if(hook)
             {
-                hook->doHandler(action_update_from_ext_scroolbars);
-                hook->doHandler(action_redraw);
+                if(hook)hook->doHandler(action_update_from_ext_scroolbars);
+                if(hook)hook->doHandler(action_redraw);
             }
         }
     }
@@ -488,7 +510,7 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
             res=true;
             if(hook)
             {
-                hook->doHandler(action_redraw);
+                if(hook)hook->doHandler(action_redraw);
             }
         }
     }
@@ -500,8 +522,8 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
             show_cmd=false;
             if(hook)
             {
-                hook->doHandler(action_update_from_ext_scroolbars);
-                hook->doHandler(action_redraw);
+                if(hook)hook->doHandler(action_update_from_ext_scroolbars);
+                if(hook)hook->doHandler(action_redraw);
             }
         }
     }
@@ -523,7 +545,7 @@ bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint
             {
                 select_stop = p;
             }
-            hook->doHandler(action_update_statusbars_panes,0);
+            if(hook)hook->doHandler(action_update_statusbars_panes,0);
             //getSelectArea(start,stop);
             status = selected;
         }
@@ -534,7 +556,7 @@ bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint
             {
                 select_stop = p;
             }
-            hook->doHandler(action_update_statusbars_panes,0);
+            if(hook)hook->doHandler(action_update_statusbars_panes,0);
             //getSelectArea(start,stop);
             status = selected;
         }
@@ -594,8 +616,12 @@ bool nnViewGlue::resize(int w, int h)
     phy_Size.y=((h/const_Size.y)+1)*const_Size.y;
     phy_Size.x=((w/const_Size.x)+1)*const_Size.x;
     res=view->remapMainBitmap(phy_Size.x,phy_Size.y);
-    if(res)
-        res=updateDraw();
+    if (res)
+    {
+        res = updateDraw();
+        IExtHandler *hook = handlers->get(handler_exec_command);
+        if (hook)hook->doHandler(action_redraw, 0);
+    }
     return res;
 }
 
@@ -617,25 +643,20 @@ bool nnViewGlue::isSelectAreaPhyVisible(nnRect &result, nnPoint &start, nnPoint 
 {
     bool res=false;
     if(isStartValid() && isStopValid())
-    {
-        nnRect area;
-        if(getVisibleArea(area))
+    {        
+        if(getSelectArea(start,stop))
         {
-            if(getSelectArea(start,stop))
+            nnRect sel(start,stop);
+            if(sel.isValid())
             {
-                nnRect sel(start,stop);
-                //sel=area.in(sel);
-                if(sel.isValid())
-                {
-                    sel.start-=offset_Pos;
-                    sel.stop-=offset_Pos;
-                    result.start=getCoordPhy(sel.start);
-                    result.stop=getCoordPhy(sel.stop);
-                    result.stop+=const_Size;
-                    res=true;
-                }
+                sel.start-=offset_Pos;
+                sel.stop-=offset_Pos;
+                result.start=getCoordPhy(sel.start);
+                result.stop=getCoordPhy(sel.stop);
+                result.stop+=const_Size;
+                res=true;
             }
-        }
+        }       
     }
     return res;
 }
@@ -684,7 +705,7 @@ bool nnViewGlue::handlerEscapeButton(bool shift, bool ctrl, bool alt)
             status = s_unselect;
             res=unselect();
             IExtHandler *hook=handlers->get(handler_exec_command);
-            hook->doHandler(action_update_statusbars_panes,0);
+            if(hook)hook->doHandler(action_update_statusbars_panes,0);
         }
     }
     return res;
@@ -703,9 +724,9 @@ bool nnViewGlue::handlerHomeButton(bool shitf, bool ctrl, bool alt)
                 offset_Pos.x=offset_Pos.y=0;
                 updateDraw();
                 IExtHandler *hook=handlers->get(handler_exec_command);
-                hook->doHandler(action_update_statusbars_panes,0);
-                hook->doHandler(action_adjust_horz_scrollbar,0);
-                hook->doHandler(action_adjust_vert_scrollbar,0);
+                if(hook)hook->doHandler(action_update_statusbars_panes,0);
+                if(hook)hook->doHandler(action_adjust_horz_scrollbar,0);
+                if(hook)hook->doHandler(action_adjust_vert_scrollbar,0);
                 res=true;
             }
         }
@@ -726,9 +747,9 @@ bool nnViewGlue::handlerEndButton(bool shitf, bool ctrl, bool alt)
                 offset_Pos.y = getScrollableVertSize();
                 updateDraw();
                 IExtHandler *hook=handlers->get(handler_exec_command);
-                hook->doHandler(action_update_statusbars_panes,0);
-                hook->doHandler(action_adjust_horz_scrollbar,offset_Pos.x);
-                hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
+                if(hook)hook->doHandler(action_update_statusbars_panes,0);
+                if(hook)hook->doHandler(action_adjust_horz_scrollbar,offset_Pos.x);
+                if(hook)hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
                 res=true;
             }
         }
@@ -752,8 +773,8 @@ bool nnViewGlue::handlerPageUpButton(bool shitf, bool ctrl, bool alt)
                     offset_Pos.y=0;
                 updateDraw();
                 IExtHandler *hook=handlers->get(handler_exec_command);
-                hook->doHandler(action_update_statusbars_panes,0);
-                hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
+                if(hook)hook->doHandler(action_update_statusbars_panes,0);
+                if(hook)hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
                 res=true;
             }
         }
@@ -763,11 +784,14 @@ bool nnViewGlue::handlerPageUpButton(bool shitf, bool ctrl, bool alt)
                 if (manager != nullptr )
                 {
                     int p=getPageHeight();
-                    // TODO
+                    bool scroll = false;
+                    res = moveSelectArea(-p, 0, scroll);
+                    if (selector && selector->getStatus())
+                        selector->setError(!res);
                     updateDraw();
                     IExtHandler *hook=handlers->get(handler_exec_command);
-                    hook->doHandler(action_update_statusbars_panes,0);
-                    hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
                     res=true;
                 }
             }
@@ -793,11 +817,30 @@ bool nnViewGlue::handlerPageDownButton(bool shitf, bool ctrl, bool alt)
                     offset_Pos.y=h;
                 updateDraw();
                 IExtHandler *hook=handlers->get(handler_exec_command);
-                hook->doHandler(action_update_statusbars_panes,0);
-                hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
+                if(hook)hook->doHandler(action_update_statusbars_panes,0);
+                if(hook)hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
                 res=true;
             }
         }
+        else
+            if (!alt && !ctrl && shitf)
+            {
+                if (manager != nullptr)
+                {
+                    int p = getPageHeight();
+                    bool scroll = false;
+                    res = moveSelectArea(p, 0, scroll);
+                    if (selector && selector->getStatus())
+                        selector->setError(!res);
+                    updateDraw();
+                    IExtHandler *hook = handlers->get(handler_exec_command);
+                    if (hook)hook->doHandler(action_update_statusbars_panes, 0);
+                    if (hook)hook->doHandler(action_adjust_vert_scrollbar, offset_Pos.y);
+                    res = true;
+                }
+            }
+
+
     }
     return res;
 }
@@ -816,7 +859,7 @@ bool nnViewGlue::handlerLeftButton(bool shift, bool ctrl, bool alt)
                 if(manager)
                 {
                     resizeSelectArea(-1,0);
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     res=true;
                 }
             }
@@ -831,9 +874,9 @@ bool nnViewGlue::handlerLeftButton(bool shift, bool ctrl, bool alt)
                     res=moveSelectArea(-1,0,scroll);
                     if(selector && selector->getStatus())
                         selector->setError(!res);
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     if(scroll)
-                        hook->doHandler(action_adjust_horz_scrollbar,offset_Pos.x);
+                        if(hook)hook->doHandler(action_adjust_horz_scrollbar,offset_Pos.x);
                 }
             }
         }
@@ -854,7 +897,7 @@ bool nnViewGlue::handlerRightButton(bool shift, bool ctrl, bool alt)
                 if(manager)
                 {
                     resizeSelectArea(1,0);
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     res=true;
                 }
             }
@@ -869,9 +912,9 @@ bool nnViewGlue::handlerRightButton(bool shift, bool ctrl, bool alt)
                     res=moveSelectArea(1,0,scroll);
                     if(selector && selector->getStatus())
                         selector->setError(!res);
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     if(scroll)
-                        hook->doHandler(action_adjust_horz_scrollbar,offset_Pos.x);
+                        if(hook)hook->doHandler(action_adjust_horz_scrollbar,offset_Pos.x);
                 }
             }
         }
@@ -892,7 +935,7 @@ bool nnViewGlue::handlerUpButton(bool shift, bool ctrl, bool alt)
                 if(manager)
                 {
                     resizeSelectArea(0,-1);
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     res=true;
                 }
             }
@@ -907,9 +950,9 @@ bool nnViewGlue::handlerUpButton(bool shift, bool ctrl, bool alt)
                     res=moveSelectArea(0,-1,scroll);
                     if(selector && selector->getStatus())
                         selector->setError(!res);
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     if(scroll)
-                        hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
+                        if(hook)hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
                 }
             }
         }
@@ -930,7 +973,7 @@ bool nnViewGlue::handlerDownButton(bool shift, bool ctrl, bool alt)
                 if(manager)
                 {
                     resizeSelectArea(0,1);
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     res=true;
                 }
             }
@@ -945,9 +988,9 @@ bool nnViewGlue::handlerDownButton(bool shift, bool ctrl, bool alt)
                     res=moveSelectArea(0,1,scroll);
                     if(selector && selector->getStatus())
                         selector->setError(!res);
-                    hook->doHandler(action_update_statusbars_panes,0);
+                    if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     if(scroll)
-                        hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
+                        if(hook)hook->doHandler(action_adjust_vert_scrollbar,offset_Pos.y);
                 }
             }
         }

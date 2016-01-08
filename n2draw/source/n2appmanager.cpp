@@ -1,12 +1,14 @@
 #include "n2draw.h"
-#include "n2appmanager.h"
 #include "n2miniXml.h"
 #include "n2drawmanager.h"
 #include "n2imagemanager.h"
 #include "n2view.h"
 #include "n2viewglue.h"
 #include "n2exception.h"
+#include "n2fontmanager.h"
+#include "n2fontlist.h"
 
+#include "n2appmanager.h"
 
 int nnAppManager::UID = 1;
 
@@ -31,6 +33,7 @@ childApps * nnAppManager::createObjects(STRING & conf_file_name)
     child->imageManager = nullptr;
     child->object_manager = nullptr;
     child->view = nullptr;
+    child->fonts = nullptr;
     try
     {
         res = createInternalObjects(conf_file_name, *child);
@@ -76,6 +79,15 @@ childApps * nnAppManager::createObjects(STRING & conf_file_name)
                 delete child;
                 child = nullptr;
                 appManagerConfigureLoadImageException *e=new appManagerConfigureLoadImageException();
+                throw(e);
+            }
+            res = child->fonts->loadImages();
+            if (!res)
+            {
+                child->clean();
+                delete child;
+                child = nullptr;
+                appManagerConfigureLoadImageException *e = new appManagerConfigureLoadImageException();
                 throw(e);
             }
         }
@@ -128,21 +140,39 @@ bool nnAppManager::createInternalObjects(STRING & conf_file_name, childApps & ch
                                         xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("IMAGES"));
                                         throw(e);
                                     }
-                                    if (res)
-                                    {
-                                        conf_manager = root->find(X("PHY_MAP"));
-                                        if (conf_manager)
+                                        if (res)
                                         {
-                                            line = __LINE__;
-                                            child.view = new nnViewGlue(child.object_manager, child.imageManager );
-                                            IViewGlue *viewglue = child.view;
-                                            MEMCHK(IViewGlue, viewglue);
-                                            res = viewglue->readConfiguration(conf_manager);
-                                        }
-                                        else
-                                        {
-                                            xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("PHY_MAP"));
-                                            throw(e);
+                                            conf_manager = root->find(X("FONTS"));
+                                            if (conf_manager)
+                                            {
+                                                line = __LINE__;
+                                                child.fonts = new nnFontList();
+                                                IFontList *flist = child.fonts;
+                                                MEMCHK(IFontList, flist);
+                                                res = flist->readConfiguration(conf_manager);
+                                            }
+                                            else
+                                            {
+                                                xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("FONTS"));
+                                                throw(e);
+                                            }
+                                            if (res)
+                                            {
+                                                conf_manager = root->find(X("PHY_MAP"));
+                                                if (conf_manager)
+                                                {
+                                                    line = __LINE__;
+                                                    child.view = new nnViewGlue(child.object_manager, child.imageManager,child.fonts);
+                                                    IViewGlue *viewglue = child.view;
+                                                    MEMCHK(IViewGlue, viewglue);
+                                                    res = viewglue->readConfiguration(conf_manager);
+                                                }
+                                                else
+                                                {
+                                                    xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("PHY_MAP"));
+                                                    throw(e);
+                                                }
+
                                         }
                                     }
                                 }
@@ -246,6 +276,11 @@ void childApps::clean(void)
         delete imageManager;
         imageManager = nullptr;
     }
+    if (fonts)
+    {
+        delete fonts;
+        fonts = nullptr;
+    }
     if (view)
     {
         delete view;
@@ -257,13 +292,9 @@ void childApps::clean(void)
 
 bool nnAppManager::clean(void)
 {
-    listChild::iterator it = childs.begin();
-    listChild::iterator _end = childs.end();
-    while (it != _end)
+    for (auto i : childs)
     {
-        it->second->clean();
-        delete it->second;
-        it++;
+        i.second->clean();
     }
     return childs.empty();
 }

@@ -59,6 +59,7 @@ class nnViewGlue
 
     IManager  *manager;
     IImageManager *images;
+    IFontList *fonts;
     IView     *view;
     IToolView *toolview;
     status_select status;
@@ -68,7 +69,7 @@ class nnViewGlue
     
 
 public:
-    nnViewGlue(IManager  *_manager, IImageManager *_images);
+    nnViewGlue(IManager  *_manager, IImageManager *_images,IFontList *_fonts);
     ~nnViewGlue();
     nnPoint getCoordPhy(nnPoint & logPoint);
     nnPoint getCoordPhy(int x, int y);

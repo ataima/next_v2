@@ -1,5 +1,5 @@
-#ifndef N2COMMANDER
-#define N2COMMANDER
+#ifndef N2COMMANDER_HEADER
+#define N2COMMANDER_HEADER
 
 
 /**************************************************************

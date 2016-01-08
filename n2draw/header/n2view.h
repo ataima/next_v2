@@ -35,20 +35,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-class nnSelector
-        : public ISelector
-{
-    bool visible;
-    bool error;
-public :
-    nnSelector();
-    void draw(bmpImage & image,const nnPoint &start ,const nnPoint &stop );
-    inline void hide(void) {visible=false;}
-    inline void show(void){visible=true;}
-    inline bool getStatus(void) {return visible;}
-    inline void setError(bool st)  {error=st;}
-};
-
 class nnView
     :public IView
 {

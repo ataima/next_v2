@@ -36,11 +36,11 @@ const STRING nnObj::toString(void) const
     SSTREAM s;
     switch (v_context)
     {
-    case objNone:  s << L"objNone"; break;
-    case objWire: s << L"objWire"; break;
-    case objContact: s << L"objContact"; break;
-    case objCoil: s << L"objCoil"; break;
-    default: s << L"unknow"; break;
+    case objNone:  s << X("objNone"); break;
+    case objWire: s << X("objWire"); break;
+    case objContact: s << X("objContact"); break;
+    case objCoil: s << X("objCoiX("); break;
+    default: s << X("unknow"); break;
     }
     return s.str();
 }
@@ -72,7 +72,7 @@ void nnObj::load(IXmlNode *root)
 const  STRING nnObjPos::toString(void) const
 {
     SSTREAM s;
-    s << L"X:" << v_Xpos << L" - Y:" <<
+    s << X("X:") << v_Xpos << X(" - Y:") <<
         v_Ypos << " - " << nnObj::toString();
     return s.str();
 }
@@ -760,19 +760,19 @@ const  STRING nnObjWire::toString(void) const
     s << nnObjConn::toString() << " - ";
     switch (v_wire)
     {
-    case noWire: s << L"noWire"; break;
-    case wireHorizzontal: s << L"wireHorizzontal"; break;
-    case wireVertical: s << L"wireVertical"; break;
-    case wireAngleUpRight: s << L"wireAngleUpRight"; break;
-    case wireAngleUpLeft: s << L"wireAngleUpLeft"; break;
-    case wireAngleDownRight: s << L"wireAngleDownRight"; break;
-    case wireAngleDownLeft: s << L"wireAngleDownLeft"; break;
-    case wireTHorizDown: s << L"wireTHorizDown"; break;
-    case wireTHorizUp: s << L"wireTHorizUp"; break;
-    case wireTVertRight: s << L"wireTVertRight"; break;
-    case wireTVertLeft:s << L"wireTVertLeft"; break;
-    case wireCross:s << L"wireCross"; break;
-    default: s << L"unknow"; break;
+    case noWire: s << X("noWire"); break;
+    case wireHorizzontal: s << X("wireHorizzontal"); break;
+    case wireVertical: s << X("wireVerticaL"); break;
+    case wireAngleUpRight: s << X("wireAngleUpRight"); break;
+    case wireAngleUpLeft: s << X("wireAngleUpLeft"); break;
+    case wireAngleDownRight: s << X("wireAngleDownRight"); break;
+    case wireAngleDownLeft: s << X("wireAngleDownLeft"); break;
+    case wireTHorizDown: s << X("wireTHorizDown"); break;
+    case wireTHorizUp: s << X("wireTHorizUp"); break;
+    case wireTVertRight: s << X("wireTVertRight"); break;
+    case wireTVertLeft:s << X("wireTVertLeft"); break;
+    case wireCross:s << X("wireCross"); break;
+    default: s << X("unknow"); break;
     }
     return s.str();
 }
@@ -899,7 +899,14 @@ bool nnObjComponent::connect(InnObj * from)
         }
         else
         {
-                result = connectFromUp(from->getConnections().front());
+            //front ->isWire
+            int nconn = from->getConnections().front();
+            if (nconn == 0 && (v_num.size() < 2 || v_num.front() == 0))
+            {
+                nconn = nnObjConn::getUI();
+                from->setConnections(nconn);
+            }
+            result = connectFromUp(nconn);
         }
     }
     else
@@ -918,7 +925,14 @@ bool nnObjComponent::connect(InnObj * from)
             }
             else
             {
-                    result = connectFromDown(from->getConnections().front());
+                //front ->isWire
+                int nconn = from->getConnections().front();
+                if (nconn == 0 && (v_num.size() < 2 || v_num.back() == 0))
+                {
+                    nconn = nnObjConn::getUI();
+                    from->setConnections(nconn);
+                }
+                result = connectFromDown(nconn);
             }
 
         }
@@ -1007,7 +1021,7 @@ bool nnObjComponent::disconnectFromDown(void)
 const  STRING nnObjContact::toString(void) const
 {
     SSTREAM s;
-    s << "CONTACT : ";
+    s << X("CONTACT : ");
     s << nnObjComponent::toString()<< std::endl;
     s << nnObjVCPU::toString() << std::endl;
     return s.str();
@@ -1016,14 +1030,14 @@ const  STRING nnObjContact::toString(void) const
 const  STRING nnContactNO::toString(void) const
 {
     SSTREAM s;
-    s << "N.O. " << nnObjContact::toString();
+    s << X("N.O. ") << nnObjContact::toString();
     return s.str();
 }
 
 const  STRING nnContactNC::toString(void) const
 {
     SSTREAM s;
-    s << "N.C. " << nnObjContact::toString();
+    s << X("N.C. ") << nnObjContact::toString();
     return s.str();
 }
 
@@ -1055,7 +1069,7 @@ void nnObjContact::load(IXmlNode *root)
 const  STRING nnObjCoil::toString(void) const
 {
     SSTREAM s;
-    s << "COIL : ";
+    s << X("COIL : ");
     s << nnObjComponent::toString() << std::endl;
     s << nnObjVCPU::toString() << std::endl;
     return s.str();
@@ -1064,7 +1078,7 @@ const  STRING nnObjCoil::toString(void) const
 const  STRING nnGenericCoil::toString(void) const
 {
     SSTREAM s;
-    s << "GEN " <<nnObjCoil::toString() << std::endl;
+    s << X("GEN ") <<nnObjCoil::toString() << std::endl;
     return s.str();
 }
 
@@ -1099,9 +1113,9 @@ const STRING nnObjVCPU::toString(void) const
         for (auto i : v_reg)
         {
             if (i < v_vcpu->memSIZE)
-                os << "R(" << i << ") = " << std::dec << v_vcpu->u.memBASE[i] << "0X" << std::hex << v_vcpu->u.memBASE[i] << std::dec << std::endl;
+                os << X("R(") << i << X(") = ") << std::dec << v_vcpu->u.memBASE[i] << "0X" << std::hex << v_vcpu->u.memBASE[i] << std::dec << std::endl;
             else
-                os << "Error: index = " << i << " Out of bounds" << std::endl;
+                os << X("Error: index = ") << i << X(" Out of bounds") << std::endl;
         }
     }
     return os.str();

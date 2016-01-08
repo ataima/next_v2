@@ -17,7 +17,7 @@
 #define MKDIR(a,b) mkdir(a,b)
 #include <sys/stat.h>
 #else
-#define MKDIR(a,b) mkdir(a)
+#define MKDIR(a,b) _mkdir(a)
 #endif
 
 

@@ -80,6 +80,32 @@ public:
     }
 };
 
+
+class xmlConfigurationNodeValueException
+    :public n2exception
+{
+    int  value;
+public:
+    explicit xmlConfigurationNodeValueException(int  _value) throw()
+        :n2exception("xmlConfigurationNodeValueException"), value(_value)
+    {
+
+    }
+    char const* msg()
+    {
+        std::stringstream ss;
+        const char *b_msg = n2exception::msg();
+        ss << "exception:" << b_msg << std::endl << " Inavlid XML Node Value:" << value << std::endl;
+        delete b_msg;
+        int size = ss.str().size();
+        char *buff = new char[size + 2];
+        memcpy(buff, ss.str().c_str(), size);
+        buff[size] = '\0';
+        return buff;
+    }
+};
+
+
 class appManagerConfigureLoadImageException
     :public n2exception
 {

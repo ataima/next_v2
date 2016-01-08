@@ -1362,6 +1362,17 @@ bool bmpImage::pasteSubImage(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER src, int
     return copyBits(dst, src, left, top, getWidth(src), getHeight(src));
 }
 
+bool bmpImage::translateColor(unsigned char oriRed, unsigned char oriGreen,
+    unsigned char oriBlue, unsigned char newRed,
+    unsigned char newGreen, unsigned char newBlue)
+{
+    return translateColor(m_hBitmap, oriRed, oriGreen,
+        oriBlue, newRed,
+         newGreen,newBlue);
+}
+
+
+
 
 bool bmpImage::copyBits(bmpImage & dst, size_t left, size_t top, size_t right, size_t bottom)
 {
@@ -1434,20 +1445,42 @@ bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, si
 
 
 static inline   void
-copyMaskLine24(unsigned char  *target, unsigned char  *source,
+copyMaskLine(unsigned int depth,unsigned char  *target, unsigned char  *source,
                unsigned char Rmask,unsigned char Gmask,
                unsigned char Bmask,unsigned int width_in_pixels)
 {
-    for (unsigned int cols = 0; cols < width_in_pixels; cols++) {
-        if(source[ID_RGBA_BLUE]!=Bmask)
-            target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE] ;
-        if(source[ID_RGBA_GREEN]!=Gmask)
-            target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN] ;
-        if(source[ID_RGBA_RED]!=Rmask)
-            target[ID_RGBA_RED] = source[ID_RGBA_RED];
-        ;
-        target += 3;
-        source += 3;
+    unsigned int cols;
+    if(depth==3)
+    {
+        for (cols = 0; cols < width_in_pixels; cols++) 
+        {
+            if (!(source[ID_RGBA_BLUE] == Bmask &&
+                source[ID_RGBA_GREEN] == Gmask &&
+                source[ID_RGBA_RED] == Rmask))
+            {
+                target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE];
+                target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN];
+                target[ID_RGBA_RED] = source[ID_RGBA_RED];
+            }
+            target += 3;
+            source += 3;
+        }
+    }
+    else
+    if (depth == 4)
+    {
+        unsigned int mask = (Rmask << 16) | (Gmask << 8) | Bmask;
+        unsigned int *dest_t = reinterpret_cast<unsigned int *>(target);
+        unsigned int *src_t = reinterpret_cast<unsigned int *>(source);
+        for (cols = 0; cols < width_in_pixels; cols++)
+        {
+            if ((*src_t & 0xffffff) != mask)
+            {
+                *dest_t = *src_t;
+            }
+            dest_t++;
+            src_t++;
+        }
     }
 }
 
@@ -1490,7 +1523,7 @@ bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite,
                     width = src_width;
                 for (unsigned int rows = 0; rows < height; rows++)
                 {
-                    copyMaskLine24(dst_bits, src_bits, Rmask,Gmask,Bmask,width);
+                    copyMaskLine(depth,dst_bits, src_bits, Rmask,Gmask,Bmask,width);
                     dst_bits += dst_pitch;
                     src_bits += src_pitch;
                 }
@@ -2008,6 +2041,70 @@ bool bmpImage::frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, 
     return res;
 }
 
+static inline   void
+translateLine( unsigned int depth,unsigned char  *target, unsigned int width_in_pixels,
+    unsigned char Rmask, unsigned char Gmask, unsigned char Bmask,
+    unsigned char newR, unsigned char newG, unsigned char newB )
+{
+    unsigned int cols;
+    if (depth == 3)
+    {
+        for (cols = 0; cols < width_in_pixels; cols++) {
+            if (target[ID_RGBA_BLUE] == Bmask &&
+                target[ID_RGBA_GREEN] == Gmask &&
+                target[ID_RGBA_RED] == Rmask)
+            {
+                target[ID_RGBA_BLUE] = newB;
+                target[ID_RGBA_GREEN] = newG;
+                target[ID_RGBA_RED] = newR;
+            }
+            target += depth;
+        }
+    }
+    else
+    if (depth == 4)
+    {
+        unsigned int oldCol = (Rmask << 16) | (Gmask << 8) | Bmask;
+        unsigned int newCol = (newR << 16) | (newG << 8) | newB;
+        unsigned int *ptr = reinterpret_cast<unsigned int *>(target);
+        for ( cols = 0; cols < width_in_pixels; cols++) {
+            if ((*ptr&0xffffff) == oldCol)
+                *ptr = newCol;
+            ptr++;
+        }
+    }
+}
+
+
+
+bool bmpImage::translateColor(LPBITMAPFILEHEADER dest, unsigned char oriRed, unsigned char oriGreen,
+    unsigned char oriBlue, unsigned char newRed,
+    unsigned char newGreen , unsigned char  newBlue)
+{
+    bool bResult = false;
+    if ( dest != nullptr)
+    {
+        unsigned int dst_width = getWidth(dest);
+        unsigned int dst_height = getHeight(dest);
+        unsigned int dst_pitch = getPitch(dest);
+        LPBITMAPINFOHEADER dst_info = getInfoHeader(dest);
+        unsigned int dst_line = getLine(dest);
+        unsigned  int depth = dst_line / dst_width;
+        // check the size of src image
+        if (dst_info != nullptr  )
+        {
+            unsigned char  *dst_bits = getBits(dest);
+                for (unsigned int rows = 0; rows < dst_height; rows++)
+                {
+                    translateLine(depth,dst_bits,dst_width, oriRed, oriGreen, oriBlue, newRed,newGreen,newBlue);
+                    dst_bits += dst_pitch;
+                }
+                bResult = true;
+        }
+    }
+    return bResult;
+}
+
 
 
 ///////////////////////////////////////////////////////////////// IMAGE LIST
@@ -2084,6 +2181,7 @@ bool bmpSprite::toSprite(LPBITMAPFILEHEADER dest, LPBITMAPFILEHEADER image, LPBI
 {
     bool res = false;
     //must be all 24bpp
+    //TODO REMOVE ...
     try
     {
         unsigned int rows, height = bmpImage::getHeight(dest);

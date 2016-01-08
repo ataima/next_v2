@@ -1,6 +1,8 @@
 #ifndef IMAGE_STUB_HEADER
 #define IMAGE_STUB_HEADER
 
+#ifndef _WINDOWS_
+
 
 #ifdef _MSC_VER
 #include <pshpack2.h>
@@ -59,6 +61,7 @@ typedef BITMAPINFO *LPBITMAPINFO;
 
 
 #endif
+#endif
 
 
 #ifdef _UNICODE
@@ -114,6 +117,9 @@ public:
     bool swaptoBGR(void);
     bool swaptoRBG(void);
     bool swaptoGRB(void);
+    bool translateColor(unsigned char oriRed, unsigned char oriGreen,
+        unsigned char oriBlue, unsigned char newRed,
+        unsigned char newGreen, unsigned char newBlue);
     bool copyBits(bmpImage & dst, size_t left,size_t top,size_t right,size_t bottom);
     bool drawSprite( bmpImage & sprite, int left, int top);
     bool drawMaskSprite( bmpImage & sprite, int left, int top,
@@ -156,6 +162,9 @@ protected:
     static bool getPixel(LPBITMAPFILEHEADER dest, unsigned int x, unsigned int y, unsigned char  & red, unsigned char & green, unsigned char & blue);
     static bool line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
                         unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot);
+    static bool translateColor(LPBITMAPFILEHEADER dest,unsigned char oriRed, unsigned char oriGreen,
+        unsigned char oriBlue, unsigned char newRed,
+        unsigned char newGreen, unsigned char  newBlue);
 
 protected:
     BITMAPFILEHEADER * m_hBitmap;

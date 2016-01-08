@@ -90,6 +90,7 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #define  STRLEN   std::char_traits<char>::length
 #define  STRING   std::string
 #define  SSTREAM  std::stringstream
+#define  SSTREAMOUT  std::cout
 #define  ATOL     atol
 #define  FROMQSTRING()   toStdString()
 #ifdef _MSC_VER
@@ -343,12 +344,37 @@ public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool loadImages(int w, int h) = 0;
     virtual bool loadImages(objImageList *objs) = 0;
-    //virtual const listImage * getImageList(void) = 0;
     virtual bmpImage * getImage(int id) = 0;
     virtual const  objImageList * getAvailObj(void) = 0;
     virtual ~IImageManager() {}
 };
 
+
+class IFontManager
+{
+public:
+    virtual bool setPath(const XCHAR * _path) = 0;
+    virtual STRING  & getDefaulPath(void) const = 0;
+    virtual bool readConfiguration(IXmlNode *node) = 0;
+    virtual bool loadImages(void) = 0;
+    virtual bmpImage * getImage(const char * msg,unsigned char red, unsigned char green, unsigned char blue) = 0;
+    virtual const  objImageList * getAvailObj(void) = 0;
+    virtual ~IFontManager() {}
+};
+
+typedef std::list<std::string> fontNameList;
+
+
+class IFontList
+{
+public:
+    virtual bool readConfiguration(IXmlNode *node) = 0;
+    virtual bool loadImages(void)=0;
+    virtual IFontManager* getManager(const char *name) = 0;
+    virtual bool add(const char *name, IFontManager*) = 0;
+    virtual bool remove(const char *name) = 0;
+    virtual bool getFontNameList(fontNameList & list) = 0;
+};
 //////////////////////////////////////////////////////
 class IToolView
 {
@@ -369,11 +395,13 @@ public:
 class ISelector
 {
 public:
-    virtual void draw(bmpImage & image,const nnPoint &start ,const nnPoint &stop )=0;
+    virtual void draw(bmpImage & image,const nnPoint &startPhy ,const nnPoint &stopPhyy,
+        const nnPoint &start, const nnPoint &stop)=0;
     virtual void hide(void)=0;
     virtual void show(void)=0;
     virtual bool getStatus(void)=0;
     virtual void setError(bool st)=0;
+    virtual void setFont(IFontManager *font) = 0;
 };
 
 //////////////////////////////////////////////////////
@@ -459,6 +487,7 @@ public:
 typedef struct tag_app_child
 {
     IManager                *object_manager;
+    IFontList               *fonts;
     IViewGlue               *view;
     IImageManager           *imageManager;
     void clean(void);

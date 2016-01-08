@@ -109,7 +109,7 @@ int selectFormat( const char* opt)
     i=0;
     if (opt[i]=='-')i++;
     for (; i<res; i++)
-        _opt[i]=tolower(opt[i]);
+        _opt[i]=(char )tolower(opt[i]);
     _opt[i]='\0';
     res=1;
     for ( i=0; i<4; i++)
@@ -225,7 +225,7 @@ int configure(int argc, const char* argv[],int *format,char *namefile,char *name
 }
 
 
-int main(int argc, const char* argv[])
+int _cdecl  main(int argc, const char* argv[])
 {
     int format;
     char buff[255];
