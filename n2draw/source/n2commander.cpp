@@ -260,6 +260,7 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 
 bool nnCommander::drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue *glue)
 {
+    (glue);
     bool res = false;
     int height = bkg.getHeight();
     if (curItem != nullptr && font != nullptr)

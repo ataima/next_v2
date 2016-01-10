@@ -31,6 +31,9 @@ SOURCES += \
 ../../source/n2commander.cpp             \
 ../../source/n2toolview.cpp              \
 ../../source/n2exthandler.cpp            \
+../../source/n2fontlist.cpp              \
+../../source/n2fontmanager.cpp           \
+../../source/n2selector.cpp              \
 
 
 
@@ -52,6 +55,9 @@ HEADERS += \
 ../../header/n2toolview.h              \
 ../../header/n2interfaces.h            \
 ../../header/n2exthandler.h            \
+../../header/n2fontlist.h              \
+../../header/n2fontmanager.h           \
+../../header/n2selector.h              \
 
 
 

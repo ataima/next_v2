@@ -56,11 +56,11 @@ void nnSelector::draw(bmpImage & image,
         start = glue->getCoordPhy( sel_start);
         stop  = glue->getCoordPhy( sel_stop);        
         stop += size;
-        start.y = image.getHeight() - start.y;
-        stop.y = image.getHeight() - stop.y;
+        unsigned int height=image.getHeight();
+        start.y = height - start.y;
+        stop.y = height - stop.y;
         start-=2;
         stop += 2;
-        unsigned int height = image.getHeight();
         if (error)
         {
             image.frameRect(start.x, start.y, stop.x, stop.y, 255, 0, 0, 0xcccccccc);
