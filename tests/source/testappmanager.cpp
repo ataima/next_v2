@@ -111,7 +111,7 @@ void test_app_manager::test1(void)
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;
-    nnPoint p=childs->view->getCoordPhy(1,1);
+    nnPoint p=childs->view->getConstPhy();
     CA_ASSERT(p.x != 0 );
     CA_ASSERT(p.y != 0);
     res=childs->imageManager->loadImages(p.x, p.y);
@@ -165,7 +165,7 @@ void test_app_manager::test2(void)
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;
-    nnPoint p = childs->view->getCoordPhy(1, 1);
+    nnPoint p = childs->view->getConstPhy();
     CA_ASSERT(p.x != 0);
     CA_ASSERT(p.y != 0);
     res = childs->imageManager->loadImages(p.x, p.y);

@@ -37,15 +37,18 @@ private:
     listCommandItem items;
     IImageManager *images;
     commandItem * curItem;
+    IFontManager *font;
 public:
     nnCommander();
     ~nnCommander();
     bool readConfiguration(IXmlNode *node) ;
     bool handlerRequestCommand( nnPoint & pos,int & command);
     bool handlerMouseMove( nnPoint & pos,IExtHandler *hook);
-    inline listCommandItem & getItems(void) {return items;}
     bool loadImages(const XCHAR *path);
-    bmpImage * getImage(int command);
+    bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue);
+    inline void setFont(IFontManager *_font) { font = _font; }
+private :
+    bool drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue * glue);
 };
 
 

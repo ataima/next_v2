@@ -147,6 +147,11 @@ typedef struct tag_nn_point
         x -= v;
         y -= v;
     }
+    inline void adjust(const int _x, const int _y)
+    {
+        x += _x;
+        y += _y;
+    }
 } nnPoint;
 
 

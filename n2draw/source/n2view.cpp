@@ -50,13 +50,12 @@ bmpImage & nnView::getMainBitmap(void)
 }
 
 
-bool nnView::draw(IManager * manager, void * context)
+bool nnView::draw(IManager * manager, IViewGlue * glue)
 {
     bool res = false;
     bool empty = false;
     int x, y;
     int ix, iy;
-    nnViewGlue *glue = (nnViewGlue *)(context);
     ix = iy = 0;
     if (glue != nullptr)
     {
@@ -129,7 +128,7 @@ bool nnView::readConfiguration(IXmlNode *node)
 bool nnView::createMainBitmap(int w, int h)
 {
     bool res = false;
-    res = page.create((int)w, (int)h, 0);
+    res = page.create((int)w, (int)h, 192);
     return res;
 }
 
@@ -158,7 +157,7 @@ bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
     }
     if (images != nullptr)
     {
-        nnPoint pos = glue->getMirrorCoordPhy(x, y);
+        nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(),x, y);
         bmpImage *sprite=images->getImage(nImage);
         if(sprite)
         {
@@ -174,13 +173,18 @@ bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
     bool res = false;
     if (images != nullptr)
     {
-
-        nnPoint pos = glue->getMirrorCoordPhy(x, y);
+        nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(),x, y);
         bmpImage *sprite=images->getImage(0);
         if(sprite)
         {
                 res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
         }
+        //DEBUG
+        char buff[128];
+        sprintf(buff, "%d:%d", x, y);
+        bmpImage * strImage = font->getImage(buff, 32, 32, 32);
+        res = page.drawMaskSprite(*strImage, pos.x+5, pos.y +20, 0, 0, 0);
+        delete strImage;
     }
     return res;
 }

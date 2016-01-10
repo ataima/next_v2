@@ -37,6 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 nnToolView::nnToolView()
     :active(nullptr)
 {
+    font = nullptr;
     commands.clear();
 }
 
@@ -51,6 +52,7 @@ nnToolView::~nnToolView()
         commands.clear();
     }
     active=nullptr;
+    font = nullptr;
 }
 
 bool nnToolView::readConfiguration(IXmlNode *node)
@@ -121,6 +123,7 @@ bool nnToolView::readConfiguration(IXmlNode *node)
         if(it!=commands.end())
         {
             active=it->second;
+            active->setFont(font);
         }
         else
         {
@@ -130,28 +133,12 @@ bool nnToolView::readConfiguration(IXmlNode *node)
     return res;
 }
 
-bool nnToolView::draw(bmpImage & bkg, void * context)
+bool nnToolView::draw(bmpImage & bkg, IViewGlue * glue)
 {
-    (context);
     bool res=false;
     if(active)
     {
-        listCommandItem & items = active->getItems();
-        listCommandItem::iterator it=items.begin();
-        listCommandItem::iterator _end=items.end();
-        unsigned int height= bkg.getHeight();
-        while(it!=_end)
-        {
-            bmpImage & icon= *active->getImage(it->command);
-            unsigned int x= phyPos.x+it->pos.x;
-            unsigned int y= height-(phyPos.y+it->pos.y);
-            res = bkg.drawMaskSprite(icon, x,y,it->maskR,it->maskG,it->maskB);
-            it->rect.set(x,y,x+icon.getWidth(),y+icon.getHeight());
-            if(!res)
-                break;
-            it++;
-        }
-        res=(it==_end);
+        return active->draw(bkg, phyPos,glue);
     }
     return res;
 }
@@ -206,6 +193,8 @@ bool nnToolView::checkIntCommand(int command)
     if(it!=commands.end())
     {
         active=it->second;
+        active->setFont(font);
+
     }
     else
     {

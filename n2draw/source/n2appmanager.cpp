@@ -60,7 +60,7 @@ childApps * nnAppManager::createObjects(STRING & conf_file_name)
     if(child != nullptr)
     {
         bool res;
-        nnPoint p=child->view->getCoordPhy(1,1);
+        nnPoint p=child->view->getConstPhy();
         if(p.x != 0 && p.y != 0)
         {
             res=child->imageManager->loadImages(p.x, p.y);

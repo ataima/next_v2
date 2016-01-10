@@ -145,6 +145,9 @@ bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned
     return res;
 }
 
+
+
+
 bool nnFontManager::setPath(const XCHAR *_path)
 {
     path.clear();

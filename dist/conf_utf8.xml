@@ -1,6 +1,6 @@
 <APP>
 	<DEFAULT_WIDTH>200</DEFAULT_WIDTH>
-	<DEFAULT_HEIGHT>20</DEFAULT_HEIGHT>
+	<DEFAULT_HEIGHT>14</DEFAULT_HEIGHT>
 	<MANAGER>
 	</MANAGER>
 	<PHY_MAP>
@@ -29,7 +29,7 @@
 					<BLUE>255</BLUE>
 				</MASK>
 				<FILE>CONTACT.BMP</FILE>
-				<INFO> Insert contacts ( any type ...)</INFO>
+				<INFO> INSERT CONTACT</INFO>
 			</ITEM_0>
 			<ITEM_1>
 				<POS_X>0</POS_X>
@@ -41,7 +41,7 @@
 					<BLUE>255</BLUE>
 				</MASK>
 				<FILE>COIL.BMP</FILE>
-				<INFO> Insert coils ( any type ...)</INFO>
+				<INFO>INSERT COIL</INFO>
 			</ITEM_1>
 			<ITEM_2>
 				<POS_X>-48</POS_X>
@@ -53,7 +53,7 @@
 					<BLUE>255</BLUE>
 				</MASK>
 				<FILE>SETTING.BMP</FILE>
-				<INFO>Setting ...</INFO>
+				<INFO>MORE COMMANDS</INFO>
 			</ITEM_2>
 			</COMMANDER>		
 		</TOOLBARS_0>
@@ -307,6 +307,10 @@
 				<FILE>E_810.BMP</FILE>
 			</SYM>				
 			<SYM>
+				<VALUE>F</VALUE>
+				<FILE>F_810.BMP</FILE>
+			</SYM>				
+			<SYM>
 				<VALUE>G</VALUE>
 				<FILE>G_810.BMP</FILE>
 			</SYM>				
@@ -381,6 +385,102 @@
 			<SYM>
 				<VALUE>:</VALUE>
 				<FILE>DP_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>a</VALUE>
+				<FILE>al_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>b</VALUE>
+				<FILE>bl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>c</VALUE>
+				<FILE>cl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>d</VALUE>
+				<FILE>dl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>e</VALUE>
+				<FILE>el_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>f</VALUE>
+				<FILE>fl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>g</VALUE>
+				<FILE>gl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>h</VALUE>
+				<FILE>hl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>i</VALUE>
+				<FILE>il_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>l</VALUE>
+				<FILE>ll_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>m</VALUE>
+				<FILE>ml_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>n</VALUE>
+				<FILE>nl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>o</VALUE>
+				<FILE>ol_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>p</VALUE>
+				<FILE>pl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>q</VALUE>
+				<FILE>ql_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>r</VALUE>
+				<FILE>rl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>s</VALUE>
+				<FILE>sl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>t</VALUE>
+				<FILE>tl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>u</VALUE>
+				<FILE>ul_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>v</VALUE>
+				<FILE>vl_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>w</VALUE>
+				<FILE>W_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>x</VALUE>
+				<FILE>X_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>y</VALUE>
+				<FILE>Y_810.BMP</FILE>
+			</SYM>				
+			<SYM>
+				<VALUE>z</VALUE>
+				<FILE>zl_810.BMP</FILE>
 			</SYM>				
 		</ITEM_0>
 	</FONTS>		

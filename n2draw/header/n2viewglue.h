@@ -71,10 +71,11 @@ class nnViewGlue
 public:
     nnViewGlue(IManager  *_manager, IImageManager *_images,IFontList *_fonts);
     ~nnViewGlue();
-    nnPoint getCoordPhy(nnPoint & logPoint);
-    nnPoint getCoordPhy(int x, int y);
-    nnPoint getMirrorCoordPhy(int x, int y);
-    nnPoint getCoordLog(nnPoint & phyPoint);
+    nnPoint getCoordPhy(const nnPoint & logPoint);
+    nnPoint getMirrorCoordPhy(int height, int x, int y);
+    nnPoint getCoordLog(const nnPoint & phyPoint);
+    inline  nnPoint getConstPhy(void) { return const_Size; }
+
     bool readConfiguration(IXmlNode * node);
     bool selectStart(int xpos, int ypos);
     bool selectStop(int xpos1, int ypos1);
@@ -106,23 +107,22 @@ public:
     inline bool getSelectArea(nnPoint &start, nnPoint &stop) { start = select_start; stop = select_stop; return true; }
     bmpImage & getDraw(void);
     bool updateDraw(void);
-    inline nnPoint getOffsetView(void) { return nnPoint(offset_Pos.x, offset_Pos.y); }
-    inline nnPoint getMap(void) { return nnPoint((phy_Size.x / const_Size.x), (phy_Size.y / const_Size.y)); }
+    inline nnPoint getOffsetView(void) { return offset_Pos; }
+    nnPoint getMap(void);
     bool resize(int w, int h);
     bool needScrollBarHorz(void);
     bool needScrollBarVert(void);
-    bool isSelectAreaPhyVisible(nnRect & result,nnPoint & start,nnPoint & stop);
     int getScrollableHorzSize(void);
     int getScrollableVertSize(void);
     inline int getPageWidth(void) { return phy_Size.x / const_Size.x;  }
     inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
-    inline nnPoint getPageSize(void) { return phy_Size / const_Size; }
     bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
     bool loadImages(const XCHAR *_path);
 private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);
     bool resizeSelectArea(const int vx,const int vy);
+    IFontManager * getFontFromName(const char *fname);
  };
 
 

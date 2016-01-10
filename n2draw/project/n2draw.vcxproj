@@ -55,6 +55,9 @@
     <ClCompile Include="..\source\n2view.cpp" />
     <ClCompile Include="..\source\n2viewglue.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D15B38ED-FB57-444D-9001-3BDB5D290562}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

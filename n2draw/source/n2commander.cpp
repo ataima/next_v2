@@ -168,6 +168,7 @@ bool nnCommander::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
             {
                 curItem=&(*it);
                 hook->doHandler(action_update_statusbars_info,(size_t)(curItem->info.c_str()));
+                hook->doHandler(action_redraw, (size_t)"");
                 res=true;
                 break;
             }
@@ -180,6 +181,7 @@ bool nnCommander::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
         {
             curItem=nullptr;
             hook->doHandler(action_update_statusbars_info,(size_t)" ... ");
+            hook->doHandler(action_redraw, (size_t)"");
             res=true;
         }
     }
@@ -191,7 +193,6 @@ bool nnCommander::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
 bool nnCommander::handlerRequestCommand( nnPoint & pos,int & command)
 {
     bool res=false;
-    // pos is zero referenced...
     listCommandItem::iterator it=items.begin();
     listCommandItem::iterator end=items.end();
     while(it!=end)
@@ -228,12 +229,46 @@ bool nnCommander::loadImages(const XCHAR *path)
     return res;
 }
 
-bmpImage *nnCommander::getImage(int command)
-{
-    bmpImage * res=nullptr;
-    if(images)
+
+
+
+bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
+{    
+    bool res = false;
+    listCommandItem::iterator it = items.begin();
+    listCommandItem::iterator _end = items.end();
+    unsigned int height = bkg.getHeight();
+    while (it != _end)
     {
-        res=images->getImage(command);
+        bmpImage & icon = *images->getImage(it->command);
+        unsigned int x = pos.x + it->pos.x;
+        unsigned int y = height - (pos.y + it->pos.y);
+        res = bkg.drawMaskSprite(icon, x, y, it->maskR, it->maskG, it->maskB);
+        it->rect.set(x, y, x + icon.getWidth(), y + icon.getHeight());
+        if (!res)
+            break;
+        it++;
+    }
+    if (curItem != nullptr)
+    {
+        drawTips(bkg, pos, glue);
+    }
+    res = (it == _end);
+    return res;
+}
+
+
+bool nnCommander::drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue *glue)
+{
+    bool res = false;
+    int height = bkg.getHeight();
+    if (curItem != nullptr && font != nullptr)
+    {
+        nnPoint offset;
+        offset.set(8, 4);
+        bmpImage * strImage = font->getImage(curItem->info.c_str(), 16, 16, 224);
+        res = bkg.drawMaskSprite(*strImage, pos.x, height - pos.y + 14, 0, 0, 0);
+        delete strImage;
     }
     return res;
 }

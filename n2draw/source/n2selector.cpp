@@ -6,44 +6,94 @@
 
 
 
-
 nnSelector::nnSelector(void)
 {
     hide();
     error = false;
+    toAlpha = "ABCDEFGHIJLMNOPQRSTUVXYZ";
 }
 
-void nnSelector::draw(bmpImage & image, const nnPoint &start, const nnPoint &stop,
-   const nnPoint &sel_start, const nnPoint &sel_stop )
+
+bool nnSelector::translateY( int p, std::string & out )
+{
+    bool res = false;
+    out.clear();
+    int w = toAlpha.size();
+    int maxW = w;
+    if (p > w)
+    {
+        while (maxW < p)
+        {
+            maxW *= w;
+        }
+        while (p > w)
+        {
+            int t = p / maxW;
+            if (t > 0)
+            {
+                out += toAlpha[t - 1];
+            }
+            p %= maxW;
+            maxW /= w;
+        }
+        out += toAlpha[p];
+    }
+    else
+    {
+        out += toAlpha[p];
+    }
+    res = (out.size() > 0);
+    return res;
+}
+
+void nnSelector::draw(bmpImage & image, 
+   const nnPoint &sel_start, const nnPoint &sel_stop, IViewGlue * glue)
 {
     if (visible)
     {
-        nnPoint start1 = start;
-        nnPoint stop1 = stop;
-        start1 += 2;
-        stop1 -= 2;
+        nnPoint start, stop,size;
+        size = glue->getConstPhy();
+        start = glue->getCoordPhy( sel_start);
+        stop  = glue->getCoordPhy( sel_stop);        
+        stop += size;
+        start.y = image.getHeight() - start.y;
+        stop.y = image.getHeight() - stop.y;
+        start-=2;
+        stop += 2;
         unsigned int height = image.getHeight();
         if (error)
         {
-            image.frameRect(start.x, height - start.y, stop.x, height - stop.y, 255, 0, 0, 0xcccccccc);
-            image.frameRect(start1.x, height - start1.y, stop1.x, height - stop1.y, 255, 0, 0, 0x66666666);
+            image.frameRect(start.x, start.y, stop.x, stop.y, 255, 0, 0, 0xcccccccc);
+            start += 4;
+            stop -= 4;
+            image.frameRect(start.x,start.y, stop.x, stop.y, 255, 0, 0, 0x66666666);
         }
         else
         {
-            image.frameRect(start.x, height - start.y, stop.x, height - stop.y, 128, 128, 128, 0xcccccccc);
-            image.frameRect(start1.x, height - start1.y, stop1.x, height - stop1.y, 128, 128, 128, 0x66666666);
+            image.frameRect(start.x, start.y, stop.x, stop.y, 0, 128, 0, 0xcccccccc);
+            start += 4;
+            stop -= 4;
+            image.frameRect(start.x,start.y, stop.x, stop.y, 0, 0, 128, 0x66666666);
         }
         if (font)
         {
+            bmpImage * strImage;
+            std::string conv;
             char buff[128];
-            sprintf(buff, "%d:%d", sel_start.x, sel_start.y);
-            bmpImage * strImage = font->getImage(buff,16,16,224);
-            image.drawMaskSprite(*strImage,start.x, height-start.y+2,0,0,0);
-            delete strImage;
-            sprintf(buff, "%d:%d", sel_stop.x, sel_stop.y);
-            strImage = font->getImage(buff, 16, 16, 224);
-            image.drawMaskSprite(*strImage, stop.x-(8*strlen(buff)), height - stop.y-12, 0, 0, 0);
-            delete strImage;
+            if (translateY(sel_start.x, conv))
+            {
+                sprintf(buff, "%s:%d", conv.c_str(), sel_start.x);
+                strImage = font->getImage(buff, 16, 16, 224);
+                image.drawMaskSprite(*strImage, start.x+2, start.y -14, 0, 0, 0);
+                delete strImage;
+            }
+            if (translateY(sel_stop.x, conv))
+            {
+                sprintf(buff, "%s:%d", conv.c_str(), sel_stop.x);
+                strImage = font->getImage(buff, 16, 224, 16);
+                image.drawMaskSprite(*strImage, stop.x - (8 * strlen(buff))-2, stop.y +4, 0, 0, 0);
+                delete strImage;
+            }
         }
     }
 }

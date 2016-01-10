@@ -42,17 +42,22 @@ class nnView
     bmpImage page;
     bmpImage copy;
     IImageManager *images;
+    IFontManager *font;
 public:
     nnView(IImageManager *_images);
     ~nnView();
-    bool draw(IManager * manager, void * context);
+    bool draw(IManager * manager, IViewGlue * glue);
     bool readConfiguration(IXmlNode *node);
     bool createMainBitmap(int w, int h);
     bmpImage & getMainBitmap(void);
     bool remapMainBitmap(int w,int h);
+    inline void setFont(IFontManager *_font) { font = _font; }
 private:
     bool drawObj(InnObj * obj, int & x, int & y, IViewGlue *glue);
     bool drawBkg( int & x, int & y,  IViewGlue *glu);
+    bool drawPowerUp(int & x, int & y, IViewGlue *glu);
+    bool drawPowerDown(int & x, int & y, IViewGlue *glu);
+
 };
 
 

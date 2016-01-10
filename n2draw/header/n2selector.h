@@ -35,16 +35,18 @@ class nnSelector
     bool visible;
     bool error;
     IFontManager * font;
+    std::string toAlpha;
 public:
     nnSelector();
-    void draw(bmpImage & image, const nnPoint &start, const nnPoint &stop,
-             const nnPoint &sel_start, const nnPoint &sel_stop);
+    void draw(bmpImage & image, 
+             const nnPoint &sel_start, const nnPoint &sel_stop, IViewGlue * glue);
     inline void hide(void) { visible = false; }
     inline void show(void) { visible = true; }
     inline bool getStatus(void) { return visible; }
     inline void setError(bool st) { error = st; }
     inline void setFont(IFontManager *_font) { font = _font; }
-
+private:
+    bool translateY(int p, std::string & out);
 };
 
 

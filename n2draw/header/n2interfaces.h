@@ -145,6 +145,9 @@ typedef struct nn_tag_command_item
 } commandItem;
 
 typedef std::vector<commandItem> listCommandItem;
+class IFontManager;
+class IViewGlue;
+
 
 class ICommander
 {
@@ -152,10 +155,10 @@ public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
     virtual bool handlerMouseMove( nnPoint & pos,IExtHandler *hook)=0;
-    virtual listCommandItem & getItems(void)=0;
-    virtual bmpImage * getImage(int command)=0;
-    virtual ~ICommander() {}
+    virtual void setFont(IFontManager *_font) = 0;
     virtual bool loadImages(const XCHAR *path)=0;
+    virtual bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue) = 0;
+    virtual ~ICommander() {}
 };
 
 //////////////////////////////////////////////////////
@@ -304,6 +307,7 @@ public:
     virtual int getHeight(void) = 0;
     virtual nnPoint getStartPoint(void) = 0;
     virtual nnPoint getStopPoint(void) = 0;
+    virtual nnPoint getSchema(void) = 0;
     virtual bool save(const STRING & name) = 0;
     virtual bool load(const STRING & name) = 0;
     virtual bool undo(void) = 0;
@@ -376,17 +380,19 @@ public:
     virtual bool getFontNameList(fontNameList & list) = 0;
 };
 //////////////////////////////////////////////////////
+
 class IToolView
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
-    virtual bool draw(bmpImage & bkg,void * context) = 0;
+    virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
     virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
     virtual bool handlerMouseMove( nnPoint & pos,IExtHandler *hook)=0;
     virtual ICommander *getActiveCommander(void)=0;
     virtual bool loadImages(const XCHAR *path)=0;
     virtual bool checkIntCommand(int command)=0;
     virtual void setDrawPosition(nnPoint & pos)=0;
+    virtual void setFont(IFontManager *_font) = 0;
     virtual ~IToolView() {}
 };
 
@@ -395,8 +401,8 @@ public:
 class ISelector
 {
 public:
-    virtual void draw(bmpImage & image,const nnPoint &startPhy ,const nnPoint &stopPhyy,
-        const nnPoint &start, const nnPoint &stop)=0;
+    virtual void draw(bmpImage & image,
+        const nnPoint &start, const nnPoint &stop, IViewGlue * glue)=0;
     virtual void hide(void)=0;
     virtual void show(void)=0;
     virtual bool getStatus(void)=0;
@@ -409,10 +415,11 @@ class IView
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
-    virtual bool draw(IManager *manager, void * context) = 0;
+    virtual bool draw(IManager *manager, IViewGlue * glue) = 0;
     virtual bool createMainBitmap(int w, int h) = 0;
     virtual bmpImage & getMainBitmap(void) = 0;
     virtual bool remapMainBitmap(int w,int h)=0;
+    virtual void setFont(IFontManager *_font) = 0;
     virtual ~IView() {}
 };
 
@@ -428,10 +435,10 @@ typedef enum tag_mouse_button_def
 class IViewGlue
 {
 public:
-    virtual nnPoint getCoordPhy(nnPoint & logPoint) = 0;
-    virtual nnPoint getCoordPhy(int x,int y) = 0;
-    virtual nnPoint getMirrorCoordPhy(int x, int y) = 0;
-    virtual nnPoint getCoordLog(nnPoint & phyPoint) = 0;
+    virtual nnPoint getCoordPhy(const nnPoint & logPoint) = 0;
+    virtual nnPoint getMirrorCoordPhy(int height,int x, int y) = 0;
+    virtual nnPoint getCoordLog(const nnPoint & phyPoint) = 0;
+    virtual nnPoint getConstPhy(void)=0;
     virtual bool readConfiguration(IXmlNode * node) = 0;
     virtual bool selectStart(int xpos, int ypos) = 0;
     virtual bool selectStop(int xpos1, int ypos1) = 0;
@@ -468,12 +475,10 @@ public:
     virtual bool resize(int w, int h) = 0;
     virtual bool needScrollBarHorz(void)=0;
     virtual bool needScrollBarVert(void)=0;
-    virtual bool isSelectAreaPhyVisible(nnRect & result,nnPoint & start,nnPoint & stop)=0;
     virtual int getScrollableHorzSize(void)=0;
     virtual int getScrollableVertSize(void)=0;
     virtual int getPageWidth(void)=0;
     virtual int getPageHeight(void)=0;
-    virtual nnPoint getPageSize(void)=0;
     virtual bool addExtHandler(handler_exec type,extHandler  _hook,void *unkObj)=0;
     virtual bool loadImages(const XCHAR *_path)=0;
     virtual ~IViewGlue() {}

@@ -18,27 +18,6 @@ nnViewGlue::nnViewGlue(IManager  *_manager,IImageManager *_images, IFontList *_f
 {
     handlers = new nnExtHandlerList();
     selector= new nnSelector();
-    if (fonts)
-    {
-        fontNameList f_list;
-        std::string fontName;
-        if (fonts->getFontNameList(f_list))
-        {
-            for (auto i : f_list)
-            {
-                if (i.find("810"))
-                {
-                    fontName = i;
-                    break;
-                }
-            }
-        }
-        if (fontName.size() > 0)
-        {
-            IFontManager *font=fonts->getManager(fontName.c_str());
-            selector->setFont(font);
-        }
-    }
     select_start.set(-1);
     select_stop.set(-1);
     const_Size.set(0);
@@ -84,39 +63,56 @@ nnViewGlue::~nnViewGlue()
 }
 
 
+IFontManager * nnViewGlue::getFontFromName(const char *fname)
+{
+    IFontManager *res = nullptr;
+    if (fonts)
+    {
+        fontNameList f_list;
+        std::string fontName;
+        if (fonts->getFontNameList(f_list))
+        {
+            for (auto i : f_list)
+            {
+                if (i.find(fname))
+                {
+                    fontName = i;
+                    break;
+                }
+            }
+        }
+        if (fontName.size() > 0)
+        {
+             res = fonts->getManager(fontName.c_str());
+        }
+    }
+    return res;
+}
+
 //TestviewGlue.cpp : T2
-nnPoint nnViewGlue::getCoordPhy(nnPoint & logPoint)
+nnPoint nnViewGlue::getCoordPhy(const nnPoint & logPoint)
 {
     nnPoint res(0, 0);
-    res.x = logPoint.x*const_Size.x;
-    res.y = logPoint.y*const_Size.y;
+    nnPoint log = logPoint;
+    log -= offset_Pos;
+    res=  log*const_Size;
     return res;
 }
 
-nnPoint nnViewGlue::getCoordPhy(int x,int y)
+nnPoint nnViewGlue::getMirrorCoordPhy(int height,int x, int y)
 {
     nnPoint res(0, 0);
-    res.x = (x*const_Size.x);
-    res.y = (y*const_Size.y);
-    return res;
-}
-
-nnPoint nnViewGlue::getMirrorCoordPhy(int x, int y)
-{
-    nnPoint res(0, 0);
-    res.x = phy_Size.x-(x*const_Size.x) - const_Size.x;
-    res.y = phy_Size.y-(y*const_Size.y) - const_Size.y;
+    res.x = ((x-offset_Pos.x)*const_Size.x);
+    res.y = height-((y - offset_Pos.y)*const_Size.y)-const_Size.y;
     return res;
 }
 
 
 //TestviewGlue.cpp : T2
-nnPoint nnViewGlue::getCoordLog(nnPoint & phyPoint)
+nnPoint nnViewGlue::getCoordLog(const nnPoint & phyPoint)
 {
     nnPoint res(0, 0);
     res=offset_Pos+(phyPoint/const_Size);
-    //res.x = offset_Pos.x+phyPoint.x / const_Size.x;
-    //res.y = offset_Pos.y+phyPoint.y / const_Size.y;
     return res;
 }
 
@@ -220,7 +216,13 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                 if (conf)
                 {
                     if (toolview)
-                        res=toolview->readConfiguration(conf);
+                    {
+                        IFontManager *font = getFontFromName("810");
+                        selector->setFont(font);
+                        toolview->setFont(font);
+                        view->setFont(font);
+                        res = toolview->readConfiguration(conf);
+                    }
                 }
                 else
                 {
@@ -348,9 +350,6 @@ bool nnViewGlue::getSelectStartPhy(int & x, int & y)
     if (isStartValid() && isStopValid())
     {
         p = select_start.intersect(select_stop);
-        p-=offset_Pos;
-        //p.x -= offset_Pos.x;
-        //p.y -= offset_Pos.y;
         p = getCoordPhy(p);
         x = p.x;
         y = p.y;
@@ -359,9 +358,6 @@ bool nnViewGlue::getSelectStartPhy(int & x, int & y)
     else if (isStartValid() && !isStopValid())
     {
         p = select_start;
-        p-=offset_Pos;
-        //p.x -= offset_Pos.x;
-        //p.y -= offset_Pos.y;
         p = getCoordPhy(p);
         x = p.x;
         y = p.y;
@@ -370,9 +366,6 @@ bool nnViewGlue::getSelectStartPhy(int & x, int & y)
     else if (!isStartValid() && isStopValid())
     {
         p = select_stop;
-        p-=offset_Pos;
-        //p.x -= offset_Pos.x;
-        //p.y -= offset_Pos.y;
         p = getCoordPhy(p);
         x = p.x;
         y = p.y;
@@ -388,16 +381,15 @@ bmpImage & nnViewGlue::getDraw(void)
     bmpImage & image = view->getMainBitmap();
     if(show_cmd)
     {
-        toolview->draw(image,nullptr);
+        toolview->draw(image,this);
     }
     else
     {
         if(selector && image.isValid())
         {
-            nnRect result;
-            if(isSelectAreaPhyVisible(result, select_start, select_stop))
+            if( isStartValid() && isStopValid())
             {
-                selector->draw(image,result.start,result.stop,select_start,select_stop);
+                selector->draw(image,select_start,select_stop,this);
                 selector->show();
             }
             else
@@ -434,9 +426,22 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
                 nnPoint p = getCoordLog(phyPoint);
                 if (p != select_stop)
                 {
+                    nnPoint maxStop = manager->getSchema();
+                    maxStop -= 1;
+                    bool error = false;
+                    if (p.x > maxStop.x )
+                    {
+                        error = true;
+                        p.x = maxStop.x;
+                    }
+                    if (p.y > maxStop.y)
+                    {
+                        error = true;
+                        p.y = maxStop.y;
+                    }
+                    selector->setError(error);
                     select_stop = p;
                     if(hook)hook->doHandler(action_update_statusbars_panes,0);
-                    //getSelectArea(start,stop);
                     res=true;
                 }
             }
@@ -465,7 +470,23 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
     {
         if (status == s_unselect || status == selected)
             status = start_activate;
-        selectStart(getCoordLog(phyPoint));
+
+        nnPoint p = getCoordLog(phyPoint);
+        nnPoint maxStop = manager->getSchema();
+        maxStop -= 1;
+        bool error = false;
+        if (p.x > maxStop.x)
+        {
+            error = true;
+            p.x = maxStop.x;
+        }
+        if (p.y > maxStop.y)
+        {
+            error = true;
+            p.y = maxStop.y;
+        }
+        selector->setError(error);
+        selectStart(p);
         select_stop = select_start;
         if(hook)hook->doHandler(action_update_statusbars_panes,0);
         res=true;
@@ -541,12 +562,25 @@ bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint
         {
             status = stop_resize;
             nnPoint p = getCoordLog(phyPoint);
+            nnPoint maxStop = manager->getSchema();
+            maxStop -= 1;
+            bool error = false;
+            if (p.x > maxStop.x)
+            {
+                error = true;
+                p.x = maxStop.x;
+            }
+            if (p.y > maxStop.y)
+            {
+                error = true;
+                p.y = maxStop.y;
+            }
+            selector->setError(error);
             if (p != select_stop)
             {
                 select_stop = p;
             }
             if(hook)hook->doHandler(action_update_statusbars_panes,0);
-            //getSelectArea(start,stop);
             status = selected;
         }
         else if (status == start_activate)
@@ -557,7 +591,6 @@ bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint
                 select_stop = p;
             }
             if(hook)hook->doHandler(action_update_statusbars_panes,0);
-            //getSelectArea(start,stop);
             status = selected;
         }
     }
@@ -608,6 +641,19 @@ bool nnViewGlue::handlerScrollVert(int pos)
     return res;
 }
 
+nnPoint nnViewGlue::getMap(void) 
+{
+    nnPoint res = phy_Size / const_Size;
+    if (manager)
+    {
+        nnPoint size=manager->getSchema();
+        if ((res.y+offset_Pos.y) > size.y)
+            res.y = size.y- offset_Pos.y;
+        if ((res.x+ offset_Pos.x) > size.x)
+            res.x = size.x- offset_Pos.x;
+    }
+    return res;
+}
 
 
 bool nnViewGlue::resize(int w, int h)
@@ -637,31 +683,6 @@ bool nnViewGlue::needScrollBarVert(void)
     int h=manager->getHeight()*const_Size.y;
     return (phy_Size.y<h);
 }
-
-
-bool nnViewGlue::isSelectAreaPhyVisible(nnRect &result, nnPoint &start, nnPoint &stop)
-{
-    bool res=false;
-    if(isStartValid() && isStopValid())
-    {        
-        if(getSelectArea(start,stop))
-        {
-            nnRect sel(start,stop);
-            if(sel.isValid())
-            {
-                sel.start-=offset_Pos;
-                sel.stop-=offset_Pos;
-                result.start=getCoordPhy(sel.start);
-                result.stop=getCoordPhy(sel.stop);
-                result.stop+=const_Size;
-                res=true;
-            }
-        }       
-    }
-    return res;
-}
-
-
 
 bool nnViewGlue::getVisibleArea(nnRect & area)
 {
@@ -1002,13 +1023,13 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
 {
     bool res=false;
     needScroll=false;
-    if(select_start.isValid() && select_stop.isValid())
+    if(isStartValid() && isStopValid())
     {
         nnRect vis;
         if(vx!=0)
         {
             int sw = getScrollableHorzSize();
-            int w = manager->getWidth();
+            int w = manager->getWidth()-1;
             if( (vx>0 && select_start.x<w && select_stop.x<w) ||
                     (vx<0 && select_start.x>0 && select_stop.x>0) )
             {
@@ -1037,7 +1058,7 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
         if(vy!=0)
         {
             int sh = getScrollableVertSize();
-            int h = manager->getHeight();
+            int h = manager->getHeight()-1;
             if( (vy>0 && select_start.y<h && select_stop.y<h) ||
                     (vy<0 && select_start.y>0 && select_stop.y>0) )
             {
@@ -1071,7 +1092,7 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
 bool nnViewGlue::resizeSelectArea(const int vx,const int vy)
 {
     bool res=false;
-    if(select_start.isValid() && select_stop.isValid() && manager)
+    if(isStartValid() && isStopValid() && manager)
     {
         if(vx!=0)
         {

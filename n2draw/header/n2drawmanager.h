@@ -115,6 +115,8 @@ public:
     inline int getHeight(void) { return v_height; }
     nnPoint getStartPoint(void);
     nnPoint getStopPoint(void);
+    inline nnPoint getSchema(void) // 4:4 -> 0..3:0..3
+            { return nnPoint(v_width, v_height); }
     bool save(const STRING & name);
     bool load(const STRING & name);
     bool undo(void);

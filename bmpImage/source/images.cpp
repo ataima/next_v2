@@ -1862,7 +1862,9 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
     if(maskDot==0)return true;
     int width,height;
     width=(int)getWidth(dest);
-    height=(int)getHeight(dest);
+    height = (int)getHeight(dest);
+    if (width == 0)return false;
+    if (height == 0)return false;
     unsigned int pitch = getPitch(dest);
     unsigned int line = getLine(dest);
     unsigned  int depth = line / width;
@@ -1918,10 +1920,12 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
     }
     if(dy==0)
     {
+        if (y>=0 && y < height)
         do {
             if(x<0)goto skip_for_clipy;
             if(x>=width)goto skip_for_clipy;
             if(y>=height)break;
+            if (y >= height)break;
             register unsigned char  *pos=bits+(y * pitch) + (x * depth);
             if(mb&maskDot)
             {
@@ -1938,10 +1942,10 @@ skip_for_clipy:
     }
     else if(dx==0)
     {
+        if (x >= 0 && x < width)
         do {
             if(y<0)goto skip_for_clipx;
             if(y>=height)goto skip_for_clipx;
-            if(x>=width)break;
             register unsigned char  *pos=bits+(y * pitch) + (x * depth);
             if(mb&maskDot)
             {
