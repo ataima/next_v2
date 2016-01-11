@@ -33,6 +33,7 @@
     <ClInclude Include="..\header\n2interfaces.h" />
     <ClInclude Include="..\header\n2miniXml.h" />
     <ClInclude Include="..\header\n2point.h" />
+    <ClInclude Include="..\header\n2scroller.h" />
     <ClInclude Include="..\header\n2selector.h" />
     <ClInclude Include="..\header\n2toolview.h" />
     <ClInclude Include="..\header\n2utoatou.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="..\source\n2fontManager.cpp" />
     <ClCompile Include="..\source\n2imagemanager.cpp" />
     <ClCompile Include="..\source\n2miniXml.cpp" />
+    <ClCompile Include="..\source\n2scroller.cpp" />
     <ClCompile Include="..\source\n2selector.cpp" />
     <ClCompile Include="..\source\n2toolview.cpp" />
     <ClCompile Include="..\source\n2view.cpp" />

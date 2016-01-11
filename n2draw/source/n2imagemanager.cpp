@@ -10,6 +10,30 @@
 #else
 #include <direct.h>
 #endif
+/**************************************************************
+Copyright(c) 2015 Angelo Coppi
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files(the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions :
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+********************************************************************/
 
 
 nnImageManager::nnImageManager(const XCHAR *_path)
@@ -30,6 +54,27 @@ nnImageManager::~nnImageManager()
 #if (_WIN32 || _WIN64)
 #define getcwd  _getcwd
 #endif
+
+
+int nnImageManager::internalStringToValue(const XCHAR *ptr)
+{
+    int res = 0;
+    STRING value = ptr;
+    if (value == X("ScrollHorzLeft"))
+        res=100;
+    else
+        if (value == X("ScrollHorzRight"))
+        res = 101;
+    else
+        if (value == X("ScrollVertUp"))
+            res = 102;
+    else
+        if (value == X("ScrollVertDown"))
+            res = 103;
+    return res;
+}
+
+
 
 bool nnImageManager::readConfiguration(IXmlNode *node)
 {
@@ -58,6 +103,51 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
                 path=v;
             }
         }
+        //////////////////
+        IXmlNode *internal = conf->find(X("INTERNAL"));
+        if (internal)
+        {
+            IXmlNode *t = internal->find(X("OBJ"));
+            if (t)
+            {
+                do {
+                    filename.clear();
+                    offset = -1;
+                    IXmlNode *e = t->find(X("VALUE"));
+                    if (e)
+                    {
+                        offset = internalStringToValue(e->getValue());
+                    }
+                    e = t->find(X("FILE"));
+                    if (e)
+                    {
+                        filename = e->getValue();
+                    }
+                    if (offset >= 0 && !filename.empty())
+                    {
+                        if (availObj.find(offset) == availObj.end())
+                            availObj[offset] = filename;
+                        else
+                        {
+                            imagesConfigurationAlreadyLoadException *pe = new imagesConfigurationAlreadyLoadException(offset);
+                            throw (pe);
+                        }
+                    }
+                    else
+                    {
+                        imagesConfigurationBadFormatException *pe = new imagesConfigurationBadFormatException();
+                        throw (pe);
+                    }
+                } while ((t = t->getNext()) != nullptr);
+            }
+        }
+        else
+        {
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("INTERNAL"));
+            throw (pe);
+        }
+
+        //////////////////
         IXmlNode *wire = conf->find(X("WIRE"));
         if (wire)
         {
@@ -97,7 +187,7 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
         }
         else
         {
-            imagesConfigurationNoWireException *pe=new imagesConfigurationNoWireException();
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("WIRE"));
             throw (pe);
         }
         IXmlNode *contact = conf->find(X("CONTACT"));
@@ -139,7 +229,7 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
         }
         else
         {
-            imagesConfigurationNoContactException *pe=new imagesConfigurationNoContactException();
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("CONTACT"));
             throw (pe);
         }
         IXmlNode *coil = conf->find(X("COIL"));
@@ -181,20 +271,20 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
         }
         else
         {
-            imagesConfigurationNoCoilException *pe=new imagesConfigurationNoCoilException();
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("COIL"));
             throw (pe);
         }
     }
     else
     {
-        imagesConfigurationException *pe=new imagesConfigurationException();
+        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("IMAGES"));
         throw (pe);
     }
     
     return res= !availObj.empty();
 }
 
-bool nnImageManager::loadImages(int w, int h)
+bool nnImageManager::loadImages(void)
 {
     bool res = false;
     if (availObj.size() > 0)
@@ -209,18 +299,10 @@ bool nnImageManager::loadImages(int w, int h)
             filenameabs += it->second;
             if (image.copyFromFile(filenameabs.c_str()))
             {
-                if (w!= -1 && h!=-1 && (image.getWidth() != w || image.getHeight() != h))
-                {
-                    imagesConfigurationBadSizeException *pe=new imagesConfigurationBadSizeException(filenameabs.c_str(),image.getWidth(),image.getHeight());
-                    throw (pe);
-                }
-                else
-                {
-                    if (image.getBitsPerPixel() != 24)
+                    if (image.getBitsPerPixel() < 24)
                         image.convertTo24Bits();
                     //TO DO STRECT TO FIT
                     allImages.Add(it->first,image);
-                }
             }
             else
             {
@@ -247,10 +329,17 @@ bool nnImageManager::loadImages(objImageList * extlist)
         if(availObj.size() > 0)
             availObj.clear();
         availObj=*extlist;
-        res=loadImages(-1,-1);
+        res=loadImages();
     }
     return res;
 }
+
+bmpImage * nnImageManager::getImage(const XCHAR * name)
+{
+    int index = internalStringToValue(name);
+    return getImage(index);
+}
+
 
 bmpImage * nnImageManager::getImage(int id)
 {

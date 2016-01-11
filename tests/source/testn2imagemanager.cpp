@@ -91,7 +91,7 @@ void test_image_manager::test1(void)
     nnImageManager im;
     res = im.readConfiguration(&node);
     CA_ASSERT(res == true);
-    res = im.loadImages(40, 48);
+    res = im.loadImages();
     CA_ASSERT(res == true);
     /*
     const listImage *images = im.getImageList();

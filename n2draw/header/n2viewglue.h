@@ -38,7 +38,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 class nnViewGlue
     :public IViewGlue
 {
-
+   
 
     typedef enum tag_status_select
     {
@@ -65,17 +65,19 @@ class nnViewGlue
     status_select status;
     IExtHandlerList * handlers;
     ISelector *selector;
-    bool show_cmd;
+    IScroller *vscroller;
+    IScroller *hscroller;
+    show_status show_cmd;
     
 
 public:
     nnViewGlue(IManager  *_manager, IImageManager *_images,IFontList *_fonts);
     ~nnViewGlue();
+    void setPhyView(int w, int h);
     nnPoint getCoordPhy(const nnPoint & logPoint);
     nnPoint getMirrorCoordPhy(int height, int x, int y);
     nnPoint getCoordLog(const nnPoint & phyPoint);
     inline  nnPoint getConstPhy(void) { return const_Size; }
-
     bool readConfiguration(IXmlNode * node);
     bool selectStart(int xpos, int ypos);
     bool selectStop(int xpos1, int ypos1);
@@ -95,6 +97,8 @@ public:
     bool handlerEndButton(bool shitf,bool ctrl,bool alt);
     bool handlerPageUpButton(bool shitf,bool ctrl,bool alt);
     bool handlerPageDownButton(bool shitf,bool ctrl,bool alt);
+    bool handlerPageRightButton(bool shitf, bool ctrl, bool alt);
+    bool handlerPageLeftButton(bool shitf, bool ctrl, bool alt);
     bool handlerLeftButton(bool shitf,bool ctrl,bool alt);
     bool handlerRightButton(bool shitf, bool ctrl, bool alt);
     bool handlerUpButton(bool shitf, bool ctrl, bool alt);
@@ -110,10 +114,6 @@ public:
     inline nnPoint getOffsetView(void) { return offset_Pos; }
     nnPoint getMap(void);
     bool resize(int w, int h);
-    bool needScrollBarHorz(void);
-    bool needScrollBarVert(void);
-    int getScrollableHorzSize(void);
-    int getScrollableVertSize(void);
     inline int getPageWidth(void) { return phy_Size.x / const_Size.x;  }
     inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
     bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
@@ -122,6 +122,10 @@ private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);
     bool resizeSelectArea(const int vx,const int vy);
+    bool needScrollBarHorz(void);
+    bool needScrollBarVert(void);
+    int  getScrollableHorzSize(void);
+    int  getScrollableVertSize(void);
     IFontManager * getFontFromName(const char *fname);
  };
 

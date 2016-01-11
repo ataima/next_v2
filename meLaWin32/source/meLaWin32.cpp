@@ -170,13 +170,9 @@ void externCommandRequest(void * dest, handlerAction type_param, size_t user_par
         HWND hWnd = static_cast< HWND>(dest);
             switch (type_param)
             {
-            case action_update_from_ext_scroolbars:
-                break;
             case action_host_command:
                 directCommand(hWnd,user_param);
                 break;
-            case action_adjust_horz_scrollbar:
-            case action_adjust_vert_scrollbar:
             case action_update_statusbars_info:
             case action_update_statusbars_panes:
             case action_redraw:

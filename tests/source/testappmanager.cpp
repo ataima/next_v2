@@ -114,7 +114,7 @@ void test_app_manager::test1(void)
     nnPoint p=childs->view->getConstPhy();
     CA_ASSERT(p.x != 0 );
     CA_ASSERT(p.y != 0);
-    res=childs->imageManager->loadImages(p.x, p.y);
+    res=childs->imageManager->loadImages();
     CA_ASSERT(res == true);
     nnContactNO *v = new nnContactNO();
     nnObjManager *mn = dynamic_cast<nnObjManager *>(childs->object_manager);
@@ -165,10 +165,8 @@ void test_app_manager::test2(void)
     childApps *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;
-    nnPoint p = childs->view->getConstPhy();
-    CA_ASSERT(p.x != 0);
-    CA_ASSERT(p.y != 0);
-    res = childs->imageManager->loadImages(p.x, p.y);
+
+    res = childs->imageManager->loadImages();
     CA_ASSERT(res == true);
     nnContactNO *v = new nnContactNO();
     nnObjManager *mn = dynamic_cast<nnObjManager *>(childs->object_manager);

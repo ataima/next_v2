@@ -177,15 +177,12 @@ protected:
 
 
 class  listImage
-    :public std::map<size_t ,bmpImage * >
+    :public std::map<int ,bmpImage * >
 {
-    unsigned int Width;
-    unsigned int Height;
-
 public:
-    listImage( unsigned int w = 0, unsigned int h = 0);
+    listImage();
     ~listImage();
-    bool Add(size_t index, bmpImage & b );
+    bool Add(int index, bmpImage & b );
 };
 
 

@@ -1,6 +1,5 @@
-
-#ifndef N2IMAGE_MANAGER__HEADER
-#define N2IMAGE_MANAGER__HEADER
+#ifndef N2SCROLLER_HEADER
+#define N2SCROLLER_HEADER
 
 
 /**************************************************************
@@ -28,35 +27,43 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-#include "images.h"
 #include "n2interfaces.h"
 
 
-
-
-
-
-
-class nnImageManager
-    : public IImageManager
+class nnScroller
+:public IScroller
 {
-    STRING path;
-    objImageList availObj;
-    listImage allImages;
+    int minPos;
+    int maxPos;
+    int currentPos;
+    bool visible;
+    nnRect phyArea;
+    nnRect bt1Rect, bt2Rect;
+    bmpImage *image1;
+    bmpImage *image2;
+    scrollerMode mode;
 public:
-    nnImageManager(const XCHAR * _path=nullptr);
-    ~nnImageManager();
-    bool setPath(const XCHAR *_path);
-    inline STRING  & getDefaulPath(void) const { return *const_cast<STRING*>(&path); }
-    bool readConfiguration(IXmlNode *node);
-    bool loadImages(void);
-    bool loadImages(objImageList * extlist);
-    bmpImage * getImage(int id);
-    bmpImage * getImage(const XCHAR * name);
-    inline  const objImageList * getAvailObj(void) { return &availObj; }
-private :
-    int internalStringToValue(const XCHAR *ptr);
+    nnScroller(int _min, int _max);
+    ~nnScroller();
+    bool draw(bmpImage & bkg, IViewGlue * glue);
+    void setHorzArea(int w, int h);
+    void setVertArea(int w, int h);
+    inline void setImage(bmpImage *one, bmpImage *two) 
+                { image1 = one; image2 = two; }
+    inline bool setScrollSize(int maximum, int minimum) 
+                { maxPos = maximum; minPos = minimum; return true; }
+    inline int getPosition(void) 
+                { return currentPos; }
+    inline void update(int _pos) 
+                { currentPos = _pos; }
+    bool handlerMouseMove( nnPoint phyPoint, show_status & status, IExtHandler *hook);
+    bool handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue);
+    inline void hide(void) 
+                { visible = false; }
+    inline void show(void) 
+                { visible = true; }
 };
+
 
 
 #endif

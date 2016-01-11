@@ -2112,8 +2112,7 @@ bool bmpImage::translateColor(LPBITMAPFILEHEADER dest, unsigned char oriRed, uns
 
 
 ///////////////////////////////////////////////////////////////// IMAGE LIST
-listImage::listImage(unsigned int w, unsigned int h)
-    : Width(w), Height(h)
+listImage::listImage()
 {
 
 }
@@ -2121,8 +2120,8 @@ listImage::listImage(unsigned int w, unsigned int h)
 
 listImage::~listImage()
 {
-    std::map<size_t, bmpImage * >::iterator _it = begin();
-    std::map<size_t, bmpImage * >::iterator _end = end();
+    listImage::iterator _it = begin();
+    listImage::iterator _end = end();
     while (_it != _end)
     {
         if (_it->second != nullptr)
@@ -2130,11 +2129,10 @@ listImage::~listImage()
         _it++;
     }
     clear();
-    Width = Height = 0;
 }
 
 
-bool listImage::Add(size_t index, bmpImage & b)
+bool listImage::Add(int index, bmpImage & b)
 {
     bool res = false;
     if (b.isValid())

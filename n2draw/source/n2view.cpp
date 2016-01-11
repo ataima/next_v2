@@ -179,12 +179,13 @@ bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
         {
                 res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
         }
-        //DEBUG
+#if 0
         char buff[128];
         sprintf(buff, "%d:%d", x, y);
         bmpImage * strImage = font->getImage(buff, 32, 32, 32);
         res = page.drawMaskSprite(*strImage, pos.x+5, pos.y +20, 0, 0, 0);
         delete strImage;
+#endif
     }
     return res;
 }

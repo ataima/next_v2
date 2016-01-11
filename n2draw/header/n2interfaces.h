@@ -13,11 +13,9 @@
 typedef enum tag_handler_Action
 {
     action_redraw,
-    action_update_from_ext_scroolbars,
+    //action_update_from_ext_scroolbars,
     action_update_statusbars_info,
     action_update_statusbars_panes,
-    action_adjust_horz_scrollbar,
-    action_adjust_vert_scrollbar,
     action_host_command = 5000
 } handlerAction;
 
@@ -346,9 +344,10 @@ public:
     virtual bool setPath(const XCHAR * _path) =0;
     virtual STRING  & getDefaulPath(void) const = 0;
     virtual bool readConfiguration(IXmlNode *node) = 0;
-    virtual bool loadImages(int w, int h) = 0;
+    virtual bool loadImages(void) = 0;
     virtual bool loadImages(objImageList *objs) = 0;
     virtual bmpImage * getImage(int id) = 0;
+    virtual bmpImage * getImage(const XCHAR * name) = 0;
     virtual const  objImageList * getAvailObj(void) = 0;
     virtual ~IImageManager() {}
 };
@@ -423,6 +422,7 @@ public:
     virtual ~IView() {}
 };
 
+
 //////////////////////////////////////////////////////
 typedef enum tag_mouse_button_def
 {
@@ -432,9 +432,41 @@ typedef enum tag_mouse_button_def
     nn_m_button_middle = 4
 } nn_mouse_buttons;
 
+typedef enum tag_show_status
+{
+    show_none = 0,
+    show_toolbar,
+    show_scroller_horz,
+    show_scroller_vert,
+}show_status;
+
+typedef enum tag_scroller_mode
+{
+mode_scroller_unknow,
+mode_scroller_horz= 100,
+mode_scroller_vert = 200
+}scrollerMode;
+
+class IScroller
+{
+public:
+    virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
+    virtual void setHorzArea(int w, int h) = 0;
+    virtual void setVertArea(int w, int h) = 0;
+    virtual void setImage(bmpImage *one, bmpImage *two) = 0;
+    virtual bool setScrollSize(int maximun, int minimum) = 0;
+    virtual int getPosition(void) = 0;
+    virtual void update(int _pos) = 0;
+    virtual bool handlerMouseMove( nnPoint phyPoint, show_status & status, IExtHandler *hook) = 0;
+    virtual bool handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue) = 0;
+    virtual void hide(void) = 0;
+    virtual void show(void) = 0;
+};
+
 class IViewGlue
 {
 public:
+    virtual void setPhyView(int w, int h) = 0;
     virtual nnPoint getCoordPhy(const nnPoint & logPoint) = 0;
     virtual nnPoint getMirrorCoordPhy(int height,int x, int y) = 0;
     virtual nnPoint getCoordLog(const nnPoint & phyPoint) = 0;
@@ -455,6 +487,8 @@ public:
     virtual bool handlerEndButton(bool shitf,bool ctrl,bool alt)=0;
     virtual bool handlerPageUpButton(bool shitf,bool ctrl,bool alt)=0;
     virtual bool handlerPageDownButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerPageRightButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerPageLeftButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerLeftButton(bool shitf,bool ctrl,bool alt)=0;
     virtual bool handlerRightButton(bool shitf,bool ctrl,bool alt)=0;
     virtual bool handlerUpButton(bool shitf,bool ctrl,bool alt)=0;
@@ -473,10 +507,6 @@ public:
     virtual nnPoint getOffsetView(void) = 0;
     virtual nnPoint getMap(void) = 0;
     virtual bool resize(int w, int h) = 0;
-    virtual bool needScrollBarHorz(void)=0;
-    virtual bool needScrollBarVert(void)=0;
-    virtual int getScrollableHorzSize(void)=0;
-    virtual int getScrollableVertSize(void)=0;
     virtual int getPageWidth(void)=0;
     virtual int getPageHeight(void)=0;
     virtual bool addExtHandler(handler_exec type,extHandler  _hook,void *unkObj)=0;
@@ -508,6 +538,8 @@ public:
     virtual bool setExtHandler(childApps *child,handler_exec type,extHandler  _hook,void *unkObj)=0;
     virtual ~IAppManager() {}
 };
+
+
 
 
 #endif // N2INTERFACES

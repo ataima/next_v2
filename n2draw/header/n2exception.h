@@ -211,40 +211,6 @@ public:
 };
 
 
-class imagesConfigurationException
-    :public n2exception
-{
-public:
-    explicit imagesConfigurationException(void) throw()
-        :n2exception("imagesConfigurationException") {}
-
-};
-
-
-class imagesConfigurationNoWireException
-    :public n2exception
-{
-public:
-    explicit imagesConfigurationNoWireException(void) throw()
-        :n2exception("imagesConfigurationNoWireException") {}
-};
-
-
-class imagesConfigurationNoContactException
-    :public n2exception
-{
-public:
-    explicit  imagesConfigurationNoContactException(void) throw()
-        :n2exception("imagesConfigurationNoContactException") {}
-};
-
-class imagesConfigurationNoCoilException
-    :public n2exception
-{
-public:
-    explicit  imagesConfigurationNoCoilException(void) throw()
-        :n2exception("imagesConfigurationNoCoilException") {}
-};
 
 
 class imagesConfigurationListEmptyException
@@ -255,31 +221,6 @@ public:
         :n2exception("imagesConfigurationListEmptyException") {}
 };
 
-
-class imagesConfigurationBadSizeException
-    :public n2exception
-{
-    int w, h;
-    STRING filename;
-public:
-    explicit  imagesConfigurationBadSizeException(const XCHAR *_filename,int _w, int _h) throw()
-        :n2exception("imagesConfigurationBadSizeException"),filename(_filename), w(_w), h(_h) {}
-
-    char const* msg()
-    {
-        std::stringstream ss;
-        const char *b_msg=n2exception::msg();
-        UtoA  f(filename);
-        ss<<"exception:"<<b_msg<<std::endl<<" Error bad image ("<<f.utf8()
-         <<") size W :"<<w<< " H :"<<h<<std::endl;
-        delete b_msg;
-        int size=ss.str().size();
-        char *buff=new char[size+2];
-        memcpy(buff,ss.str().c_str(),size);
-        buff[size]='\0';
-        return buff;
-    }
-};
 
 
 class imagesConfigurationBadFormatException
