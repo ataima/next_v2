@@ -35,6 +35,7 @@ nnCommander::nnCommander()
 {
     images= new nnImageManager();
     curItem=nullptr;
+    bmpHeight = 0;
 }
 
 nnCommander::~nnCommander()
@@ -45,6 +46,7 @@ nnCommander::~nnCommander()
         delete images;
         images=nullptr;
     }
+    bmpHeight = 0;
 }
 
 
@@ -72,7 +74,7 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                 t=conf->find(X("ITEM_"),i);
                 if(t)
                 {
-                    commandItem item;
+                    commandItem item = {0};
                     IXmlNode *v = t->find(X("POS_X"));
                     if(v)
                     {
@@ -180,10 +182,11 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
     return res;
 }
 
-bool nnCommander::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
+bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
 {
     bool res=false;
-    // pos is zero referenced...
+    nnPoint pos = phyPoint;
+    pos.y = bmpHeight - pos.y;
     if(curItem==nullptr)
     {
         listCommandItem::iterator it=items.begin();
@@ -269,12 +272,12 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
     bool res = false;
     listCommandItem::iterator it = items.begin();
     listCommandItem::iterator _end = items.end();
-    unsigned int height = bkg.getHeight();
+    bmpHeight  = bkg.getHeight();
     while (it != _end)
     {
         bmpImage & icon = *images->getImage(it->command);
         unsigned int x = pos.x + it->pos.x;
-        unsigned int y = height - (pos.y + it->pos.y);
+        unsigned int y = bmpHeight - (pos.y + it->pos.y);
         res = bkg.drawMaskSprite(icon, x, y, it->maskR, it->maskG, it->maskB);
         it->rect.set(x, y, x + icon.getWidth(), y + icon.getHeight());
         if (!res)
@@ -294,14 +297,26 @@ bool nnCommander::drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue *glue)
 {
     (glue);
     bool res = false;
-    int height = bkg.getHeight();
     if (curItem != nullptr && font != nullptr)
     {
-        nnPoint offset;
-        offset.set(8, 4);
-        bmpImage * strImage = font->getImage(curItem->info.c_str(), 16, 16, 224);
-        res = bkg.drawMaskSprite(*strImage, pos.x, height - pos.y + 14, 0, 0, 0);
-        delete strImage;
+        int len = strlen(curItem->info.c_str());
+        nnPoint sizeStr(12 * len, 18);
+        int offsetX = (sizeStr.x - (8 * len)) / 2;
+        bmpImage rectbkg;
+        res=rectbkg.create(sizeStr.x, sizeStr.y, 255);
+        if (res)
+        {
+            bmpImage * strImage = font->getImage(curItem->info.c_str(), 0, 0, 255);
+            res = rectbkg.drawMaskSprite(*strImage,offsetX,4,0,0,0);
+            delete strImage;
+            if(res)
+            {
+                rectbkg.frameRect(0, 0, rectbkg.getWidth()-1, rectbkg.getHeight()-1, 0, 0, 0,0xffffffff);
+                offsetX = ( bkg.getWidth() - sizeStr.x ) / 2;
+                res = bkg.drawSprite(rectbkg, offsetX, bmpHeight-40);
+            }
+        }
     }
+
     return res;
 }

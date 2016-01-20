@@ -7,7 +7,7 @@
 #include "n2exception.h"
 #include "n2fontmanager.h"
 #include "n2fontlist.h"
-
+#include "n2ExtHandler.h"
 #include "n2appmanager.h"
 
 
@@ -114,6 +114,15 @@ childApps * nnAppManager::createObjects(STRING & conf_file_name)
             appManagerConfigureLoadImageException *e = new appManagerConfigureLoadImageException();
             throw(e);
         }    
+        //finally
+        if (res)
+        {
+            res=child->view->addExtHandler(handler_exec_command,&nnAppManager::internalCommandRuote,child);
+        }
+        if (res)
+        {
+            res = child->view->createDraw();
+        }
     }
     return child;
 }
@@ -309,6 +318,7 @@ void childApps::clean(void)
         delete view;
         view = nullptr;
     }
+    defaultHandler = nullptr;
 }
 
 
@@ -326,8 +336,51 @@ bool nnAppManager::setExtHandler(childApps * child, handler_exec type, extHandle
 {
     bool res=false;
     if(child)
-    {
-       res=child->view->addExtHandler(type,_hook,unkObj);
+    {     
+        nnExtHandler  *nh = new nnExtHandler(type, _hook, unkObj);
+        if (nh)
+        {
+            child->defaultHandler = nh;
+        }
     }
     return res;
+}
+
+
+void nnAppManager::internalCommandRuote(void * dest, handlerAction type_param, size_t user_param)
+{
+    if (dest)
+    {
+        childApps *child = static_cast<childApps *>(dest);
+        if(child)
+        {
+            if (type_param == action_host_command)
+            {
+                switch (user_param)
+                {
+                case 4000:
+                    break;
+                case 4001:
+                    break;
+                case 4002:
+                    break;
+                case 4003:
+                    break;
+                case 4004:
+                    break;
+                case 4005:
+                    break;
+                default:
+                    if (child->defaultHandler)
+                        child->defaultHandler->doHandler(type_param, user_param);
+                    break;
+                }
+            }
+            else
+            {
+                if(child->defaultHandler)
+                    child->defaultHandler->doHandler(type_param, user_param);
+            }
+        }
+    }
 }

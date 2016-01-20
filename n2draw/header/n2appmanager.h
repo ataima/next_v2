@@ -42,7 +42,7 @@ typedef std::map<int, childApps *> listChild;
     listChild childs;
     IConfig *configuration;
     int selected;
-    static int UID;
+    static int UID;    
 public:
     nnAppManager();
     ~nnAppManager();    
@@ -55,7 +55,7 @@ public:
 protected:
     bool clean(void);
     bool createInternalObjects(STRING & conf_file_name, childApps & child);
-
+    static void internalCommandRuote(void * dest, handlerAction type_param, size_t user_param);
 };
 
 

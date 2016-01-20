@@ -34,7 +34,7 @@ nnSelector::nnSelector(void)
 {
     hide();
     error = false;
-    toAlpha = "ABCDEFGHIJLMNOPQRSTUVXYZ";
+    toAlpha = "ABCDEFGHILMNOPQRSTUVXYZ";
 }
 
 
@@ -44,13 +44,13 @@ bool nnSelector::translateY( int p, std::string & out )
     out.clear();
     int w = toAlpha.size();
     int maxW = w;
-    if (p > w)
+    if (p >= w)
     {
         while (maxW < p)
         {
             maxW *= w;
         }
-        while (p > w)
+        while (p >= w)
         {
             int t = p / maxW;
             if (t > 0)
@@ -101,22 +101,26 @@ void nnSelector::draw(bmpImage & image,
         }
         if (font)
         {
-            bmpImage * strImage;
-            std::string conv;
-            char buff[128];
-            if (translateY(sel_start.x, conv))
+            nnPoint diff = sel_stop - sel_start;
+            if (diff.y >= 2 || diff.x >= 2)
             {
-                sprintf(buff, "%s:%d", conv.c_str(), sel_start.x);
-                strImage = font->getImage(buff, 16, 16, 224);
-                image.drawMaskSprite(*strImage, start.x+2, start.y -14, 0, 0, 0);
-                delete strImage;
-            }
-            if (translateY(sel_stop.x, conv))
-            {
-                sprintf(buff, "%s:%d", conv.c_str(), sel_stop.x);
-                strImage = font->getImage(buff, 16, 224, 16);
-                image.drawMaskSprite(*strImage, stop.x - (8 * strlen(buff))-2, stop.y +4, 0, 0, 0);
-                delete strImage;
+                bmpImage * strImage;
+                std::string conv;
+                char buff[128];
+                if (translateY(sel_start.x, conv))
+                {
+                    sprintf(buff, "%s:%d", conv.c_str(), sel_start.x);
+                    strImage = font->getImage(buff, 16, 16, 224);
+                    image.drawMaskSprite(*strImage, start.x + 2, start.y - 14, 0, 0, 0);
+                    delete strImage;
+                }
+                if (translateY(sel_stop.x, conv))
+                {
+                    sprintf(buff, "%s:%d", conv.c_str(), sel_stop.x);
+                    strImage = font->getImage(buff, 16, 224, 16);
+                    image.drawMaskSprite(*strImage, stop.x - (8 * strlen(buff)) - 2, stop.y + 4, 0, 0, 0);
+                    delete strImage;
+                }
             }
         }
     }

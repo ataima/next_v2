@@ -38,6 +38,7 @@ private:
     IImageManager *images;
     commandItem * curItem;
     IFontManager *font;
+    unsigned int bmpHeight;    
 public:
     nnCommander();
     ~nnCommander();

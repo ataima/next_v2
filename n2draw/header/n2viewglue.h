@@ -73,7 +73,7 @@ class nnViewGlue
 public:
     nnViewGlue(IManager  *_manager, IImageManager *_images,IFontList *_fonts);
     ~nnViewGlue();
-    void setPhyView(int w, int h);
+    bool setPhyView(int w, int h);
     nnPoint getCoordPhy(const nnPoint & logPoint);
     nnPoint getMirrorCoordPhy(int height, int x, int y);
     nnPoint getCoordLog(const nnPoint & phyPoint);
@@ -118,6 +118,7 @@ public:
     inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
     bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
     bool loadImages(const XCHAR *_path);
+    inline  bool createDraw(void) { return view->createMainBitmap(phy_Size); }
 private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);

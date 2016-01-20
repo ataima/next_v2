@@ -35,7 +35,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 nnView::nnView(IImageManager *_images) :
-    images(_images)
+    n_thread(1), images(_images), font(nullptr),
+    Width(-1),Height(-1)
 {
 }
 
@@ -57,6 +58,7 @@ bool nnView::draw(IManager * manager, IViewGlue * glue)
     int x, y;
     int ix, iy;
     ix = iy = 0;
+    nnPoint map = {0};
     if (glue != nullptr)
     {
         nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
@@ -97,6 +99,10 @@ bool nnView::draw(IManager * manager, IViewGlue * glue)
             }
         }
     }
+    if (res)
+    {        
+        drawPower(glue);
+    }
     return res;
 }
 
@@ -125,18 +131,20 @@ bool nnView::readConfiguration(IXmlNode *node)
     return res;
 }
 
-bool nnView::createMainBitmap(int w, int h)
+bool nnView::createMainBitmap(nnPoint & size)
 {
     bool res = false;
-    res = page.create((int)w, (int)h, 192);
+    res = page.create(size.x, size.y, 192);
+    Width = page.getWidth();
+    Height = page.getHeight();
     return res;
 }
 
 
-bool nnView::remapMainBitmap(int w,int h)
+bool nnView::remapMainBitmap(nnPoint & size)
 {
     page.clear();
-    return createMainBitmap(w,h);
+    return createMainBitmap(size);
 }
 
 bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
@@ -191,6 +199,26 @@ bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
 }
 
 
-
-
-////////////////////////////////////////////////////////////////////////////
+void nnView::drawPower(IViewGlue * glue)
+{
+    if(glue)
+    {
+        nnPoint const_p = glue->getConstPhy();
+        nnPoint map = glue->getMap();
+        nnPoint offset = glue->getOffsetView();
+        int W = map.x*const_p.x;
+        int H = map.y * const_p.y;
+        if (H >= Height)
+        {
+            page.frameRect(1, Height - 2, W - 1, Height - 1, 255, 0, 0, 0xffffffff);
+            page.frameRect(1, Height - H, W - 1, Height - H - 1, 0, 0, 255, 0xffffffff);
+        }
+        else
+        {
+            if(offset.y==0)
+                page.frameRect(1, Height - 2, W - 1, Height - 1, 255, 0, 0, 0xffffffff);
+            if (map.y - offset.y <= Height / const_p.y)
+                page.frameRect(1, Height - H, W - 1, Height - H - 1, 0, 0, 255, 0xffffffff);
+        }
+    }
+}

@@ -46,8 +46,8 @@ public:
     nnScroller(int _min, int _max);
     ~nnScroller();
     bool draw(bmpImage & bkg, IViewGlue * glue);
-    void setHorzArea(int w, int h);
-    void setVertArea(int w, int h);
+    void setHorzArea(nnPoint & phy);
+    void setVertArea(nnPoint & phy);
     inline void setImage(bmpImage *one, bmpImage *two) 
                 { image1 = one; image2 = two; }
     inline bool setScrollSize(int maximum, int minimum) 

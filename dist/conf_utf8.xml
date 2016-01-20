@@ -1,6 +1,6 @@
 <APP>
 	<DEFAULT_WIDTH>200</DEFAULT_WIDTH>
-	<DEFAULT_HEIGHT>14</DEFAULT_HEIGHT>
+	<DEFAULT_HEIGHT>15</DEFAULT_HEIGHT>
 	<MANAGER>
 	</MANAGER>
 	<PHY_MAP>
@@ -96,7 +96,7 @@
 		<TOOLBARS_3>
 			<ID>1002</ID>
 			<COMMANDER>
-			<ITEM_NUM>6</ITEM_NUM>
+			<ITEM_NUM>7</ITEM_NUM>
 			<ITEM_0>
 				<POS_X>20</POS_X>
 				<POS_Y>0</POS_Y>
@@ -169,6 +169,18 @@
 				<FILE>PASTE.BMP</FILE>
 				<INFO>Paste current selection.... </INFO>
 			</ITEM_5>
+			<ITEM_6>
+				<POS_X>260</POS_X>
+				<POS_Y>0</POS_Y>
+				<COMMAND>9999</COMMAND>
+				<MASK>
+					<RED>0</RED>
+					<GREEN>0</GREEN>
+					<BLUE>0</BLUE>
+				</MASK>
+				<FILE>EXIT.BMP</FILE>
+				<INFO>Exit from application... </INFO>
+			</ITEM_6>
 			</COMMANDER>		
 		</TOOLBARS_3>
 	</PHY_TOOLBARS>

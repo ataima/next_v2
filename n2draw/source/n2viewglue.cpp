@@ -230,7 +230,7 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                 throw (pe);
             }
             setPhyView(w, h);
-            res = view->createMainBitmap(phy_Size.x, phy_Size.y);
+            res = true;
         }
         else
         {
@@ -526,7 +526,15 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
                         p.y = maxStop.y;
                     }
                     selector->setError(error);
-                    select_stop = p;
+                    if (p.x < select_start.x || p.y < select_start.y)
+                    {
+                        select_stop = select_start;
+                        select_start = p;
+                    }
+                    else
+                    {
+                        select_stop = p;
+                    }
                     if(hook)hook->doHandler(action_update_statusbars_panes,0);
                     res=true;
                 }
@@ -546,10 +554,7 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
     {
         if(toolview)
         {
-            bmpImage & bkg= view->getMainBitmap();
-            nnPoint point=phyPoint;
-            point.y=bkg.getHeight()-point.y;
-            res=toolview->handlerMouseMove(point,hook);
+            res=toolview->handlerMouseMove(phyPoint,hook);
         }
     }
     else
@@ -617,7 +622,8 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
                 else
                 {
                     res=toolview->checkIntCommand(0);
-                    if(hook)hook->doHandler(action_host_command,command);
+                    if(hook)
+                        hook->doHandler(action_host_command,command);
                     show_cmd=show_none;
                 }
             }
@@ -772,100 +778,130 @@ nnPoint nnViewGlue::getMap(void)
 }
 
 
-void nnViewGlue::setPhyView(int w, int h)
+bool nnViewGlue::setPhyView(int w, int h)
 {
+    nnPoint v(w, h);
+    bool res = false;
     if (const_Size.y != 0)
-        phy_Size.y = ((h / const_Size.y) + 1)*const_Size.y;
+        {
+            if (h % const_Size.y)
+                phy_Size.y = ((h / const_Size.y) + 1)*const_Size.y;
+            else
+                phy_Size.y = h;
+        }
     else
         phy_Size.y = h;
 
     if (const_Size.x != 0)
-        phy_Size.x = ((w / const_Size.x) + 1)*const_Size.x;
+        {
+            if (w % const_Size.x)
+                phy_Size.x = ((w / const_Size.x) + 1)*const_Size.x;
+            else
+                phy_Size.x = w;
+        }
     else
         phy_Size.x = w;
+
+    if (v != phy_Size)
+    {
+        res = true;
+    }
+    return res;
 }
 
 
 bool nnViewGlue::resize(int w, int h)
 {
     bool res=false;
-    setPhyView(w, h);
-    res=view->remapMainBitmap(phy_Size.x,phy_Size.y);
-    if (res)
+    if (setPhyView(w, h))
     {
-        if (needScrollBarHorz())
+        // request  reallign windows to bitmaps...
+        IExtHandler *hook = handlers->get(handler_exec_command);
+        if (hook)
         {
-            if (!hscroller)
+            unsigned int size = ((phy_Size.x & 0xffff) << 16) | (phy_Size.y & 0xffff);
+            hook->doHandler(action_align_windows, size);
+        }
+    }
+    else
+    {
+        res = view->remapMainBitmap(phy_Size);
+        if (res)
+        {
+            if (needScrollBarHorz())
             {
-                int w = getScrollableHorzSize();
-                if (w)
+                if (!hscroller)
                 {
-                    hscroller = new nnScroller(0, w);
-                    hscroller->hide();
+                    int w = getScrollableHorzSize();
+                    if (w)
+                    {
+                        hscroller = new nnScroller(0, w);
+                        hscroller->hide();
+                    }
+                    if (hscroller)
+                    {
+                        bmpImage *one = images->getImage(X("ScrollHorzLeft"));
+                        bmpImage *two = images->getImage(X("ScrollHorzRight"));
+                        if (one && two)
+                        {
+                            hscroller->setImage(one, two);
+                        }
+                    }
                 }
                 if (hscroller)
                 {
-                    bmpImage *one = images->getImage(X("ScrollHorzLeft"));
-                    bmpImage *two = images->getImage(X("ScrollHorzRight"));
-                    if (one && two)
+                    hscroller->setHorzArea(phy_Size);
+                }
+            }
+            else
+            {
+                if (hscroller)
+                {
+                    delete hscroller;
+                    hscroller = nullptr;
+                }
+                offset_Pos.x = 0;
+            }
+            if (needScrollBarVert())
+            {
+                if (!vscroller)
+                {
+                    int h = getScrollableVertSize();
+                    if (h)
                     {
-                        hscroller->setImage(one, two);
+                        vscroller = new nnScroller(0, h);
+                        vscroller->hide();
+                    }
+                    if (vscroller)
+                    {
+                        bmpImage *one = images->getImage(X("ScrollVertUp"));
+                        bmpImage *two = images->getImage(X("ScrollVertDown"));
+                        if (one && two)
+                        {
+                            vscroller->setImage(one, two);
+                        }
                     }
                 }
-            }
-            if (hscroller)
-            {
-                hscroller->setHorzArea(w, h);
-            }
-        }
-        else
-        {
-            if (hscroller)
-            {
-                delete hscroller;
-                hscroller = nullptr;
-            }
-            offset_Pos.x = 0;
-        }
-        if (needScrollBarVert())
-        {
-            if (!vscroller)
-            {
-                int h = getScrollableVertSize();
-                if (h)
-                {
-                    vscroller = new nnScroller(0, h);
-                    vscroller->hide();
-                }
+
                 if (vscroller)
                 {
-                    bmpImage *one = images->getImage(X("ScrollVertUp"));
-                    bmpImage *two = images->getImage(X("ScrollVertDown"));
-                    if (one && two)
-                    {
-                        vscroller->setImage(one, two);
-                    }
+                    vscroller->setVertArea(phy_Size);
                 }
             }
-
-            if (vscroller)
+            else
             {
-                vscroller->setVertArea(w, h);
+                if (vscroller)
+                {
+                    delete vscroller;
+                    vscroller = nullptr;
+                }
+                offset_Pos.y = 0;
             }
+            res = updateDraw();
+            IExtHandler *hook = handlers->get(handler_exec_command);
+            if (hook)
+                hook->doHandler(action_redraw);
         }
-        else
-        {
-            if (vscroller)
-            {
-                delete vscroller;
-                vscroller = nullptr;
-            }
-            offset_Pos.y = 0;
-        }
-        res = updateDraw();
-        IExtHandler *hook = handlers->get(handler_exec_command);
-        if (hook)
-            hook->doHandler(action_redraw);
     }
     return res;
 }
@@ -879,7 +915,7 @@ bool nnViewGlue::needScrollBarHorz(void)
 
 bool nnViewGlue::needScrollBarVert(void)
 {
-    int h=manager->getHeight()*const_Size.y;
+    int h=(manager->getHeight()+2)*const_Size.y;
     return (phy_Size.y<h);
 }
 

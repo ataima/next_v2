@@ -52,19 +52,20 @@ bool nnScroller::draw(bmpImage & bkg, IViewGlue * glue)
 {
     bool res = false;
     int height = bkg.getHeight();
+    int width = bkg.getWidth();
     if (visible)
     {
         if (image1)
         {
             if (mode == scrollerMode::mode_scroller_horz)
             {
-                res = bkg.drawMaskSprite(*image1, phyArea.start.x, height-phyArea.start.y-image1->getHeight(), 0, 0, 0);
+                res = bkg.drawMaskSprite(*image1, phyArea.start.x, height - phyArea.start.y-image1->getHeight(), 0, 0, 0);
                 bt1Rect.set(phyArea.start.x, phyArea.start.y, phyArea.start.x + image1->getWidth(), phyArea.start.y + image1->getHeight());
             }
             else
             if (mode == scrollerMode::mode_scroller_vert)
             {
-                res = bkg.drawMaskSprite(*image1, phyArea.start.x, height - phyArea.start.y-image2->getHeight(), 0, 0, 0);
+                res = bkg.drawMaskSprite(*image1, phyArea.start.x, height - phyArea.start.y-image1->getHeight(), 0, 0, 0);
                 bt1Rect.set(phyArea.start.x, phyArea.start.y, phyArea.start.x + image1->getWidth(), phyArea.start.y + image1->getHeight());
             }
         }
@@ -72,16 +73,21 @@ bool nnScroller::draw(bmpImage & bkg, IViewGlue * glue)
         {
             if (mode == scrollerMode::mode_scroller_horz)
             {
-                res = bkg.drawMaskSprite(*image2, phyArea.stop.x - image2->getWidth(), height - phyArea.start.y - image2->getHeight(), 0, 0, 0);
-                bt2Rect.set(phyArea.stop.x - image2->getWidth(), phyArea.start.y, phyArea.stop.x, phyArea.start.y + image1->getHeight());
+                res = bkg.drawMaskSprite(*image2, phyArea.stop.x -image2->getWidth(), height - phyArea.start.y - image2->getHeight(), 0, 0, 0);
+                bt2Rect.set(phyArea.stop.x-image2->getWidth(), phyArea.start.y, phyArea.stop.x , phyArea.start.y + image2->getHeight());
             }
             else
             if (mode == scrollerMode::mode_scroller_vert)
             {
                 res = bkg.drawMaskSprite(*image2, phyArea.start.x , height-phyArea.stop.y, 0, 0, 0);
-                bt2Rect.set(phyArea.start.x , phyArea.stop.y - image2->getHeight(), phyArea.start.x+image2->getWidth(), phyArea.stop.y);
+                bt2Rect.set(phyArea.start.x , phyArea.stop.y-image2->getHeight(), phyArea.stop.x, phyArea.stop.y );
             }
         }
+#if 0
+        bkg.frameRect(bt1Rect.start.x, height - bt1Rect.start.y,  bt1Rect.stop.x, height - bt1Rect.stop.y, 255, 0, 0,0xffffffff);
+        bkg.frameRect(bt2Rect.start.x, height - bt2Rect.start.y,  bt2Rect.stop.x, height - bt1Rect.stop.y, 255, 0, 0, 0xffffffff);
+        bkg.frameRect(phyArea.start.x, height - phyArea.start.y, phyArea.stop.x, height - phyArea.stop.y, 0,0, 255, 0xffffffff);
+#endif
     }
     return res;
 }
@@ -170,25 +176,45 @@ bool nnScroller::handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue)
 }
 
 
-void nnScroller::setHorzArea(int w, int h)
+void nnScroller::setHorzArea(nnPoint & phy)
 {
-    int start_y = h - 48;
-    if (w < 480)
-        w = 480;
-    int start_x = (w / 5)*2;
-    int stop_x = (w / 5) * 3;
-    phyArea.set(start_x, start_y, stop_x,h);
-    mode = scrollerMode::mode_scroller_horz;
+    if (image1)
+    {
+        int w = phy.x;
+        if (w < 480)
+            w = 480;
+        int hI1 = image1->getHeight();
+        int hI2 = image2->getHeight();
+        if (hI2 > hI1)
+            hI1 = hI2;
+        int start_y = phy.y - hI1 - 4;
+        int start_x = (w / 5) * 2;
+        int stop_x = (w / 5) * 3;
+        start_x -= image1->getWidth();
+        stop_x += image2->getWidth();
+        phyArea.set(start_x, start_y, stop_x, phy.y);
+        mode = scrollerMode::mode_scroller_horz;
+    }
 }
 
 
-void nnScroller::setVertArea(int w, int h)
+void nnScroller::setVertArea(nnPoint & phy)
 {
-    int start_x = w - 48;
-    if (h < 480)
-        h = 480;
-    int start_y =( h / 5)*2;
-    int stop_y = (h / 5) * 3;
-    phyArea.set(start_x, start_y, w, stop_y);
-    mode = scrollerMode::mode_scroller_vert;
+    if (image2)
+    {
+        int h = phy.y;
+        if (h < 480)
+            h = 480;
+        int wI1 = image1->getWidth();
+        int wI2 = image2->getWidth();
+        if (wI2 > wI1)
+            wI1 = wI2;
+        int start_x = phy.x - wI1-4;
+        int start_y = (h / 5) * 2;
+        int stop_y = (h / 5) * 3;
+        start_y -= image1->getHeight();
+        stop_y += image2->getHeight();
+        phyArea.set(start_x, start_y, phy.x, stop_y);
+        mode = scrollerMode::mode_scroller_vert;
+    }
 }

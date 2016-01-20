@@ -22,7 +22,6 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // nome della classe di finestre
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -35,7 +34,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // TODO: inserire qui il codice.
 
     // Inizializzare le stringhe globali
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+    //LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_MELAWIN32, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
@@ -45,14 +44,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MELAWIN32));
+    //HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MELAWIN32));
 
     MSG msg;
 
     // Ciclo di messaggi principale:
     while (GetMessage(&msg, nullptr, 0, 0))
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        if (!TranslateAccelerator(msg.hwnd, nullptr, &msg))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
@@ -80,12 +79,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MELAWIN32));
+    wcex.hIcon =  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MELAWIN32));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_MELAWIN32);
+    wcex.lpszMenuName = 0;// MAKEINTRESOURCEW(IDC_MELAWIN32);
     wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hIconSm =  LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     return RegisterClassExW(&wcex);
 }
@@ -104,13 +103,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Memorizzare l'handle di istanza nella variabile globale
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowExW(WS_EX_TRANSPARENT,szWindowClass, nullptr, WS_BORDER,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
       return FALSE;
    }
+
+   
+   SetWindowLong(hWnd, GWL_STYLE, 0);
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
@@ -159,6 +161,9 @@ void directCommand(HWND hWnd,size_t user_param)
         break;
     case 4005:
         break;
+    case 9999:
+        PostMessage(hWnd, WM_CLOSE, 0, 0);
+        break;
     }
 }
 
@@ -177,6 +182,13 @@ void externCommandRequest(void * dest, handlerAction type_param, size_t user_par
             case action_update_statusbars_panes:
             case action_redraw:
                 refreshPixmap(hWnd);
+                break;
+            case action_align_windows:
+                {
+                    int x = (user_param & 0xffff0000) >> 16;
+                    int y = (user_param & 0xffff);
+                    ::SetWindowPos(hWnd,0, 0, 0, x, y, SWP_NOMOVE |  SWP_NOZORDER | SWP_FRAMECHANGED);
+                }
                 break;
             }
     }
@@ -201,7 +213,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         externCommandRequest,
                         hWnd
                         );
-                    client->view->resize(cs->cx, cs->cy);
+                    if((cs->cx>0) && (cs->cy>0))
+                        client->view->resize(cs->cx, cs->cy);
                 }
             }
             catch (...) {}
@@ -220,10 +233,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             int wmId = LOWORD(wParam);
             // Analizzare le selezioni di menu:
             switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
+            {            
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -238,11 +248,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             if (client != nullptr)
             {
+                //SetMapMode(hdc, MM_LOENGLISH);
                 bmpImage *bmp = &client->view->getDraw();
-                ::StretchDIBits(hdc, 0, 0,
-                    bmp->getWidth(), bmp->getHeight(),
-                    0, 0, bmp->getWidth(), bmp->getHeight(),
-                    bmp->getBits(), (const BITMAPINFO *)bmp->getInfo(), 0, SRCCOPY);
+                if (bmp)
+                {                    
+                    ::StretchDIBits(hdc, 0, 0,
+                        bmp->getWidth(), bmp->getHeight(),
+                        0, 0, bmp->getWidth(), bmp->getHeight(),
+                        bmp->getBits(), (const BITMAPINFO *)bmp->getInfo(), 0, SRCCOPY);
+                }
             }
             EndPaint(hWnd, &ps);
         }

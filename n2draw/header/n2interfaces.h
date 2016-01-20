@@ -16,6 +16,7 @@ typedef enum tag_handler_Action
     //action_update_from_ext_scroolbars,
     action_update_statusbars_info,
     action_update_statusbars_panes,
+    action_align_windows,
     action_host_command = 5000
 } handlerAction;
 
@@ -415,9 +416,9 @@ class IView
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool draw(IManager *manager, IViewGlue * glue) = 0;
-    virtual bool createMainBitmap(int w, int h) = 0;
+    virtual bool createMainBitmap(nnPoint & size) = 0;
     virtual bmpImage & getMainBitmap(void) = 0;
-    virtual bool remapMainBitmap(int w,int h)=0;
+    virtual bool remapMainBitmap(nnPoint & size)=0;
     virtual void setFont(IFontManager *_font) = 0;
     virtual ~IView() {}
 };
@@ -451,8 +452,8 @@ class IScroller
 {
 public:
     virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
-    virtual void setHorzArea(int w, int h) = 0;
-    virtual void setVertArea(int w, int h) = 0;
+    virtual void setHorzArea(nnPoint & phy) = 0;
+    virtual void setVertArea(nnPoint & phy) = 0;
     virtual void setImage(bmpImage *one, bmpImage *two) = 0;
     virtual bool setScrollSize(int maximun, int minimum) = 0;
     virtual int getPosition(void) = 0;
@@ -466,7 +467,7 @@ public:
 class IViewGlue
 {
 public:
-    virtual void setPhyView(int w, int h) = 0;
+    virtual bool setPhyView(int w, int h) = 0;
     virtual nnPoint getCoordPhy(const nnPoint & logPoint) = 0;
     virtual nnPoint getMirrorCoordPhy(int height,int x, int y) = 0;
     virtual nnPoint getCoordLog(const nnPoint & phyPoint) = 0;
@@ -511,6 +512,7 @@ public:
     virtual int getPageHeight(void)=0;
     virtual bool addExtHandler(handler_exec type,extHandler  _hook,void *unkObj)=0;
     virtual bool loadImages(const XCHAR *_path)=0;
+    virtual bool createDraw(void) = 0;
     virtual ~IViewGlue() {}
 };
 
@@ -525,6 +527,7 @@ typedef struct tag_app_child
     IFontList               *fonts;
     IViewGlue               *view;
     IImageManager           *imageManager;
+    IExtHandler             *defaultHandler;
     void clean(void);
 } childApps;
 

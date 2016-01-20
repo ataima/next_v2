@@ -128,6 +128,8 @@ public:
     bool getPixel(unsigned int _x,unsigned int _y,unsigned char  & red,unsigned char & green,unsigned char & blue);
     bool line( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned int mask);
     bool frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue,unsigned int mask);
+
+
 protected:
     bool replace(LPBITMAPFILEHEADER new_dib);
     static size_t getInternalImageSize(unsigned int width, unsigned int height);
