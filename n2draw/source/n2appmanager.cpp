@@ -8,6 +8,7 @@
 #include "n2fontmanager.h"
 #include "n2fontlist.h"
 #include "n2ExtHandler.h"
+#include "n2ChildApp.h"
 #include "n2appmanager.h"
 
 
@@ -52,18 +53,14 @@ nnAppManager::~nnAppManager()
 }
 
 
-childApps * nnAppManager::createObjects(STRING & conf_file_name)
+IChild * nnAppManager::createObjects(STRING & conf_file_name)
 {
     bool res = false;
-    childApps * child = new childApps();
-    MEMCHK(childApps, child);
-    child->imageManager = nullptr;
-    child->object_manager = nullptr;
-    child->view = nullptr;
-    child->fonts = nullptr;
+    IChild * child = new nnChildApp(UID);
+    MEMCHK(IChild, child);
     try
     {
-        res = createInternalObjects(conf_file_name, *child);
+        res = child->createObjects(configuration,conf_file_name);
     }
     catch (n2exception *e)
     {
@@ -81,172 +78,13 @@ childApps * nnAppManager::createObjects(STRING & conf_file_name)
     if (child != nullptr)
     {
         selected = static_cast<int>(UID);
-        childs[UID++] = child;
+        childs[UID] = child;
+        UID++;
     }
     // OK is Valid;
-    if(child != nullptr)
-    {
-        bool res;
-        res=child->imageManager->loadImages();
-        if(!res)
-        {
-            child->clean();
-            delete child;
-            child = nullptr;
-            appManagerConfigureLoadImageException *e=new appManagerConfigureLoadImageException();
-            throw(e);
-        }
-        res=child->view->loadImages(child->imageManager->getDefaulPath().c_str());
-        if(!res)
-        {
-            child->clean();
-            delete child;
-            child = nullptr;
-            appManagerConfigureLoadImageException *e=new appManagerConfigureLoadImageException();
-            throw(e);
-        }
-        res = child->fonts->loadImages();
-        if (!res)
-        {
-            child->clean();
-            delete child;
-            child = nullptr;
-            appManagerConfigureLoadImageException *e = new appManagerConfigureLoadImageException();
-            throw(e);
-        }    
-        //finally
-        if (res)
-        {
-            res=child->view->addExtHandler(handler_exec_command,&nnAppManager::internalCommandRuote,child);
-        }
-        if (res)
-        {
-            res = child->view->createDraw();
-        }
-    }
     return child;
 }
 
-bool nnAppManager::createInternalObjects(STRING & conf_file_name, childApps & child)
-{
-    bool res = false;
-    if(configuration!=nullptr)
-    {
-        res = configuration->readConfiguration(conf_file_name.c_str());
-        if (res == true)
-        {
-            IXmlNode * root=configuration->getRoot();
-            if(root!=nullptr)
-            {
-                IXmlNode *conf_manager = root->find(X("APP"));
-                if (conf_manager != nullptr)
-                {
-                    //int line = __LINE__;
-                    IXmlNode *size_default = conf_manager->find(X("DEFAULT_WIDTH"));
-                    if (size_default != nullptr)
-                    {
-                        int default_w = size_default->getLong();
-                        size_default = conf_manager->find(X("DEFAULT_HEIGHT"));
-                        if (size_default != nullptr)
-                        {
-                            int default_h = size_default->getLong();
-                            int line = __LINE__;
-                            child.object_manager = new nnObjManager(default_w, default_h);
-                            MEMCHK(IManager, child.object_manager);
-                            conf_manager = root->find(X("MANAGER"));
-                            if (conf_manager)
-                            {
-                                res = child.object_manager->readConfiguration(conf_manager);
-                                if (res)
-                                {
-                                    line = __LINE__;
-                                    child.imageManager = new nnImageManager();
-                                    MEMCHK(IImageManager, child.imageManager);
-                                    conf_manager = root->find(X("IMAGES"));
-                                    if (conf_manager)
-                                    {
-                                        res = child.imageManager->readConfiguration(conf_manager);
-                                    }
-                                    else
-                                    {
-                                        xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("IMAGES"));
-                                        throw(e);
-                                    }
-                                        if (res)
-                                        {
-                                            conf_manager = root->find(X("FONTS"));
-                                            if (conf_manager)
-                                            {
-                                                line = __LINE__;
-                                                child.fonts = new nnFontList();
-                                                IFontList *flist = child.fonts;
-                                                MEMCHK(IFontList, flist);
-                                                res = flist->readConfiguration(conf_manager);
-                                            }
-                                            else
-                                            {
-                                                xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("FONTS"));
-                                                throw(e);
-                                            }
-                                            if (res)
-                                            {
-                                                conf_manager = root->find(X("PHY_MAP"));
-                                                if (conf_manager)
-                                                {
-                                                    line = __LINE__;
-                                                    child.view = new nnViewGlue(child.object_manager, child.imageManager,child.fonts);
-                                                    IViewGlue *viewglue = child.view;
-                                                    MEMCHK(IViewGlue, viewglue);
-                                                    res = viewglue->readConfiguration(conf_manager);
-                                                }
-                                                else
-                                                {
-                                                    xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("PHY_MAP"));
-                                                    throw(e);
-                                                }
-
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("MANAGER"));
-                                throw(e);
-                            }
-                        }
-                        else
-                        {
-                            xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("DEFAULT_HEIGHT"));
-                            throw(e);
-                        }
-                    }
-                    else
-                    {
-                        xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("DEFAULT_WIDTH"));
-                        throw(e);
-                    }
-                }
-                else
-                {
-                    xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("MANAGER"));
-                    throw(e);
-                }
-            }
-            else
-            {
-                appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf_file_name);
-                throw(e);
-            }
-        }
-        else
-        {
-            appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf_file_name);
-            throw(e);
-        }
-    }
-    return res;
-}
 
 
 
@@ -259,9 +97,9 @@ bool nnAppManager::closeAll(void)
 }
 
 
-childApps *nnAppManager::activate(int v)
+IChild *nnAppManager::activate(int v)
 {
-    childApps * res = nullptr;
+    IChild * res = nullptr;
     if (!childs.empty())
     {
         listChild::iterator it = childs.find(v);
@@ -269,23 +107,22 @@ childApps *nnAppManager::activate(int v)
         {
             res = it->second;
             selected = v;
-            res->view->updateDraw();
+            res->getView()->updateDraw();
         }
     }
     return res;
 }
 
 
-childApps *nnAppManager::active(void)
+IChild *nnAppManager::active(void)
 {
-    childApps * res = nullptr;
+    IChild * res = nullptr;
     if (!childs.empty() && selected>0)
     {
         listChild::iterator it = childs.find(selected);
         if (it != childs.end())
         {
             res = it->second;
-            res->view->updateDraw();
         }
     }
     return res;
@@ -295,31 +132,6 @@ childApps *nnAppManager::active(void)
 
 
 
-
-void childApps::clean(void)
-{
-    if (object_manager)
-    {
-        delete object_manager;
-        object_manager = nullptr;
-    }
-    if (imageManager)
-    {
-        delete imageManager;
-        imageManager = nullptr;
-    }
-    if (fonts)
-    {
-        delete fonts;
-        fonts = nullptr;
-    }
-    if (view)
-    {
-        delete view;
-        view = nullptr;
-    }
-    defaultHandler = nullptr;
-}
 
 
 
@@ -332,55 +144,5 @@ bool nnAppManager::clean(void)
     return childs.empty();
 }
 
-bool nnAppManager::setExtHandler(childApps * child, handler_exec type, extHandler _hook, void *unkObj)
-{
-    bool res=false;
-    if(child)
-    {     
-        nnExtHandler  *nh = new nnExtHandler(type, _hook, unkObj);
-        if (nh)
-        {
-            child->defaultHandler = nh;
-        }
-    }
-    return res;
-}
 
 
-void nnAppManager::internalCommandRuote(void * dest, handlerAction type_param, size_t user_param)
-{
-    if (dest)
-    {
-        childApps *child = static_cast<childApps *>(dest);
-        if(child)
-        {
-            if (type_param == action_host_command)
-            {
-                switch (user_param)
-                {
-                case 4000:
-                    break;
-                case 4001:
-                    break;
-                case 4002:
-                    break;
-                case 4003:
-                    break;
-                case 4004:
-                    break;
-                case 4005:
-                    break;
-                default:
-                    if (child->defaultHandler)
-                        child->defaultHandler->doHandler(type_param, user_param);
-                    break;
-                }
-            }
-            else
-            {
-                if(child->defaultHandler)
-                    child->defaultHandler->doHandler(type_param, user_param);
-            }
-        }
-    }
-}

@@ -108,16 +108,16 @@ void test_app_manager::test1(void)
 #else
     STRING name(X("conf_utf8.xml"));
 #endif
-    childApps *childs = app.createObjects(name);
+    IChild *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;
-    nnPoint p=childs->view->getConstPhy();
+    nnPoint p=childs->getView()->getConstPhy();
     CA_ASSERT(p.x != 0 );
     CA_ASSERT(p.y != 0);
-    res=childs->imageManager->loadImages();
+    res=childs->getImage()->loadImages();
     CA_ASSERT(res == true);
     nnContactNO *v = new nnContactNO();
-    nnObjManager *mn = dynamic_cast<nnObjManager *>(childs->object_manager);
+    nnObjManager *mn = dynamic_cast<nnObjManager *>(childs->getManager());
     res = mn->addContact(10, 0, v);
     CA_ASSERT(res == true);
     CA_ASSERT((int)mn->size() == (int)1);
@@ -130,10 +130,10 @@ void test_app_manager::test1(void)
     CA_ASSERT(res == true);
     nnPoint p1(12, 0);
     nnPoint p2(10, 0);
-    nnConnection::connectComponent(childs->object_manager, p1, p2);
-    res = childs->view->updateDraw();
+    nnConnection::connectComponent(childs->getManager(), p1, p2);
+    res = childs->getView()->updateDraw();
     CA_ASSERT(res == true);
-    bmpImage &bdraw = childs->view->getDraw();
+    bmpImage &bdraw = childs->getView()->getDraw();
     for(unsigned int i=0;i<bdraw.getWidth();i+=100)
         bdraw.line(i,0,i,bdraw.getHeight(),255,0,0,0xfefefefe);
     for(unsigned int u=0;u<bdraw.getHeight();u+=100)
@@ -162,14 +162,14 @@ void test_app_manager::test2(void)
 #else
     STRING name(X("conf_ut8.xml"));
 #endif
-    childApps *childs = app.createObjects(name);
+    IChild *childs = app.createObjects(name);
     CA_ASSERT(childs != nullptr);
     bool res;
 
-    res = childs->imageManager->loadImages();
+    res = childs->getImage()->loadImages();
     CA_ASSERT(res == true);
     nnContactNO *v = new nnContactNO();
-    nnObjManager *mn = dynamic_cast<nnObjManager *>(childs->object_manager);
+    nnObjManager *mn = dynamic_cast<nnObjManager *>(childs->getManager());
     res = mn->addContact(10, 0, v);
     CA_ASSERT(res == true);
     CA_ASSERT((int)mn->size() == (int)1);
@@ -182,19 +182,19 @@ void test_app_manager::test2(void)
     CA_ASSERT(res == true);
     nnPoint p1(12, 0);
     nnPoint p2(10, 0);
-    nnConnection::connectComponent(childs->object_manager, p2, p1);
-    res = childs->view->updateDraw();
+    nnConnection::connectComponent(childs->getManager(), p2, p1);
+    res = childs->getView()->updateDraw();
     CA_ASSERT(res == true);
-    bmpImage &bdraw = childs->view->getDraw();
+    bmpImage &bdraw = childs->getView()->getDraw();
     draw(&bdraw);
-    childs->view->handlerScrollHorz(2);
-    res = childs->view->updateDraw();
+    childs->getView()->handlerScrollHorz(2);
+    res = childs->getView()->updateDraw();
     //CA_ASSERT(res == true);
-    bdraw = childs->view->getDraw();
+    bdraw = childs->getView()->getDraw();
     draw(&bdraw);
-    childs->view->handlerScrollVert(2);
-    res = childs->view->updateDraw();
+    childs->getView()->handlerScrollVert(2);
+    res = childs->getView()->updateDraw();
     CA_ASSERT(res == true);
-    bdraw = childs->view->getDraw();
+    bdraw = childs->getView()->getDraw();
     draw(&bdraw);
 }

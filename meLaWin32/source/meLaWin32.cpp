@@ -123,7 +123,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 
 static nnAppManager *n2app = new nnAppManager();
-static childApps * client = nullptr;
 //
 //  FUNZIONE: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -206,15 +205,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             CREATESTRUCT * cs = (CREATESTRUCT*)lParam;
             try {
                 STRING s("conf_utf8.xml");
-                client = n2app->createObjects(s);
+                IChild *client = n2app->createObjects(s);
                 if (client)
                 {
-                    n2app->setExtHandler(client, handler_exec_command,
+                    client->setExtHandler( handler_exec_command,
                         externCommandRequest,
                         hWnd
                         );
-                    if((cs->cx>0) && (cs->cy>0))
-                        client->view->resize(cs->cx, cs->cy);
                 }
             }
             catch (...) {}
@@ -224,8 +221,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         int w = lParam & 0xffff;
         int h = lParam >> 16;
-        if (client)
-            client->view->resize(w, h);
+        if (n2app)
+            n2app->active()->getView()->resize(w, h);
     }
         break;
     case WM_COMMAND:
@@ -246,10 +243,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            if (client != nullptr)
+            if (n2app != nullptr)
             {
                 //SetMapMode(hdc, MM_LOENGLISH);
-                bmpImage *bmp = &client->view->getDraw();
+                bmpImage *bmp = &n2app->active()->getView()->getDraw();
                 if (bmp)
                 {                    
                     ::StretchDIBits(hdc, 0, 0,
@@ -268,17 +265,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         int x = lParam & 0xffff;
         int y = lParam >> 16;
-        if (client != nullptr)
+        if (n2app != nullptr)
         {
+            IHandler *handler = n2app->active()->getHandler();
             nnPoint pos(x, y);
             if (wParam == MK_LBUTTON)
             {
-                client->view->handlerMouseMove(nn_m_button_left, pos);
+                handler->handlerMouseMove(nn_m_button_left, pos);
             }
             else
                 if (wParam == 0)
                 {
-                    client->view->handlerMouseMove(nn_m_button_unknow, pos);
+                    handler->handlerMouseMove(nn_m_button_unknow, pos);
                 }
         }
     }
@@ -288,7 +286,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int x = lParam & 0xffff;
         int y = lParam >> 16;
         nnPoint pos(x, y);
-        client->view->handlerMouseButtonDown(nn_m_button_left, pos);
+        if (n2app != nullptr)
+        {
+            IHandler *handler = n2app->active()->getHandler();
+            handler->handlerMouseButtonDown(nn_m_button_left, pos);
+        }
     }
         break;
     case WM_LBUTTONUP:
@@ -296,7 +298,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int x = lParam & 0xffff;
         int y = lParam >> 16;
         nnPoint pos(x, y);
-        client->view->handlerMouseButtonUp(nn_m_button_left, pos);
+        if (n2app != nullptr)
+        {
+            IHandler *handler = n2app->active()->getHandler();
+            handler->handlerMouseButtonUp(nn_m_button_left, pos);
+        }
     }
     break;
     case WM_RBUTTONDOWN:
@@ -304,7 +310,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int x = lParam & 0xffff;
         int y = lParam >> 16;
         nnPoint pos(x, y);
-        client->view->handlerMouseButtonDown(nn_m_button_right, pos);
+        if (n2app != nullptr)
+        {
+            IHandler *handler = n2app->active()->getHandler();
+            handler->handlerMouseButtonDown(nn_m_button_right, pos);
+        }
     }
     break;
     case WM_RBUTTONUP:
@@ -312,33 +322,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int x = lParam & 0xffff;
         int y = lParam >> 16;
         nnPoint pos(x, y);
-        client->view->handlerMouseButtonUp(nn_m_button_right, pos);
+        if (n2app != nullptr)
+        {
+            IHandler *handler = n2app->active()->getHandler();
+            handler->handlerMouseButtonUp(nn_m_button_right, pos);
+        }
     }
     break;
     case WM_KEYDOWN: 
     {
-        if (client)
+        if (n2app!=nullptr)
         {
-
+            IHandler *handler = n2app->active()->getHandler();
             bool alt = false, ctrl = false, shift = false;
             if (wParam == VK_HOME)
-                client->view->handlerHomeButton(shift, ctrl, alt);
+                handler->handlerHomeButton(shift, ctrl, alt);
             if (wParam == VK_ESCAPE)
-                client->view->handlerEscapeButton(shift, ctrl, alt);
+                handler->handlerEscapeButton(shift, ctrl, alt);
             if (wParam == VK_END)
-                client->view->handlerEndButton(shift, ctrl, alt);
+                handler->handlerEndButton(shift, ctrl, alt);
             if (wParam == VK_LEFT)
-                client->view->handlerLeftButton(shift, ctrl, alt);
+                handler->handlerLeftButton(shift, ctrl, alt);
             if (wParam == VK_UP)
-                client->view->handlerUpButton(shift, ctrl, alt);
+                handler->handlerUpButton(shift, ctrl, alt);
             if (wParam == VK_RIGHT)
-                client->view->handlerRightButton(shift, ctrl, alt);
+                handler->handlerRightButton(shift, ctrl, alt);
             if (wParam == VK_DOWN)
-                client->view->handlerDownButton(shift, ctrl, alt);
+                handler->handlerDownButton(shift, ctrl, alt);
             if (wParam == VK_PRIOR)
-                client->view->handlerPageUpButton(shift, ctrl, alt);
+                handler->handlerPageUpButton(shift, ctrl, alt);
             if (wParam == VK_NEXT)
-                client->view->handlerPageDownButton(shift, ctrl, alt);
+                handler->handlerPageDownButton(shift, ctrl, alt);
         }
     }
     break;

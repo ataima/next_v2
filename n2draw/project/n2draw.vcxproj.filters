@@ -75,6 +75,9 @@
     <ClInclude Include="..\header\n2scroller.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\n2childapp.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2appmanager.cpp">
@@ -120,6 +123,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\n2scroller.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2childapp.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

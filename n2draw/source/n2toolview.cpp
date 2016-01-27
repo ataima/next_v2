@@ -148,7 +148,7 @@ bool nnToolView::handlerRequestCommand( nnPoint & pos,int & command)
     bool res=false;
     if(active)
     {
-        res=active->handlerRequestCommand(pos,command);
+            res = active->handlerRequestCommand(pos, command);
     }
     return res;
 }
@@ -179,7 +179,7 @@ bool nnToolView::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
     bool res=false;
     if(active)
     {
-        res=active->handlerMouseMove(pos,hook);
+            res = active->handlerMouseMove(pos, hook);
     }
     return res;
 }

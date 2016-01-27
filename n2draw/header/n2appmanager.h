@@ -37,7 +37,7 @@ class nnAppManager
     :public IAppManager
 {
 
-typedef std::map<int, childApps *> listChild;
+typedef std::map<int, IChild *> listChild;
 
     listChild childs;
     IConfig *configuration;
@@ -46,16 +46,13 @@ typedef std::map<int, childApps *> listChild;
 public:
     nnAppManager();
     ~nnAppManager();    
-    childApps * createObjects(STRING & conf_file_name);
+    IChild * createObjects(STRING & conf_file_name);
     bool closeAll(void);
-    childApps *activate(int v);
-    childApps *active(void);
-    bool setExtHandler(childApps *child,handler_exec type,
-                       extHandler  _hook,void *unkObj);
+    IChild *activate(int v);
+    IChild *active(void);
+
 protected:
     bool clean(void);
-    bool createInternalObjects(STRING & conf_file_name, childApps & child);
-    static void internalCommandRuote(void * dest, handlerAction type_param, size_t user_param);
 };
 
 

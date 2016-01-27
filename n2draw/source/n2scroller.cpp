@@ -83,6 +83,9 @@ bool nnScroller::draw(bmpImage & bkg, IViewGlue * glue)
                 bt2Rect.set(phyArea.start.x , phyArea.stop.y-image2->getHeight(), phyArea.stop.x, phyArea.stop.y );
             }
         }
+        // todo ... I will to create a class showsTips to show info . Must be a class on separate thread 
+        // to implement code as : info = new nnTips("prova" ,100) ; info.run();
+        // this class auto manage the process the show and auto clean 
 #if 0
         bkg.frameRect(bt1Rect.start.x, height - bt1Rect.start.y,  bt1Rect.stop.x, height - bt1Rect.stop.y, 255, 0, 0,0xffffffff);
         bkg.frameRect(bt2Rect.start.x, height - bt2Rect.start.y,  bt2Rect.stop.x, height - bt1Rect.stop.y, 255, 0, 0, 0xffffffff);

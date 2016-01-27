@@ -45,6 +45,48 @@ public:
     virtual IExtHandler *get(unsigned int type)=0;
 };
 
+//////////////////////////////////////////////////////
+
+typedef enum tag_mouse_button_def
+{
+    nn_m_button_unknow = 0,
+    nn_m_button_left = 1,
+    nn_m_button_right = 2,
+    nn_m_button_middle = 4
+} nn_mouse_buttons;
+
+typedef enum tag_show_status
+{
+    show_none = 0,
+    show_toolbar,
+    show_scroller_horz,
+    show_scroller_vert,
+}show_status;
+
+
+class IHandler
+{
+public:
+    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
+    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
+    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
+    virtual bool handlerScrollHorz(int pos) = 0;
+    virtual bool handlerScrollVert(int pos) = 0;
+    virtual bool handlerEscapeButton(bool shift, bool ctrl, bool alt) = 0;
+    virtual bool handlerHomeButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerEndButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerPageUpButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerPageDownButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerPageRightButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerPageLeftButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerLeftButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerRightButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerUpButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerDownButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerRequestCommand(nnPoint phyPoint, int & command) = 0;
+};
+
+
 
 //////////////////////////////////////////////////////
 
@@ -152,11 +194,11 @@ class ICommander
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
-    virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
-    virtual bool handlerMouseMove( nnPoint & pos,IExtHandler *hook)=0;
     virtual void setFont(IFontManager *_font) = 0;
     virtual bool loadImages(const XCHAR *path)=0;
     virtual bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue) = 0;
+    virtual bool handlerRequestCommand(nnPoint & pos, int & command) = 0;
+    virtual bool handlerMouseMove(nnPoint & pos, IExtHandler *hook) = 0;
     virtual ~ICommander() {}
 };
 
@@ -322,7 +364,6 @@ public:
     virtual bool revIndexes(hashkey & key,int & x, int & y) = 0;
     virtual bool readConfiguration(IXmlNode *node)=0;
     virtual ~IManager() {}
-
 };
 
 
@@ -386,8 +427,8 @@ class IToolView
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
-    virtual bool handlerRequestCommand( nnPoint & pos,int & command)=0;
-    virtual bool handlerMouseMove( nnPoint & pos,IExtHandler *hook)=0;
+    virtual bool handlerRequestCommand(nnPoint & pos, int & command) = 0;
+    virtual bool handlerMouseMove(nnPoint & pos, IExtHandler *hook) = 0;
     virtual ICommander *getActiveCommander(void)=0;
     virtual bool loadImages(const XCHAR *path)=0;
     virtual bool checkIntCommand(int command)=0;
@@ -425,21 +466,6 @@ public:
 
 
 //////////////////////////////////////////////////////
-typedef enum tag_mouse_button_def
-{
-    nn_m_button_unknow = 0,
-    nn_m_button_left = 1,
-    nn_m_button_right = 2,
-    nn_m_button_middle = 4
-} nn_mouse_buttons;
-
-typedef enum tag_show_status
-{
-    show_none = 0,
-    show_toolbar,
-    show_scroller_horz,
-    show_scroller_vert,
-}show_status;
 
 typedef enum tag_scroller_mode
 {
@@ -458,8 +484,8 @@ public:
     virtual bool setScrollSize(int maximun, int minimum) = 0;
     virtual int getPosition(void) = 0;
     virtual void update(int _pos) = 0;
-    virtual bool handlerMouseMove( nnPoint phyPoint, show_status & status, IExtHandler *hook) = 0;
-    virtual bool handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue) = 0;
+    virtual bool handlerMouseMove(nnPoint phyPoint, show_status & status, IExtHandler *hook) = 0;
+    virtual bool handlerMouseButtonDown(nnPoint phyPoint, IViewGlue * glue) = 0;
     virtual void hide(void) = 0;
     virtual void show(void) = 0;
 };
@@ -483,18 +509,18 @@ public:
     virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
     virtual bool handlerScrollHorz(int pos) = 0;
     virtual bool handlerScrollVert(int pos) = 0;
-    virtual bool handlerEscapeButton(bool shift,bool ctrl,bool alt) = 0;
-    virtual bool handlerHomeButton(bool shitf,bool ctrl,bool alt)=0;
-    virtual bool handlerEndButton(bool shitf,bool ctrl,bool alt)=0;
-    virtual bool handlerPageUpButton(bool shitf,bool ctrl,bool alt)=0;
-    virtual bool handlerPageDownButton(bool shitf,bool ctrl,bool alt)=0;
+    virtual bool handlerEscapeButton(bool shift, bool ctrl, bool alt) = 0;
+    virtual bool handlerHomeButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerEndButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerPageUpButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerPageDownButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerPageRightButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerPageLeftButton(bool shitf, bool ctrl, bool alt) = 0;
-    virtual bool handlerLeftButton(bool shitf,bool ctrl,bool alt)=0;
-    virtual bool handlerRightButton(bool shitf,bool ctrl,bool alt)=0;
-    virtual bool handlerUpButton(bool shitf,bool ctrl,bool alt)=0;
-    virtual bool handlerDownButton(bool shitf,bool ctrl,bool alt)=0;
-    virtual bool handlerRequestCommand(nnPoint phyPoint,int & command)=0;
+    virtual bool handlerLeftButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerRightButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerUpButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerDownButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerRequestCommand(nnPoint phyPoint, int & command) = 0;
     virtual bool unselect() = 0;
     virtual bool getSelectAreaPhy(int & width, int & height) = 0;
     virtual bool getSelectStartPhy(int & x, int & y) = 0;
@@ -520,27 +546,31 @@ public:
 
 //////////////////////////////////////////////////////
 
-
-typedef struct tag_app_child
+class IChild
 {
-    IManager                *object_manager;
-    IFontList               *fonts;
-    IViewGlue               *view;
-    IImageManager           *imageManager;
-    IExtHandler             *defaultHandler;
-    void clean(void);
-} childApps;
+public:
+    virtual IManager * getManager(void) = 0;
+    virtual IFontList * getFont(void) = 0;
+    virtual IViewGlue * getView(void) = 0;
+    virtual IImageManager * getImage(void) = 0;    
+    virtual IExtHandler * getExternalHandler(void) = 0;
+    virtual IHandler * getHandler(void) = 0;
+    virtual void clean(void) = 0;
+    virtual bool createObjects(IConfig *configuration,STRING & conf_file_name) = 0;    
+    virtual bool setExtHandler(handler_exec type, extHandler  _hook, void *unkObj) = 0;
+    virtual void commandRuote(handlerAction type_param, size_t user_param) = 0;
+};
 
 class IAppManager
 {
 public:
-    virtual childApps * createObjects(STRING & conf_file_name) = 0;
+    virtual IChild * createObjects(STRING & conf_file_name) = 0;
     virtual bool closeAll(void) = 0;
-    virtual childApps *activate(int v) = 0;
-    virtual childApps *active(void) = 0;
-    virtual bool setExtHandler(childApps *child,handler_exec type,extHandler  _hook,void *unkObj)=0;
+    virtual IChild *activate(int v) = 0;
+    virtual IChild *active(void) = 0;
     virtual ~IAppManager() {}
 };
+
 
 
 

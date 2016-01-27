@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="..\header\MerlinoVCPU.h" />
     <ClInclude Include="..\header\n2appmanager.h" />
+    <ClInclude Include="..\header\n2childapp.h" />
     <ClInclude Include="..\header\n2commander.h" />
     <ClInclude Include="..\header\n2connection.h" />
     <ClInclude Include="..\header\n2draw.h" />
@@ -56,6 +57,7 @@
     <ClCompile Include="..\source\n2toolview.cpp" />
     <ClCompile Include="..\source\n2view.cpp" />
     <ClCompile Include="..\source\n2viewglue.cpp" />
+    <ClCompile Include="..\source\n2childapp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
