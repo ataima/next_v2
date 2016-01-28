@@ -456,7 +456,7 @@ class IView
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
-    virtual bool draw(IManager *manager, IViewGlue * glue) = 0;
+    virtual bool draw(void) = 0;
     virtual bool createMainBitmap(nnPoint & size) = 0;
     virtual bmpImage & getMainBitmap(void) = 0;
     virtual bool remapMainBitmap(nnPoint & size)=0;
@@ -527,8 +527,6 @@ public:
     virtual bool getSelectStartPhy(int & x, int & y) = 0;
     virtual bool isStartValid(void) = 0;
     virtual bool isStopValid(void) = 0;
-    virtual IManager *getManager(void) = 0;
-    virtual void setManager(IManager *mn) = 0;
     virtual bool getSelectArea(nnPoint &start, nnPoint &stop) = 0;
     virtual bmpImage & getDraw(void) = 0;
     virtual bool updateDraw(void) = 0;

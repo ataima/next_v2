@@ -41,14 +41,14 @@ class nnView
     int n_thread;
     bmpImage page;
     bmpImage copy;
-    IImageManager *images;
+    IChild *parent;
     IFontManager *font;
     int Width;
     int Height;
 public:
-    nnView(IImageManager *_images);
+    nnView(IChild *_parent);
     ~nnView();
-    bool draw(IManager * manager, IViewGlue * glue);
+    bool draw(void);
     bool readConfiguration(IXmlNode *node);
     bool createMainBitmap(nnPoint & size);
     bmpImage & getMainBitmap(void);

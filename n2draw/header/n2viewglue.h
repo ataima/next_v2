@@ -56,10 +56,7 @@ class nnViewGlue
     nnPoint phy_Size;
     nnPoint offset_Pos;
 
-
-    IManager  *manager;
-    IImageManager *images;
-    IFontList *fonts;
+    IChild *parent;
     IView     *view;
     IToolView *toolview;
     status_select status;
@@ -71,7 +68,7 @@ class nnViewGlue
     
 
 public:
-    nnViewGlue(IManager  *_manager, IImageManager *_images,IFontList *_fonts);
+    nnViewGlue(IChild *_parent);
     ~nnViewGlue();
     bool setPhyView(int w, int h);
     nnPoint getCoordPhy(const nnPoint & logPoint);
@@ -105,8 +102,6 @@ public:
     bool handlerDownButton(bool shitf, bool ctrl, bool alt);
     inline bool isStartValid(void) { return select_start != -1; }
     inline bool isStopValid(void) { return select_stop != -1; }
-    inline IManager *getManager(void) { return manager; }
-    inline void setManager(IManager *mn) { manager = mn; }
     inline bool select(nnPoint pos1, nnPoint pos2) { return selectStart(pos1) && selectStop(pos2); }
     inline bool getSelectArea(nnPoint &start, nnPoint &stop) { start = select_start; stop = select_stop; return true; }
     bmpImage & getDraw(void);

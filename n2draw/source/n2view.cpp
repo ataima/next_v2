@@ -34,8 +34,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-nnView::nnView(IImageManager *_images) :
-    n_thread(1), images(_images), font(nullptr),
+nnView::nnView(IChild *_parent) :
+    n_thread(1), parent(_parent), font(nullptr),
     Width(-1),Height(-1)
 {
 }
@@ -51,7 +51,7 @@ bmpImage & nnView::getMainBitmap(void)
 }
 
 
-bool nnView::draw(IManager * manager, IViewGlue * glue)
+bool nnView::draw(void)
 {
     bool res = false;
     bool empty = false;
@@ -59,49 +59,54 @@ bool nnView::draw(IManager * manager, IViewGlue * glue)
     int ix, iy;
     ix = iy = 0;
     nnPoint map = {0};
-    if (glue != nullptr)
+    if (parent)
     {
-        nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
-        nnPoint off = glue->getOffsetView();
-        nnPoint map = glue->getMap();
-        empty=mn.empty();
-        hashObjTable::iterator it = mn.begin();
-        hashObjTable::iterator end = mn.end();
-        if(!empty)
+        IManager *manager = parent->getManager();
+        IViewGlue * glue = parent->getView();
+        if (glue != nullptr)
         {
-            if (it != end)
+            nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
+            nnPoint off = glue->getOffsetView();
+            nnPoint map = glue->getMap();
+            empty = mn.empty();
+            hashObjTable::iterator it = mn.begin();
+            hashObjTable::iterator end = mn.end();
+            if (!empty)
             {
-                do
+                if (it != end)
                 {
-                    mn.revIndexes(const_cast<hashkey&>(it->first), ix, iy);
-                } while (ix < off.x && iy < off.y && it != end);
-            }
-        }
-        InnObj *obj;
-        res = true;
-        map += off;
-        for (y = off.y ; y < map.y ; y++)
-        {
-            for (x = off.x ; x < map.x ; x++)
-            {
-                if ( empty==false && ix == x && iy == y)
-                {
-                    obj = it->second;
-                    res &= drawObj(obj, x, y, glue);
-                    it++;
-                    if(it!=end)
+                    do
+                    {
                         mn.revIndexes(const_cast<hashkey&>(it->first), ix, iy);
+                    } while (ix < off.x && iy < off.y && it != end);
                 }
-                else
+            }
+            InnObj *obj;
+            res = true;
+            map += off;
+            for (y = off.y; y < map.y; y++)
+            {
+                for (x = off.x; x < map.x; x++)
                 {
-                    res &= drawBkg(x, y, glue);
+                    if (empty == false && ix == x && iy == y)
+                    {
+                        obj = it->second;
+                        res &= drawObj(obj, x, y, glue);
+                        it++;
+                        if (it != end)
+                            mn.revIndexes(const_cast<hashkey&>(it->first), ix, iy);
+                    }
+                    else
+                    {
+                        res &= drawBkg(x, y, glue);
+                    }
                 }
             }
         }
-    }
-    if (res)
-    {        
-        drawPower(glue);
+        if (res)
+        {
+            drawPower(glue);
+        }
     }
     return res;
 }
@@ -163,15 +168,19 @@ bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
 
         nImage = (unsigned int)comp->getCustomization();
     }
-    if (images != nullptr)
+    if (parent)
     {
-        nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(),x, y);
-        bmpImage *sprite=images->getImage(nImage);
-        if(sprite)
+        IImageManager * images = parent->getImage();
+        if (images)
         {
-            res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
-        }
+            nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(), x, y);
+            bmpImage *sprite = images->getImage(nImage);
+            if (sprite)
+            {
+                res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
+            }
 
+        }
     }
     return res;
 }
@@ -179,14 +188,17 @@ bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
 bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
 {
     bool res = false;
-    if (images != nullptr)
+    if (parent)
     {
-        nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(),x, y);
-        bmpImage *sprite=images->getImage(0);
-        if(sprite)
+        IImageManager * images = parent->getImage();
+        if (images != nullptr)
         {
-                res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
-        }
+            nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(),x, y);
+            bmpImage *sprite=images->getImage(0);
+            if(sprite)
+            {
+                    res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
+            }
 #if 0
         char buff[128];
         sprintf(buff, "%d:%d", x, y);
@@ -194,6 +206,7 @@ bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
         res = page.drawMaskSprite(*strImage, pos.x+5, pos.y +20, 0, 0, 0);
         delete strImage;
 #endif
+        }
     }
     return res;
 }

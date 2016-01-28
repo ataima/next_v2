@@ -150,7 +150,7 @@ bool nnChildApp::createObjects(IConfig *configuration,STRING & conf_file_name)
                                             if (conf_manager)
                                             {
                                                 line = __LINE__;
-                                                view = new nnViewGlue(object_manager,imageManager,fonts);                                                MEMCHK(IViewGlue, view);
+                                                view = new nnViewGlue(this);                                                MEMCHK(IViewGlue, view);
                                                 res = view->readConfiguration(conf_manager);
                                             }
                                             else
