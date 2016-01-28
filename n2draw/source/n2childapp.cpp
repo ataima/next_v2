@@ -77,6 +77,12 @@ void nnChildApp::clean(void)
         view = nullptr;
     }
     externalHandler = nullptr;
+    if (handlers)
+    {
+        handlers->clear();
+        delete handlers;
+        handlers = nullptr;
+    }
     id = -1;
 }
 
@@ -199,19 +205,22 @@ bool nnChildApp::createObjects(IConfig *configuration,STRING & conf_file_name)
             throw(e);
         }
     }
+    //TODO have to add exception Management .....
     if (res)
     {
         res = loadImages();
     }
     if (res)
     {
-        res = view->addExtHandler(handler_exec_command, &nnChildApp::internalCommandRuote,this);
+        res = view->createDraw();
     }
     if (res)
     {
-        res = view->createDraw();
+        handlers = new nnExtHandlerList();
+        MEMCHK(IExtHandlerList, handlers);
+        if(handlers)
+           res = addExtHandler(handler_exec_command, &nnChildApp::internalCommandRuote, this);
     }
-
     return res;
 }
 
@@ -443,5 +452,15 @@ bool nnChildApp::handlerRequestCommand(nnPoint phyPoint, int & command)
     bool res = false;
     if (view)
         res = view->handlerRequestCommand(phyPoint, command);
+    return res;
+}
+
+bool nnChildApp::addExtHandler(handler_exec type,
+    extHandler  _hook,
+    void *unkObj)
+{
+    bool res = false;
+    nnExtHandler  *nh = new nnExtHandler(type, _hook, unkObj);
+    res = handlers->add(type, nh);
     return res;
 }

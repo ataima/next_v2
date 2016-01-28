@@ -60,7 +60,6 @@ class nnViewGlue
     IView     *view;
     IToolView *toolview;
     status_select status;
-    IExtHandlerList * handlers;
     ISelector *selector;
     IScroller *vscroller;
     IScroller *hscroller;
@@ -111,7 +110,6 @@ public:
     bool resize(int w, int h);
     inline int getPageWidth(void) { return phy_Size.x / const_Size.x;  }
     inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
-    bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
     bool loadImages(const XCHAR *_path);
     inline  bool createDraw(void) { return view->createMainBitmap(phy_Size); }
 private:

@@ -535,7 +535,6 @@ public:
     virtual bool resize(int w, int h) = 0;
     virtual int getPageWidth(void)=0;
     virtual int getPageHeight(void)=0;
-    virtual bool addExtHandler(handler_exec type,extHandler  _hook,void *unkObj)=0;
     virtual bool loadImages(const XCHAR *_path)=0;
     virtual bool createDraw(void) = 0;
     virtual ~IViewGlue() {}
@@ -554,12 +553,14 @@ public:
     virtual IViewGlue * getView(void) = 0;
     virtual IImageManager * getImage(void) = 0;    
     virtual IExtHandler * getExternalHandler(void) = 0;
-    //virtual IHandler * getHandler(void) = 0;
+    virtual IExtHandlerList *getHandlers(void) = 0;
+    virtual bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj) = 0;
     virtual void clean(void) = 0;
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name) = 0;    
     virtual bool setExtHandler(handler_exec type, extHandler  _hook, void *unkObj) = 0;
     virtual void commandRuote(handlerAction type_param, size_t user_param) = 0;
 };
+
 
 class IAppManager
 {
