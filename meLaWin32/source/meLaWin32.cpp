@@ -222,7 +222,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int w = lParam & 0xffff;
         int h = lParam >> 16;
         if (n2app)
-            n2app->active()->getView()->resize(w, h);
+        {
+            IChild * child = n2app->active();
+            if(child)
+                child->getView()->resize(w, h);
+        }
     }
         break;
     case WM_COMMAND:
@@ -246,13 +250,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (n2app != nullptr)
             {
                 //SetMapMode(hdc, MM_LOENGLISH);
-                bmpImage *bmp = &n2app->active()->getView()->getDraw();
-                if (bmp)
-                {                    
-                    ::StretchDIBits(hdc, 0, 0,
-                        bmp->getWidth(), bmp->getHeight(),
-                        0, 0, bmp->getWidth(), bmp->getHeight(),
-                        bmp->getBits(), (const BITMAPINFO *)bmp->getInfo(), 0, SRCCOPY);
+                IChild * child = n2app->active();
+                if (child)
+                {
+                    bmpImage & bmp = child->getView()->getDraw();
+                    if (bmp)
+                    {
+                        ::StretchDIBits(hdc, 0, 0,
+                            bmp.getWidth(), bmp.getHeight(),
+                            0, 0, bmp.getWidth(), bmp.getHeight(),
+                            bmp.getBits(), (const BITMAPINFO *)bmp.getInfo(), 0, SRCCOPY);
+                    }
                 }
             }
             EndPaint(hWnd, &ps);
@@ -267,17 +275,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int y = lParam >> 16;
         if (n2app != nullptr)
         {
-            IHandler *handler = n2app->active()->getHandler();
-            nnPoint pos(x, y);
-            if (wParam == MK_LBUTTON)
+            IHandler *handler = n2app->active();
+            if (handler)
             {
-                handler->handlerMouseMove(nn_m_button_left, pos);
-            }
-            else
-                if (wParam == 0)
+                nnPoint pos(x, y);
+                if (wParam == MK_LBUTTON)
                 {
-                    handler->handlerMouseMove(nn_m_button_unknow, pos);
+                    handler->handlerMouseMove(nn_m_button_left, pos);
                 }
+                else
+                    if (wParam == 0)
+                    {
+                        handler->handlerMouseMove(nn_m_button_unknow, pos);
+                    }
+            }
         }
     }
     break;
@@ -288,8 +299,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         nnPoint pos(x, y);
         if (n2app != nullptr)
         {
-            IHandler *handler = n2app->active()->getHandler();
-            handler->handlerMouseButtonDown(nn_m_button_left, pos);
+            IHandler *handler = n2app->active();
+            if(handler)
+                handler->handlerMouseButtonDown(nn_m_button_left, pos);
         }
     }
         break;
@@ -300,8 +312,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         nnPoint pos(x, y);
         if (n2app != nullptr)
         {
-            IHandler *handler = n2app->active()->getHandler();
-            handler->handlerMouseButtonUp(nn_m_button_left, pos);
+            IHandler *handler = n2app->active();
+            if(handler)
+                handler->handlerMouseButtonUp(nn_m_button_left, pos);
         }
     }
     break;
@@ -312,8 +325,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         nnPoint pos(x, y);
         if (n2app != nullptr)
         {
-            IHandler *handler = n2app->active()->getHandler();
-            handler->handlerMouseButtonDown(nn_m_button_right, pos);
+            IHandler *handler = n2app->active();
+            if(handler)
+                handler->handlerMouseButtonDown(nn_m_button_right, pos);
         }
     }
     break;
@@ -324,8 +338,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         nnPoint pos(x, y);
         if (n2app != nullptr)
         {
-            IHandler *handler = n2app->active()->getHandler();
-            handler->handlerMouseButtonUp(nn_m_button_right, pos);
+            IHandler *handler = n2app->active();
+            if(handler)
+                handler->handlerMouseButtonUp(nn_m_button_right, pos);
         }
     }
     break;
@@ -333,26 +348,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (n2app!=nullptr)
         {
-            IHandler *handler = n2app->active()->getHandler();
-            bool alt = false, ctrl = false, shift = false;
-            if (wParam == VK_HOME)
-                handler->handlerHomeButton(shift, ctrl, alt);
-            if (wParam == VK_ESCAPE)
-                handler->handlerEscapeButton(shift, ctrl, alt);
-            if (wParam == VK_END)
-                handler->handlerEndButton(shift, ctrl, alt);
-            if (wParam == VK_LEFT)
-                handler->handlerLeftButton(shift, ctrl, alt);
-            if (wParam == VK_UP)
-                handler->handlerUpButton(shift, ctrl, alt);
-            if (wParam == VK_RIGHT)
-                handler->handlerRightButton(shift, ctrl, alt);
-            if (wParam == VK_DOWN)
-                handler->handlerDownButton(shift, ctrl, alt);
-            if (wParam == VK_PRIOR)
-                handler->handlerPageUpButton(shift, ctrl, alt);
-            if (wParam == VK_NEXT)
-                handler->handlerPageDownButton(shift, ctrl, alt);
+            IHandler *handler = n2app->active();
+            if (handler)
+            {
+                bool alt = false, ctrl = false, shift = false;
+                if (wParam == VK_HOME)
+                    handler->handlerHomeButton(shift, ctrl, alt);
+                if (wParam == VK_ESCAPE)
+                    handler->handlerEscapeButton(shift, ctrl, alt);
+                if (wParam == VK_END)
+                    handler->handlerEndButton(shift, ctrl, alt);
+                if (wParam == VK_LEFT)
+                    handler->handlerLeftButton(shift, ctrl, alt);
+                if (wParam == VK_UP)
+                    handler->handlerUpButton(shift, ctrl, alt);
+                if (wParam == VK_RIGHT)
+                    handler->handlerRightButton(shift, ctrl, alt);
+                if (wParam == VK_DOWN)
+                    handler->handlerDownButton(shift, ctrl, alt);
+                if (wParam == VK_PRIOR)
+                    handler->handlerPageUpButton(shift, ctrl, alt);
+                if (wParam == VK_NEXT)
+                    handler->handlerPageDownButton(shift, ctrl, alt);
+            }
         }
     }
     break;

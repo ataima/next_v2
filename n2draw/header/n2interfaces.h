@@ -491,6 +491,7 @@ public:
 };
 
 class IViewGlue
+    : public IHandler
 {
 public:
     virtual bool setPhyView(int w, int h) = 0;
@@ -547,6 +548,7 @@ public:
 //////////////////////////////////////////////////////
 
 class IChild
+    : public IHandler
 {
 public:
     virtual IManager * getManager(void) = 0;
@@ -554,7 +556,7 @@ public:
     virtual IViewGlue * getView(void) = 0;
     virtual IImageManager * getImage(void) = 0;    
     virtual IExtHandler * getExternalHandler(void) = 0;
-    virtual IHandler * getHandler(void) = 0;
+    //virtual IHandler * getHandler(void) = 0;
     virtual void clean(void) = 0;
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name) = 0;    
     virtual bool setExtHandler(handler_exec type, extHandler  _hook, void *unkObj) = 0;

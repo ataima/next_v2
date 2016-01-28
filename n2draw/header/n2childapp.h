@@ -33,7 +33,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 class nnChildApp
     : public IChild
-    , public IHandler
 {
 
     IManager                *object_manager;
@@ -49,7 +48,7 @@ public:
     bool createObjects(IConfig *configuration,STRING & conf_file_name);
     bool setExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
     void commandRuote(handlerAction type_param, size_t user_param);
-    IHandler * getHandler(void) { return static_cast<IHandler *>(this); }
+    //IHandler * getHandler(void) { return static_cast<IHandler *>(this); }
     inline  IManager * getManager(void)                { return object_manager; }
     inline  IFontList * getFont(void)                  { return fonts; }
     inline  IViewGlue * getView(void)                  { return view; }
