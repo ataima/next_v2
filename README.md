@@ -1,3 +1,3 @@
-# next_v2
-Merlino PLC ladder program rebuild from scratch
-1) pass from windows to QT for MAC linux suppport 
+THis project i the porting on multiplatform   of an old project named next.
+It's  a ladder program to implement code for Merlino Virtual CPU.
+Set new name to meLa : me Ladder abbreviation
