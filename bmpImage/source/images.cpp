@@ -91,8 +91,9 @@ CalculateLine(unsigned width, unsigned bitdepth) {
 }
 
 static inline  unsigned
-CalculatePitch(unsigned line) {
-    return line + 3 & ~3;
+CalculatePitch(unsigned int line) {
+    register unsigned int v = line + 3 & ~3;
+    return v;
 }
 
 
@@ -221,25 +222,6 @@ bool bmpImage::copyFrombmpImage(bmpImage & b)
 }
 
 
-
-
-
-
-bool bmpImage::create(int width, int height, unsigned char  color)
-{
-    bool res = false;
-    size_t size;
-    if (isValid())clear();
-    // Create the image
-    setSize(width, height);
-    try {
-        size = getWidth() *getHeight() * 3;  //24bpp
-        memset(getBits(), color, size);
-        res = true;
-    }
-    catch (...) {}
-    return res;
-}
 
 
 bool bmpImage::isValid(void)
@@ -457,11 +439,11 @@ bool bmpImage::replace(LPBITMAPFILEHEADER new_dib) {
 }
 
 
-bool bmpImage::setSize(unsigned width, unsigned height) {
-    if (m_hBitmap) {
+bool bmpImage::create(unsigned int width, unsigned int height, unsigned int deep,unsigned char color )
+{
+    if (isValid())
         clear();
-    }
-    m_hBitmap = allocateBitmap(width, height);
+    m_hBitmap = allocateBitmap(width, height,deep,color);
     if (!m_hBitmap)
         return false;
     return true;
@@ -731,15 +713,15 @@ bool bmpImage::invert(void)
 }
 
 
-size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height)
+size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height,unsigned int deep)
 {
     size_t dib_size = sizeof(BITMAPFILEHEADER);
     dib_size += sizeof(BITMAPINFOHEADER);
     // palette is aligned on a 16 bytes boundary
     const size_t header_size = dib_size;
     // pixels are aligned on a 16 bytes boundary
-    dib_size += (size_t)CalculatePitch(CalculateLine(width, bitPerPlane)) * (size_t)height;
-    const double dPitch = floor(((double)bitPerPlane * width + 31.0) / 32.0) * 4.0;
+    dib_size += (size_t)CalculatePitch(CalculateLine(width, deep)) * (size_t)height;
+    const double dPitch = floor(((double)deep * width + 31.0) / 32.0) * 4.0;
     const double dImageSize = (double)header_size + dPitch * height;
     if (dImageSize != (double)dib_size) {
         // here, we are sure to encounter a malloc overflow: try to avoid it ...
@@ -748,16 +730,16 @@ size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height)
     return dib_size;
 }
 
-LPBITMAPFILEHEADER  bmpImage::allocateBitmap(unsigned  int width, unsigned int height)
+LPBITMAPFILEHEADER  bmpImage::allocateBitmap(unsigned  int width, unsigned int height,unsigned int deep,unsigned char color)
 {
     LPBITMAPFILEHEADER res = nullptr;
 
-    size_t dib_size = getInternalImageSize(width, height);
+    size_t dib_size = getInternalImageSize(width, height,deep);
 
     if (dib_size > 0)
     {
 
-        res = (LPBITMAPFILEHEADER)malloc(dib_size);
+        res = (LPBITMAPFILEHEADER)calloc(dib_size,1);
         res->bfSize = (unsigned long)(dib_size & 0xffffffff);
         res->bfType = 0x4d42;
         res->bfOffBits = res->bfReserved1 = res->bfReserved2 = 0;
@@ -767,14 +749,19 @@ LPBITMAPFILEHEADER  bmpImage::allocateBitmap(unsigned  int width, unsigned int h
         bih->biHeight = height;
         bih->biPlanes = 1;
         bih->biCompression = 0L;
-        bih->biBitCount = (short)bitPerPlane;
+        bih->biBitCount = (short)deep;
         bih->biClrUsed = 0;
         bih->biClrImportant = bih->biClrUsed;
         bih->biXPelsPerMeter = 2835;	// 72 dpi
         bih->biYPelsPerMeter = 2835;	// 72 dpi
         bih->biSizeImage = res->bfSize - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER);
         res->bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + (sizeof(RGBQUAD) * bih->biClrUsed);
-
+        if (color != 0)
+        {
+            void *p = getBits(res);
+            if (p)
+                memset(p, color,bih->biSizeImage);
+        }
     }
     return res;
 }
@@ -804,7 +791,7 @@ bool bmpImage::convertTo24Bits(void)
         }
         else
         {
-            LPBITMAPFILEHEADER new_dib = allocateBitmap(width, height);
+            LPBITMAPFILEHEADER new_dib = allocateBitmap(width, height,24,0);
             if (new_dib != nullptr)
             {
 
@@ -893,7 +880,7 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
 
 
     // allocate and clear dst image
-    LPBITMAPFILEHEADER dst = allocateBitmap(dst_width, dst_height);
+    LPBITMAPFILEHEADER dst = allocateBitmap(dst_width, dst_height,bpp,0);
     if (dst)
     {
 
@@ -987,7 +974,7 @@ LPBITMAPFILEHEADER bmpImage::Rotate180(LPBITMAPFILEHEADER src)
     const unsigned int dst_height = src_height;
 
 
-    LPBITMAPFILEHEADER dst = allocateBitmap(dst_width, dst_height);
+    LPBITMAPFILEHEADER dst = allocateBitmap(dst_width, dst_height,bpp,0);
     if (NULL != dst)
     {
         if (bpp == 1)
@@ -1044,7 +1031,7 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
     const unsigned dst_width = src_height;
     const unsigned dst_height = src_width;
 
-    LPBITMAPFILEHEADER dst = allocateBitmap(dst_width, dst_height);
+    LPBITMAPFILEHEADER dst = allocateBitmap(dst_width, dst_height,bpp,0);
     if (NULL != dst)
     {
 
@@ -1664,10 +1651,11 @@ bool bmpImage::copyToFile(const XCHAR *name)
 #else
             sname=name;
 #endif
-            file = FOPEN(sname.c_str(), "w+");
+            file = FOPEN(sname.c_str(), "wb");
             if ( file != nullptr)
             {
-                auto err = fwrite(m_hBitmap, 1, m_hBitmap->bfSize, file);
+                size_t err = fwrite(m_hBitmap, sizeof(unsigned char ), 
+                    m_hBitmap->bfSize, file);
                 fflush(file);
                 fclose(file);
                 res = (err == m_hBitmap->bfSize);
@@ -1686,7 +1674,7 @@ LPBITMAPFILEHEADER bmpImage::cloneImage(LPBITMAPFILEHEADER pI)
     LPBITMAPFILEHEADER copy = nullptr;
     if (pI != nullptr  && pI->bfType == 0x4d42)
     {
-        copy = allocateBitmap(getWidth(pI), getHeight(pI));
+        copy = allocateBitmap(getWidth(pI), getHeight(pI),getBitsPerPixel(pI),0);
         if (copy != nullptr  && copy->bfSize == pI->bfSize)
         {
             memcpy(copy, pI, pI->bfSize);
@@ -2162,7 +2150,7 @@ bool bmpSprite::fromImages(bmpImage & obj, bmpImage & mask)
     int height = min(obj_height, mask_height);
     obj.convertTo24Bits();
     mask.convertTo24Bits();
-    create(width, height, 0);
+    create(width, height,24, 0);
     return toSprite(m_hBitmap, (LPBITMAPFILEHEADER)obj, (LPBITMAPFILEHEADER)mask);
 }
 

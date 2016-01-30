@@ -113,7 +113,7 @@ void test_bmpImage_class::test2(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    CA_ASSERT(s.create(100, 100,  255) == true);
+    CA_ASSERT(s.create(100, 100,24,  255) == true);
     CA_ASSERT((LPBITMAPFILEHEADER)s != nullptr);
 }
 
@@ -124,7 +124,7 @@ void test_bmpImage_class::test3(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(100, 100, 255);
+    s.create(100, 100,24, 255);
     LPBITMAPFILEHEADER v = (LPBITMAPFILEHEADER)s;
     CA_ASSERT(v->bfType == 0x4d42);
     CA_ASSERT(v->bfOffBits == ((int)(sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER))));
@@ -138,7 +138,7 @@ void test_bmpImage_class::test4(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(100, 100,  255);
+    s.create(100, 100,24,  255);
     LPBITMAPINFOHEADER v = s.getInfoHeader();
     CA_ASSERT(v != NULL);
     CA_ASSERT(v->biBitCount == 24);
@@ -155,7 +155,7 @@ void test_bmpImage_class::test5(void)
     _STOP();
     remove("./whiteImage.bmp");
     bmpImage s;
-    s.create(100, 100,  255);
+    s.create(100, 100,24,  255);
     draw(&s);
     bool res = s.copyToFile(X("./whiteImage.bmp"));
     CA_ASSERT(res==true);
@@ -174,7 +174,7 @@ void test_bmpImage_class::test6(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(100, 100,  255);
+    s.create(100, 100,24,  255);
     bmpImage v;
     v.copyFrombmpImage(s);
     int res = memcmp((LPBITMAPFILEHEADER)s, (LPBITMAPFILEHEADER)v, ((LPBITMAPFILEHEADER)(s))->bfSize);
@@ -190,7 +190,7 @@ void test_bmpImage_class::test7(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(100, 100, 255);
+    s.create(100, 100,24, 255);
     CA_ASSERT(s.isValid()==true);
 }
 
@@ -201,7 +201,7 @@ void test_bmpImage_class::test8(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(100, 100,  255);
+    s.create(100, 100,24,  255);
     CA_ASSERT(s.clear()==true);
     CA_ASSERT((LPBITMAPFILEHEADER)(s)==nullptr);
 }
@@ -213,7 +213,7 @@ void test_bmpImage_class::test9(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(100, 100,  255);
+    s.create(100, 100,24,  255);
     LPBITMAPFILEHEADER v = (LPBITMAPFILEHEADER)s;
     CA_ASSERT(s.detach()==true);
     CA_ASSERT((LPBITMAPFILEHEADER)(s)==nullptr);
@@ -227,9 +227,9 @@ void test_bmpImage_class::test10(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(100, 100,  255);
+    s.create(100, 100,24,  255);
     bmpImage t;
-    t.create(100, 100, 255);
+    t.create(100, 100,24, 255);
     LPBITMAPFILEHEADER v = (LPBITMAPFILEHEADER)s;
     t.clear();
     t.attach(s);
@@ -243,7 +243,7 @@ void test_bmpImage_class::test11(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(100, 50,  255);
+    s.create(100, 50,24,  255);
     CA_ASSERT((int)s.getWidth()==100);
     CA_ASSERT((int)s.getHeight()== 50);
     draw(&s);
@@ -261,7 +261,7 @@ void test_bmpImage_class::test12(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(50, 100,  255);
+    s.create(50, 100,24,  255);
     CA_ASSERT((int)s.getWidth()==50);
     CA_ASSERT((int)s.getHeight() == 100);
     s.landscape(false);
@@ -276,7 +276,7 @@ void test_bmpImage_class::test13(void)
     _AUTHOR("Coppi Angelo bmpImage library ");
     _STOP();
     bmpImage s;
-    s.create(50, 100,  255);
+    s.create(50, 100,24,  255);
     CA_ASSERT(s.check(50, 100)==true);
     CA_ASSERT(s.check(150, 100)==false);
 }

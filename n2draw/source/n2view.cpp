@@ -139,7 +139,7 @@ bool nnView::readConfiguration(IXmlNode *node)
 bool nnView::createMainBitmap(nnPoint & size)
 {
     bool res = false;
-    res = page.create(size.x, size.y, 192);
+    res = page.create(size.x, size.y,24, 192);
     Width = page.getWidth();
     Height = page.getHeight();
     return res;

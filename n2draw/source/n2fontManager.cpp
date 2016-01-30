@@ -152,7 +152,7 @@ bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned
         res = new bmpImage();
         if (res)
         {
-            res->create(width, uH, 0);
+            res->create(width, uH,24, 0);
         }
         int pos_x = 0;
         for (auto i : msg)

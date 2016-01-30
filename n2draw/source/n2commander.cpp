@@ -303,7 +303,7 @@ bool nnCommander::drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue *glue)
         nnPoint sizeStr(12 * len, 18);
         int offsetX = (sizeStr.x - (8 * len)) / 2;
         bmpImage rectbkg;
-        res=rectbkg.create(sizeStr.x, sizeStr.y, 255);
+        res=rectbkg.create(sizeStr.x, sizeStr.y,24, 255);
         if (res)
         {
             bmpImage * strImage = font->getImage(curItem->info.c_str(), 0, 0, 255);

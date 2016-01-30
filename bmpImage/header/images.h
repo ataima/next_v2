@@ -82,7 +82,7 @@ public:
     bool copyFromFile(const XCHAR *name);
     bool copyFrombmpImage(bmpImage & b);
     bool copyToFile(const XCHAR *name);
-    bool create(int width, int height,  unsigned char  color);
+    bool create(unsigned int width, unsigned int height,unsigned int deep,  unsigned char  color);
     bool isValid(void);
     bool clear(void);
     bool detach(void);
@@ -96,7 +96,6 @@ public:
     LPRGBQUAD  getPalette(void);
     void setHorizontalResolution(double value);
     void setVerticalResolution(double value);
-    bool setSize( unsigned width, unsigned height);
     unsigned int getBitsPerPixel(void) const;
     unsigned int getColorsUsed(void) const;
     unsigned int getWidth() const;
@@ -132,8 +131,8 @@ public:
 
 protected:
     bool replace(LPBITMAPFILEHEADER new_dib);
-    static size_t getInternalImageSize(unsigned int width, unsigned int height);
-    static LPBITMAPFILEHEADER  allocateBitmap(unsigned int width, unsigned int height);
+    static size_t getInternalImageSize(unsigned int width, unsigned int height,unsigned int deep);
+    static LPBITMAPFILEHEADER  allocateBitmap(unsigned int width, unsigned int height,unsigned int deep,unsigned char color);
     static void freeBitmap(LPBITMAPFILEHEADER bI);
     static LPBITMAPINFOHEADER  getInfoHeader(LPBITMAPFILEHEADER bI);
     static LPBITMAPINFO getInfo(LPBITMAPFILEHEADER bI);
