@@ -300,20 +300,21 @@ bool nnCommander::drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue *glue)
     if (curItem != nullptr && font != nullptr)
     {
         int len = strlen(curItem->info.c_str());
-        nnPoint sizeStr(12 * len, 18);
-        int offsetX = (sizeStr.x - (8 * len)) / 2;
+        nnPoint sizeStr(font->getFontWidth()* len, font->getFontHeight());
+        const int offsetX = 20;
+        const int offsetY = 4;
         bmpImage rectbkg;
-        res=rectbkg.create(sizeStr.x, sizeStr.y,24, 255);
+        res=rectbkg.create(sizeStr.x+2*offsetX, sizeStr.y+2*offsetY,32, 255);
         if (res)
         {
             bmpImage * strImage = font->getImage(curItem->info.c_str(), 0, 0, 255);
-            res = rectbkg.drawMaskSprite(*strImage,offsetX,4,0,0,0);
+            res = rectbkg.drawMaskSprite(*strImage,offsetX,offsetY,0,0,0);
             delete strImage;
             if(res)
             {
                 rectbkg.frameRect(0, 0, rectbkg.getWidth()-1, rectbkg.getHeight()-1, 0, 0, 0,0xffffffff);
-                offsetX = ( bkg.getWidth() - sizeStr.x ) / 2;
-                res = bkg.drawSprite(rectbkg, offsetX, bmpHeight-40);
+                int posX = ( bkg.getWidth() - rectbkg.getWidth()-offsetX);
+                res = bkg.drawSprite(rectbkg, posX, offsetY);
             }
         }
     }

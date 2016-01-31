@@ -218,8 +218,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_SIZE:
     {
-        int w = lParam & 0xffff;
-        int h = lParam >> 16;
+        int w = (int)(lParam & 0xffff);
+        int h = (int)(lParam >> 16);
         if (n2app)
         {
             IChild * child = n2app->active();
@@ -270,8 +270,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_MOUSEMOVE:
     {
-        int x = lParam & 0xffff;
-        int y = lParam >> 16;
+        int x = (int)(lParam & 0xffff);
+        int y = (int)(lParam >> 16);
         if (n2app != nullptr)
         {
             IHandler *handler = n2app->active();
@@ -293,8 +293,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_LBUTTONDOWN:
     {
-        int x = lParam & 0xffff;
-        int y = lParam >> 16;
+        int x = (int)(lParam & 0xffff);
+        int y = (int)(lParam >> 16);
         nnPoint pos(x, y);
         if (n2app != nullptr)
         {
@@ -306,8 +306,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_LBUTTONUP:
     {
-        int x = lParam & 0xffff;
-        int y = lParam >> 16;
+        int x = (int)(lParam & 0xffff);
+        int y = (int)(lParam >> 16);
         nnPoint pos(x, y);
         if (n2app != nullptr)
         {
@@ -319,8 +319,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_RBUTTONDOWN:
     {
-        int x = lParam & 0xffff;
-        int y = lParam >> 16;
+        int x = (int)(lParam & 0xffff);
+        int y = (int)(lParam >> 16);
         nnPoint pos(x, y);
         if (n2app != nullptr)
         {
@@ -332,8 +332,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_RBUTTONUP:
     {
-        int x = lParam & 0xffff;
-        int y = lParam >> 16;
+        int x = (int)(lParam & 0xffff);
+        int y = (int)(lParam >> 16);
         nnPoint pos(x, y);
         if (n2app != nullptr)
         {

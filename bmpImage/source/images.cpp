@@ -160,6 +160,16 @@ convertLine32To24(unsigned char  *target, unsigned char  *source, int width_in_p
     }
 }
 
+static inline   void
+convertLine24To32(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
+    for (int cols = 0; cols < width_in_pixels; cols++) {
+        target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE];
+        target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN];
+        target[ID_RGBA_RED] = source[ID_RGBA_RED];
+        target += 4;
+        source += 3;
+    }
+}
 
 
 
@@ -849,6 +859,80 @@ bool bmpImage::convertTo24Bits(void)
     return res;
 }
 
+bool bmpImage::convertTo32Bits(void)
+{
+    bool res = false;
+    if (hasPixels)
+    {
+        const unsigned bpp = getBitsPerPixel();
+
+        const int width = getWidth();
+        const int height = getHeight();
+
+
+        if (bpp == 32)
+        {
+            res = true;
+        }
+        else
+        {
+            LPBITMAPFILEHEADER new_dib = allocateBitmap(width, height, 32, 0);
+            if (new_dib != nullptr)
+            {
+
+                switch (bpp) {
+                case 1:
+                {
+                    for (int rows = 0; rows < height; rows++) {
+                        convertLine1To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
+                    }
+                    freeBitmap(m_hBitmap);
+                    m_hBitmap = new_dib;
+                    res = true;
+                }
+                break;
+                case 4:
+                {
+                    for (int rows = 0; rows < height; rows++) {
+                        convertLine4To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
+                    }
+                    freeBitmap(m_hBitmap);
+                    m_hBitmap = new_dib;
+                    res = true;
+                }
+                break;
+
+                case 8:
+                {
+                    for (int rows = 0; rows < height; rows++) {
+                        convertLine8To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
+                    }
+                    freeBitmap(m_hBitmap);
+                    m_hBitmap = new_dib;
+                    res = true;
+                }
+                break;
+
+
+                case 24:
+                {
+                    for (int rows = 0; rows < height; rows++) {
+                        convertLine24To32(getScanLine(new_dib, rows), getScanLine(rows), width);
+                    }
+                    freeBitmap(m_hBitmap);
+                    m_hBitmap = new_dib;
+                    res = true;
+                }
+                break;
+                }
+
+            }
+
+        }
+
+    }
+    return res;
+}
 
 
 
@@ -859,7 +943,7 @@ bool bmpImage::convertTo24Bits(void)
 bool bmpImage::rotate(double angle)
 {
     bool res = false;
-    if (isValid() && hasPixels && getBitsPerPixel() == bitPerPlane)
+    if (isValid() && hasPixels )
     {
         LPBITMAPFILEHEADER rotated = rotateInt(m_hBitmap, angle);
         res = replace(rotated);
@@ -1367,18 +1451,28 @@ bool bmpImage::copyBits(bmpImage & dst, size_t left, size_t top, size_t right, s
 }
 
 
-bool bmpImage::drawSprite( bmpImage & sprite, int left, int top)
+bool bmpImage::drawSprite( bmpImage & sprite, unsigned int  left, unsigned int  top)
 {
     return drawSprite(m_hBitmap, sprite, left, top);
 }
 
-bool bmpImage::drawMaskSprite( bmpImage & sprite, int left, int top,unsigned char Rmask,unsigned char Gmask,unsigned char Bmask)
+bool bmpImage::drawMaskSprite( bmpImage & sprite, unsigned int  left, unsigned int  top,unsigned char Rmask,unsigned char Gmask,unsigned char Bmask)
 {
     return drawMaskSprite(m_hBitmap, sprite, left, top,Rmask,Gmask,Bmask);
 }
 
+bool bmpImage::drawSpriteTranslateColor(bmpImage & sprite,
+    unsigned int left, unsigned int top,
+    unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
+    unsigned char newRed, unsigned char newGreen, unsigned char newBlue)
+{
 
-bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, size_t left, size_t top)
+    return  drawSpriteTranslateColor(m_hBitmap, sprite, left, top,
+        oriRed, oriGreen, oriBlue,newRed, newGreen, newBlue);
+}
+
+
+bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, unsigned int  left, unsigned int  top)
 {
     bool bResult = false;
     if (sprite != nullptr  && dst != nullptr)
@@ -1471,7 +1565,9 @@ copyMaskLine(unsigned int depth,unsigned char  *target, unsigned char  *source,
     }
 }
 
-bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, size_t left, size_t top, unsigned char Rmask,unsigned char Gmask,unsigned char Bmask)
+bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, 
+    unsigned int  left, unsigned int  top, unsigned char Rmask,
+    unsigned char Gmask,unsigned char Bmask)
 {
     bool bResult = false;
     if (sprite != nullptr  && dst != nullptr)
@@ -1513,6 +1609,113 @@ bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite,
                     copyMaskLine(depth,dst_bits, src_bits, Rmask,Gmask,Bmask,width);
                     dst_bits += dst_pitch;
                     src_bits += src_pitch;
+                }
+                bResult = true;
+            }
+        }
+    }
+    return bResult;
+}
+
+
+bool bmpImage::drawSpriteTranslateColor(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, 
+    unsigned int left, unsigned int top,
+    unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
+    unsigned char newRed, unsigned char newGreen, unsigned char newBlue)
+{
+    bool bResult = false;
+    if (sprite != nullptr  && dst != nullptr)
+    {
+        unsigned int src_width = getWidth(sprite);
+        unsigned int src_height = getHeight(sprite);
+        unsigned int src_pitch = getPitch(sprite);
+        unsigned int src_line = getLine(sprite);
+        unsigned int dst_width = getWidth(dst);
+        unsigned int dst_height = getHeight(dst);
+        unsigned int dst_pitch = getPitch(dst);
+        LPBITMAPINFOHEADER dst_info = getInfoHeader(dst);
+        unsigned int dst_line = getLine(dst);
+        LPBITMAPINFOHEADER src_info = getInfoHeader(sprite);
+        unsigned  int depth = dst_line / dst_width;
+        if (depth != src_line / src_width)
+            return false;
+        // check the size of src image
+
+        if (dst_info != nullptr  && src_info != nullptr  && dst_info->biBitCount == src_info->biBitCount)
+        {
+            unsigned int height, width;
+            if ((left < dst_width) && (top < dst_height)) {
+                unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
+                unsigned char  *src_bits = getBits(sprite);
+                // combine images
+                if (top + src_height > dst_height)
+                    height = dst_height - top;
+                else
+                    height = src_height;
+
+                if (left + src_width>dst_width)
+                    width = dst_width - left;
+                else
+                    width = src_width;
+                unsigned int rows,cols,sizeR = width*depth;
+                unsigned int oldCol = (oriRed << 16) | (oriGreen << 8) | oriBlue;
+                unsigned int newCol = (newRed << 16) | (newGreen << 8) | newBlue;
+                if (oldCol != newCol)
+                {
+                    // USE ONLY ON 32bpp
+                    if(depth==4)
+                    {
+                        for ( rows = 0; rows < height; rows++) {
+                            unsigned int *src_int = reinterpret_cast<unsigned int *>(src_bits);
+                            unsigned int *dst_int = reinterpret_cast<unsigned int *>(dst_bits);
+                            for ( cols = 0; cols < width; cols++) {
+                                if ((*src_int & 0xffffff) == oldCol)
+                                    *dst_int = newCol;
+                                else
+                                    *dst_int = *src_int;
+                                src_int++;
+                                dst_int++;
+                            }
+                        dst_bits += dst_pitch;
+                        src_bits += src_pitch;
+                        }
+                    }
+                    else
+                        if (depth == 3)
+                        {
+                            unsigned char  *dst_c = dst_bits;
+                            unsigned char  *src_c = src_bits;
+                            for (rows = 0; rows < height; rows++) {
+                                for (cols = 0; cols < sizeR; cols++) {
+                                    if (src_c[ID_RGBA_BLUE] == oriBlue &&
+                                        src_c[ID_RGBA_GREEN] == oriGreen &&
+                                        src_c[ID_RGBA_RED] == oriRed)
+                                    {
+                                        dst_c[ID_RGBA_BLUE] = newBlue;
+                                        dst_c[ID_RGBA_GREEN] = newGreen;
+                                        dst_c[ID_RGBA_RED] = newRed;
+                                    }
+                                    else
+                                    {
+                                        dst_c[ID_RGBA_BLUE] = src_c[ID_RGBA_BLUE];
+                                        dst_c[ID_RGBA_GREEN] = src_c[ID_RGBA_GREEN];
+                                        dst_c[ID_RGBA_RED] = src_c[ID_RGBA_RED];
+                                    }
+                                    dst_c += depth;
+                                    src_c += depth;
+                                }
+                            dst_bits += dst_pitch;
+                            src_bits += src_pitch;
+                            }
+                        }
+                }
+                else
+                {
+                    for ( rows = 0; rows < height; rows++) {
+                        memcpy(dst_bits, src_bits, sizeR);
+                        dst_bits += dst_pitch;
+                        src_bits += src_pitch;
+                    }
                 }
                 bResult = true;
             }
@@ -1590,7 +1793,7 @@ bool bmpImage::copyFromFile(const XCHAR *name)
             int err = _fstat(_fileno(file), &file_status);
             if (err == 0)
             {
-                err = fread(&mask, 1, sizeof(short), file);
+                err = (int)fread(&mask, 1, sizeof(short), file);
                 fflush(file);
                 fclose(file);
             }
@@ -1610,7 +1813,7 @@ bool bmpImage::copyFromFile(const XCHAR *name)
                             size_t temp = (size_t)file_status.st_size;
                             size_t start = 0;
                             do {
-                                err = fread(&p[start], 1, 256, file);
+                                err = (int)fread(&p[start], 1, 256, file);
                                 if (!err)
                                 {
                                     break;
@@ -2059,8 +2262,8 @@ translateLine( unsigned int depth,unsigned char  *target, unsigned int width_in_
         unsigned int oldCol = (Rmask << 16) | (Gmask << 8) | Bmask;
         unsigned int newCol = (newR << 16) | (newG << 8) | newB;
         unsigned int *ptr = reinterpret_cast<unsigned int *>(target);
-        for ( cols = 0; cols < width_in_pixels; cols++) {
-            if ((*ptr&0xffffff) == oldCol)
+        for (cols = 0; cols < width_in_pixels; cols++) {
+            if ((*ptr & 0xffffff) == oldCol)
                 *ptr = newCol;
             ptr++;
         }
@@ -2076,22 +2279,27 @@ bool bmpImage::translateColor(LPBITMAPFILEHEADER dest, unsigned char oriRed, uns
     bool bResult = false;
     if ( dest != nullptr)
     {
-        unsigned int dst_width = getWidth(dest);
-        unsigned int dst_height = getHeight(dest);
-        unsigned int dst_pitch = getPitch(dest);
-        LPBITMAPINFOHEADER dst_info = getInfoHeader(dest);
-        unsigned int dst_line = getLine(dest);
-        unsigned  int depth = dst_line / dst_width;
-        // check the size of src image
-        if (dst_info != nullptr  )
+        unsigned int oldCol = (oriRed << 16) | (oriGreen << 8) | oriBlue;
+        unsigned int newCol = (newRed << 16) | (newGreen << 8) | newBlue;
+        if (oldCol != newCol)
         {
-            unsigned char  *dst_bits = getBits(dest);
+            unsigned int dst_width = getWidth(dest);
+            unsigned int dst_height = getHeight(dest);
+            unsigned int dst_pitch = getPitch(dest);
+            LPBITMAPINFOHEADER dst_info = getInfoHeader(dest);
+            unsigned int dst_line = getLine(dest);
+            unsigned  int depth = dst_line / dst_width;
+            // check the size of src image
+            if (dst_info != nullptr)
+            {
+                unsigned char  *dst_bits = getBits(dest);
                 for (unsigned int rows = 0; rows < dst_height; rows++)
                 {
-                    translateLine(depth,dst_bits,dst_width, oriRed, oriGreen, oriBlue, newRed,newGreen,newBlue);
+                    translateLine(depth, dst_bits, dst_width, oriRed, oriGreen, oriBlue, newRed, newGreen, newBlue);
                     dst_bits += dst_pitch;
                 }
                 bResult = true;
+            }
         }
     }
     return bResult;
@@ -2099,6 +2307,31 @@ bool bmpImage::translateColor(LPBITMAPFILEHEADER dest, unsigned char oriRed, uns
 
 
 
+
+
+#ifdef _MSC_VER
+extern"C" void *__stdcall GetDC(void * hWnd);
+extern "C" int __stdcall  ReleaseDC(void * hWnd, void *DC);
+extern "C" int __stdcall StretchDIBits(void * hdc, int xDest, int yDest, int DestWidth, int DestHeight, int xSrc, int ySrc, int SrcWidth, int SrcHeight,
+    const void  * lpBits, LPBITMAPINFO lpbmi, unsigned int  iUsage, unsigned long  rop);
+
+void bmpImage::show(int x, int y)
+{
+    void * dc = ::GetDC(nullptr);
+    if (dc != 0)
+        {
+            LPBITMAPINFO info = getInfo();
+            void *bits = getBits();
+            unsigned int size_x = getWidth();
+            unsigned int size_y = getHeight();
+            ::StretchDIBits(dc, x, y,
+                size_x, size_y,
+                0, 0, size_x, size_y,
+                bits, info, 0, 0x00CC0020);
+            ReleaseDC(nullptr, dc);
+        }
+}
+#endif
 ///////////////////////////////////////////////////////////////// IMAGE LIST
 listImage::listImage()
 {
@@ -2185,3 +2418,6 @@ bool bmpSprite::toSprite(LPBITMAPFILEHEADER dest, LPBITMAPFILEHEADER image, LPBI
     catch (...) {}
     return res;
 }
+
+
+

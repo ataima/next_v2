@@ -36,7 +36,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-nnFontManager::nnFontManager(const XCHAR *_path)
+nnFontManager::nnFontManager(const XCHAR * _path, int _width, int _height)
+    :fWidth(_width),fHeight(_height)
 {
     availObj.clear();
     allImages.clear();
@@ -69,9 +70,7 @@ bool nnFontManager::readConfiguration(IXmlNode *node)
             IXmlNode *e = t->find(X("VALUE"));
             if (e)
             {
-                STRING _v = e->getValue();
-                if (_v.size() > 0)
-                    offset = _v.front();
+                offset = e->getLong();                
             }
             e = t->find(X("FILE"));
             if (e)
@@ -113,12 +112,7 @@ bool nnFontManager::loadImages(void)
             filenameabs += it->second;
             if (image.copyFromFile(filenameabs.c_str()))
             {
-               
-                    if (image.getBitsPerPixel() != 24)
-                        image.convertTo24Bits();
-                    //TO DO STRECT TO FIT
                     allImages.Add(it->first, image);
-
             }
             else
             {
@@ -146,13 +140,11 @@ bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned
     listImage::iterator it = allImages.begin();
     if (it != allImages.end())
     {
-        int uW = it->second->getWidth();
-        int uH = it->second->getHeight();
-        int width = len * uW;
+        int width = len * fWidth;
         res = new bmpImage();
         if (res)
         {
-            res->create(width, uH,24, 0);
+            res->create(width, fHeight, 32, 0);
         }
         int pos_x = 0;
         for (auto i : msg)
@@ -160,11 +152,14 @@ bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned
             it = allImages.find((int)i);
             if (it != allImages.end())
             {
-                res->drawSprite(*it->second, pos_x, 0);
+                //TODO implement drawsprite with translate color
+                res->drawSpriteTranslateColor(*it->second, pos_x, 0,255,255,255,red,green,blue);
             }
-            pos_x += uW;
+            pos_x += fWidth;
         }
-        res->translateColor(255, 255, 255, red, green, blue);
+#if 0
+        res->show(0, 0);
+#endif
     }
     return res;
 }

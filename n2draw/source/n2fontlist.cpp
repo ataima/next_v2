@@ -120,10 +120,52 @@ bool nnFontList::readConfiguration(IXmlNode *node)
                             path += X("/");
                             path += toA.utf8();
                             path += X("/");
-                            IFontManager *mn= new nnFontManager(path.c_str());
-                            fonts[toA.utf8()] = mn;
-                            if (mn)
-                                res=mn->readConfiguration(it);
+                            int width, height;
+                            t = it->find(X("WIDTH"));
+                            if (t)
+                            {
+                                width = t->getLong();
+                                if (width > 0)
+                                {
+                                    t = it->find(X("HEIGHT"));
+                                    if (t)
+                                    {
+                                        height = t->getLong();
+                                        if (height > 0)
+                                        {
+                                            IFontManager *mn = new nnFontManager(path.c_str(),width,height);
+                                            fonts[toA.utf8()] = mn;
+                                            if (mn)
+                                                res = mn->readConfiguration(it);                                            
+                                        }
+                                        else
+                                        {
+                                            xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("HEIGHT"));
+                                            throw(e);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("HEIGHT"));
+                                        throw(e);
+                                    }
+                                }
+                                else
+                                {
+                                    xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("WIDTH"));
+                                    throw(e);
+                                }
+                            }
+                            else
+                            {
+                                xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("WIDTH"));
+                                throw(e);
+                            }
+                        }
+                        else
+                        {
+                            xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("NAME"));
+                            throw(e);
                         }
                     }
                     else

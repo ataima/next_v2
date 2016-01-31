@@ -43,9 +43,13 @@ class nnFontManager
     STRING path;
     objImageList availObj;
     listImage allImages;
+    int fWidth;  //pixel
+    int fHeight; //pixel
 public:
-    nnFontManager(const XCHAR * _path = nullptr);
+    nnFontManager(const XCHAR * _path,int _width,int _height);
     ~nnFontManager();
+    inline int getFontWidth(void) { return fWidth; }
+    inline int getFontHeight(void) { return fHeight; }
     bool setPath(const XCHAR *_path);
     inline STRING  & getDefaulPath(void) const { return *const_cast<STRING*>(&path); }
     bool readConfiguration(IXmlNode *node);

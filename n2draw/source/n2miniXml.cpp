@@ -431,9 +431,9 @@ bool miniXmlNode::save(const XCHAR *out, miniXmlNode * root)
         STRING fileout(out);
         UtoA toA(fileout);
 #ifdef _MSC_VER
-        FILE *out = FOPEN(toA.utf8(), "w+");
+        FILE *out = FOPEN(toA.utf8(), "wb");
 #else
-        FILE *out = FOPEN(toA.utf8(), "w+");
+        FILE *out = FOPEN(toA.utf8(), "wb");
 #endif
         if (out != nullptr)
         {
@@ -517,9 +517,9 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
         try
         {
 #ifdef _MSC_VER
-        FILE *in =FOPEN(toA.utf8(), "r+");
+        FILE *in =FOPEN(toA.utf8(), "rb");
 #else
-        FILE *in = FOPEN(toA.utf8(), "r+");
+        FILE *in = FOPEN(toA.utf8(), "rb");
 #endif
         if (in != nullptr)
         {

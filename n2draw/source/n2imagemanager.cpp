@@ -299,8 +299,11 @@ bool nnImageManager::loadImages(void)
             filenameabs += it->second;
             if (image.copyFromFile(filenameabs.c_str()))
             {
-                    if (image.getBitsPerPixel() < 24)
-                        image.convertTo24Bits();
+                    if (image.getBitsPerPixel() < 32)
+                        image.convertTo32Bits();
+#if 1
+                    image.show(10, 10);
+#endif
                     //TO DO STRECT TO FIT
                     allImages.Add(it->first,image);
             }

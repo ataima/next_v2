@@ -139,7 +139,7 @@ bool nnView::readConfiguration(IXmlNode *node)
 bool nnView::createMainBitmap(nnPoint & size)
 {
     bool res = false;
-    res = page.create(size.x, size.y,24, 192);
+    res = page.create(size.x, size.y,32, 0);
     Width = page.getWidth();
     Height = page.getHeight();
     return res;
@@ -195,6 +195,9 @@ bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
         {
             nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(),x, y);
             bmpImage *sprite=images->getImage(0);
+#if 0
+            sprite->show(10, 10);
+#endif
             if(sprite)
             {
                     res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);

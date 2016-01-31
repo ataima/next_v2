@@ -26,8 +26,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <string>
 #include <sstream>
+#include <iostream>
 #include "images.h"
 #include <direct.h>
+#define TEST 1
+
+
 typedef  void *HFONT;
 typedef  void *HDC;
 typedef  void *HGDIOBJ;
@@ -192,7 +196,10 @@ bool printText(bmpImage & image, HDC dc, HFONT font,
 }
 
 
-
+void usage(void)
+{
+    std::cout << "usage : fontimport <font family name> <width> <height> <bold>" << std::endl;
+}
 
 int  main(int argc, char *argv[])
 {
@@ -214,10 +221,13 @@ int  main(int argc, char *argv[])
     return 1;
 #endif
     if (argc < 2)
+    {
+        usage();
         return -1;
+    }
     else
     {
-        int height=12, width=8;
+        int height=12, width=8,bold =0;
         std::string fontName = argv[1];
         if (argc > 2)
         {
@@ -231,27 +241,50 @@ int  main(int argc, char *argv[])
             if (width == 0)
                 width = 8;
         }
+        if (argc > 4)
+        {
+            bold = ::atoi(argv[4]);
+            if (bold > 0)
+                bold = 1;
+        }
         if (!fontName.empty())
         {
-            HFONT curFont = CreateFontA(-height, width, 0, 0, 0, 0, 0, 0, 0, 0,
+            HFONT curFont = CreateFontA(-height, width, 0, 0, bold, 0, 0, 0, 0, 0,
                 0, 0, 0, fontName.c_str());
             HDC dc = ::GetDC(nullptr);
             if (dc && curFont)
             {
-                std::stringstream path;
-                path << fontName << "_" << width << "_" << height;
+                std::stringstream ss,path;
+                if(bold)
+                    path << fontName << "_" << width << "_" << height<<"_B";
+                else
+                    path << fontName << "_" << width << "_" << height;
                 mkdir(path.str().c_str());
-                path<< ".xml";
-                FILE *file = fopen(path.str().c_str(), "wb");
+                ss<<path.str().c_str();
+                ss<< ".xml";
+                FILE *file = fopen(ss.str().c_str(), "wb");
                 if (file)
                     {
                         fwrite("<ITEM_xx>\n", 10,1, file);
                         fwrite("\t<NAME>", 7, 1, file);
-                        path.str("");
-                        path << fontName << "_" << width << "_" << height;
-                        fwrite(path.str().c_str(),path.str().size(), 1, file);
+                        ss.str("");
+                        if(bold)
+                            ss << fontName << "_" << width << "_" << height<<"_B";
+                        else
+                            ss << fontName << "_" << width << "_" << height;
+                        fwrite(ss.str().c_str(), ss.str().size(), 1, file);
                         fwrite("</NAME>\n", 8, 1, file);
-                    }
+                        fwrite("\t<WIDTH>", 8, 1, file);
+                        ss.str("");
+                        ss << width;
+                        fwrite(ss.str().c_str(), ss.str().size(), 1, file);
+                        fwrite("</WIDTH>\n", 9, 1, file);
+                        fwrite("\t<HEIGHT>", 9, 1, file);
+                        ss.str("");
+                        ss << height;
+                        fwrite(ss.str().c_str(), ss.str().size(), 1, file);
+                        fwrite("</HEIGHT>\n", 10, 1, file);
+                }
                 int i;
                 for (i = 0; i < 255; i++)
                 {
@@ -264,33 +297,37 @@ int  main(int argc, char *argv[])
                         image.create(10, 14,32, 0);                      
                         if (printText(image, dc, curFont, 0x00ffffff, 0, 0, str))
                         {
-                            std::stringstream ss;
-                            ss <<path.str().c_str()<<"\\"<< i << "_" << width << "_" <<height<<".bmp";
+                            std::stringstream fs;
+                            fs << path.str().c_str() << "\\" << i << "_" << width << "_" << height;
+                            if (bold)
+                                fs << "_B.bmp";
+                            else
+                                fs << ".bmp";
                             LPBITMAPINFO info = image.getInfo();
 #if TEST
                             drawImage(dc, image, 50,0);
 #endif
-                            image.copyToFile(ss.str().c_str());
+                            image.copyToFile(fs.str().c_str());
                             if (file)
                             {
+                                
                                 fwrite("\t<SYM>\n", 7, 1, file);
                                 fwrite("\t\t<VALUE>", 9, 1, file);
-                                char t = (char)i;
-                                fwrite(&t, 1, 1, file);
+                                ss.str("");
+                                ss << i;
+                                fwrite(ss.str().c_str(), ss.str().size(), 1, file);
                                 fwrite("</VALUE>\n", 9, 1, file);
                                 fwrite("\t\t<FILE>", 8, 1, file);
                                 ss.str("");
-                                ss << i << "_" << width << "_" << height << ".bmp";
+                                ss << i << "_" << width << "_" << height;
+                                if(bold)
+                                    ss<< "_B.bmp";
+                                else
+                                    ss << ".bmp";
                                 fwrite(ss.str().c_str(),ss.str().size(),  1, file);
                                 fwrite("</FILE>\n", 8, 1, file);
                                 fwrite("\t</SYM>\n", 8, 1, file);
                             }
-#if TEST
-                            bmpImage verify;
-                            verify.copyFromFile(ss.str().c_str());
-                            drawImage(dc, verify, 200,0);
-                            verify.clear();
-#endif
                         }
                         image.clear();
                     }

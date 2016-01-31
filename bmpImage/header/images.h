@@ -73,7 +73,7 @@ typedef BITMAPINFO *LPBITMAPINFO;
 
 class  bmpImage
 {
-   static const size_t bitPerPlane = 24;
+   //static const size_t bitPerPlane = 24;
 public:
     bmpImage();
     bmpImage(bmpImage & b);
@@ -107,6 +107,7 @@ public:
     bool invert(void);
     unsigned int  getColorType(void);
     bool convertTo24Bits(void);
+    bool convertTo32Bits(void);
     bool rotate(double angle);
     bool flipHorizontal(void);
     bool flipVertical(void);
@@ -120,14 +121,20 @@ public:
         unsigned char oriBlue, unsigned char newRed,
         unsigned char newGreen, unsigned char newBlue);
     bool copyBits(bmpImage & dst, size_t left,size_t top,size_t right,size_t bottom);
-    bool drawSprite( bmpImage & sprite, int left, int top);
-    bool drawMaskSprite( bmpImage & sprite, int left, int top,
+    bool drawSprite( bmpImage & sprite, unsigned int  left, unsigned int  top);
+    bool drawMaskSprite( bmpImage & sprite, unsigned int  left, unsigned int  top,
                 unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
+    bool drawSpriteTranslateColor(bmpImage & sprite,
+        unsigned int left, unsigned int top,
+        unsigned char oriRed, unsigned char oriGreen,unsigned char oriBlue, 
+        unsigned char newRed,unsigned char newGreen, unsigned char newBlue);
     bool setPixel(unsigned int _x,unsigned int _y,unsigned char red,unsigned char green,unsigned char blue);
     bool getPixel(unsigned int _x,unsigned int _y,unsigned char  & red,unsigned char & green,unsigned char & blue);
     bool line( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned int mask);
     bool frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue,unsigned int mask);
-
+#ifdef _MSC_VER
+    void show(int x, int y);
+#endif
 
 protected:
     bool replace(LPBITMAPFILEHEADER new_dib);
@@ -155,10 +162,15 @@ protected:
     static bool pasteSubImage(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER src, int left, int top);
     static bool copyBits(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER src,size_t left, size_t top, size_t width, size_t height);
     static bool swapto(LPBITMAPFILEHEADER pI, int iSorg, int iDest);
-    static bool drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, size_t left, size_t top);
-    static bool drawMaskSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, size_t left, size_t top,
+    static bool drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, unsigned int  left, unsigned int  top);
+    static bool drawMaskSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, unsigned int  left, unsigned int  top,
                       unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
     //
+    static bool drawSpriteTranslateColor(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite,
+        unsigned int left, unsigned int top,
+        unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
+        unsigned char newRed, unsigned char newGreen, unsigned char newBlue);
+
     static bool setPixel(LPBITMAPFILEHEADER dest,unsigned int x,unsigned int y,unsigned char red,unsigned char green,unsigned char blue);
     static bool getPixel(LPBITMAPFILEHEADER dest, unsigned int x, unsigned int y, unsigned char  & red, unsigned char & green, unsigned char & blue);
     static bool line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,

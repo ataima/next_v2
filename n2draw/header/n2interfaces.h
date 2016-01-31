@@ -405,6 +405,9 @@ public:
     virtual bmpImage * getImage(const char * msg,unsigned char red, unsigned char green, unsigned char blue) = 0;
     virtual const  objImageList * getAvailObj(void) = 0;
     virtual ~IFontManager() {}
+    virtual int getFontWidth(void) = 0;
+    virtual int getFontHeight(void) = 0;
+
 };
 
 typedef std::list<std::string> fontNameList;
