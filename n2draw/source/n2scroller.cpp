@@ -52,7 +52,7 @@ bool nnScroller::draw(bmpImage & bkg, IViewGlue * glue)
 {
     bool res = false;
     int height = bkg.getHeight();
-    int width = bkg.getWidth();
+   // int width = bkg.getWidth();
     if (visible)
     {
         if (image1)

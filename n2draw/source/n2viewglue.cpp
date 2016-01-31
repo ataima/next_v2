@@ -39,7 +39,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 //TestviewGlue.cpp : T1
 nnViewGlue::nnViewGlue(IChild *_parent)
-    :parent(_parent)
+    :parent(_parent),vscroller(nullptr),hscroller(nullptr),view(nullptr)
 {
     if (parent)
     {
@@ -49,6 +49,7 @@ nnViewGlue::nnViewGlue(IChild *_parent)
         const_Size.set(0);
         setPhyView(0, 0);
         offset_Pos.set(0);
+
         unselect();
     }
 }

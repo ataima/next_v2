@@ -34,6 +34,8 @@ SOURCES += \
 ../../source/n2fontlist.cpp              \
 ../../source/n2fontmanager.cpp           \
 ../../source/n2selector.cpp              \
+../../source/n2childapp.cpp              \
+../../source/n2scroller.cpp              \
 
 
 
@@ -58,7 +60,8 @@ HEADERS += \
 ../../header/n2fontlist.h              \
 ../../header/n2fontmanager.h           \
 ../../header/n2selector.h              \
-
+../../header/n2childapp.h              \
+../../header/n2scroller.h              \
 
 
 

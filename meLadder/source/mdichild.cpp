@@ -48,13 +48,9 @@ MdiChild::MdiChild()
 {
     setAttribute(Qt::WA_DeleteOnClose);
     isUntitled = true;
-    n2client=nullptr;
-    hScroll = new mdiScrollBar(Qt::Orientation::Horizontal,this);
-    vScroll = new mdiScrollBar(Qt::Orientation::Vertical,this);
-    hScroll->hide();
-    vScroll->hide();
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
+    n2Client=nullptr;
 }
 
 
@@ -75,45 +71,16 @@ void MdiChild::newFile()
     curFile = tr("untitled%1.edb").arg(sequenceNumber++);
     setWindowTitle(curFile + "[*]");
     documentWasModified(false);
-    if(n2client!=nullptr)
+    if(n2Client)
     {
-        int w=0,h=0;
-        if(n2client->view->needScrollBarHorz())
-        {
-            w=n2client->view->getScrollableHorzSize();
-            if(w)
-            {
-                hScroll->setMinimum(0);
-                hScroll->setMaximum(w);
-                hScroll->show();
-            }
-            else
-            {
-                hScroll->hide();
-            }
-        }
-        if(n2client->view->needScrollBarHorz())
-        {
-            h=n2client->view->getScrollableVertSize();
-            if(h)
-            {
-                vScroll->setMinimum(0);
-                vScroll->setMaximum((int)h);
-                vScroll->show();
-            }
-            else
-            {
-                vScroll->hide();
-            }
-        }
-        getn2App()->setExtHandler(n2client,handler_exec_command,
-                                  &MdiChild::externCommandRequest,
-                                  this
+        n2Client->setExtHandler( handler_exec_command,
+                                 &MdiChild::externCommandRequest,
+                                 this
                                  );
-        QSize m=maximumSize();
-        m/=3;
-        setMinimumSize(m);
     }
+    QSize m=maximumSize();
+    m/=3;
+    setMinimumSize(m);
 }
 
 bool MdiChild::loadFile(const QString &fileName)
@@ -122,11 +89,11 @@ bool MdiChild::loadFile(const QString &fileName)
     if(fileName.size()>0)
     {
         QString error="NO ERROR";
-        if(n2client)
+        if(n2Client)
         {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             try {
-                res=n2client->object_manager->load(fileName.FROMQSTRING());
+                res=n2Client->getManager()->load(fileName.FROMQSTRING());
             }
             catch(n2exception *e)
             {
@@ -179,11 +146,11 @@ bool MdiChild::saveFile(const QString &fileName)
     if(fileName.size()>0)
     {
         QString error="NO ERROR";
-        if(n2client)
+        if(n2Client)
         {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             try {
-                res=n2client->object_manager->save(fileName.FROMQSTRING());
+                res=n2Client->getManager()->save(fileName.FROMQSTRING());
             }
             catch(n2exception *e)
             {
@@ -314,25 +281,19 @@ void MdiChild::requestCommand(handlerAction type_param,size_t user_param)
 {
     switch(type_param)
     {
+    case action_align_windows:
+                   {
+                       int x = (user_param & 0xffff0000) >> 16;
+                       int y = (user_param & 0xffff);
+                       QSize s(x,y);
+                       resize(s);
+                   }
+        break;
     case action_redraw:
         refreshPixmap();
         break;
-    case action_update_from_ext_scroolbars:
-        updateDocPosHorz();
-        updateDocPosVert();
-        break;
     case action_host_command:
         directCommand(user_param);
-        break;
-    case action_adjust_horz_scrollbar:
-        if(hScroll)
-            hScroll->setValue((int)user_param);
-        refreshPixmap();
-        break;
-    case action_adjust_vert_scrollbar:
-        if(vScroll)
-            vScroll->setValue((int)user_param);
-        refreshPixmap();
         break;
     case action_update_statusbars_info:
     {
@@ -342,12 +303,11 @@ void MdiChild::requestCommand(handlerAction type_param,size_t user_param)
     break;
     case action_update_statusbars_panes:
     {
-        if(n2client && n2client->view)
+        if(n2Client && n2Client->getView())
         {
             nnPoint start,stop;
-            n2client->view->getSelectArea(start,stop);
+            n2Client->getView()->getSelectArea(start,stop);
             getMainWnd()->updatePosCursor(start,stop);
-            refreshPixmap();
         }
     }
     break;
@@ -358,9 +318,9 @@ void MdiChild::requestCommand(handlerAction type_param,size_t user_param)
 void MdiChild::refreshPixmap(void)
 {
     pixmap = QPixmap(size());
-    if(n2client!=nullptr)
+    if(n2Client!=nullptr)
     {
-        bmpImage &bdraw = n2client->view->getDraw();
+        bmpImage &bdraw = n2Client->getView()->getDraw();
         pixmap.loadFromData((unsigned char *)(LPBITMAPFILEHEADER)bdraw,
                             bdraw.getTotalSize(),
                             "BMP");
@@ -376,76 +336,13 @@ void MdiChild::refreshPixmap(void)
 void MdiChild::resizeEvent(QResizeEvent *e)
 {
     QWidget::resizeEvent(e);
-    if(n2client!=nullptr)
+    if(n2Client!=nullptr)
     {
-        QSize s=size();
-        n2client->view->resize(s.width(),s.height());
-        if(hScroll)
-        {
-            size_t w=n2client->view->getScrollableHorzSize();
-            if(w)
-            {
-                hScroll->setMaximum((int)w);
-                hScroll->move(s.width()/3,s.height()-DEF_SCR_XY);
-                hScroll->resize(s.width()/3,DEF_SCR_XY);
-                hScroll->show();
-            }
-            else
-            {
-                hScroll->hide();
-            }
-        }
-        if(vScroll)
-        {
-            size_t  h=n2client->view->getScrollableVertSize();
-            if(h)
-            {
-                vScroll->setMaximum((int)h);
-                if (getMainWnd()->layoutDirection() == Qt::LeftToRight)
-                {
-                    vScroll->move(0,s.height()/3);
-                }
-                else
-                {
-                    vScroll->move(s.width()-DEF_SCR_XY,s.height()/3);
-                }
-                vScroll->resize(DEF_SCR_XY,s.height()/3);
-                vScroll->show();
-            }
-            else
-            {
-                vScroll->hide();
-            }
-        }
-        refreshPixmap();
+        QSize s=e->size();
+        n2Client->getView()->resize(s.width(),s.height());
     }
 }
 
-void MdiChild::updateDocPosHorz(void)
-{
-    int pos_x=0;
-    if(hScroll)
-    {
-        pos_x=hScroll->value();
-    }
-    if(n2client)
-    {
-        n2client->view->handlerScrollHorz(pos_x);
-    }
-}
-
-void MdiChild::updateDocPosVert(void)
-{
-    int pos_y=0;
-    if(vScroll)
-    {
-        pos_y=vScroll->value();
-    }
-    if(n2client)
-    {
-        n2client->view->handlerScrollVert(pos_y);
-    }
-}
 
 
 
@@ -467,27 +364,26 @@ void MdiChild::copy(void)
 
 void MdiChild::destroyObjects(void)
 {
-    DESTROY_OBJ(hScroll);
-    DESTROY_OBJ(vScroll);
 }
 
 
 
 void MdiChild::mouseMoveEvent( QMouseEvent *event )
 {
-    if(n2client)
+    IHandler *handler = getn2App()->active();
+    if (handler)
     {
         QPoint p=event->globalPos();
         p=mapFromGlobal(p);
         nnPoint pos(p.x(),p.y());
         if(event->buttons()==Qt::LeftButton)
         {
-            n2client->view->handlerMouseMove(nn_m_button_left,pos);
+            handler->handlerMouseMove(nn_m_button_left,pos);
         }
         else
             if(event->buttons()==Qt::NoButton)
             {
-                n2client->view->handlerMouseMove(nn_m_button_unknow,pos);
+                handler->handlerMouseMove(nn_m_button_unknow,pos);
             }
     }
 }
@@ -497,14 +393,15 @@ void MdiChild::mouseMoveEvent( QMouseEvent *event )
 void MdiChild::mousePressEvent(QMouseEvent *event)
 {
     const char * error=nullptr;
-    if(n2client)
+    IHandler *handler = getn2App()->active();
+    if (handler)
     {
         QPoint p=event->globalPos();
         p=mapFromGlobal(p);
         nn_mouse_buttons bt=(nn_mouse_buttons)(unsigned int)event->buttons();
         nnPoint pos(p.x(),p.y());
         try {
-            n2client->view->handlerMouseButtonDown(bt,pos);
+            handler->handlerMouseButtonDown(bt,pos);
         }
         catch(n2exception *e)
         {
@@ -528,15 +425,15 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
 void MdiChild::mouseReleaseEvent(QMouseEvent *event)
 {
     nnPoint start, stop;
-    if(n2client)
+    IHandler *handler = getn2App()->active();
+    if (handler)
     {
         QPoint p=event->globalPos();
         p=mapFromGlobal(p);
         unsigned int bt=event->buttons();
         nnPoint pos(p.x(),p.y());
-        n2client->view->handlerMouseButtonUp((nn_mouse_buttons)bt,pos);
+        handler->handlerMouseButtonUp((nn_mouse_buttons)bt,pos);
     }
-
 }
 
 
@@ -544,7 +441,8 @@ void MdiChild::mouseReleaseEvent(QMouseEvent *event)
 void MdiChild::keyPressEvent(QKeyEvent *event)
 {
     bool res=false;
-    if( n2client )
+    IHandler *handler = getn2App()->active();
+    if (handler)
     {
 //        qDebug()<<"modifiers()="<<event->modifiers()<<"   Key()="<<event->key();
         Qt::KeyboardModifiers mod=event->modifiers();
@@ -559,38 +457,32 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
         switch(keyb)
         {
         case Qt::Key_Escape:
-            res=n2client->view->handlerEscapeButton(shift,ctrl,alt);            
+            res=handler->handlerEscapeButton(shift,ctrl,alt);
             break;
         case Qt::Key_Home:
-            res=n2client->view->handlerHomeButton(shift,ctrl,alt);
+            res=handler->handlerHomeButton(shift,ctrl,alt);
             break;
         case Qt::Key_End:
-            res=n2client->view->handlerEndButton(shift,ctrl,alt);
+            res=handler->handlerEndButton(shift,ctrl,alt);
             break;
         case Qt::Key_PageUp:
-            res=n2client->view->handlerPageUpButton(shift,ctrl,alt);
+            res=handler->handlerPageUpButton(shift,ctrl,alt);
             break;
         case Qt::Key_PageDown:
-            res=n2client->view->handlerPageDownButton(shift,ctrl,alt);
+            res=handler->handlerPageDownButton(shift,ctrl,alt);
             break;
-        }
-        if(n2client->view->isStartValid())
-        {
-            switch(keyb)
-            {
-            case Qt::Key_Left:
-                res=n2client->view->handlerLeftButton(shift,ctrl,alt);
-                break;
-            case Qt::Key_Up:
-                res=n2client->view->handlerUpButton(shift,ctrl,alt);
-                break;
-            case Qt::Key_Right:
-                res=n2client->view->handlerRightButton(shift,ctrl,alt);
-                break;
-            case Qt::Key_Down:
-                res=n2client->view->handlerDownButton(shift,ctrl,alt);
-                break;
-            }
+        case Qt::Key_Left:
+            res=handler->handlerLeftButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_Up:
+            res=handler->handlerUpButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_Right:
+            res=handler->handlerRightButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_Down:
+            res=handler->handlerDownButton(shift,ctrl,alt);
+            break;
         }
     }
 }

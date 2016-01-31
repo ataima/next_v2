@@ -41,476 +41,516 @@
 #include <QtWidgets>
 
 #include "mainwindow.h"
-#include "mdichild.h"
 #include "n2exception.h"
-
-MainWindow *MainWindow::instance=nullptr;
 
 MainWindow::MainWindow()
 {
-    mdiArea = new QMdiArea;
-    mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    setCentralWidget(mdiArea);
-    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
-            this, SLOT(updateMenus()));
-    windowMapper = new QSignalMapper(this);
-    connect(windowMapper, SIGNAL(mapped(QWidget*)),
-            this, SLOT(setActiveSubWindow(QWidget*)));
-    qApp->setLayoutDirection(Qt::RightToLeft);
-    setAttribute(Qt::WA_KeyCompression,true);
-    createActions();
-    createMenus();
-    createStatusBar();
-    updateMenus();
-    readSettings();
-
-    setWindowTitle(tr("meLa"));
-    setUnifiedTitleAndToolBarOnMac(true);
-    n2app = new nnAppManager();
-    instance=this;
+    init();
+    setCurrentFile("");
 }
 
-MainWindow::~MainWindow()
+MainWindow::MainWindow(const QString &fileName)
 {
-    destroyObjects();
-    instance=nullptr;
+    init();
+    loadFile(fileName);
 }
-
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    mdiArea->closeAllSubWindows();
-    if (mdiArea->currentSubWindow()) {
-        event->ignore();
-    } else {
-        writeSettings();
+    if (maybeSave()) {
         event->accept();
+    } else {
+        event->ignore();
     }
 }
 
 void MainWindow::newFile()
 {
-    childApps * client=nullptr;
-    MdiChild *child = createMdiChild();
-    try {
-        QString   path=qApp->applicationDirPath();
-#ifdef _UNICODE
-        path+="/conf_utf16.xml";
-#else
-        path+="/conf_utf8.xml";
-#endif
-        STRING conf=path.FROMQSTRING();
-        client=n2app->createObjects(conf);
-    }
-    catch(n2exception *e)
-    {
-        if(e!=nullptr)
-        {
-            const char *msg=e->msg();
-            QMessageBox m(QMessageBox::Icon::Critical,
-                          "ERROR",
-                          msg,
-                          QMessageBox::StandardButton::Ok);
-            m.exec();
-            if(msg!=nullptr)
-                delete msg;
-            delete e;
-        }
-    }
-    catch(...)
-    {
-        QMessageBox m(QMessageBox::Icon::Critical,
-                      "ERROR",
-                      "Unhandled exception",
-                      QMessageBox::StandardButton::Ok);
-        m.exec();
-    }
-    child->setMaximumSize(size());
-    if(client!=nullptr)
-    {
-        child->setClient(client);
-        child->showMaximized();
-        child->newFile();
-    }
-    else
-    {
-        child->close();
-    }
+    MainWindow *other = new MainWindow;
+    other->move(x() + 40, y() + 40);
+    other->show();
 }
 
 void MainWindow::open()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty()) {
-        QMdiSubWindow *existing = findMdiChild(fileName);
+        MainWindow *existing = findMainWindow(fileName);
         if (existing) {
-            mdiArea->setActiveSubWindow(existing);
+            existing->show();
+            existing->raise();
+            existing->activateWindow();
             return;
         }
 
-        if (openFile(fileName))
-            statusBar()->showMessage(tr("File loaded"), 2000);
+        if (!isWindowModified()) {
+            loadFile(fileName);
+        } else {
+            MainWindow *other = new MainWindow(fileName);
+            if (other->isUntitled) {
+                delete other;
+                return;
+            }
+            other->move(x() + 40, y() + 40);
+            other->show();
+        }
     }
 }
 
-bool MainWindow::openFile(const QString &fileName)
+bool MainWindow::save()
 {
-    MdiChild *child = createMdiChild();
-    const bool succeeded = child->loadFile(fileName);
-    if (succeeded)
-        child->show();
-    else
-        child->close();
-    return succeeded;
+    if (isUntitled) {
+        return saveAs();
+    } else {
+        return saveFile(curFile);
+    }
 }
 
-void MainWindow::save()
+bool MainWindow::saveAs()
 {
-    if (activeMdiChild() && activeMdiChild()->save())
-        statusBar()->showMessage(tr("File saved"), 2000);
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+                                                    curFile);
+    if (fileName.isEmpty())
+        return false;
+
+    return saveFile(fileName);
 }
-
-void MainWindow::saveAs()
-{
-    if (activeMdiChild() && activeMdiChild()->saveAs())
-        statusBar()->showMessage(tr("File saved"), 2000);
-}
-
-
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("About MDI"),
-                       tr("The <b>MDI</b> example demonstrates how to write multiple "
-                          "document interface applications using Qt."));
+   QMessageBox::about(this, tr("About SDI"),
+            tr("The <b>SDI</b> example demonstrates how to write single "
+               "document interface applications using Qt."));
 }
 
-void MainWindow::updateMenus()
+void MainWindow::documentWasModified()
 {
-    bool hasMdiChild = (activeMdiChild() != 0);
-    saveAct->setEnabled(hasMdiChild);
-    saveAsAct->setEnabled(hasMdiChild);
-    closeAct->setEnabled(hasMdiChild);
-    closeAllAct->setEnabled(hasMdiChild);
-    tileAct->setEnabled(hasMdiChild);
-    cascadeAct->setEnabled(hasMdiChild);
-    nextAct->setEnabled(hasMdiChild);
-    previousAct->setEnabled(hasMdiChild);
-    separatorAct->setVisible(hasMdiChild);
+    setWindowModified(true);
 }
 
-void MainWindow::updateWindowMenu()
+void MainWindow::init()
 {
-    windowMenu->clear();
-    windowMenu->addAction(closeAct);
-    windowMenu->addAction(closeAllAct);
-    windowMenu->addSeparator();
-    windowMenu->addAction(tileAct);
-    windowMenu->addAction(cascadeAct);
-    windowMenu->addSeparator();
-    windowMenu->addAction(nextAct);
-    windowMenu->addAction(previousAct);
-    windowMenu->addAction(separatorAct);
+    setAttribute(Qt::WA_DeleteOnClose);
 
-    QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
-    separatorAct->setVisible(!windows.isEmpty());
+    isUntitled = true;
 
-    for (int i = 0; i < windows.size(); ++i) {
-        MdiChild *child = qobject_cast<MdiChild *>(windows.at(i)->widget());
+    setMouseTracking(true);
+    setFocusPolicy(Qt::StrongFocus);
+    n2App=IAppManager::getInstance(0);
+    if(n2App)
+    {
+        IChild *client=nullptr;
+        try {
+                QString   path=qApp->applicationDirPath();
+        #ifdef _UNICODE
+                path+="/conf_utf16.xml";
+        #else
+                path+="/conf_utf8.xml";
+        #endif
+                STRING conf=path.FROMQSTRING();
+                client=n2App->createObjects(conf);
+            }
+            catch(n2exception *e)
+            {
+                if(e!=nullptr)
+                {
+                    const char *msg=e->msg();
+                    QMessageBox m(QMessageBox::Icon::Critical,
+                                  "ERROR",
+                                  msg,
+                                  QMessageBox::StandardButton::Ok);
+                    m.exec();
+                    if(msg!=nullptr)
+                        delete msg;
+                    delete e;
+                }
+            }
+            catch(...)
+            {
+                QMessageBox m(QMessageBox::Icon::Critical,
+                              "ERROR",
+                              "Unhandled exception",
+                              QMessageBox::StandardButton::Ok);
+                m.exec();
+            }
+            if(client!=nullptr)
+            {
+                showMaximized();
+                client->setExtHandler( handler_exec_command,
+                                       &MainWindow::externCommandRequest,
+                                       this
+                                       );
+                client->addExtHandler( handler_hook_before_command,
+                                       &MainWindow::hookBeforeCommandRequest,
+                                       this
+                                       );
+                client->addExtHandler( handler_hook_after_command,
+                                       &MainWindow::hookAfterCommandRequest,
+                                       this
+                                       );
 
-        QString text;
-        if (i < 9) {
-            text = tr("&%1 %2").arg(i + 1)
-                   .arg(child->userFriendlyCurrentFile());
-        } else {
-            text = tr("%1 %2").arg(i + 1)
-                   .arg(child->userFriendlyCurrentFile());
-        }
-        QAction *action  = windowMenu->addAction(text);
-        action->setCheckable(true);
-        action ->setChecked(child == activeMdiChild());
-        connect(action, SIGNAL(triggered()), windowMapper, SLOT(map()));
-        windowMapper->setMapping(action, windows.at(i));
+            }
+            else
+            {
+                close();
+            }
+
+    }
+    setUnifiedTitleAndToolBarOnMac(true);
+}
+
+void MainWindow::paintEvent(QPaintEvent *  /*event*/ )
+{
+    QStylePainter painter(this);
+    painter.drawPixmap(0, 0, pixmap);
+}
+
+
+void MainWindow::externCommandRequest(void * dest, size_t type_param,size_t user_param)
+{
+    if(dest)
+    {
+        MainWindow *child = static_cast< MainWindow *>(dest);
+        child->requestCommand(type_param,user_param);
     }
 }
 
-MdiChild *MainWindow::createMdiChild()
+
+void MainWindow::hookBeforeCommandRequest(void * dest, size_t type_param, size_t user_param)
 {
-    MdiChild *child = new MdiChild;
-    mdiArea->addSubWindow(child);
-    return child;
+    if(dest)
+    {
+        MainWindow *child = static_cast< MainWindow *>(dest);
+        child->beforeCommand(type_param,user_param);
+    }
 }
 
-void MainWindow::createActions()
+void MainWindow::hookAfterCommandRequest(void * dest, size_t type_param, size_t user_param)
 {
-    newAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
-    newAct->setShortcuts(QKeySequence::New);
-    newAct->setStatusTip(tr("Create a new file"));
-    connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
-
-    openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
-    openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip(tr("Open an existing file"));
-    connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
-
-    saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save"), this);
-    saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save the document to disk"));
-    connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
-
-    saveAsAct = new QAction(tr("Save &As..."), this);
-    saveAsAct->setShortcuts(QKeySequence::SaveAs);
-    saveAsAct->setStatusTip(tr("Save the document under a new name"));
-    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
-
-//! [0]
-    exitAct = new QAction(tr("E&xit"), this);
-    exitAct->setShortcuts(QKeySequence::Quit);
-    exitAct->setStatusTip(tr("Exit the application"));
-    connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-//! [0]
-
-
-    closeAct = new QAction(tr("Cl&ose"), this);
-    closeAct->setStatusTip(tr("Close the active window"));
-    connect(closeAct, SIGNAL(triggered()),
-            mdiArea, SLOT(closeActiveSubWindow()));
-
-    closeAllAct = new QAction(tr("Close &All"), this);
-    closeAllAct->setStatusTip(tr("Close all the windows"));
-    connect(closeAllAct, SIGNAL(triggered()),
-            mdiArea, SLOT(closeAllSubWindows()));
-
-    tileAct = new QAction(tr("&Tile"), this);
-    tileAct->setStatusTip(tr("Tile the windows"));
-    connect(tileAct, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
-
-    cascadeAct = new QAction(tr("&Cascade"), this);
-    cascadeAct->setStatusTip(tr("Cascade the windows"));
-    connect(cascadeAct, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
-
-    nextAct = new QAction(tr("Ne&xt"), this);
-    nextAct->setShortcuts(QKeySequence::NextChild);
-    nextAct->setStatusTip(tr("Move the focus to the next window"));
-    connect(nextAct, SIGNAL(triggered()),
-            mdiArea, SLOT(activateNextSubWindow()));
-
-    previousAct = new QAction(tr("Pre&vious"), this);
-    previousAct->setShortcuts(QKeySequence::PreviousChild);
-    previousAct->setStatusTip(tr("Move the focus to the previous "
-                                 "window"));
-    connect(previousAct, SIGNAL(triggered()),
-            mdiArea, SLOT(activatePreviousSubWindow()));
-
-    separatorAct = new QAction(this);
-    separatorAct->setSeparator(true);
-
-    aboutAct = new QAction(tr("&About"), this);
-    aboutAct->setStatusTip(tr("Show the application's About box"));
-    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-
-    aboutQtAct = new QAction(tr("About &Qt"), this);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-    connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-    cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
-    cutAct->setShortcuts(QKeySequence::Cut);
-    cutAct->setStatusTip(tr("Cut the current selection's contents to the "
-                            "clipboard"));
-    connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
-
-    copyAct = new QAction(QIcon(":/images/copy.png"), tr("&Copy"), this);
-    copyAct->setShortcuts(QKeySequence::Copy);
-    copyAct->setStatusTip(tr("Copy the current selection's contents to the "
-                             "clipboard"));
-    connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
-
-    pasteAct = new QAction(QIcon(":/images/paste.png"), tr("&Paste"), this);
-    pasteAct->setShortcuts(QKeySequence::Paste);
-    pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
-                              "selection"));
-    connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
-
+    if(dest)
+    {
+        MainWindow *child = static_cast< MainWindow *>(dest);
+        child->afterCommand(type_param,user_param);
+    }
 }
 
-void MainWindow::createMenus()
+
+void MainWindow::directCommand(size_t user_param)
 {
-    fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newAct);
-    fileMenu->addAction(openAct);
-    fileMenu->addAction(saveAct);
-    fileMenu->addAction(saveAsAct);
-    fileMenu->addSeparator();
-    QAction *action = fileMenu->addAction(tr("Switch layout direction"));
-    connect(action, SIGNAL(triggered()), this, SLOT(switchLayoutDirection()));
-    fileMenu->addAction(exitAct);
-
-
-    windowMenu = menuBar()->addMenu(tr("&Window"));
-    updateWindowMenu();
-    connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
-
-    menuBar()->addSeparator();
-
-    helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
-    editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(cutAct);
-    editMenu->addAction(copyAct);
-    editMenu->addAction(pasteAct);
+    qDebug()<<"RX user param :"<<user_param;
+    // from conf...xml toolbars
+    switch(user_param)
+    {
+    case 4000:
+        save();
+        break;
+    case 4001:
+        open();
+        break;
+    case 4002:
+        newFile();
+        break;
+    case 4003:
+        //copy();
+        break;
+    case 4004:
+        //cut();
+        break;
+    case 4005:
+        //paste();
+        break;
+    }
 }
 
-void MainWindow::createStatusBar()
+void MainWindow::requestCommand(size_t type_param,size_t user_param)
 {
-    m_statusLeft = new QLabel("          ", this);
-    m_statusLeft->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    m_statusMiddleLeft = new QLabel("          ", this);
-    m_statusMiddleLeft->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    m_statusMiddleRight = new QLabel("          ", this);
-    m_statusMiddleRight->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    m_statusRight = new QLabel("          ", this);
-    m_statusRight->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    switch(type_param)
+    {
+    case action_align_windows:
+                   {
+                       int x = (user_param & 0xffff0000) >> 16;
+                       int y = (user_param & 0xffff);
+                       if(isMaximized()&& ( x>size().width() || y>size().height()))
+                       {
+                           IChild * child=n2App->active();
+                           nnPoint c=child->getView()->getConstPhy();
+                           if(x>size().width())
+                           {
+                               x-=c.x;
+                           }
+                           if(y>size().height())
+                           {
+                               y-=c.y;
+                           }
 
-    statusBar()->insertPermanentWidget(0,m_statusLeft);
-    statusBar()->insertPermanentWidget(1,m_statusMiddleLeft);
-    statusBar()->insertPermanentWidget(2,m_statusMiddleRight);
-    statusBar()->insertPermanentWidget(3,m_statusRight);
-    statusBar()->showMessage(tr("Ready"));
+                       }
+                       QSize s(x,y);
+                       resize(s);
+                   }
+        break;
+    case action_update_statusbars_panes:
+    case action_update_statusbars_info:
+    case action_redraw:
+        refreshPixmap();
+        break;
+    case action_host_command:
+        directCommand(user_param);
+        break;
+    }
 }
 
-void MainWindow::readSettings()
+
+void MainWindow::beforeCommand(size_t type_param,size_t user_param)
 {
-    QSettings settings("QtProject", "MDI Example");
-    QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("size", QSize(400, 400)).toSize();
-    move(pos);
-    resize(size);
+    switch(type_param)
+    {
+    }
 }
 
-void MainWindow::writeSettings()
+void MainWindow::afterCommand(size_t type_param, size_t user_param)
 {
-    QSettings settings("QtProject", "MDI Example");
-    settings.setValue("pos", pos());
-    settings.setValue("size", size());
+    switch(type_param)
+    {
+    }
 }
 
-MdiChild *MainWindow::activeMdiChild()
+
+void MainWindow::refreshPixmap(void)
 {
-    if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
-        return qobject_cast<MdiChild *>(activeSubWindow->widget());
-    return 0;
+    pixmap = QPixmap(size());
+    IChild * n2Client=n2App->active();
+    if(n2Client!=nullptr)
+    {
+        bmpImage &bdraw = n2Client->getView()->getDraw();
+        pixmap.loadFromData((unsigned char *)(LPBITMAPFILEHEADER)bdraw,
+                            bdraw.getTotalSize(),
+                            "BMP");
+    }
+    update();
 }
 
-QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName)
+
+
+void MainWindow::resizeEvent(QResizeEvent *e)
+{
+    IChild * n2Client=n2App->active();
+    QWidget::resizeEvent(e);
+    if(n2Client!=nullptr)
+    {
+        QSize s=size();
+        n2Client->getView()->resize(s.width(),s.height());
+    }
+}
+
+
+
+
+
+
+
+void MainWindow::destroyObjects(void)
+{
+}
+
+
+
+void MainWindow::mouseMoveEvent( QMouseEvent *event )
+{
+    IHandler *handler = n2App->active();
+    if (handler)
+    {
+        QPoint p=event->globalPos();
+        p=mapFromGlobal(p);
+        nnPoint pos(p.x(),p.y());
+        if(event->buttons()==Qt::LeftButton)
+        {
+            handler->handlerMouseMove(nn_m_button_left,pos);
+        }
+        else
+            if(event->buttons()==Qt::NoButton)
+            {
+                handler->handlerMouseMove(nn_m_button_unknow,pos);
+            }
+    }
+}
+
+
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    const char * error=nullptr;
+    IHandler *handler = n2App->active();
+    if (handler)
+    {
+        QPoint p=event->globalPos();
+        p=mapFromGlobal(p);
+        nn_mouse_buttons bt=(nn_mouse_buttons)(unsigned int)event->buttons();
+        nnPoint pos(p.x(),p.y());
+        try {
+            handler->handlerMouseButtonDown(bt,pos);
+        }
+        catch(n2exception *e)
+        {
+            error=e->msg();
+            delete e->msg();
+            delete e;
+        }
+        catch(...)
+        {
+            error="unknow exception";
+        }
+        if(error!=nullptr)
+        {
+            QMessageBox::warning(this,"meLadder",
+                                 tr("At draw toolbars\n%1.")
+                                 .arg(error));
+        }
+    }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    nnPoint start, stop;
+    IHandler *handler = n2App->active();
+    if (handler)
+    {
+        QPoint p=event->globalPos();
+        p=mapFromGlobal(p);
+        unsigned int bt=event->buttons();
+        nnPoint pos(p.x(),p.y());
+        handler->handlerMouseButtonUp((nn_mouse_buttons)bt,pos);
+    }
+}
+
+
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    bool res=false;
+    IHandler *handler = n2App->active();
+    if (handler)
+    {
+//        qDebug()<<"modifiers()="<<event->modifiers()<<"   Key()="<<event->key();
+        Qt::KeyboardModifiers mod=event->modifiers();
+        Qt::Key keyb=(Qt::Key)event->key();
+        bool alt=false,ctrl=false,shift=false;
+        if(mod&Qt::ShiftModifier)
+            shift=true;
+        if(mod&Qt::ControlModifier)
+            ctrl=true;
+        if(mod&Qt::AltModifier)
+            alt=true;
+        switch(keyb)
+        {
+        case Qt::Key_Escape:
+            res=handler->handlerEscapeButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_Home:
+            res=handler->handlerHomeButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_End:
+            res=handler->handlerEndButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_PageUp:
+            res=handler->handlerPageUpButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_PageDown:
+            res=handler->handlerPageDownButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_Left:
+            res=handler->handlerLeftButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_Up:
+            res=handler->handlerUpButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_Right:
+            res=handler->handlerRightButton(shift,ctrl,alt);
+            break;
+        case Qt::Key_Down:
+            res=handler->handlerDownButton(shift,ctrl,alt);
+            break;
+        }
+    }
+}
+
+
+
+
+
+bool MainWindow::maybeSave()
+{
+    if (1) {
+        QMessageBox::StandardButton ret;
+        ret = QMessageBox::warning(this, tr("SDI"),
+                     tr("The document has been modified.\n"
+                        "Do you want to save your changes?"),
+                     QMessageBox::Save | QMessageBox::Discard
+                     | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save)
+            return save();
+        else if (ret == QMessageBox::Cancel)
+            return false;
+    }
+    return true;
+}
+
+void MainWindow::loadFile(const QString &fileName)
+{
+
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this, tr("SDI"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(fileName)
+                             .arg(file.errorString()));
+        return;
+    }
+
+//    QTextStream in(&file);
+}
+
+bool MainWindow::saveFile(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        QMessageBox::warning(this, tr("SDI"),
+                             tr("Cannot write file %1:\n%2.")
+                             .arg(fileName)
+                             .arg(file.errorString()));
+        return false;
+    }
+
+ //   QTextStream out(&file);
+    return true;
+}
+
+void MainWindow::setCurrentFile(const QString &fileName)
+{
+    static int sequenceNumber = 1;
+
+    isUntitled = fileName.isEmpty();
+    if (isUntitled) {
+        curFile = tr("document%1.txt").arg(sequenceNumber++);
+    } else {
+        curFile = QFileInfo(fileName).canonicalFilePath();
+    }
+    setWindowModified(false);
+    setWindowFilePath(curFile);
+}
+
+QString MainWindow::strippedName(const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
+}
+
+MainWindow *MainWindow::findMainWindow(const QString &fileName)
 {
     QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
 
-    foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-        MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
-        if (mdiChild->currentFile() == canonicalFilePath)
-            return window;
+    foreach (QWidget *widget, qApp->topLevelWidgets()) {
+        MainWindow *mainWin = qobject_cast<MainWindow *>(widget);
+        if (mainWin && mainWin->curFile == canonicalFilePath)
+            return mainWin;
     }
     return 0;
 }
-
-void MainWindow::switchLayoutDirection()
-{
-    if (layoutDirection() == Qt::LeftToRight)
-        qApp->setLayoutDirection(Qt::RightToLeft);
-    else
-        qApp->setLayoutDirection(Qt::LeftToRight);
-}
-
-void MainWindow::setActiveSubWindow(QWidget *window)
-{
-    if (!window)
-        return;
-    mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
-}
-
-
-void MainWindow::cut()
-{
-    MdiChild *child=activeMdiChild();
-    if(child)
-        child->cut();
-}
-
-
-void MainWindow::copy()
-{
-    MdiChild *child=activeMdiChild();
-    if(child)
-        child->copy();
-}
-
-
-void MainWindow::paste()
-{
-    MdiChild *child=activeMdiChild();
-    if(child)
-        child->paste();
-}
-
-
-
-void MainWindow::destroyObjects()
-{
-    DESTROY_OBJ(mdiArea);
-    DESTROY_OBJ(windowMapper);
-    DESTROY_OBJ(fileMenu);
-    DESTROY_OBJ(windowMenu);
-    DESTROY_OBJ(helpMenu);
-    DESTROY_OBJ(newAct);
-    DESTROY_OBJ(openAct);
-    DESTROY_OBJ(saveAct);
-    DESTROY_OBJ(saveAsAct);
-    DESTROY_OBJ(exitAct);
-    DESTROY_OBJ(closeAct);
-    DESTROY_OBJ(closeAllAct);
-    DESTROY_OBJ(tileAct);
-    DESTROY_OBJ(cascadeAct);
-    DESTROY_OBJ(nextAct);
-    DESTROY_OBJ(previousAct);
-    DESTROY_OBJ(separatorAct);
-    DESTROY_OBJ(aboutAct);
-    DESTROY_OBJ(aboutQtAct);
-    DESTROY_OBJ(pasteAct);
-    DESTROY_OBJ(copyAct);
-    DESTROY_OBJ(cutAct);
-    DESTROY_OBJ(editMenu);
-    DESTROY_OBJ(n2app);
-}
-
-
-void  MainWindow::updatePosCursor(nnPoint & start, nnPoint & stop)
-{
-    QString s;
-    if(start.isValid())
-    {
-        s.sprintf("X:%04d",start.x);
-        m_statusLeft->setText(s);
-        s.sprintf("Y:%04d",start.y);
-        m_statusMiddleLeft->setText(s);
-    }
-    else
-    {
-        m_statusLeft->setText("----");
-        m_statusMiddleLeft->setText("----");
-    }
-    if(stop.isValid())
-    {
-        s.sprintf("X:%04d",stop.x);
-        m_statusMiddleRight->setText(s);
-        s.sprintf("Y:%04d",stop.y);
-        m_statusRight->setText(s);
-    }
-    else
-    {
-        m_statusLeft->setText("----");
-        m_statusMiddleLeft->setText("----");
-    }
-}
-

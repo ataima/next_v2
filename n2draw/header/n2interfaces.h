@@ -10,6 +10,60 @@
 #include "n2point.h"
 //////////////////////////////////////////////////////
 
+#define  BUFFLENGTH  512
+
+#ifdef _DOUBLE_UNICODE
+typedef std::basic_stringstream<char32_t> 	u32stringstream;
+#define  XCHAR    char32_t
+#define  STRSTR   std::char_traits<char32_t>::find
+#define  STRLEN   std::char_traits<char32_t>::length
+#define  STRING   std::u32string
+#define  SSTREAM  u32stringstream
+#define  STRCMP   std::char_traits<char32_t>::compare
+#define  ATOL     atol
+#define  FROMQSTRING()   toStdU32String()
+#ifdef _MSC_VER
+#define  FOPEN    fopen
+#else
+#define  FOPEN    fopen
+#endif
+#define  X(msg)   l##msg
+#else
+#ifdef _UNICODE
+typedef std::basic_stringstream<char16_t> 	u16stringstream;
+#define  XCHAR     char16_t
+#define  STRSTR   std::char_traits<char16_t>::find
+#define  STRLEN   std::char_traits<char16_t>::length
+#define  STRING   std::u16string
+#define  SSTREAM  u16stringstream
+#define  STRCMP   std::char_traits<char16_t>::compare
+#define  ATOL     atol
+#define  FROMQSTRING()   toStdU16String()
+#ifdef _MSC_VER
+#define  FOPEN    fopen
+#else
+#define  FOPEN    fopen
+#endif
+#define  X(msg)   u##msg
+#else
+#define  XCHAR    char
+#define  STRSTR   std::char_traits<char>::find
+#define  STRLEN   std::char_traits<char>::length
+#define  STRING   std::string
+#define  SSTREAM  std::stringstream
+#define  SSTREAMOUT  std::cout
+#define  ATOL     atol
+#define  FROMQSTRING()   toStdString()
+#ifdef _MSC_VER
+#define  FOPEN    fopen
+#else
+#define  FOPEN    fopen
+#endif
+#define  STRCMP   std::char_traits<char>::compare
+#define  X(msg)   msg
+#endif
+#endif
+
 typedef enum tag_handler_Action
 {
     action_redraw,
@@ -17,22 +71,26 @@ typedef enum tag_handler_Action
     action_update_statusbars_info,
     action_update_statusbars_panes,
     action_align_windows,
-    action_host_command = 5000
+    action_host_command = 1000
 } handlerAction;
 
 
-typedef void (*extHandler)(void *,handlerAction ,size_t);
+typedef void (*extHandler)(void *,size_t ,size_t);
+
+
 
 
 class IExtHandler
 {
 public:
-    virtual void doHandler(handlerAction Tparam,size_t Uparam=0)=0;
+    virtual void doHandler(size_t Tparam,size_t uparam=0)=0;
 };
 
 typedef enum tag_handler_exec
 {
     handler_exec_command,       // hook to host command
+    handler_hook_before_command,
+    handler_hook_after_command,
 } handler_exec;
 
 
@@ -90,59 +148,7 @@ public:
 
 //////////////////////////////////////////////////////
 
-#define  BUFFLENGTH  512
 
-#ifdef _DOUBLE_UNICODE
-typedef std::basic_stringstream<char32_t> 	u32stringstream;
-#define  XCHAR    char32_t
-#define  STRSTR   std::char_traits<char32_t>::find
-#define  STRLEN   std::char_traits<char32_t>::length
-#define  STRING   std::u32string
-#define  SSTREAM  u32stringstream
-#define  STRCMP   std::char_traits<char32_t>::compare
-#define  ATOL     atol
-#define  FROMQSTRING()   toStdU32String()
-#ifdef _MSC_VER
-#define  FOPEN    fopen
-#else
-#define  FOPEN    fopen
-#endif
-#define  X(msg)   l##msg
-#else
-#ifdef _UNICODE
-typedef std::basic_stringstream<char16_t> 	u16stringstream;
-#define  XCHAR     char16_t
-#define  STRSTR   std::char_traits<char16_t>::find
-#define  STRLEN   std::char_traits<char16_t>::length
-#define  STRING   std::u16string
-#define  SSTREAM  u16stringstream
-#define  STRCMP   std::char_traits<char16_t>::compare
-#define  ATOL     atol
-#define  FROMQSTRING()   toStdU16String()
-#ifdef _MSC_VER
-#define  FOPEN    fopen
-#else
-#define  FOPEN    fopen
-#endif
-#define  X(msg)   u##msg
-#else
-#define  XCHAR    char
-#define  STRSTR   std::char_traits<char>::find
-#define  STRLEN   std::char_traits<char>::length
-#define  STRING   std::string
-#define  SSTREAM  std::stringstream
-#define  SSTREAMOUT  std::cout
-#define  ATOL     atol
-#define  FROMQSTRING()   toStdString()
-#ifdef _MSC_VER
-#define  FOPEN    fopen
-#else
-#define  FOPEN    fopen
-#endif
-#define  STRCMP   std::char_traits<char>::compare
-#define  X(msg)   msg
-#endif
-#endif
 
 class IXmlNode
 {
@@ -561,13 +567,14 @@ public:
     virtual void clean(void) = 0;
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name) = 0;    
     virtual bool setExtHandler(handler_exec type, extHandler  _hook, void *unkObj) = 0;
-    virtual void commandRuote(handlerAction type_param, size_t user_param) = 0;
+    virtual void commandRuote(size_t type_param, size_t user_param) = 0;
 };
 
 
 class IAppManager
 {
 public:
+    static  IAppManager * getInstance(int v=0);
     virtual IChild * createObjects(STRING & conf_file_name) = 0;
     virtual bool closeAll(void) = 0;
     virtual IChild *activate(int v) = 0;

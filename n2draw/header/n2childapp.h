@@ -48,7 +48,7 @@ public:
     void clean(void);
     bool createObjects(IConfig *configuration,STRING & conf_file_name);
     bool setExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
-    void commandRuote(handlerAction type_param, size_t user_param);
+    void commandRuote(size_t type_param, size_t user_param);
     bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
     //IHandler * getHandler(void) { return static_cast<IHandler *>(this); }
     inline  IManager * getManager(void)                { return object_manager; }
@@ -77,7 +77,7 @@ public:
     bool handlerRequestCommand(nnPoint phyPoint, int & command) ;
 private:
     bool loadImages(void);
-    static void internalCommandRuote(void * dest, handlerAction type_param, size_t user_param);
+    static void internalCommandRuote(void * dest, size_t type_param, size_t user_param);
 };
 
 

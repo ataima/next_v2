@@ -42,7 +42,8 @@ typedef std::map<int, IChild *> listChild;
     listChild childs;
     IConfig *configuration;
     int selected;
-    static int UID;    
+    static int UID;
+    static IAppManager *instance;
 public:
     nnAppManager();
     ~nnAppManager();    
@@ -50,7 +51,7 @@ public:
     bool closeAll(void);
     IChild *activate(int v);
     IChild *active(void);
-
+    static IAppManager *getInstance(void);
 protected:
     bool clean(void);
 };

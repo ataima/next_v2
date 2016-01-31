@@ -40,7 +40,7 @@ public :
     nnExtHandler(handler_exec _type,
                  extHandler & _hook,
                  void *unkObj);
-    void doHandler(handlerAction Tparam, size_t Uparam=0);
+    void doHandler(size_t Tparam, size_t Uparam=0);
 };
 
 

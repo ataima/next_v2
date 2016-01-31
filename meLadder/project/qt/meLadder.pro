@@ -22,11 +22,10 @@ DEFINES += _STATIC_CPPLIB
 SOURCES += \
 ../../source/main.cpp\
 ../../source/mainwindow.cpp\
-../../source/mdichild.cpp \
+
 
 HEADERS  += \
 ../../header/mainwindow.h\
-../../header/mdichild.h\
 
 
 

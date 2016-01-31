@@ -270,7 +270,7 @@ bool nnChildApp::setExtHandler(handler_exec type, extHandler _hook, void *unkObj
 }
 
 
-void nnChildApp::internalCommandRuote(void * dest, handlerAction type_param, size_t user_param)
+void nnChildApp::internalCommandRuote(void * dest, size_t type_param, size_t user_param)
 {
     if (dest)
     {
@@ -284,23 +284,69 @@ void nnChildApp::internalCommandRuote(void * dest, handlerAction type_param, siz
 
 
 
-void nnChildApp::commandRuote( handlerAction type_param, size_t user_param)
+void nnChildApp::commandRuote(size_t type_param, size_t user_param)
 {
     if (type_param == action_host_command)
     {
+        IExtHandler *hookBefore = handlers->get(handler_hook_before_command);
+        IExtHandler *hookAfter = handlers->get(handler_hook_after_command);
         switch (user_param)
         {
         case 4000:
+        {
+            std::string filename;
+            if(hookBefore)
+                hookBefore->doHandler(4000,(size_t)&filename);
+            //DO ....
+            if(hookAfter)
+                hookAfter->doHandler(4000,0);
+        }
             break;
         case 4001:
+        {
+            std::string filename;
+            if(hookBefore)
+                hookBefore->doHandler(4001,(size_t)&filename);
+            //DO ....
+            if(hookAfter)
+                hookAfter->doHandler(4001,0);
+        }
             break;
         case 4002:
+        {
+            if(hookBefore)
+                hookBefore->doHandler(4002,0);
+            //DO ....
+            if(hookAfter)
+                hookAfter->doHandler(4002,0);
+        }
             break;
         case 4003:
+        {
+            if(hookBefore)
+                hookBefore->doHandler(4003,0);
+            //DO ....
+            if(hookAfter)
+                hookAfter->doHandler(4003,0);
+        }
             break;
         case 4004:
+        {
+            if(hookBefore)
+                hookBefore->doHandler(4004,0);
+            //DO ....
+            if(hookAfter)
+                hookAfter->doHandler(4004,0);
+        }
             break;
         case 4005:
+        {
+            if(hookBefore)
+                hookBefore->doHandler(4005,0);
+            //DO ....
+            if(hookAfter)
+                hookAfter->doHandler(4005,0);
+        }
             break;
         default:
             if (externalHandler)

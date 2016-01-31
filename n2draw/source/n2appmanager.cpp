@@ -38,11 +38,27 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
+IAppManager *IAppManager::getInstance(int v)
+{
+    IAppManager *res=nullptr;
+    if(v==0)//default...
+    {
+        res= nnAppManager::getInstance();
+    }
+    return res;
+}
+
+
+
+
 int nnAppManager::UID = 1;
+IAppManager *nnAppManager::instance=nullptr;
 
 nnAppManager::nnAppManager():selected(-1)
 {
     configuration = new xmlConfig();
+    if(instance==nullptr)
+        instance=this;
 }
 
 nnAppManager::~nnAppManager()
@@ -50,8 +66,18 @@ nnAppManager::~nnAppManager()
     clean();
     delete configuration;
     configuration=nullptr;
+    instance=nullptr;
 }
 
+
+IAppManager *nnAppManager::getInstance(void)
+{
+    if(instance==nullptr)
+    {
+        instance = new nnAppManager();
+    }
+    return instance;
+}
 
 IChild * nnAppManager::createObjects(STRING & conf_file_name)
 {

@@ -48,29 +48,17 @@
 
 
 
-#include "images.h"
-#include "n2draw.h"
-
-
-#include "n2drawmanager.h"
-#include "n2miniXml.h"
-#include "n2imagemanager.h"
-#include "n2viewglue.h"
-#include "n2appmanager.h"
-#include "n2connection.h"
+#include "n2interfaces.h"
 
 
 
-class mdiScrollBar;
 
 
 class MdiChild : public QWidget
 {
     Q_OBJECT
 private:
-    mdiScrollBar  *vScroll;
-    mdiScrollBar  *hScroll;
-    childApps   *n2client;
+    IChild *n2Client;
     QString curFile;
     bool isUntitled;
     QPixmap pixmap;
@@ -84,12 +72,10 @@ public:
     bool saveFile(const QString &fileName);
     QString userFriendlyCurrentFile();
     QString currentFile() { return curFile; }
-    inline void setClient (childApps *c){n2client=c;}
-    void updateDocPosHorz(void);
-    void updateDocPosVert(void);
     void paste(void);
     void cut(void);
     void copy(void);
+    inline void setClient(IChild *n){n2Client=n;}
 protected:
     static void externCommandRequest(void * dest, handlerAction type_param, size_t user_param);
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -112,41 +98,6 @@ private:
 };
 
 
-class mdiScrollBar: public QScrollBar
-{
-    Q_OBJECT
-public:
-    mdiScrollBar(Qt::Orientation orientation,
-        MdiChild *parent=0):
-        QScrollBar(orientation,parent){
-        setFocusPolicy(Qt::NoFocus);
-    }
-
-    void sliderChange(SliderChange change)
-    {
-        QScrollBar::sliderChange(change);
-        refreshDoc();
-    }
-
-    void wheelEvent(QWheelEvent *event)
-    {
-        QScrollBar::wheelEvent(event);
-        refreshDoc();
-    }
-private :
-    void refreshDoc(void)
-    {
-        MdiChild *v=static_cast<MdiChild *>(parent());
-        if(v)
-        {
-            if(orientation()==Qt::Orientation::Horizontal)
-                v->updateDocPosHorz();
-            else
-                if(orientation()==Qt::Orientation::Vertical)
-                    v->updateDocPosVert();
-        }
-    }
-};
 
 
 

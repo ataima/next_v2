@@ -42,106 +42,56 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-class MdiChild;
-QT_BEGIN_NAMESPACE
-class QAction;
-class QMenu;
-class QLabel;
-class QMdiArea;
-class QMdiSubWindow;
-class QSignalMapper;
-QT_END_NAMESPACE
-
-
 #include "images.h"
-#include "n2draw.h"
-#include "n2drawmanager.h"
-#include "n2miniXml.h"
-#include "n2imagemanager.h"
-#include "n2viewglue.h"
-#include "n2appmanager.h"
-#include "n2connection.h"
-
+#include "n2interfaces.h"
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-private :
-    IAppManager *n2app;
-    static MainWindow *instance;
+private    :
+    IAppManager *n2App;
+    QPixmap pixmap;
+    QString curFile;
+    bool isUntitled;
 public:
     MainWindow();
-    ~MainWindow();
-    bool openFile(const QString &fileName);
-    static MainWindow * getInstance(void){return instance;}
-    static IAppManager * getn2AppManager(void){return instance->n2app;}
-    void updatePosCursor(nnPoint & start,nnPoint & stop);
+    MainWindow(const QString &fileName);
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
+    static void externCommandRequest(void * dest, size_t type_param, size_t user_param);
+    static void hookBeforeCommandRequest(void * dest, size_t type_param, size_t user_param);
+    static void hookAfterCommandRequest(void * dest, size_t type_param, size_t user_param);
 
-public slots:
+private slots:
     void newFile();
     void open();
-    void save();
-    void saveAs();
-private slots:
+    bool save();
+    bool saveAs();
     void about();
-    void cut();
-    void copy();
-    void paste();
-    void updateMenus();
-    void updateWindowMenu();
-    MdiChild *createMdiChild();
-    void switchLayoutDirection();
-    void setActiveSubWindow(QWidget *window);
-
+    void documentWasModified();
+    void resizeEvent(QResizeEvent *) override;
 private:
-    //void keyPressEvent(QKeyEvent *event);
-    void destroyObjects();
-    void createActions();
-    void createMenus();
-    void createStatusBar();
-    void readSettings();
-    void writeSettings();
-    MdiChild *activeMdiChild();
-    QMdiSubWindow *findMdiChild(const QString &fileName);
+    void init();
+    bool maybeSave();
+    void loadFile(const QString &fileName);
+    bool saveFile(const QString &fileName);
+    void setCurrentFile(const QString &fileName);
+    QString strippedName(const QString &fullFileName);
+    MainWindow *findMainWindow(const QString &fileName);
+    void paintEvent(QPaintEvent * /* event */) override;
+        void refreshPixmap(void);
+        void requestCommand(size_t type_param, size_t user_param);
+        void beforeCommand(size_t type_param, size_t user_param);
+        void afterCommand(size_t type_param, size_t user_param);
+        void directCommand(size_t user_param);
+        void destroyObjects(void);
+        void mouseMoveEvent( QMouseEvent *event ) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *) override;
+        void keyPressEvent(QKeyEvent *event) override;
 
-    QMdiArea *mdiArea;
-    QSignalMapper *windowMapper;
 
-    QMenu *fileMenu;
-    QMenu *windowMenu;
-    QMenu *helpMenu;
-    QMenu *editMenu;
-    QAction *newAct;
-    QAction *openAct;
-    QAction *saveAct;
-    QAction *saveAsAct;
-    QAction *exitAct;
-    QAction *closeAct;
-    QAction *closeAllAct;
-    QAction *tileAct;
-    QAction *cascadeAct;
-    QAction *nextAct;
-    QAction *previousAct;
-    QAction *separatorAct;
-    QAction *aboutAct;
-    QAction *aboutQtAct;
-    QAction *cutAct;
-    QAction *copyAct;
-    QAction *pasteAct;
-    QLabel *m_statusLeft;
-    QLabel *m_statusRight;
-    QLabel *m_statusMiddleLeft;
-    QLabel *m_statusMiddleRight;
 };
-
-
-#define getMainWnd()    MainWindow::getInstance()
-#define getn2App()      MainWindow::getn2AppManager()
-
-
-#define DESTROY_OBJ(obj)  if(obj!=nullptr){delete obj;obj=nullptr;}
 
 #endif

@@ -30,7 +30,7 @@ nnExtHandler::nnExtHandler(handler_exec _type,extHandler & _hook, void *unkObj)
 {}
 
 
-void nnExtHandler::doHandler(handlerAction Tparam , size_t Uparam)
+void nnExtHandler::doHandler(size_t Tparam , size_t Uparam)
 {
     if(hook && unknow)
     {
