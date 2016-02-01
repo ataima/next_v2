@@ -142,31 +142,36 @@ void refreshPixmap(HWND hWnd)
 }
 
 
-void directCommand(HWND hWnd,size_t user_param)
+void directCommand(HWND hWnd, IParam *user_param)
 {
-    // from conf...xml toolbars
-    switch (user_param)
+    nnAbstractParam<int> *t = static_cast<nnAbstractParam<int>*>(user_param);
+    if (t)
     {
-    case 4000:
-        break;
-    case 4001:
-        break;
-    case 4002:
-        break;
-    case 4003:
-        break;
-    case 4004:
-        break;
-    case 4005:
-        break;
-    case 9999:
-        PostMessage(hWnd, WM_CLOSE, 0, 0);
-        break;
+        // from conf...xml toolbars
+        switch (t->value())
+        {
+        case 4000:
+            break;
+        case 4001:
+            break;
+        case 4002:
+            break;
+        case 4003:
+            break;
+        case 4004:
+            break;
+        case 4005:
+            break;
+        case 9999:
+            PostMessage(hWnd, WM_CLOSE, 0, 0);
+            break;
+        }
+        delete t;
     }
 }
 
 
-void externCommandRequest(void * dest, handlerAction type_param, size_t user_param)
+void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
 {
     if (dest)
     {
@@ -183,9 +188,13 @@ void externCommandRequest(void * dest, handlerAction type_param, size_t user_par
                 break;
             case action_align_windows:
                 {
-                    int x = (user_param & 0xffff0000) >> 16;
-                    int y = (user_param & 0xffff);
-                    ::SetWindowPos(hWnd,0, 0, 0, x, y, SWP_NOMOVE |  SWP_NOZORDER | SWP_FRAMECHANGED);
+                    nnAbstractParam<nnPoint> *t = static_cast<nnAbstractParam<nnPoint>*>(user_param);
+                    if (t)
+                    {
+                        int x = t->value().x;
+                        int y = t->value().y;
+                        ::SetWindowPos(hWnd, 0, 0, 0, x, y, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                    }
                 }
                 break;
             }
@@ -207,7 +216,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 IChild *client = n2app->createObjects(s);
                 if (client)
                 {
-                    client->setExtHandler( handler_exec_command,
+                    client->setExtHandler( 
                         externCommandRequest,
                         hWnd
                         );
