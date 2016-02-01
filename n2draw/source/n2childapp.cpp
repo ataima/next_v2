@@ -77,12 +77,6 @@ void nnChildApp::clean(void)
         view = nullptr;
     }
     externalHandler = nullptr;
-    if (handlers)
-    {
-        handlers->clear();
-        delete handlers;
-        handlers = nullptr;
-    }
     id = -1;
 }
 
@@ -214,13 +208,6 @@ bool nnChildApp::createObjects(IConfig *configuration,STRING & conf_file_name)
     {
         res = view->createDraw();
     }
-    if (res)
-    {
-        handlers = new nnExtHandlerList();
-        MEMCHK(IExtHandlerList, handlers);
-        if(handlers)
-           res = addExtHandler(handler_exec_command, &nnChildApp::internalCommandRuote, this);
-    }
     return res;
 }
 
@@ -258,10 +245,10 @@ bool nnChildApp::loadImages(void)
     return res;
 }
 
-bool nnChildApp::setExtHandler(handler_exec type, extHandler _hook, void *unkObj)
+bool nnChildApp::setExtHandler( extHandler _hook, void *unkObj)
 {
     bool res = false;
-    nnExtHandler  *nh = new nnExtHandler(type, _hook, unkObj);
+    nnExtHandler  *nh = new nnExtHandler( _hook, unkObj);
     if (nh)
     {
         externalHandler = nh;
@@ -270,97 +257,7 @@ bool nnChildApp::setExtHandler(handler_exec type, extHandler _hook, void *unkObj
 }
 
 
-void nnChildApp::internalCommandRuote(void * dest, size_t type_param, size_t user_param)
-{
-    if (dest)
-    {
-        IChild *child = static_cast<IChild *>(dest);
-        if (child)
-        {
-            child->commandRuote( type_param,  user_param);
-        }
-    }
-}
 
-
-
-void nnChildApp::commandRuote(size_t type_param, size_t user_param)
-{
-    if (type_param == action_host_command)
-    {
-        IExtHandler *hookBefore = handlers->get(handler_hook_before_command);
-        IExtHandler *hookAfter = handlers->get(handler_hook_after_command);
-        switch (user_param)
-        {
-        case 4000:
-        {
-            std::string filename;
-            if(hookBefore)
-                hookBefore->doHandler(4000,(size_t)&filename);
-            //DO ....
-            if(hookAfter)
-                hookAfter->doHandler(4000,0);
-        }
-            break;
-        case 4001:
-        {
-            std::string filename;
-            if(hookBefore)
-                hookBefore->doHandler(4001,(size_t)&filename);
-            //DO ....
-            if(hookAfter)
-                hookAfter->doHandler(4001,0);
-        }
-            break;
-        case 4002:
-        {
-            if(hookBefore)
-                hookBefore->doHandler(4002,0);
-            //DO ....
-            if(hookAfter)
-                hookAfter->doHandler(4002,0);
-        }
-            break;
-        case 4003:
-        {
-            if(hookBefore)
-                hookBefore->doHandler(4003,0);
-            //DO ....
-            if(hookAfter)
-                hookAfter->doHandler(4003,0);
-        }
-            break;
-        case 4004:
-        {
-            if(hookBefore)
-                hookBefore->doHandler(4004,0);
-            //DO ....
-            if(hookAfter)
-                hookAfter->doHandler(4004,0);
-        }
-            break;
-        case 4005:
-        {
-            if(hookBefore)
-                hookBefore->doHandler(4005,0);
-            //DO ....
-            if(hookAfter)
-                hookAfter->doHandler(4005,0);
-        }
-            break;
-        default:
-            if (externalHandler)
-                externalHandler->doHandler(type_param, user_param);
-            break;
-        }
-    }
-    else
-    {
-        if (externalHandler)
-            externalHandler->doHandler(type_param, user_param);
-    }
-
-}
 
 
 
@@ -501,12 +398,3 @@ bool nnChildApp::handlerRequestCommand(nnPoint phyPoint, int & command)
     return res;
 }
 
-bool nnChildApp::addExtHandler(handler_exec type,
-    extHandler  _hook,
-    void *unkObj)
-{
-    bool res = false;
-    nnExtHandler  *nh = new nnExtHandler(type, _hook, unkObj);
-    res = handlers->add(type, nh);
-    return res;
-}

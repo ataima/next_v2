@@ -59,9 +59,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
-    static void externCommandRequest(void * dest, size_t type_param, size_t user_param);
-    static void hookBeforeCommandRequest(void * dest, size_t type_param, size_t user_param);
-    static void hookAfterCommandRequest(void * dest, size_t type_param, size_t user_param);
+    static void externCommandRequest(void * dest, size_t type_param, IParam *user_param);
 
 private slots:
     void newFile();
@@ -80,16 +78,14 @@ private:
     QString strippedName(const QString &fullFileName);
     MainWindow *findMainWindow(const QString &fileName);
     void paintEvent(QPaintEvent * /* event */) override;
-        void refreshPixmap(void);
-        void requestCommand(size_t type_param, size_t user_param);
-        void beforeCommand(size_t type_param, size_t user_param);
-        void afterCommand(size_t type_param, size_t user_param);
-        void directCommand(size_t user_param);
-        void destroyObjects(void);
-        void mouseMoveEvent( QMouseEvent *event ) override;
-        void mousePressEvent(QMouseEvent *event) override;
-        void mouseReleaseEvent(QMouseEvent *) override;
-        void keyPressEvent(QKeyEvent *event) override;
+    void refreshPixmap(void);
+    void requestCommand(size_t type_param, IParam *user_param);
+    void directCommand(IParam *user_param);
+    void destroyObjects(void);
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 
 };

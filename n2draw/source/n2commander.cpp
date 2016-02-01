@@ -198,7 +198,8 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
                 curItem=&(*it);
                 if (hook)
                 {
-                    hook->doHandler(action_update_statusbars_info, (size_t)(curItem->info.c_str()));
+                    nnAbstractParam<std::string> *t= new nnAbstractParam<std::string>(curItem->info);
+                    hook->doHandler(action_update_statusbars_info, t);
                     hook->doHandler(action_redraw);
                 }
                 res=true;
@@ -214,7 +215,8 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
             curItem=nullptr;
             if (hook)
             {
-                hook->doHandler(action_update_statusbars_info, (size_t)" ... ");
+                nnAbstractParam<std::string> *t= new nnAbstractParam<std::string>(std::string("..."));
+                hook->doHandler(action_update_statusbars_info, t);
                 hook->doHandler(action_redraw);
             }
             res=true;

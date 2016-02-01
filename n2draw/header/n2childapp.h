@@ -40,23 +40,19 @@ class nnChildApp
     IViewGlue               *view;
     IImageManager           *imageManager;
     IExtHandler             *externalHandler;
-    IExtHandlerList         *handlers;
     unsigned int            id;
 public:
     nnChildApp(unsigned int _id=0);
     ~nnChildApp();
     void clean(void);
     bool createObjects(IConfig *configuration,STRING & conf_file_name);
-    bool setExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
-    void commandRuote(size_t type_param, size_t user_param);
-    bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj);
+    bool setExtHandler( extHandler  _hook, void *unkObj);
     //IHandler * getHandler(void) { return static_cast<IHandler *>(this); }
     inline  IManager * getManager(void)                { return object_manager; }
     inline  IFontList * getFont(void)                  { return fonts; }
     inline  IViewGlue * getView(void)                  { return view; }
     inline  IImageManager * getImage(void)             { return imageManager; }
-    inline  IExtHandler * getExternalHandler(void)     { return externalHandler; }
-    inline  IExtHandlerList *getHandlers(void)          { return handlers; }
+    inline  IExtHandler * getHandler(void)             { return externalHandler; }
     // remap handler
     bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint) ;
     bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint) ;
@@ -77,7 +73,6 @@ public:
     bool handlerRequestCommand(nnPoint phyPoint, int & command) ;
 private:
     bool loadImages(void);
-    static void internalCommandRuote(void * dest, size_t type_param, size_t user_param);
 };
 
 

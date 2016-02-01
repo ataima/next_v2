@@ -109,7 +109,7 @@ bool MainWindow::save()
 bool MainWindow::saveAs()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
-                                                    curFile);
+                       curFile);
     if (fileName.isEmpty())
         return false;
 
@@ -118,9 +118,9 @@ bool MainWindow::saveAs()
 
 void MainWindow::about()
 {
-   QMessageBox::about(this, tr("About SDI"),
-            tr("The <b>SDI</b> example demonstrates how to write single "
-               "document interface applications using Qt."));
+    QMessageBox::about(this, tr("About SDI"),
+                       tr("The <b>SDI</b> example demonstrates how to write single "
+                          "document interface applications using Qt."));
 }
 
 void MainWindow::documentWasModified()
@@ -141,59 +141,49 @@ void MainWindow::init()
     {
         IChild *client=nullptr;
         try {
-                QString   path=qApp->applicationDirPath();
-        #ifdef _UNICODE
-                path+="/conf_utf16.xml";
-        #else
-                path+="/conf_utf8.xml";
-        #endif
-                STRING conf=path.FROMQSTRING();
-                client=n2App->createObjects(conf);
-            }
-            catch(n2exception *e)
+            QString   path=qApp->applicationDirPath();
+#ifdef _UNICODE
+            path+="/conf_utf16.xml";
+#else
+            path+="/conf_utf8.xml";
+#endif
+            STRING conf=path.FROMQSTRING();
+            client=n2App->createObjects(conf);
+        }
+        catch(n2exception *e)
+        {
+            if(e!=nullptr)
             {
-                if(e!=nullptr)
-                {
-                    const char *msg=e->msg();
-                    QMessageBox m(QMessageBox::Icon::Critical,
-                                  "ERROR",
-                                  msg,
-                                  QMessageBox::StandardButton::Ok);
-                    m.exec();
-                    if(msg!=nullptr)
-                        delete msg;
-                    delete e;
-                }
-            }
-            catch(...)
-            {
+                const char *msg=e->msg();
                 QMessageBox m(QMessageBox::Icon::Critical,
                               "ERROR",
-                              "Unhandled exception",
+                              msg,
                               QMessageBox::StandardButton::Ok);
                 m.exec();
+                if(msg!=nullptr)
+                    delete msg;
+                delete e;
             }
-            if(client!=nullptr)
-            {
-                showMaximized();
-                client->setExtHandler( handler_exec_command,
-                                       &MainWindow::externCommandRequest,
-                                       this
-                                       );
-                client->addExtHandler( handler_hook_before_command,
-                                       &MainWindow::hookBeforeCommandRequest,
-                                       this
-                                       );
-                client->addExtHandler( handler_hook_after_command,
-                                       &MainWindow::hookAfterCommandRequest,
-                                       this
-                                       );
-
-            }
-            else
-            {
-                close();
-            }
+        }
+        catch(...)
+        {
+            QMessageBox m(QMessageBox::Icon::Critical,
+                          "ERROR",
+                          "Unhandled exception",
+                          QMessageBox::StandardButton::Ok);
+            m.exec();
+        }
+        if(client!=nullptr)
+        {
+            showMaximized();
+            client->setExtHandler( &MainWindow::externCommandRequest,
+                                   this
+                                 );
+        }
+        else
+        {
+            close();
+        }
 
     }
     setUnifiedTitleAndToolBarOnMac(true);
@@ -206,7 +196,7 @@ void MainWindow::paintEvent(QPaintEvent *  /*event*/ )
 }
 
 
-void MainWindow::externCommandRequest(void * dest, size_t type_param,size_t user_param)
+void MainWindow::externCommandRequest(void * dest, size_t type_param,IParam *user_param)
 {
     if(dest)
     {
@@ -216,78 +206,71 @@ void MainWindow::externCommandRequest(void * dest, size_t type_param,size_t user
 }
 
 
-void MainWindow::hookBeforeCommandRequest(void * dest, size_t type_param, size_t user_param)
+
+
+void MainWindow::directCommand(IParam * user_param)
 {
-    if(dest)
+    nnAbstractParam<int> *t=static_cast<nnAbstractParam<int>*>(user_param);
+    if(t)
     {
-        MainWindow *child = static_cast< MainWindow *>(dest);
-        child->beforeCommand(type_param,user_param);
+        qDebug()<<"RX user param :"<<t->value();
+        // from conf...xml toolbars
+        switch(t->value())
+        {
+        case 4000:
+            save();
+            break;
+        case 4001:
+            open();
+            break;
+        case 4002:
+            newFile();
+            break;
+        case 4003:
+            //copy();
+            break;
+        case 4004:
+            //cut();
+            break;
+        case 4005:
+            //paste();
+            break;
+        }
+        delete t;
     }
 }
 
-void MainWindow::hookAfterCommandRequest(void * dest, size_t type_param, size_t user_param)
-{
-    if(dest)
-    {
-        MainWindow *child = static_cast< MainWindow *>(dest);
-        child->afterCommand(type_param,user_param);
-    }
-}
-
-
-void MainWindow::directCommand(size_t user_param)
-{
-    qDebug()<<"RX user param :"<<user_param;
-    // from conf...xml toolbars
-    switch(user_param)
-    {
-    case 4000:
-        save();
-        break;
-    case 4001:
-        open();
-        break;
-    case 4002:
-        newFile();
-        break;
-    case 4003:
-        //copy();
-        break;
-    case 4004:
-        //cut();
-        break;
-    case 4005:
-        //paste();
-        break;
-    }
-}
-
-void MainWindow::requestCommand(size_t type_param,size_t user_param)
+void MainWindow::requestCommand(size_t type_param,IParam * user_param)
 {
     switch(type_param)
     {
     case action_align_windows:
-                   {
-                       int x = (user_param & 0xffff0000) >> 16;
-                       int y = (user_param & 0xffff);
-                       if(isMaximized()&& ( x>size().width() || y>size().height()))
-                       {
-                           IChild * child=n2App->active();
-                           nnPoint c=child->getView()->getConstPhy();
-                           if(x>size().width())
-                           {
-                               x-=c.x;
-                           }
-                           if(y>size().height())
-                           {
-                               y-=c.y;
-                           }
+    {
+        nnAbstractParam<nnPoint> *t=static_cast<nnAbstractParam<nnPoint>*>(user_param);
+        if(t)
+        {
+            int x = t->value().x;
+            int y = t->value().y;
+            if(isMaximized()&& ( x>size().width() || y>size().height()))
+            {
+                IChild * child=n2App->active();
+                nnPoint c=child->getView()->getConstPhy();
+                if(x>size().width())
+                {
+                    x-=c.x;
+                }
+                if(y>size().height())
+                {
+                    y-=c.y;
+                }
 
-                       }
-                       QSize s(x,y);
-                       resize(s);
-                   }
-        break;
+            }
+            QSize s(x,y);
+            resize(s);
+            delete t;
+        }
+    }
+    break;
     case action_update_statusbars_panes:
     case action_update_statusbars_info:
     case action_redraw:
@@ -299,20 +282,6 @@ void MainWindow::requestCommand(size_t type_param,size_t user_param)
     }
 }
 
-
-void MainWindow::beforeCommand(size_t type_param,size_t user_param)
-{
-    switch(type_param)
-    {
-    }
-}
-
-void MainWindow::afterCommand(size_t type_param, size_t user_param)
-{
-    switch(type_param)
-    {
-    }
-}
 
 
 void MainWindow::refreshPixmap(void)
@@ -366,11 +335,10 @@ void MainWindow::mouseMoveEvent( QMouseEvent *event )
         {
             handler->handlerMouseMove(nn_m_button_left,pos);
         }
-        else
-            if(event->buttons()==Qt::NoButton)
-            {
-                handler->handlerMouseMove(nn_m_button_unknow,pos);
-            }
+        else if(event->buttons()==Qt::NoButton)
+        {
+            handler->handlerMouseMove(nn_m_button_unknow,pos);
+        }
     }
 }
 
@@ -482,10 +450,10 @@ bool MainWindow::maybeSave()
     if (1) {
         QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, tr("SDI"),
-                     tr("The document has been modified.\n"
-                        "Do you want to save your changes?"),
-                     QMessageBox::Save | QMessageBox::Discard
-                     | QMessageBox::Cancel);
+                                   tr("The document has been modified.\n"
+                                      "Do you want to save your changes?"),
+                                   QMessageBox::Save | QMessageBox::Discard
+                                   | QMessageBox::Cancel);
         if (ret == QMessageBox::Save)
             return save();
         else if (ret == QMessageBox::Cancel)
@@ -520,7 +488,7 @@ bool MainWindow::saveFile(const QString &fileName)
         return false;
     }
 
- //   QTextStream out(&file);
+//   QTextStream out(&file);
     return true;
 }
 

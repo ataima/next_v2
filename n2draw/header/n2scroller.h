@@ -45,7 +45,7 @@ class nnScroller
 public:
     nnScroller(int _min, int _max);
     ~nnScroller();
-    bool draw(bmpImage & bkg, IViewGlue * glue);
+    bool draw(bmpImage & bkg, IViewGlue *);
     void setHorzArea(nnPoint & phy);
     void setVertArea(nnPoint & phy);
     inline void setImage(bmpImage *one, bmpImage *two) 

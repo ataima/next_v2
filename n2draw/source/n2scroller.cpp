@@ -48,7 +48,7 @@ nnScroller::~nnScroller()
 
 
 
-bool nnScroller::draw(bmpImage & bkg, IViewGlue * glue)
+bool nnScroller::draw(bmpImage & bkg, IViewGlue * )
 {
     bool res = false;
     int height = bkg.getHeight();

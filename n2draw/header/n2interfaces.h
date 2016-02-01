@@ -75,7 +75,21 @@ typedef enum tag_handler_Action
 } handlerAction;
 
 
-typedef void (*extHandler)(void *,size_t ,size_t);
+class IParam
+{
+};
+
+template < class T> class nnAbstractParam
+ :public IParam
+{
+  T _value;
+public:
+  nnAbstractParam(T & v):_value(v){}
+  inline T value(void){return _value;}
+};
+
+
+typedef void  (*extHandler)(void *,size_t ,IParam *);
 
 
 
@@ -83,25 +97,10 @@ typedef void (*extHandler)(void *,size_t ,size_t);
 class IExtHandler
 {
 public:
-    virtual void doHandler(size_t Tparam,size_t uparam=0)=0;
+    virtual  void doHandler(size_t Tparam,IParam* in=nullptr)=0;
 };
 
-typedef enum tag_handler_exec
-{
-    handler_exec_command,       // hook to host command
-    handler_hook_before_command,
-    handler_hook_after_command,
-} handler_exec;
 
-
-class IExtHandlerList
-{
-public:
-    virtual bool add(handler_exec type,IExtHandler *handler)=0;
-    virtual bool remove(unsigned int type)=0;
-    virtual bool clear(void)=0;
-    virtual IExtHandler *get(unsigned int type)=0;
-};
 
 //////////////////////////////////////////////////////
 
@@ -561,13 +560,10 @@ public:
     virtual IFontList * getFont(void) = 0;
     virtual IViewGlue * getView(void) = 0;
     virtual IImageManager * getImage(void) = 0;    
-    virtual IExtHandler * getExternalHandler(void) = 0;
-    virtual IExtHandlerList *getHandlers(void) = 0;
-    virtual bool addExtHandler(handler_exec type, extHandler  _hook, void *unkObj) = 0;
+    virtual IExtHandler * getHandler(void) = 0;
     virtual void clean(void) = 0;
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name) = 0;    
-    virtual bool setExtHandler(handler_exec type, extHandler  _hook, void *unkObj) = 0;
-    virtual void commandRuote(size_t type_param, size_t user_param) = 0;
+    virtual bool setExtHandler(extHandler  _hook, void *unkObj) = 0;
 };
 
 

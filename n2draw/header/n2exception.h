@@ -292,21 +292,14 @@ public:
 class extHandlerException
     :public n2exception
 {
-    handler_exec type;
 public:
-    explicit  extHandlerException(handler_exec _type) throw()
-        :n2exception("extHandlerException"), type(_type) {}
+    explicit  extHandlerException() throw()
+        :n2exception("extHandlerException") {}
     char const* msg()
     {
         std::stringstream ss;
         const char *b_msg=n2exception::msg();
         ss<<"exception:"<<b_msg<<std::endl<<" An exception is occurred on requested handler";
-        switch(type)
-        {
-        case handler_exec_command:
-            ss<<"handler_exec_command";
-            break;
-        }
         ss<<std::endl;
         delete b_msg;
         int size=ss.str().size();

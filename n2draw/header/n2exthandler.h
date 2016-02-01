@@ -33,28 +33,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 class nnExtHandler
         :public IExtHandler
 {
-    handler_exec type;
     extHandler hook;
     void *unknow;
 public :
-    nnExtHandler(handler_exec _type,
-                 extHandler & _hook,
+    nnExtHandler(extHandler & _hook,
                  void *unkObj);
-    void doHandler(size_t Tparam, size_t Uparam=0);
+    void doHandler(size_t Tparam, IParam *in=nullptr);
 };
 
 
 
-class nnExtHandlerList
-        : public std::map<unsigned int , IExtHandler *>
-        , public IExtHandlerList
-{
-    public:
-    bool add(handler_exec type,IExtHandler *handler);
-    bool remove(unsigned int type);
-    bool clear(void);
-    IExtHandler *get(unsigned int type);
-};
 
 #endif // N2EXTHANDLER
 
