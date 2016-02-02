@@ -524,23 +524,27 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
         if (in != nullptr)
         {
             p_end = p_index = nullptr;
-            struct stat s;
-#ifdef _MSC_VER             
-            if (fstat(_fileno(in), &s) == 0)
-#else
-            if (fstat(fileno(in), &s) == 0)
-#endif                
+            fseek(in,0L,SEEK_END);
+            long fsize=ftell(in);
+            fseek(in,0L,SEEK_SET);
+            if(fsize>0)
             {
-                buff = new XCHAR[s.st_size/sizeof(XCHAR)];
+                fsize/=sizeof(XCHAR);
+                buff = new XCHAR[fsize];
                 if (buff != nullptr)
                 {
-                    max_size = fread(buff, sizeof(XCHAR), s.st_size/sizeof(XCHAR), in);
-                    if (max_size != 0)
-                    {
-                        max_size = s.st_size/sizeof(XCHAR);
-                        p_index = buff;
-                        p_end = &buff[max_size];
-                    }
+                    long temp=fsize;
+                    p_end=p_index = buff;
+                    do{
+                        max_size = fread(buff, sizeof(XCHAR), temp, in);
+                        if (max_size != 0)
+                        {
+                            temp-=max_size;
+                            p_end+=max_size;
+                        }
+                        else
+                            break;
+                    }while(temp>0);
                 }
             }
             else

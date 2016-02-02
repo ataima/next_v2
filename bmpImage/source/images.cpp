@@ -10,15 +10,7 @@
 #endif
 #include <locale>
 
-#ifndef _MSC_VER
 #define FOPEN fopen
-#define _fileno fileno
-#define _stat stat
-#define _fstat fstat
-#include <sys/stat.h>
-#else
-#define FOPEN fopen
-#endif
 
 
 #ifndef min
@@ -1788,31 +1780,28 @@ bool bmpImage::copyFromFile(const XCHAR *name)
         if ( file != nullptr)
         {
             short mask = 0;
-            struct _stat  file_status;
-            int err = _fstat(_fileno(file), &file_status);
-            if (err == 0)
-            {
-                err = (int)fread(&mask, 1, sizeof(short), file);
-                fflush(file);
-                fclose(file);
-            }
+            int err=0;
+            err = (int)fread(&mask, 1, sizeof(short), file);            
             if (err == sizeof(short) && mask == 0x4d42)
             {
-                file = FOPEN(sname.c_str(),"rb");
-                if ( file != nullptr)
-                {
-                    if (file_status.st_size > 0 && file_status.st_size < (1024 * 1024 * 32)) //32Mbit max
+                fseek(file,0L,SEEK_END);
+                long fsize=ftell(file);
+                fseek(file,0L,SEEK_SET);
+                    if (fsize > 0 && fsize < (1024 * 1024 * 32)) //32Mbit max
                     {
 
                         if (isValid())clear();
-                        m_hBitmap = (LPBITMAPFILEHEADER)malloc((size_t)file_status.st_size);
+                        m_hBitmap = (LPBITMAPFILEHEADER)malloc((size_t)fsize);
                         if (m_hBitmap)
                         {
                             unsigned char  *p = (unsigned char  *)m_hBitmap;
-                            size_t temp = (size_t)file_status.st_size;
+                            size_t temp = (size_t)fsize;
                             size_t start = 0;
                             do {
-                                err = (int)fread(&p[start], 1, 256, file);
+                                int vread=256;
+                                if(temp<vread)
+                                    vread=temp;
+                                err = (int)fread(&p[start], 1, vread, file);
                                 if (!err)
                                 {
                                     break;
@@ -1828,7 +1817,6 @@ bool bmpImage::copyFromFile(const XCHAR *name)
                     }
                     fflush(file);
                     fclose(file);
-                }
             }
         }
     }

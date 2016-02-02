@@ -7,7 +7,7 @@
 
 #ifdef _MSC_VER
 #include <pshpack2.h>
-else
+#else
 #pragma pack(1)
 #endif
 
@@ -15,10 +15,10 @@ else
 #ifndef tagBITMAPFILEHEADER
 typedef struct tagBITMAPFILEHEADER {
     short			bfType;
-    unsigned long   bfSize;
+    unsigned int    bfSize;
     short			bfReserved1;
     short			bfReserved2;
-    unsigned long   bfOffBits;
+    unsigned int    bfOffBits;
 } BITMAPFILEHEADER;
 
 
@@ -32,17 +32,17 @@ typedef struct tagBITMAPFILEHEADER {
 typedef BITMAPFILEHEADER *LPBITMAPFILEHEADER;
 
 typedef struct tagBITMAPINFOHEADER {
-    unsigned long      biSize;
-    long			   biWidth;
-    long			   biHeight;
-    short			   biPlanes;
-    short			   biBitCount;
-    unsigned long      biCompression;
-    unsigned long      biSizeImage;
-    long               biXPelsPerMeter;
-    long               biYPelsPerMeter;
-    unsigned long      biClrUsed;
-    unsigned long      biClrImportant;
+    unsigned int      biSize;
+    int			      biWidth;
+    int			      biHeight;
+    short			  biPlanes;
+    short			  biBitCount;
+    unsigned int      biCompression;
+    unsigned int      biSizeImage;
+    int               biXPelsPerMeter;
+    int               biYPelsPerMeter;
+    unsigned int      biClrUsed;
+    unsigned int      biClrImportant;
 } BITMAPINFOHEADER;
 
 typedef  BITMAPINFOHEADER *LPBITMAPINFOHEADER;

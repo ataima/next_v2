@@ -36,6 +36,7 @@ class test_bmpImage_class
     CA_TEST(test_bmpImage_class::test11, "verifica metodo portrait");
     CA_TEST(test_bmpImage_class::test12, "verifica landscape");
     CA_TEST(test_bmpImage_class::test13, "verifica dimensioni");
+    CA_TEST(test_bmpImage_class::test14, "verifica read/save to file");
     CA_TEST_SUITE_END();
     void draw(bmpImage*  bmp);
     void setUp(void);
@@ -53,6 +54,7 @@ class test_bmpImage_class
     void test11(void);
     void test12(void);
     void test13(void);
+    void test14(void);
 };
 ///////////////////////////////////////////////////
 
@@ -155,16 +157,19 @@ void test_bmpImage_class::test5(void)
     _STOP();
     remove("./whiteImage.bmp");
     bmpImage s;
-    s.create(100, 100,24,  255);
+    s.create(100, 100,32,  255);
+    s.frameRect(10,10,90,90,255,0,0,0xffffffff);
     draw(&s);
     bool res = s.copyToFile(X("./whiteImage.bmp"));
     CA_ASSERT(res==true);
     bmpImage t;
     t.copyFromFile(X("./whiteImage.bmp"));
+    CA_ASSERT((LPBITMAPFILEHEADER)s!=NULL);
+    CA_ASSERT((LPBITMAPFILEHEADER)t!=NULL);
     int res1 = memcmp((LPBITMAPFILEHEADER)s, (LPBITMAPFILEHEADER)t, ((LPBITMAPFILEHEADER)(s))->bfSize);
     CA_ASSERT(res1==0);
     draw(&t);
-    remove("./whiteImage.bmp");
+    //remove("./whiteImage.bmp");
 }
 
 void test_bmpImage_class::test6(void)
@@ -279,4 +284,16 @@ void test_bmpImage_class::test13(void)
     s.create(50, 100,24,  255);
     CA_ASSERT(s.check(50, 100)==true);
     CA_ASSERT(s.check(150, 100)==false);
+}
+
+
+void test_bmpImage_class::test14(void)
+{
+    _START();
+    _INFO("verifica interrna alla classe:dimensioni");
+    _AUTHOR("Coppi Angelo bmpImage library ");
+    _STOP();
+    bmpImage s;
+    s.copyFromFile("./old/BORDER.BMP");
+    s.copyToFile("BORDER.BMP");
 }

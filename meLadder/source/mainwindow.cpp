@@ -242,6 +242,9 @@ void MainWindow::directCommand(IParam * user_param)
         case 4005:
             //paste();
             break;
+        case 9999:
+            close();
+            break;
         }
         delete t;
     }
