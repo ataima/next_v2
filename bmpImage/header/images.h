@@ -2,10 +2,12 @@
 #define IMAGE_STUB_HEADER
 
 #ifndef _WINDOWS_
-
+#include <stdlib.h>
 
 #ifdef _MSC_VER
 #include <pshpack2.h>
+else
+#pragma pack(1)
 #endif
 
 
@@ -22,6 +24,8 @@ typedef struct tagBITMAPFILEHEADER {
 
 #ifdef _MSC_VER
 #include <poppack.h>
+#else
+#pragma pack(1)
 #endif
 
 typedef BITMAPFILEHEADER *LPBITMAPFILEHEADER;
@@ -102,7 +106,7 @@ public:
     unsigned int getHeight() const;
     unsigned int getLine(void) const;
     unsigned int getPitch(void) const;
-    unsigned char * getScanLine(unsigned scanline);
+    unsigned char * getScanLine(unsigned int scanline);
     unsigned char * getBits();
     bool invert(void);
     unsigned int  getColorType(void);

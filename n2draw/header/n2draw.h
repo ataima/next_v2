@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "n2interfaces.h"
 
+#include "n2exception.h"
 
 
 class  nnObj

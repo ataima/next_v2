@@ -64,8 +64,8 @@ template <class T> T tMIN(const T &a, const T &b) {
 #define GREY(r, g, b) (unsigned char )(LUMA_REC709(r, g, b) + 0.5F)
 
 #define CREATE_GREYSCALE_PALETTE_REVERSE(palette, entries) \
-    for (unsigned i = 0, v = 0x00FFFFFF; i < entries; i++, v -= (0x00FFFFFF / (entries - 1))) { \
-        ((unsigned *)palette)[i] = v; \
+    for (unsigned int i = 0, v = 0x00FFFFFF; i < entries; i++, v -= (0x00FFFFFF / (entries - 1))) { \
+        ((unsigned int *)palette)[i] = v; \
                                         }
 
 static inline  unsigned char
@@ -79,18 +79,18 @@ LOWNIBBLE(unsigned char byte) {
 }
 
 static inline  unsigned char *
-CalculateScanLine(unsigned char *bits, unsigned pitch, int scanline) {
+CalculateScanLine(unsigned char *bits, unsigned int pitch, int scanline) {
     return bits ? (bits + ((size_t)pitch * scanline)) : nullptr;
 }
 
 
 
 static inline  unsigned
-CalculateLine(unsigned width, unsigned bitdepth) {
-    return (unsigned)(((unsigned long long)width * bitdepth + 7) / 8);
+CalculateLine(unsigned int width, unsigned int bitdepth) {
+    return (unsigned int )(((unsigned long long)width * bitdepth + 7) / 8);
 }
 
-static inline  unsigned
+static inline  unsigned int
 CalculatePitch(unsigned int line) {
     register unsigned int v = line + 3 & ~3;
     return v;
@@ -177,7 +177,7 @@ convertLine24To32(unsigned char  *target, unsigned char  *source, int width_in_p
 
 
 static inline  void
-AssignPixel(unsigned char * dst, const unsigned char * src, unsigned bytesperpixel) {
+AssignPixel(unsigned char * dst, const unsigned char * src, unsigned int bytesperpixel) {
     switch (bytesperpixel) {
     case 1:
         *dst = *src;
@@ -199,7 +199,7 @@ AssignPixel(unsigned char * dst, const unsigned char * src, unsigned bytesperpix
 
 
 
-#define hasPixels  ((getWidth()*getHeight()) != 0)
+
 
 bmpImage::bmpImage()
 {
@@ -503,7 +503,7 @@ unsigned char * bmpImage::getScanLine(LPBITMAPFILEHEADER bI, unsigned scanline)
 }
 
 
-unsigned char * bmpImage::getScanLine(unsigned scanline)
+unsigned char * bmpImage::getScanLine(unsigned int scanline)
 {
     return getScanLine(m_hBitmap, scanline);
 }
@@ -667,13 +667,12 @@ unsigned int bmpImage::getColorType(LPBITMAPFILEHEADER bI)
 bool bmpImage::invert(void)
 {
     bool res = false;
-    if (hasPixels)
+    const unsigned int width = getWidth();
+    const unsigned int height = getHeight();
+    if (width*height)
     {
-
-        unsigned i, x, y, k;
-        const unsigned width = getWidth();
-        const unsigned height = getHeight();
-        const unsigned bpp = getBitsPerPixel();
+        unsigned int i, x, y, k;
+        const unsigned int bpp = getBitsPerPixel();
         switch (bpp) {
         case 1:
         case 4:
@@ -703,7 +702,7 @@ bool bmpImage::invert(void)
         case 32:
         {
             // Calculate the number of bytes per pixel (3 for 24-bit or 4 for 32-bit)
-            const unsigned bytespp = getLine() / width;
+            const unsigned int bytespp = getLine() / width;
 
             for (y = 0; y < height; y++) {
                 unsigned char  *bits = getScanLine(y);
@@ -787,14 +786,11 @@ void bmpImage::freeBitmap(LPBITMAPFILEHEADER bI)
 bool bmpImage::convertTo24Bits(void)
 {
     bool res = false;
-    if (hasPixels)
+    const unsigned int width = getWidth();
+    const unsigned int height = getHeight();
+    if (width*height)
     {
-        const unsigned bpp = getBitsPerPixel();
-
-        const int width = getWidth();
-        const int height = getHeight();
-
-
+        const unsigned int bpp = getBitsPerPixel();
         if (bpp == 24)
         {
             res = true;
@@ -862,14 +858,11 @@ bool bmpImage::convertTo24Bits(void)
 bool bmpImage::convertTo32Bits(void)
 {
     bool res = false;
-    if (hasPixels)
+    const int width = getWidth();
+    const int height = getHeight();
+    if (width*height)
     {
-        const unsigned bpp = getBitsPerPixel();
-
-        const int width = getWidth();
-        const int height = getHeight();
-
-
+        const unsigned int bpp = getBitsPerPixel();
         if (bpp == 32)
         {
             res = true;
@@ -943,11 +936,15 @@ bool bmpImage::convertTo32Bits(void)
 bool bmpImage::rotate(double angle)
 {
     bool res = false;
-    if (isValid() && hasPixels )
+    if (isValid()  )
     {
+        const unsigned int width = getWidth();
+        const unsigned int height = getHeight();
+        if (width*height)
+        {
         LPBITMAPFILEHEADER rotated = rotateInt(m_hBitmap, angle);
         res = replace(rotated);
-
+        }
     }
     return res;
 }
@@ -955,12 +952,12 @@ bool bmpImage::rotate(double angle)
 LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
 {
     LPBITMAPFILEHEADER res = nullptr;
-    const unsigned bpp = getBitsPerPixel(src);
+    const unsigned int bpp = getBitsPerPixel(src);
 
-    const unsigned src_width = getWidth(src);
-    const unsigned src_height = getHeight(src);
-    const unsigned dst_width = src_height;
-    const unsigned dst_height = src_width;
+    const unsigned int src_width = getWidth(src);
+    const unsigned int src_height = getHeight(src);
+    const unsigned int dst_width = src_height;
+    const unsigned int dst_height = src_width;
 
 
     // allocate and clear dst image
@@ -969,8 +966,8 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
     {
 
         // get src and dst scan width
-        const unsigned src_pitch = getPitch(src);
-        const unsigned dst_pitch = getPitch(dst);
+        const unsigned int src_pitch = getPitch(src);
+        const unsigned int dst_pitch = getPitch(dst);
 
         if (bpp == 1) {
             // speedy rotate for BW images
@@ -980,13 +977,13 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
 
             unsigned char  *dbitsmax = bdest + dst_height * dst_pitch - 1;
 
-            for (unsigned y = 0; y < src_height; y++) {
+            for (unsigned int y = 0; y < src_height; y++) {
                 // figure out the column we are going to be copying to
                 const div_t div_r = div(y, 8);
                 // set bit pos of src column byte
                 const unsigned char  bitpos = (unsigned char)(128 >> div_r.rem);
                 unsigned char  *srcdisp = bsrc + y * src_pitch;
-                for (unsigned x = 0; x < src_pitch; x++) {
+                for (unsigned int x = 0; x < src_pitch; x++) {
                     // get source bits
                     unsigned char  *sbits = srcdisp + x;
                     // get destination column
@@ -1014,21 +1011,21 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
             unsigned char  *bdest = getBits(dst);  // destination pixels
 
             // calculate the number of bytes per pixel (1 for 8-bit, 3 for 24-bit or 4 for 32-bit)
-            const unsigned bytespp = getLine(src) / getWidth(src);
+            const unsigned int bytespp = getLine(src) / getWidth(src);
 
             // for all image blocks of RBLOCK*RBLOCK pixels
 
             // x-segment
-            for (unsigned xs = 0; xs < dst_width; xs += RBLOCK) {
+            for (unsigned int xs = 0; xs < dst_width; xs += RBLOCK) {
                 // y-segment
-                for (unsigned ys = 0; ys < dst_height; ys += RBLOCK) {
-                    for (unsigned y = ys; y < tMIN(dst_height, ys + RBLOCK); y++) {    // do rotation
-                        const unsigned y2 = dst_height - y - 1;
+                for (unsigned int ys = 0; ys < dst_height; ys += RBLOCK) {
+                    for (unsigned int y = ys; y < tMIN(dst_height, ys + RBLOCK); y++) {    // do rotation
+                        const unsigned int y2 = dst_height - y - 1;
                         // point to src pixel at (y2, xs)
                         unsigned char  *src_bits = bsrc + (xs * src_pitch) + (y2 * bytespp);
                         // point to dst pixel at (xs, y)
                         unsigned char  *dst_bits = bdest + (y * dst_pitch) + (xs * bytespp);
-                        for (unsigned x = xs; x < tMIN(dst_width, xs + RBLOCK); x++) {
+                        for (unsigned int x = xs; x < tMIN(dst_width, xs + RBLOCK); x++) {
                             // dst.SetPixel(x, y, src.GetPixel(y2, x));
                             AssignPixel(dst_bits, src_bits, bytespp);
                             dst_bits += bytespp;
@@ -1108,20 +1105,20 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
 
     int x2, dlineup;
 
-    const unsigned bpp = getBitsPerPixel(src);
+    const unsigned int bpp = getBitsPerPixel(src);
 
-    const unsigned src_width = getWidth(src);
-    const unsigned src_height = getHeight(src);
-    const unsigned dst_width = src_height;
-    const unsigned dst_height = src_width;
+    const unsigned int src_width = getWidth(src);
+    const unsigned int src_height = getHeight(src);
+    const unsigned int dst_width = src_height;
+    const unsigned int dst_height = src_width;
 
     LPBITMAPFILEHEADER dst = allocateBitmap(dst_width, dst_height,bpp,0);
     if (NULL != dst)
     {
 
         // get src and dst scan width
-        const unsigned src_pitch = getPitch(src);
-        const unsigned dst_pitch = getPitch(dst);
+        const unsigned int src_pitch = getPitch(src);
+        const unsigned int dst_pitch = getPitch(dst);
 
         if (bpp == 1) {
             // speedy rotate for BW images
@@ -1131,7 +1128,7 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
             unsigned char  *dbitsmax = bdest + dst_height * dst_pitch - 1;
             dlineup = 8 * dst_pitch - dst_width;
 
-            for (unsigned y = 0; y < src_height; y++) {
+            for (unsigned int y = 0; y < src_height; y++) {
                 // figure out the column we are going to be copying to
                 const div_t div_r = div(y + dlineup, 8);
                 // set bit pos of src column byte
@@ -1142,7 +1139,7 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
                     const unsigned char  *sbits = srcdisp + x;
                     // get destination column
                     unsigned char  *nrow = bdest + (x * 8) * dst_pitch + dst_pitch - 1 - div_r.quot;
-                    for (unsigned z = 0; z < 8; z++) {
+                    for (unsigned int z = 0; z < 8; z++) {
                         // get destination byte
                         unsigned char  *dbits = nrow + z * dst_pitch;
                         if ((dbits < bdest) || (dbits > dbitsmax)) break;
@@ -1165,21 +1162,21 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
             unsigned char  *bdest = getBits(dst);  // destination pixels
 
             // Calculate the number of bytes per pixel (1 for 8-bit, 3 for 24-bit or 4 for 32-bit)
-            const unsigned bytespp = getLine(src) / getWidth(src);
+            const unsigned int bytespp = getLine(src) / getWidth(src);
 
             // for all image blocks of RBLOCK*RBLOCK pixels
 
             // x-segment
-            for (unsigned xs = 0; xs < dst_width; xs += RBLOCK) {
+            for (unsigned int xs = 0; xs < dst_width; xs += RBLOCK) {
                 // y-segment
-                for (unsigned ys = 0; ys < dst_height; ys += RBLOCK) {
-                    for (unsigned x = xs; x < tMIN(dst_width, xs + RBLOCK); x++) {    // do rotation
+                for (unsigned int ys = 0; ys < dst_height; ys += RBLOCK) {
+                    for (unsigned int x = xs; x < tMIN(dst_width, xs + RBLOCK); x++) {    // do rotation
                         x2 = dst_width - x - 1;
                         // point to src pixel at (ys, x2)
                         unsigned char  *src_bits = bsrc + (x2 * src_pitch) + (ys * bytespp);
                         // point to dst pixel at (x, ys)
                         unsigned char  *dst_bits = bdest + (ys * dst_pitch) + (x * bytespp);
-                        for (unsigned y = ys; y < tMIN(dst_height, ys + RBLOCK); y++) {
+                        for (unsigned int y = ys; y < tMIN(dst_height, ys + RBLOCK); y++) {
                             // dst.SetPixel(x, y, src.GetPixel(y, x2));
                             AssignPixel(dst_bits, src_bits, bytespp);
                             src_bits += bytespp;
@@ -1198,14 +1195,14 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
 bool bmpImage::flipHorizontal(void)
 {
     bool res = false;
-    if (hasPixels)
+    const unsigned int width = getWidth();
+    const unsigned int height = getHeight();
+    if (width*height)
     {
 
-        unsigned line = getLine();
-        unsigned width = getWidth();
-        unsigned height = getHeight();
+        const unsigned int line = getLine();
 
-        unsigned bytespp = getLine() / getWidth();
+        const unsigned int bytespp = getLine() / getWidth();
 
         // copy between aligned memories
         unsigned char  *new_bits = (unsigned char  *)malloc(line * sizeof(unsigned char));
@@ -1213,7 +1210,7 @@ bool bmpImage::flipHorizontal(void)
         if (new_bits)
         {
             // mirror the buffer
-            for (unsigned y = 0; y < height; y++) {
+            for (unsigned int y = 0; y < height; y++) {
                 unsigned char  *bits = getScanLine(y);
                 memcpy(new_bits, bits, line);
 
@@ -1221,11 +1218,11 @@ bool bmpImage::flipHorizontal(void)
                 {
                 case 1:
                 {
-                    for (unsigned x = 0; x < width; x++) {
+                    for (unsigned int x = 0; x < width; x++) {
                         // get pixel at (x, y)
                         bool value = (new_bits[x >> 3] & (0x80 >> (x & 0x07))) != 0;
                         // set pixel at (new_x, y)
-                        unsigned new_x = width - 1 - x;
+                        unsigned int   new_x = width - 1 - x;
                         value ? bits[new_x >> 3] |= (0x80 >> (new_x & 0x7)) : bits[new_x >> 3] &= (0xff7f >> (new_x & 0x7));
                     }
                 }
@@ -1234,7 +1231,7 @@ bool bmpImage::flipHorizontal(void)
 
                 case 4:
                 {
-                    for (unsigned c = 0; c < line; c++) {
+                    for (unsigned int c = 0; c < line; c++) {
                         bits[c] = new_bits[line - c - 1];
 
                         unsigned char  nibble = (bits[c] & 0xF0) >> 4;
@@ -1250,7 +1247,7 @@ bool bmpImage::flipHorizontal(void)
                 {
                     unsigned char  *dst_data = (unsigned char *)bits;
                     unsigned char  *src_data = (unsigned char *)(new_bits + line - bytespp);
-                    for (unsigned c = 0; c < width; c++) {
+                    for (unsigned int c = 0; c < width; c++) {
                         *dst_data++ = *src_data--;
                     }
                 }
@@ -1263,8 +1260,8 @@ bool bmpImage::flipHorizontal(void)
                 {
                     unsigned char  *dst_data = (unsigned char *)bits;
                     unsigned char  *src_data = (unsigned char *)(new_bits + line - bytespp);
-                    for (unsigned c = 0; c < width; c++) {
-                        for (unsigned k = 0; k < bytespp; k++) {
+                    for (unsigned int c = 0; c < width; c++) {
+                        for (unsigned int k = 0; k < bytespp; k++) {
                             *dst_data++ = src_data[k];
                         }
                         src_data -= bytespp;
@@ -1284,13 +1281,12 @@ bool bmpImage::flipHorizontal(void)
 bool bmpImage::flipVertical(void)
 {
     bool res = false;
-    if (hasPixels)
-    {
+    const unsigned int width = getWidth();
+    const unsigned int height = getHeight();
+    if (width*height)
+  {
         unsigned char  *From, *Mid;
-
-        unsigned pitch = getPitch();
-        unsigned height = getHeight();
-
+        unsigned int pitch = getPitch();
         // copy between aligned memories
         Mid = (unsigned char *)malloc(pitch * sizeof(unsigned char));
         if (Mid)
@@ -1301,7 +1297,7 @@ bool bmpImage::flipVertical(void)
             unsigned int line_s = 0;
             unsigned int line_t = (height - 1) * pitch;
 
-            for (unsigned y = 0; y < height / 2; y++) {
+            for (unsigned int y = 0; y < height / 2; y++) {
 
                 memcpy(Mid, From + line_s, pitch);
                 memcpy(From + line_s, From + line_t, pitch);
@@ -1375,7 +1371,7 @@ LPBITMAPFILEHEADER bmpImage::rotateInt(LPBITMAPFILEHEADER bI, double angle)
     else
     {
         //angle *= -1;
-        unsigned bpp = getBitsPerPixel(bI);
+        const unsigned int bpp = getBitsPerPixel(bI);
         if (bpp == 1) {
             // only rotate for integer multiples of 90 degree
             if (fmod(angle, 90) == 0)
@@ -1969,7 +1965,7 @@ bool bmpImage::swapto(LPBITMAPFILEHEADER pI, int iSorg, int iDest)
         if (bpp == 24 || bpp == 32)
         {
             // must be 24 RGBRGBRGB
-            const unsigned bytespp = getLine(pI) / getWidth(pI);
+            const unsigned int bytespp = getLine(pI) / getWidth(pI);
             const unsigned int size = getWidth(pI)*getHeight(pI)*bytespp;
             unsigned int xs;
             unsigned char * ptr = getBits(pI);
@@ -2003,7 +1999,7 @@ bool bmpImage::setPixel(LPBITMAPFILEHEADER dest,unsigned int x,unsigned int y,un
         y=height;
     unsigned int pitch = getPitch(dest);
     unsigned int line = getLine(dest);
-    unsigned  int depth = line / width;
+    unsigned int depth = line / width;
     unsigned char  *bits = getBits(dest) + (y * pitch) + (x * depth);
     bits[ID_RGBA_BLUE]=blue;
     bits[ID_RGBA_GREEN]=green;
@@ -2113,18 +2109,17 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
     {
         if (y>=0 && y < height)
         do {
-            if(x<0)goto skip_for_clipy;
-            if(x>=width)goto skip_for_clipy;
-            if(y>=height)break;
-            if (y >= height)break;
-            register unsigned char  *pos=bits+(y * pitch) + (x * depth);
-            if(mb&maskDot)
+            if(x>=0  && x<width)
             {
-                pos[ID_RGBA_BLUE]=blue;
-                pos[ID_RGBA_GREEN]=green;
-                pos[ID_RGBA_RED]=red;
+                if (y >= height)break;
+                register unsigned char  *pos=bits+(y * pitch) + (x * depth);
+                if(mb&maskDot)
+                {
+                    pos[ID_RGBA_BLUE]=blue;
+                    pos[ID_RGBA_GREEN]=green;
+                    pos[ID_RGBA_RED]=red;
+                }
             }
-skip_for_clipy:
             x++;
             mb<<=1;
             if(!mb)mb=1;
@@ -2135,8 +2130,8 @@ skip_for_clipy:
     {
         if (x >= 0 && x < width)
         do {
-            if(y<0)goto skip_for_clipx;
-            if(y>=height)goto skip_for_clipx;
+            if(y>=0 && y<height)
+            {
             register unsigned char  *pos=bits+(y * pitch) + (x * depth);
             if(mb&maskDot)
             {
@@ -2144,7 +2139,7 @@ skip_for_clipy:
                 pos[ID_RGBA_GREEN]=green;
                 pos[ID_RGBA_RED]=red;
             }
-skip_for_clipx:
+            }
             y++;
             mb<<=1;
             if(!mb)mb=1;
@@ -2157,10 +2152,8 @@ skip_for_clipx:
         {
             p = 2 * dy - dx;
             do {
-                if(x<0)goto skip_for_clip1;
-                if(y<0)goto skip_for_clip1;
-                if(x>=width)goto skip_for_clip1;
-                if(y>=height)goto skip_for_clip1;
+                if(x>=0 && y>=0 && x<width && y<height)
+                {
                 register unsigned char  *pos=bits+(y * pitch) + (x * depth);
                 if(mb&maskDot)
                 {
@@ -2168,7 +2161,7 @@ skip_for_clipx:
                     pos[ID_RGBA_GREEN]=green;
                     pos[ID_RGBA_RED]=red;
                 }
-skip_for_clip1:
+                }
                 x++;
                 mb<<=1;
                 if(!mb)mb=1;
@@ -2188,10 +2181,8 @@ skip_for_clip1:
         {
             p = 2 * dx - dy;
             do {
-                if(x<0)goto skip_for_clip2;
-                if(y<0)goto skip_for_clip2;
-                if(x>=width)goto skip_for_clip2;
-                if(y>=height)goto skip_for_clip2;
+                if(x>=0 && y>=0 && x<width && y<height)
+                {
                 register unsigned char  *pos=bits+(y * pitch) + (x * depth);
                 if(mb&maskDot)
                 {
@@ -2199,7 +2190,7 @@ skip_for_clip1:
                     pos[ID_RGBA_GREEN]=green;
                     pos[ID_RGBA_RED]=red;
                 }
-skip_for_clip2:
+                }
                 y++;
                 mb<<=1;
                 if(!mb)mb=1;

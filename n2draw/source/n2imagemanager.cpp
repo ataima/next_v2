@@ -301,7 +301,7 @@ bool nnImageManager::loadImages(void)
             {
                     if (image.getBitsPerPixel() < 32)
                         image.convertTo32Bits();
-#if 1
+#if _MSC_VER
                     image.show(10, 10);
 #endif
                     //TO DO STRECT TO FIT

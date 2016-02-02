@@ -7,8 +7,8 @@
 #include "n2exception.h"
 #include "n2fontmanager.h"
 #include "n2fontlist.h"
-#include "n2ExtHandler.h"
-#include "n2ChildApp.h"
+#include "n2exthandler.h"
+#include "n2childapp.h"
 #include "n2appmanager.h"
 
 
