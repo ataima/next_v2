@@ -77,6 +77,8 @@ typedef enum tag_handler_Action
 
 class IParam
 {
+public:
+    virtual ~IParam() {}
 };
 
 template < class T> class nnAbstractParam
@@ -86,6 +88,7 @@ template < class T> class nnAbstractParam
 public:
   nnAbstractParam(T & v):_value(v){}
   inline T value(void){return _value;}
+  virtual ~nnAbstractParam() {}
 };
 
 
@@ -98,6 +101,7 @@ class IExtHandler
 {
 public:
     virtual  void doHandler(size_t Tparam,IParam* in=nullptr)=0;
+    virtual ~IExtHandler() {}
 };
 
 
@@ -141,6 +145,7 @@ public:
     virtual bool handlerUpButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerDownButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerRequestCommand(nnPoint phyPoint, int & command) = 0;
+    virtual ~IHandler() {}
 };
 
 
@@ -163,7 +168,7 @@ public:
     virtual const XCHAR  * getName(void)=0;
     virtual IXmlNode * getParent(void)=0;
     virtual IXmlNode * getChild(void)=0;
-
+    virtual ~IXmlNode() {}
 };
 
 class IConfig
@@ -172,6 +177,7 @@ public:
     virtual bool readConfiguration(const XCHAR *name) = 0;
     virtual bool writeConfiguration(const XCHAR *name) = 0;
     virtual IXmlNode * getRoot(void) = 0;
+    virtual ~IConfig() {}
 };
 
 
@@ -427,6 +433,7 @@ public:
     virtual bool add(const char *name, IFontManager*) = 0;
     virtual bool remove(const char *name) = 0;
     virtual bool getFontNameList(fontNameList & list) = 0;
+    virtual ~IFontList() {}
 };
 //////////////////////////////////////////////////////
 
@@ -457,6 +464,7 @@ public:
     virtual bool getStatus(void)=0;
     virtual void setError(bool st)=0;
     virtual void setFont(IFontManager *font) = 0;
+    virtual ~ISelector() {}
 };
 
 //////////////////////////////////////////////////////
@@ -496,6 +504,7 @@ public:
     virtual bool handlerMouseButtonDown(nnPoint phyPoint, IViewGlue * glue) = 0;
     virtual void hide(void) = 0;
     virtual void show(void) = 0;
+    virtual ~IScroller() {}
 };
 
 class IViewGlue
@@ -564,6 +573,7 @@ public:
     virtual void clean(void) = 0;
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name) = 0;    
     virtual bool setExtHandler(extHandler  _hook, void *unkObj) = 0;
+    virtual ~IChild() {}
 };
 
 

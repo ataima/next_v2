@@ -4,7 +4,13 @@
 #
 #-------------------------------------------------
 
+
+macx:QT       += macextras
+macx:QMAKE_MAC_SDK = macosx10.9
+
 QT       += core gui widgets
+
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -40,6 +46,16 @@ LIBS += $$DESTDIR/libn2draw.a
 LIBS += $$DESTDIR/libbmpImage.a
 }
 
+macx {
+LIBS +=   $$DESTDIR/libn2draw.a
+LIBS +=   $$DESTDIR/libbmpImage.a
+}
+
+ios {
+LIBS +=   $$DESTDIR/libn2draw.a
+LIBS +=   $$DESTDIR/libbmpImage.a
+}
+
 
 INCLUDEPATH +=../../header
 INCLUDEPATH +=../../../bmpImage/header
@@ -53,5 +69,13 @@ RESOURCES += \
 
 
 linux {
+CONFIG += c++11
+}
+
+macx{
+CONFIG += c++11
+}
+
+ios{
 CONFIG += c++11
 }

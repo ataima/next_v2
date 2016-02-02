@@ -6,6 +6,9 @@
 
 QT       -= gui
 
+macx:QT       += macextras
+macx:QMAKE_MAC_SDK = macosx10.9
+
 TARGET = image
 TEMPLATE = lib
 CONFIG += staticlib
@@ -28,5 +31,13 @@ TARGET = bmpImage
 INCLUDEPATH +=../../header
 
 linux {
+CONFIG += c++11
+}
+
+macx{
+CONFIG += c++11
+}
+
+ios{
 CONFIG += c++11
 }

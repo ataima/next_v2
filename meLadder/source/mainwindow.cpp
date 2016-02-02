@@ -142,8 +142,15 @@ void MainWindow::init()
         IChild *client=nullptr;
         try {
             QString   path=qApp->applicationDirPath();
+#ifdef __APPLE__
+        #ifdef _UNICODE
+                    path+=X("/../../..";
+        #else
+                    path+="/../../..";
+        #endif
+#endif
 #ifdef _UNICODE
-            path+="/conf_utf16.xml";
+            path+=X("/conf_utf16.xml";
 #else
             path+="/conf_utf8.xml";
 #endif
@@ -522,3 +529,4 @@ MainWindow *MainWindow::findMainWindow(const QString &fileName)
     }
     return 0;
 }
+

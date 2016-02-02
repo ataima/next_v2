@@ -4,7 +4,10 @@
 #include <string.h>
 #endif
 #include "images.h"
+
+#ifdef _MSC_VER
 #include <codecvt>
+#endif
 #include <locale>
 
 #ifndef _MSC_VER
@@ -92,7 +95,7 @@ CalculateLine(unsigned int width, unsigned int bitdepth) {
 
 static inline  unsigned int
 CalculatePitch(unsigned int line) {
-    register unsigned int v = line + 3 & ~3;
+    unsigned int v = (line + 3) & (~3);
     return v;
 }
 
@@ -804,7 +807,7 @@ bool bmpImage::convertTo24Bits(void)
                 switch (bpp) {
                 case 1:
                 {
-                    for (int rows = 0; rows < height; rows++) {
+                    for (unsigned int rows = 0; rows < height; rows++) {
                         convertLine1To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -814,7 +817,7 @@ bool bmpImage::convertTo24Bits(void)
                 break;
                 case 4:
                 {
-                    for (int rows = 0; rows < height; rows++) {
+                    for (unsigned int rows = 0; rows < height; rows++) {
                         convertLine4To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -825,7 +828,7 @@ bool bmpImage::convertTo24Bits(void)
 
                 case 8:
                 {
-                    for (int rows = 0; rows < height; rows++) {
+                    for (unsigned int rows = 0; rows < height; rows++) {
                         convertLine8To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -837,7 +840,7 @@ bool bmpImage::convertTo24Bits(void)
 
                 case 32:
                 {
-                    for (int rows = 0; rows < height; rows++) {
+                    for (unsigned int rows = 0; rows < height; rows++) {
                         convertLine32To24(getScanLine(new_dib, rows), getScanLine(rows), width);
                     }
                     freeBitmap(m_hBitmap);
@@ -2112,7 +2115,7 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
             if(x>=0  && x<width)
             {
                 if (y >= height)break;
-                register unsigned char  *pos=bits+(y * pitch) + (x * depth);
+                unsigned char  *pos=bits+(y * pitch) + (x * depth);
                 if(mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE]=blue;
@@ -2132,7 +2135,7 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
         do {
             if(y>=0 && y<height)
             {
-            register unsigned char  *pos=bits+(y * pitch) + (x * depth);
+            unsigned char  *pos=bits+(y * pitch) + (x * depth);
             if(mb&maskDot)
             {
                 pos[ID_RGBA_BLUE]=blue;
@@ -2154,7 +2157,7 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
             do {
                 if(x>=0 && y>=0 && x<width && y<height)
                 {
-                register unsigned char  *pos=bits+(y * pitch) + (x * depth);
+                unsigned char  *pos=bits+(y * pitch) + (x * depth);
                 if(mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE]=blue;
@@ -2183,7 +2186,7 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
             do {
                 if(x>=0 && y>=0 && x<width && y<height)
                 {
-                register unsigned char  *pos=bits+(y * pitch) + (x * depth);
+                unsigned char  *pos=bits+(y * pitch) + (x * depth);
                 if(mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE]=blue;

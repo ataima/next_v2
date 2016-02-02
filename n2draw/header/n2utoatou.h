@@ -1,8 +1,10 @@
 #ifndef UTOATOU
 #define UTOATOU
 
-
+#ifdef _MSV_VER
 #include <codecvt>
+#endif
+
 #include <locale>
 
 

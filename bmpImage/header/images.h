@@ -1,6 +1,7 @@
 #ifndef IMAGE_STUB_HEADER
 #define IMAGE_STUB_HEADER
 
+
 #ifndef _WINDOWS_
 #include <stdlib.h>
 

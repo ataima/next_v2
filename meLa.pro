@@ -1,3 +1,6 @@
+macx:QT       += macextras
+macx:QMAKE_MAC_SDK = macosx10.9
+
 TEMPLATE      = subdirs
 
 SUBDIRS = \

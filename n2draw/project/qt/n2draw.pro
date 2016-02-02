@@ -6,6 +6,10 @@
 
 QT       -= gui
 
+
+macx:QT       += macextras
+macx:QMAKE_MAC_SDK = macosx10.9
+
 TARGET = n2draw
 TEMPLATE = lib
 CONFIG += staticlib
@@ -76,5 +80,13 @@ INCLUDEPATH +=../../../bmpImage/header
 
 
 linux {
+CONFIG += c++11
+}
+
+macx{
+CONFIG += c++11
+}
+
+ios{
 CONFIG += c++11
 }

@@ -100,7 +100,7 @@ inline void marshallObj(T* ptr, const char* f, int l)
     }
 }
 
-#if (_MSC_VER < 1900)
+#if _MSC_VER &&  (_MSC_VER < 1900)
 #define __func__ __FUNCTION__
 #define snprintf  _snprintf
 #endif
