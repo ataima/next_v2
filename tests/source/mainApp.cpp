@@ -225,7 +225,7 @@ int configure(int argc, const char* argv[],int *format,char *namefile,char *name
 }
 
 
-int   main(int argc, const char* argv[])
+int   _cdecl main(int argc, const char* argv[])
 {
     int format;
     char buff[255];

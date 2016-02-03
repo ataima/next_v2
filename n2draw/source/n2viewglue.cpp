@@ -908,7 +908,8 @@ bool nnViewGlue::resize(int w, int h)
                                     bmpImage *two = images->getImage(X("ScrollHorzRight"));
                                     if (one && two)
                                     {
-                                        hscroller->setImage(one, two);
+                                        hscroller->addImage(1, one);
+                                        hscroller->addImage(2, two);
                                     }
                                 }
                             }
@@ -942,7 +943,8 @@ bool nnViewGlue::resize(int w, int h)
                                     bmpImage *two = images->getImage(X("ScrollVertDown"));
                                     if (one && two)
                                     {
-                                        vscroller->setImage(one, two);
+                                        vscroller->addImage(1, one);
+                                        vscroller->addImage(2, two);
                                     }
                                 }
                             }
@@ -1659,7 +1661,8 @@ bool nnViewGlue::loadImages(const XCHAR * _path)
             bmpImage *two = images->getImage(X("ScrollHorzRight"));
             if (one && two)
             {
-                hscroller->setImage(one, two);
+                hscroller->addImage(1, one);
+                hscroller->addImage(2, two);
             }
         }
         if (vscroller)
@@ -1668,7 +1671,8 @@ bool nnViewGlue::loadImages(const XCHAR * _path)
             bmpImage *two = images->getImage(X("ScrollVertDown"));
             if (one && two)
             {
-                vscroller->setImage(one, two);
+                vscroller->addImage(1, one);
+                vscroller->addImage(2, two);
             }
         }
     }

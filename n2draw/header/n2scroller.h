@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "n2interfaces.h"
 
 
-class nnScroller
+class nnScroller final
 :public IScroller
 {
     int minPos;
@@ -39,8 +39,8 @@ class nnScroller
     bool visible;
     nnRect phyArea;
     nnRect bt1Rect, bt2Rect;
-    bmpImage *image1;
-    bmpImage *image2;
+    bmpImage  *image1;
+    bmpImage  *image2;
     scrollerMode mode;
 public:
     nnScroller(int _min, int _max);
@@ -48,20 +48,21 @@ public:
     bool draw(bmpImage & bkg, IViewGlue *);
     void setHorzArea(nnPoint & phy);
     void setVertArea(nnPoint & phy);
-    inline void setImage(bmpImage *one, bmpImage *two) 
-                { image1 = one; image2 = two; }
+    void addImage(int pos, bmpImage * image);
     inline bool setScrollSize(int maximum, int minimum) 
                 { maxPos = maximum; minPos = minimum; return true; }
     inline int getPosition(void) 
                 { return currentPos; }
     inline void update(int _pos) 
                 { currentPos = _pos; }
-    bool handlerMouseMove( nnPoint phyPoint, show_status & status, IExtHandler *hook);
-    bool handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue);
+    bool handlerMouseMove( nnPoint phyPoint, show_status & status, IExtHandler *hook) ;
+    bool handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue) ;
     inline void hide(void) 
                 { visible = false; }
     inline void show(void) 
                 { visible = true; }
+private:
+    void drawBar(bmpImage & bkg, nnPoint & start, nnPoint & stop);
 };
 
 

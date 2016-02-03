@@ -490,20 +490,27 @@ mode_scroller_horz= 100,
 mode_scroller_vert = 200
 }scrollerMode;
 
-class IScroller
+class IComponent
 {
 public:
     virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
-    virtual void setHorzArea(nnPoint & phy) = 0;
-    virtual void setVertArea(nnPoint & phy) = 0;
-    virtual void setImage(bmpImage *one, bmpImage *two) = 0;
-    virtual bool setScrollSize(int maximun, int minimum) = 0;
-    virtual int getPosition(void) = 0;
-    virtual void update(int _pos) = 0;
     virtual bool handlerMouseMove(nnPoint phyPoint, show_status & status, IExtHandler *hook) = 0;
     virtual bool handlerMouseButtonDown(nnPoint phyPoint, IViewGlue * glue) = 0;
+    virtual void addImage(int pos, bmpImage *image) = 0;
     virtual void hide(void) = 0;
     virtual void show(void) = 0;
+    virtual ~IComponent() {}
+};
+
+class IScroller
+    :public IComponent
+{
+public:
+    virtual int getPosition(void)=0;
+    virtual void update(int _pos)=0;
+    virtual void setHorzArea(nnPoint & phy) = 0;
+    virtual void setVertArea(nnPoint & phy) = 0;
+    virtual bool setScrollSize(int maximun, int minimum) = 0;
     virtual ~IScroller() {}
 };
 

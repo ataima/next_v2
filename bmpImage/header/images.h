@@ -87,7 +87,7 @@ public:
     bool copyFromFile(const XCHAR *name);
     bool copyFrombmpImage(bmpImage & b);
     bool copyToFile(const XCHAR *name);
-    bool create(unsigned int width, unsigned int height,unsigned int deep,  unsigned char  color);
+    bool create( int width,  int height,unsigned int deep,  unsigned char  color);
     bool isValid(void);
     bool clear(void);
     bool detach(void);

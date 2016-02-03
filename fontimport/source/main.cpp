@@ -173,7 +173,7 @@ bool printText(bmpImage & image, HDC dc, HFONT font,
                     int oldMOde = SetBkMode(memDC, 1);
                     HFONT oldFont = (HFONT)SelectObject(memDC, font);
                     SetTextColor(memDC, color);
-                    ::TextOutA(memDC, x, y, text, strlen(text));
+                    ::TextOutA(memDC, x, y, text, (int)strlen(text));
                     ::SelectObject(memDC, oldFont);
                     ::SetBkMode(memDC, oldMOde);
                     ::SelectObject(dc, bmDefault);

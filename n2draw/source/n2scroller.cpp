@@ -32,7 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 nnScroller::nnScroller(int _min, int _max):
     minPos(_min),maxPos(_max),visible(false),
-    currentPos(0),image1(nullptr),image2(nullptr),
+    currentPos(0),
     mode(scrollerMode::mode_scroller_unknow)
 {
     phyArea.set(0, 0, 0, 0);
@@ -48,52 +48,6 @@ nnScroller::~nnScroller()
 
 
 
-bool nnScroller::draw(bmpImage & bkg, IViewGlue * )
-{
-    bool res = false;
-    int height = bkg.getHeight();
-   // int width = bkg.getWidth();
-    if (visible)
-    {
-        if (image1)
-        {
-            if (mode == scrollerMode::mode_scroller_horz)
-            {
-                res = bkg.drawMaskSprite(*image1, phyArea.start.x, height - phyArea.start.y-image1->getHeight(), 0, 0, 0);
-                bt1Rect.set(phyArea.start.x, phyArea.start.y, phyArea.start.x + image1->getWidth(), phyArea.start.y + image1->getHeight());
-            }
-            else
-            if (mode == scrollerMode::mode_scroller_vert)
-            {
-                res = bkg.drawMaskSprite(*image1, phyArea.start.x, height - phyArea.start.y-image1->getHeight(), 0, 0, 0);
-                bt1Rect.set(phyArea.start.x, phyArea.start.y, phyArea.start.x + image1->getWidth(), phyArea.start.y + image1->getHeight());
-            }
-        }
-        if ( image2)
-        {
-            if (mode == scrollerMode::mode_scroller_horz)
-            {
-                res = bkg.drawMaskSprite(*image2, phyArea.stop.x -image2->getWidth(), height - phyArea.start.y - image2->getHeight(), 0, 0, 0);
-                bt2Rect.set(phyArea.stop.x-image2->getWidth(), phyArea.start.y, phyArea.stop.x , phyArea.start.y + image2->getHeight());
-            }
-            else
-            if (mode == scrollerMode::mode_scroller_vert)
-            {
-                res = bkg.drawMaskSprite(*image2, phyArea.start.x , height-phyArea.stop.y, 0, 0, 0);
-                bt2Rect.set(phyArea.start.x , phyArea.stop.y-image2->getHeight(), phyArea.stop.x, phyArea.stop.y );
-            }
-        }
-        // todo ... I will to create a class showsTips to show info . Must be a class on separate thread 
-        // to implement code as : info = new nnTips("prova" ,100) ; info.run();
-        // this class auto manage the process the show and auto clean 
-#if 0
-        bkg.frameRect(bt1Rect.start.x, height - bt1Rect.start.y,  bt1Rect.stop.x, height - bt1Rect.stop.y, 255, 0, 0,0xffffffff);
-        bkg.frameRect(bt2Rect.start.x, height - bt2Rect.start.y,  bt2Rect.stop.x, height - bt1Rect.stop.y, 255, 0, 0, 0xffffffff);
-        bkg.frameRect(phyArea.start.x, height - phyArea.start.y, phyArea.stop.x, height - phyArea.stop.y, 0,0, 255, 0xffffffff);
-#endif
-    }
-    return res;
-}
 
 bool nnScroller::handlerMouseMove( nnPoint phyPoint, show_status & status, IExtHandler *hook)
 {
@@ -179,9 +133,11 @@ bool nnScroller::handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue)
 }
 
 
+
+
 void nnScroller::setHorzArea(nnPoint & phy)
 {
-    if (image1)
+    if (image1!=nullptr && image2 != nullptr)
     {
         int w = phy.x;
         if (w < 480)
@@ -203,7 +159,7 @@ void nnScroller::setHorzArea(nnPoint & phy)
 
 void nnScroller::setVertArea(nnPoint & phy)
 {
-    if (image2)
+    if(image1!=nullptr && image2!=nullptr)
     {
         int h = phy.y;
         if (h < 480)
@@ -212,7 +168,7 @@ void nnScroller::setVertArea(nnPoint & phy)
         int wI2 = image2->getWidth();
         if (wI2 > wI1)
             wI1 = wI2;
-        int start_x = phy.x - wI1-4;
+        int start_x = phy.x - wI1 - 4;
         int start_y = (h / 5) * 2;
         int stop_y = (h / 5) * 3;
         start_y -= image1->getHeight();
@@ -220,4 +176,119 @@ void nnScroller::setVertArea(nnPoint & phy)
         phyArea.set(start_x, start_y, phy.x, stop_y);
         mode = scrollerMode::mode_scroller_vert;
     }
+}
+
+void nnScroller::addImage(int pos, bmpImage * image)
+{
+    if (pos == 1)
+        image1 = image;
+    else
+        if (pos == 2)
+            image2 = image;
+
+}
+
+
+bool nnScroller::draw(bmpImage & bkg, IViewGlue *)
+{
+    bool res = false;
+    int height = bkg.getHeight();
+    nnPoint start, stop;
+    if (image1 != nullptr && image2 != nullptr)
+    {
+        int height_1 = image1->getHeight();
+        int height_2 = image2->getHeight();
+        int width_1 = image1->getWidth();
+        int width_2 = image2->getWidth();
+        if (visible)
+        {
+            if (image1)
+            {
+                if (mode == scrollerMode::mode_scroller_horz)
+                {
+                    res = bkg.drawMaskSprite(*image1, phyArea.start.x, height - phyArea.start.y - image1->getHeight(), 0, 0, 0);
+                    bt1Rect.set(phyArea.start.x, phyArea.start.y, phyArea.start.x + width_1, phyArea.start.y + height_1);
+                    start.x = phyArea.start.x + width_1 + width_1 / 4;
+                    start.y = (height - phyArea.start.y) - height_1 / 2 - height_1 / 6;
+                }
+                else
+                    if (mode == scrollerMode::mode_scroller_vert)
+                    {
+                        res = bkg.drawMaskSprite(*image1, phyArea.start.x, height - phyArea.start.y - height_1, 0, 0, 0);
+                        bt1Rect.set(phyArea.start.x, phyArea.start.y, phyArea.start.x + width_1, phyArea.start.y + height_1);
+                        start.x = phyArea.start.x + width_1 / 2 - width_1 / 5;
+                        start.y = height - phyArea.start.y - height_1-height_1/4;
+                    }
+            }
+            if (image2)
+            {
+                if (mode == scrollerMode::mode_scroller_horz)
+                {
+                    res = bkg.drawMaskSprite(*image2, phyArea.stop.x - width_2, height - phyArea.start.y - height_2, 0, 0, 0);
+                    bt2Rect.set(phyArea.stop.x - width_2, phyArea.start.y, phyArea.stop.x, phyArea.start.y + height_2);
+                    stop.x = phyArea.stop.x - width_2 - width_2 / 4;
+                    stop.y = (height - phyArea.start.y) - height_2 / 2 + height_2 / 6;
+                }
+                else
+                    if (mode == scrollerMode::mode_scroller_vert)
+                    {
+                        res = bkg.drawMaskSprite(*image2, phyArea.start.x, height - phyArea.stop.y, 0, 0, 0);
+                        bt2Rect.set(phyArea.start.x, phyArea.stop.y - height_2, phyArea.stop.x, phyArea.stop.y);
+                        stop.x = phyArea.start.x + width_1 / 2 + width_1 / 5;
+                        stop.y = height-phyArea.stop.y  +height_2 +  height_2/4;
+                    }
+            }
+            if (start != stop)
+            {
+                drawBar(bkg, start, stop);
+            }
+            // todo ... I will to create a class showsTips to show info . Must be a class on separate thread 
+            // to implement code as : info = new nnTips("prova" ,100) ; info.run();
+            // this class auto manage the process the show and auto clean 
+#if 0
+            bkg.frameRect(bt1Rect.start.x, height - bt1Rect.start.y, bt1Rect.stop.x, height - bt1Rect.stop.y, 255, 0, 0, 0xffffffff);
+            bkg.frameRect(bt2Rect.start.x, height - bt2Rect.start.y, bt2Rect.stop.x, height - bt1Rect.stop.y, 255, 0, 0, 0xffffffff);
+            bkg.frameRect(phyArea.start.x, height - phyArea.start.y, phyArea.stop.x, height - phyArea.stop.y, 0, 0, 255, 0xffffffff);
+#endif
+        }
+    }
+    return res;
+}
+
+
+void nnScroller::drawBar(bmpImage & bkg, nnPoint & start, nnPoint & stop)
+{
+        bmpImage pmp,curs;
+        if (stop.y < start.y)
+        {
+            auto t = stop.y;
+            stop.y = start.y;
+            start.y = t;
+        }
+        int pos,width = stop.x - start.x;
+        int height = stop.y - start.y;
+        pmp.create(width,height, 32, 255);
+        pmp.frameRect(0, 0, width-1, height-1, 128, 128, 128, 0xffffffff);
+        if (mode == scrollerMode::mode_scroller_horz)
+        {
+            pos = ((width*currentPos) / (maxPos - minPos));
+            if (pos)
+            {
+            curs.create(pos-1, height - 5, 32, 192);
+            pmp.drawSprite(curs, 3, 3);
+            pmp.frameRect(2, 2, pos, height - 3, 0, 0, 64, 0xffffffff);
+            }
+        }
+        else
+        {
+            pos =((height*currentPos) / (maxPos - minPos));
+            if (pos)
+            {
+                curs.create(width - 5, pos-1, 32, 192);
+                pmp.drawSprite(curs, 3, height - pos-2);
+                pmp.frameRect(2, height -3  - pos, width - 3, height - 4, 0, 0, 64, 0xffffffff);
+            }
+        }
+        bkg.drawSprite(pmp, start.x,  start.y);
+
 }

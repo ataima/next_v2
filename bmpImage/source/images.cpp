@@ -444,14 +444,16 @@ bool bmpImage::replace(LPBITMAPFILEHEADER new_dib) {
 }
 
 
-bool bmpImage::create(unsigned int width, unsigned int height, unsigned int deep,unsigned char color )
+bool bmpImage::create( int width,  int height, unsigned int deep,unsigned char color )
 {
-    if (isValid())
-        clear();
-    m_hBitmap = allocateBitmap(width, height,deep,color);
-    if (!m_hBitmap)
-        return false;
-    return true;
+    if (width > 0 && height > 0)
+    {
+        if (isValid())
+            clear();
+        m_hBitmap = allocateBitmap(width, height, deep, color);
+        return m_hBitmap != nullptr;
+    }
+    return false;
 }
 
 unsigned int bmpImage::getWidth(LPBITMAPFILEHEADER bI)
@@ -718,7 +720,7 @@ bool bmpImage::invert(void)
 
 
 size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height,unsigned int deep)
-{
+{    
     size_t dib_size = sizeof(BITMAPFILEHEADER);
     dib_size += sizeof(BITMAPINFOHEADER);
     // palette is aligned on a 16 bytes boundary
@@ -734,7 +736,7 @@ size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height,un
     return dib_size;
 }
 
-LPBITMAPFILEHEADER  bmpImage::allocateBitmap(unsigned  int width, unsigned int height,unsigned int deep,unsigned char color)
+LPBITMAPFILEHEADER  bmpImage::allocateBitmap(  unsigned int width,  unsigned int height,unsigned int deep,unsigned char color)
 {
     LPBITMAPFILEHEADER res = nullptr;
 
@@ -1798,7 +1800,7 @@ bool bmpImage::copyFromFile(const XCHAR *name)
                             size_t temp = (size_t)fsize;
                             size_t start = 0;
                             do {
-                                int vread=256;
+                                size_t vread=256;
                                 if(temp<vread)
                                     vread=temp;
                                 err = (int)fread(&p[start], 1, vread, file);
@@ -2098,60 +2100,54 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
     }
     if(dy==0)
     {
-        if (y>=0 && y < height)
-        do {
-            if(x>=0  && x<width)
-            {
-                if (y >= height)break;
-                unsigned char  *pos=bits+(y * pitch) + (x * depth);
-                if(mb&maskDot)
+        if (y >= 0 && y <= height && end>0)
+        {
+            do {
+                unsigned char  *pos = bits + (y * pitch) + (x * depth);
+                if (mb&maskDot)
                 {
-                    pos[ID_RGBA_BLUE]=blue;
-                    pos[ID_RGBA_GREEN]=green;
-                    pos[ID_RGBA_RED]=red;
+                    pos[ID_RGBA_BLUE] = blue;
+                    pos[ID_RGBA_GREEN] = green;
+                    pos[ID_RGBA_RED] = red;
                 }
-            }
-            x++;
-            mb<<=1;
-            if(!mb)mb=1;
-        } while(x<end);
-        res=true;
+                x++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+            } while (x <= end);
+            res = true;
+        }
     }
     else if(dx==0)
     {
-        if (x >= 0 && x < width)
-        do {
-            if(y>=0 && y<height)
-            {
-            unsigned char  *pos=bits+(y * pitch) + (x * depth);
-            if(mb&maskDot)
-            {
-                pos[ID_RGBA_BLUE]=blue;
-                pos[ID_RGBA_GREEN]=green;
-                pos[ID_RGBA_RED]=red;
-            }
-            }
-            y++;
-            mb<<=1;
-            if(!mb)mb=1;
-        } while(y<end);
-        res=true;
+        if (x >= 0 && x <= width && end>0)
+        {
+            do {
+                unsigned char  *pos = bits + (y * pitch) + (x * depth);
+                if (mb&maskDot)
+                {
+                    pos[ID_RGBA_BLUE] = blue;
+                    pos[ID_RGBA_GREEN] = green;
+                    pos[ID_RGBA_RED] = red;
+                }
+                y++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+            } while (y <= end);
+            res = true;
+        }
     }
     else
     {
-        if(dx>dy)
+        if(dx>dy && end > 0)
         {
             p = 2 * dy - dx;
             do {
-                if(x>=0 && y>=0 && x<width && y<height)
-                {
                 unsigned char  *pos=bits+(y * pitch) + (x * depth);
                 if(mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE]=blue;
                     pos[ID_RGBA_GREEN]=green;
                     pos[ID_RGBA_RED]=red;
-                }
                 }
                 x++;
                 mb<<=1;
@@ -2165,22 +2161,20 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
                     y++;
                     p = p + 2 * (dy - dx);
                 }
-            } while(x<end);
+            } while(x<=end);
             res=true;
         }
         else
+            if (dy>dx && end > 0)
         {
             p = 2 * dx - dy;
             do {
-                if(x>=0 && y>=0 && x<width && y<height)
-                {
                 unsigned char  *pos=bits+(y * pitch) + (x * depth);
                 if(mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE]=blue;
                     pos[ID_RGBA_GREEN]=green;
                     pos[ID_RGBA_RED]=red;
-                }
                 }
                 y++;
                 mb<<=1;
@@ -2194,7 +2188,7 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
                     x++;
                     p = p + 2 * (dx - dy);
                 }
-            } while(y<end);
+            } while(y<=end);
             res=true;
         }
     }
@@ -2205,6 +2199,16 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
 bool bmpImage::frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue,unsigned int mask)
 {
     bool res=false;
+    int width = getWidth();
+    int height = getHeight();
+    if (x1 < 0)x1 = 0;
+    if (x2 < 0)x2 = 0;
+    if (x1 > width)x1 = width;
+    if (x2 > width)x2 = width;
+    if (y1 < 0)y1 = 0;
+    if (y2 < 0)y2 = 0;
+    if (y1 > height)y1 = height;
+    if (y2 > height)y2 = height;
     if(line(x1,y1,x2,y1,red,green,blue,mask))
     {
         if(line(x1,y2,x2,y2,red,green,blue,mask))

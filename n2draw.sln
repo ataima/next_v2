@@ -24,6 +24,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "meLaWin32", "meLaWin32\proj
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fontimport", "fontimport\project\fontimport.vcxproj", "{3651E1D1-A7F9-40EA-A6D5-E54B9970DBD9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{818DA646-CA70-491C-92A2-421CB4E6D855} = {818DA646-CA70-491C-92A2-421CB4E6D855}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
