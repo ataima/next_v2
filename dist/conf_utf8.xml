@@ -188,6 +188,22 @@
 		<PATH>old</PATH>
 		<INTERNAL>
 			<OBJ>
+				<VALUE>CloseWindow</VALUE>
+				<FILE>CLOSE.BMP</FILE>
+			</OBJ>					
+			<OBJ>
+				<VALUE>MaximizeWindow</VALUE>
+				<FILE>MAXIMIZE.BMP</FILE>
+			</OBJ>					
+			<OBJ>
+				<VALUE>MedializeWindow</VALUE>
+				<FILE>MEDIALIZE.BMP</FILE>
+			</OBJ>					
+			<OBJ>
+				<VALUE>IconizeWindow</VALUE>
+				<FILE>ICONIZE.BMP</FILE>
+			</OBJ>					
+			<OBJ>
 				<VALUE>ScrollHorzLeft</VALUE>
 				<FILE>SHL.BMP</FILE>
 			</OBJ>			

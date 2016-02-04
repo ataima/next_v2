@@ -71,6 +71,7 @@ public:
     bool handlerUpButton(bool shitf, bool ctrl, bool alt) ;
     bool handlerDownButton(bool shitf, bool ctrl, bool alt) ;
     bool handlerRequestCommand(nnPoint phyPoint, int & command) ;
+    inline  bool getCurrentFile(std::string & filename) { filename = "prova"; return true; }
 private:
     bool loadImages(void);
 };

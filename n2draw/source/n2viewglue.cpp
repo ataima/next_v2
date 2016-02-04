@@ -11,6 +11,7 @@
 #include "n2exthandler.h"
 #include "n2selector.h"
 #include "n2scroller.h"
+#include "n2caption.h"
 #include "n2viewglue.h"
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -49,7 +50,7 @@ nnViewGlue::nnViewGlue(IChild *_parent)
         const_Size.set(0);
         setPhyView(0, 0);
         offset_Pos.set(0);
-
+        caption = new nnCaption(parent);
         unselect();
     }
 }
@@ -69,6 +70,8 @@ bool nnViewGlue::unselect()
         vscroller->hide();
     if (hscroller)
         hscroller->hide();
+    if (caption)
+        caption->hide();
     return true;
 }
 
@@ -85,6 +88,12 @@ nnViewGlue::~nnViewGlue()
         selector->setFont(nullptr);
         delete selector;
         selector=nullptr;
+    }
+    if (caption)
+    {
+        caption->setFont(nullptr);
+        delete caption;
+        caption = nullptr;
     }
     if (vscroller)
     {
@@ -113,7 +122,7 @@ IFontManager * nnViewGlue::getFontFromName(const char *fname)
             {
                 for (auto i : f_list)
                 {
-                    if (i.find(fname))
+                    if (i==fname)
                     {
                         fontName = i;
                         break;
@@ -261,8 +270,9 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                     {
                         if (toolview)
                         {
-                            IFontManager *font = getFontFromName("810");
+                            IFontManager *font = getFontFromName("Courier_10_14");
                             selector->setFont(font);
+                            caption->setFont(font);
                             toolview->setFont(font);
                             view->setFont(font);
                             res = toolview->readConfiguration(conf);
@@ -465,6 +475,11 @@ bmpImage & nnViewGlue::getDraw(void)
     bmpImage & image = view->getMainBitmap();
     if (image.isValid())
     {
+        if (show_cmd == show_caption)
+        {
+            if (caption)
+                caption->draw(image, this);
+        }
         if (show_cmd == show_scroller_horz)
         {
             if (hscroller)
@@ -562,6 +577,8 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
                 else
                     if (buttons == nn_m_button_unknow)
                     {
+                        if(caption)
+                            res=caption->handlerMouseMove(phyPoint, show_cmd, hook);
                         if (hscroller)
                             res = hscroller->handlerMouseMove(phyPoint, show_cmd, hook);
                         if (vscroller)
@@ -587,6 +604,12 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
             {
                 if (vscroller)
                     res = vscroller->handlerMouseMove(phyPoint, show_cmd, hook);
+            }
+            else
+            if (show_cmd == show_caption)
+            {
+                if (caption)
+                    res = caption->handlerMouseMove(phyPoint, show_cmd, hook);
             }
     }
     return res;
@@ -698,6 +721,12 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
                         if (vscroller)
                             res = vscroller->handlerMouseButtonDown(phyPoint, this);
                     }
+                    else
+                        if (buttons == nn_m_button_left && show_cmd == show_caption)
+                        {
+                            if (caption)
+                                res = caption->handlerMouseButtonDown(phyPoint, this);
+                        }
 
     }
     return res;
@@ -840,29 +869,55 @@ nnPoint nnViewGlue::getMap(void)
 bool nnViewGlue::setPhyView(int w, int h)
 {
     nnPoint v(w, h);
+    nnPoint t;
     bool res = false;
+    IManager *manager = nullptr;
+    nnPoint logSize;
+    if (parent)
+    {
+        manager = parent->getManager();
+        if(manager)
+            logSize=manager->getSchema();
+    }
     if (const_Size.y != 0)
-        {
-            if (h % const_Size.y)
-                phy_Size.y = ((h / const_Size.y) + 1)*const_Size.y;
-            else
-                phy_Size.y = h;
-        }
+    {
+        if (h % const_Size.y)
+            t.y = ((h / const_Size.y) )*const_Size.y;
+        else
+            t.y = h;
+    }
     else
-        phy_Size.y = h;
+        t.y = h;
 
     if (const_Size.x != 0)
-        {
-            if (w % const_Size.x)
-                phy_Size.x = ((w / const_Size.x) + 1)*const_Size.x;
-            else
-                phy_Size.x = w;
-        }
-    else
-        phy_Size.x = w;
-
-    if (v != phy_Size)
     {
+        if (w % const_Size.x)
+            t.x = ((w / const_Size.x) )*const_Size.x;
+        else
+            t.x = w;
+    }
+    else
+        t.x = w;
+    if (logSize.isValid())
+    {
+        if (const_Size.y)
+        {
+            if ((t.y / const_Size.y) > logSize.y)
+            {
+                t.y = logSize.y*const_Size.y;
+            }
+        }
+        if (const_Size.x)
+        {
+            if ((t.x / const_Size.x) > logSize.x)
+            {
+                t.x = logSize.x*const_Size.x;
+            }
+        }
+    }
+    if (t != phy_Size)
+    {
+        phy_Size = t;
         res = true;
     }
     return res;
@@ -883,12 +938,11 @@ bool nnViewGlue::resize(int w, int h)
                     nnAbstractParam<nnPoint> *t = new nnAbstractParam<nnPoint>(phy_Size);
                     hook->doHandler(action_align_windows, t);
                 }
-            }
-            else
-            {
                 res = view->remapMainBitmap(phy_Size);
                 if (res)
                 {
+                    if(caption)
+                        caption->setArea(phy_Size);
                     IImageManager *images = parent->getImage();
                     if (images)
                     {
@@ -904,12 +958,15 @@ bool nnViewGlue::resize(int w, int h)
                                 }
                                 if (hscroller)
                                 {
-                                    bmpImage *one = images->getImage(X("ScrollHorzLeft"));
-                                    bmpImage *two = images->getImage(X("ScrollHorzRight"));
-                                    if (one && two)
+                                    bmpImage *img = images->getImage(X("ScrollHorzLeft"));
+                                    if (img)
                                     {
-                                        hscroller->addImage(1, one);
-                                        hscroller->addImage(2, two);
+                                        hscroller->addImage(1, img);
+                                    }
+                                    img = images->getImage(X("ScrollHorzRight"));
+                                    if (img)
+                                    {
+                                        hscroller->addImage(2, img);
                                     }
                                 }
                             }
@@ -939,12 +996,15 @@ bool nnViewGlue::resize(int w, int h)
                                 }
                                 if (vscroller)
                                 {
-                                    bmpImage *one = images->getImage(X("ScrollVertUp"));
-                                    bmpImage *two = images->getImage(X("ScrollVertDown"));
-                                    if (one && two)
+                                    bmpImage *img = images->getImage(X("ScrollVertUp"));
+                                    if (img)
                                     {
-                                        vscroller->addImage(1, one);
-                                        vscroller->addImage(2, two);
+                                        vscroller->addImage(1, img);
+                                    }
+                                    img = images->getImage(X("ScrollVertDown"));
+                                    if (img)
+                                    {
+                                        vscroller->addImage(2, img);
                                     }
                                 }
                             }
@@ -1657,22 +1717,51 @@ bool nnViewGlue::loadImages(const XCHAR * _path)
         IImageManager *images = parent->getImage();
         if (hscroller)
         {
-            bmpImage *one = images->getImage(X("ScrollHorzLeft"));
-            bmpImage *two = images->getImage(X("ScrollHorzRight"));
-            if (one && two)
+            bmpImage *img = images->getImage(X("ScrollHorzLeft"));
+            if (img)
             {
-                hscroller->addImage(1, one);
-                hscroller->addImage(2, two);
+                hscroller->addImage(1, img);
+            }
+            img = images->getImage(X("ScrollHorzRight"));
+            if (img)
+            {
+                hscroller->addImage(2, img);
             }
         }
         if (vscroller)
         {
-            bmpImage *one = images->getImage(X("ScrollVertUp"));
-            bmpImage *two = images->getImage(X("ScrollVertDown"));
-            if (one && two)
+            bmpImage *img = images->getImage(X("ScrollVertUp"));
+            if (img)
             {
-                vscroller->addImage(1, one);
-                vscroller->addImage(2, two);
+                vscroller->addImage(1, img);
+            }
+            img = images->getImage(X("ScrollVertDown"));
+            if (img)
+            {
+                vscroller->addImage(2, img);
+            }
+        }
+        if (caption)
+        {
+            bmpImage *img = images->getImage(X("IconizeWindow"));
+            if (img)
+            {
+                caption->addImage(0, img);
+            }
+            img = images->getImage(X("MedializeWindow"));
+            if (img)
+            {
+                caption->addImage(1, img);
+            }
+            img = images->getImage(X("MaximizeWindow"));
+            if (img)
+            {
+                caption->addImage(2, img);
+            }
+            img = images->getImage(X("CloseWindow"));
+            if (img)
+            {
+                caption->addImage(3, img);
             }
         }
     }

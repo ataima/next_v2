@@ -197,6 +197,18 @@ void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
                     }
                 }
                 break;
+            case action_close_windows:
+                ::PostMessage(hWnd, WM_CLOSE, 0, 0L);
+                break;
+            case action_maximize_windows:
+                ::ShowWindow(hWnd, SW_MAXIMIZE);
+                break;
+            case action_iconize_windows:
+                ::ShowWindow(hWnd, SW_MINIMIZE);
+                break;
+            case action_medialize_windows:
+                ::ShowWindow(hWnd, SW_SHOWDEFAULT);
+                break;
             }
     }
 }

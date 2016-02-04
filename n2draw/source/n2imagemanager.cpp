@@ -60,6 +60,17 @@ int nnImageManager::internalStringToValue(const XCHAR *ptr)
 {
     int res = 0;
     STRING value = ptr;
+    if (value == X("CloseWindow"))
+        res = 50;
+    else
+        if (value == X("MaximizeWindow"))
+            res = 51;
+        else
+            if (value == X("MedializeWindow"))
+                res = 52;
+            else
+                if (value == X("IconizeWindow"))
+                    res = 53;
     if (value == X("ScrollHorzLeft"))
         res=100;
     else

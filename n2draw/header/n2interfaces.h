@@ -71,6 +71,10 @@ typedef enum tag_handler_Action
     action_update_statusbars_info,
     action_update_statusbars_panes,
     action_align_windows,
+    action_iconize_windows,
+    action_medialize_windows,
+    action_maximize_windows,
+    action_close_windows,
     action_host_command = 1000
 } handlerAction;
 
@@ -122,6 +126,7 @@ typedef enum tag_show_status
     show_toolbar,
     show_scroller_horz,
     show_scroller_vert,
+    show_caption,
 }show_status;
 
 
@@ -514,6 +519,18 @@ public:
     virtual ~IScroller() {}
 };
 
+
+class ICaption
+    :public IComponent
+{
+public:
+    virtual void setTitle(XCHAR *_name)=0;
+    virtual void setArea(nnPoint & phy) = 0; 
+    virtual void setFont(IFontManager *_font) = 0;
+    virtual ~ICaption() {}
+};
+
+
 class IViewGlue
     : public IHandler
 {
@@ -580,6 +597,7 @@ public:
     virtual void clean(void) = 0;
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name) = 0;    
     virtual bool setExtHandler(extHandler  _hook, void *unkObj) = 0;
+    virtual bool getCurrentFile(std::string & filename) = 0;
     virtual ~IChild() {}
 };
 

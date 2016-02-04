@@ -2113,7 +2113,7 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
                 x++;
                 mb <<= 1;
                 if (!mb)mb = 1;
-            } while (x <= end);
+            } while (x < end);
             res = true;
         }
     }
@@ -2132,7 +2132,7 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
                 y++;
                 mb <<= 1;
                 if (!mb)mb = 1;
-            } while (y <= end);
+            } while (y < end);
             res = true;
         }
     }
@@ -2201,6 +2201,10 @@ bool bmpImage::frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, 
     bool res=false;
     int width = getWidth();
     int height = getHeight();
+    if (x1 < 0 && x2 < 0) return res;
+    if (y1 < 0 && y2 < 0) return res;
+    if (x1 > width && x2 >width) return res;
+    if (y1 >height && y2 >height ) return res;
     if (x1 < 0)x1 = 0;
     if (x2 < 0)x2 = 0;
     if (x1 > width)x1 = width;

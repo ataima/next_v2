@@ -63,6 +63,7 @@ class nnViewGlue
     ISelector *selector;
     IScroller *vscroller;
     IScroller *hscroller;
+    ICaption *caption;
     show_status show_cmd;
     
 

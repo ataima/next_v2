@@ -78,6 +78,9 @@
     <ClInclude Include="..\header\n2childapp.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\n2caption.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2appmanager.cpp">
@@ -126,6 +129,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\n2childapp.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2caption.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
