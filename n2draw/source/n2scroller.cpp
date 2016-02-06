@@ -31,8 +31,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 nnScroller::nnScroller(int _min, int _max):
-    minPos(_min),maxPos(_max),visible(false),
-    currentPos(0),
+    minPos(_min),maxPos(_max),
+    currentPos(0),visible(false),
     mode(scrollerMode::mode_scroller_unknow)
 {
     phyArea.set(0, 0, 0, 0);

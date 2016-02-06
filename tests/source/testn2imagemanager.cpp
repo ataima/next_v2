@@ -88,7 +88,8 @@ void test_image_manager::test1(void)
     bool res = miniXmlNode::load(X("..\\..\\conf_utf8.xml"),&node);
 #endif
     CA_ASSERT(res == true);
-    nnImageManager im;
+    STRING s;
+    nnImageManager im(s);
     res = im.readConfiguration(&node);
     CA_ASSERT(res == true);
     res = im.loadImages();

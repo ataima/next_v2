@@ -47,7 +47,7 @@ typedef std::map<int, IChild *> listChild;
 public:
     nnAppManager();
     ~nnAppManager();    
-    IChild * createObjects(STRING & conf_file_name);
+    IChild * createObjects(STRING & conf_file_name,STRING & path_name);
     bool closeAll(void);
     IChild *activate(int v);
     IChild *active(void);

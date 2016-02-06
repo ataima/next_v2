@@ -154,7 +154,7 @@ bool nnToolView::handlerRequestCommand( nnPoint & pos,int & command)
 }
 
 
-bool nnToolView::loadImages(const XCHAR  *path)
+bool nnToolView::loadImages(STRING &path)
 {
     bool res=false;
     commanderList::iterator it= commands.begin();

@@ -79,14 +79,14 @@ IAppManager *nnAppManager::getInstance(void)
     return instance;
 }
 
-IChild * nnAppManager::createObjects(STRING & conf_file_name)
+IChild * nnAppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 {
     bool res = false;
     IChild * child = new nnChildApp(UID);
     MEMCHK(IChild, child);
     try
     {
-        res = child->createObjects(configuration,conf_file_name);
+        res = child->createObjects(configuration,conf_file_name,path_name);
     }
     catch (n2exception *e)
     {

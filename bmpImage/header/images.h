@@ -23,11 +23,7 @@ typedef struct tagBITMAPFILEHEADER {
 
 
 
-#ifdef _MSC_VER
-#include <poppack.h>
-#else
-#pragma pack(1)
-#endif
+
 
 typedef BITMAPFILEHEADER *LPBITMAPFILEHEADER;
 
@@ -64,6 +60,11 @@ typedef struct tagBITMAPINFO {
 
 typedef BITMAPINFO *LPBITMAPINFO;
 
+#ifdef _MSC_VER
+#include <poppack.h>
+#else
+#pragma pack(0)
+#endif
 
 #endif
 #endif

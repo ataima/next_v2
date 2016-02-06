@@ -33,7 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 nnCommander::nnCommander()
 {
-    images= new nnImageManager();
+    STRING empty;
+    images= new nnImageManager(empty);
     curItem=nullptr;
     bmpHeight = 0;
 }
@@ -74,7 +75,8 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                 t=conf->find(X("ITEM_"),i);
                 if(t)
                 {
-                    commandItem item = {0};
+                    commandItem item;
+                    memset(&item,0,sizeof(commandItem));
                     IXmlNode *v = t->find(X("POS_X"));
                     if(v)
                     {
@@ -147,7 +149,7 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                     v = t->find(X("FILE"));
                     if(v)
                     {
-                        item.file =v->getValue();
+                        item.file=v->getValue();
                     }
                     else
                     {
@@ -157,7 +159,7 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                     v = t->find(X("INFO"));
                     if(v)
                     {
-                        item.info =v->getValue();
+                        item.info=v->getValue();
                     }
                     else
                     {
@@ -198,7 +200,8 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
                 curItem=&(*it);
                 if (hook)
                 {
-                    nnAbstractParam<std::string> *t= new nnAbstractParam<std::string>(curItem->info);
+                    STRING info =curItem->info;
+                    nnAbstractParam<STRING> *t= new nnAbstractParam<STRING>(info);
                     hook->doHandler(action_update_statusbars_info, t);
                     hook->doHandler(action_redraw);
                 }
@@ -249,19 +252,14 @@ bool nnCommander::handlerRequestCommand( nnPoint & pos,int & command)
 
 
 
-bool nnCommander::loadImages(const XCHAR *path)
+bool nnCommander::loadImages(STRING  &path)
 {
     bool res=false;
     if(images)
     {
         if(images->setPath(path))
         {
-            objImageList toLoad;
-            for(auto i: items)
-            {
-                toLoad[i.command]=i.file;
-            }
-            res=images->loadImages(&toLoad);
+            res=images->loadImages(&items);
         }
     }
     return res;
@@ -296,13 +294,13 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 }
 
 
-bool nnCommander::drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue *glue)
+bool nnCommander::drawTips(bmpImage & bkg, nnPoint & /*pos*/, IViewGlue */*glue*/)
 {
-    (glue);
+
     bool res = false;
     if (curItem != nullptr && font != nullptr)
     {
-        int len = strlen(curItem->info.c_str());
+        size_t len = curItem->info.size();
         nnPoint sizeStr(font->getFontWidth()* len, font->getFontHeight());
         const int offsetX = 20;
         const int offsetY = 4;
@@ -310,7 +308,8 @@ bool nnCommander::drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue *glue)
         res=rectbkg.create(sizeStr.x+2*offsetX, sizeStr.y+2*offsetY,32, 255);
         if (res)
         {
-            bmpImage * strImage = font->getImage(curItem->info.c_str(), 0, 0, 255);
+            UtoA toA(curItem->info);
+            bmpImage * strImage = font->getImage(toA.utf8(), 0, 0, 255);
             res = rectbkg.drawMaskSprite(*strImage,offsetX,offsetY,0,0,0);
             delete strImage;
             if(res)

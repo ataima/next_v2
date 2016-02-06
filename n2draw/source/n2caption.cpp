@@ -39,9 +39,11 @@ const char *nnCaption::msg[nnCaption::num_item] = {
 
 
 nnCaption::nnCaption(IChild *_parent):
-    parent(_parent),font(nullptr),
     visible(true),hI(0),
-    wI(0),curItem(-1)
+    wI(0),
+    curItem(-1),
+    parent(_parent),
+    font(nullptr)
 {
 }
 
@@ -192,7 +194,6 @@ int  nnCaption::itemFromPoint(nnPoint phyPoint)
 bool nnCaption::handlerMouseButtonDown(nnPoint phyPoint, IViewGlue * )
 {
     bool res = false;
-    int i;
     if (parent)
     {
         curItem = itemFromPoint(phyPoint);

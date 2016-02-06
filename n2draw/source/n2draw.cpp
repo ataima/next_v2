@@ -190,6 +190,8 @@ InnObj * nnObjConn::getObjFromIds(custom_obj specific, ObjContext context)
         switch (specific)
         {
         case contact_generic_unknow: obj = new nnObjContact();
+            break;
+        default:break;
         }
     }
          break;
@@ -198,9 +200,12 @@ InnObj * nnObjConn::getObjFromIds(custom_obj specific, ObjContext context)
         switch (specific)
         {
         case coil_generic_unknow: obj = new nnObjCoil();
+            break;
+        default:break;
         }
     }
         break;
+    default:break;
     }
     return obj;
 }
@@ -249,6 +254,7 @@ bool nnObjWire::connect(InnObj * pb)
                     res= wire->connectFromLeft(pb->getConnections().front());
             }
             break;
+            default:break;
             }
 
         }
@@ -269,6 +275,7 @@ bool nnObjWire::connect(InnObj * pb)
                     res = connectFromDown(pb->getConnections().front());
                 }
                 break;
+                default:break;
                 }
 
             }
@@ -330,9 +337,9 @@ bool nnObjWire::connectFromUp(int num)
 
 
 
-bool nnObjWire::disconnectFromUp(int num)
+bool nnObjWire::disconnectFromUp(int /*num*/)
 {
-    (num);
+
     bool res = false;
     switch (getWire())
     {
@@ -424,10 +431,9 @@ bool nnObjWire::connectFromDown(int num)
 
 
 
-bool nnObjWire::disconnectFromDown(int num)
+bool nnObjWire::disconnectFromDown(int /*num*/)
 {
-    (num);
-    bool res = false;    
+    bool res = false;
     switch (getWire())
     {
     case eWire::wireTHorizUp:
@@ -608,9 +614,8 @@ bool nnObjWire::connectFromRight(int num)
 
 
 
-bool nnObjWire::disconnectFromRight(int num)
+bool nnObjWire::disconnectFromRight(int /*num*/)
 {
-    (num);
     bool res = false;
     switch (getWire())
     {
@@ -831,6 +836,7 @@ bool nnObjWire::disconnect(InnObj * pb)
                 res = disconnectFromUp(pb->getConnections().front());
             }
             break;
+            default:break;
             }
         }
         else
@@ -849,6 +855,7 @@ bool nnObjWire::disconnect(InnObj * pb)
                     res = disconnectFromDown(pb->getConnections().back());
                 }
                 break;
+                default:break;
                 }
 
             }

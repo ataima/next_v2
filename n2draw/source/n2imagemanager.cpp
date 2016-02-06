@@ -36,12 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 
-nnImageManager::nnImageManager(const XCHAR *_path)
+nnImageManager::nnImageManager(STRING &_path)
 {
     availObj.clear();
     allImages.clear();
     path.clear();
-    if(_path)
+    if(_path.size())
         path=_path;
 }
 
@@ -98,21 +98,9 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
         IXmlNode *xpath = conf->find(X("PATH"));
         if (xpath)
         {
-            char buff[_MAX_PATH];
-            const XCHAR *v = xpath->getValue();
-            if(getcwd(buff,_MAX_PATH))
-            {
-                std::string cpath(buff);
-                AtoU toU(cpath);
-                path=toU.utf16();
-                path+=X("/");
+                STRING v= xpath->getValue();
                 path+=v;
                 path+=X("/");
-            }
-            else
-            {
-                path=v;
-            }
         }
         //////////////////
         IXmlNode *internal = conf->find(X("INTERNAL"));
@@ -335,16 +323,23 @@ bool nnImageManager::loadImages(void)
     return res;
 }
 
-bool nnImageManager::loadImages(objImageList * extlist)
+bool nnImageManager::loadImages(listCommandItem * items)
 {
     bool res = false;
-    if(extlist)
+    if(items!=nullptr )
     {
-        if(availObj.size() > 0)
-            availObj.clear();
-        availObj=*extlist;
-        res=loadImages();
+       availObj.clear();
+       size_t i,s=items->size();
+       if(s)
+       {
+       for(i=0;i<s;i++)
+           {
+           commandItem & it= items->at(i);
+           availObj[it.command]=it.file;
+           }
+       }
     }
+    res=loadImages();
     return res;
 }
 
@@ -355,7 +350,7 @@ bmpImage * nnImageManager::getImage(const XCHAR * name)
 }
 
 
-bmpImage * nnImageManager::getImage(int id)
+bmpImage * nnImageManager:: getImage(int id)
 {
     bmpImage *res=nullptr;
     if (allImages.size()>0)
@@ -369,7 +364,7 @@ bmpImage * nnImageManager::getImage(int id)
     return res;
 }
 
-bool nnImageManager::setPath(const XCHAR *_path)
+bool nnImageManager::setPath(STRING &_path)
 {
     path.clear();
     path=_path;

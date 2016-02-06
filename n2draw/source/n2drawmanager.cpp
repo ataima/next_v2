@@ -319,7 +319,8 @@ bool nnObjManager::save(const STRING & name)
             hashObjTable::iterator _end = end();
             while (it != _end)
             {
-                IXmlNode *child = root.add(X("Obj_UID_"), ++num_obj, num_obj);
+                num_obj++;
+                IXmlNode *child = root.add(X("Obj_UID_"), num_obj, num_obj);
                 it->second->save(child);
                 it++;
             }
@@ -991,8 +992,8 @@ bool nnObjManager::Resize(int w, int h)
 
 ////////////////////////////////////////////////////////////////////////////////
 nnObjUndoRedo::nnObjUndoRedo(IManager *_manager)
-    :manager(_manager),
-     undoredoMode(false)
+    :undoredoMode(false),manager(_manager)
+
 {
 
 }
@@ -1118,9 +1119,8 @@ void nnObjUndoRedo::clearRedoObjs(void)
 }
 
 
-bool nnObjManager::readConfiguration(IXmlNode *node)
+bool nnObjManager::readConfiguration(IXmlNode */*node*/)
 {
     // will need ?
-    (node);
     return true;
 }

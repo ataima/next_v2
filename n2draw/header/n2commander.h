@@ -45,7 +45,7 @@ public:
     bool readConfiguration(IXmlNode *node) ;
     bool handlerRequestCommand( nnPoint & pos,int & command);
     bool handlerMouseMove( nnPoint & pos,IExtHandler *hook);
-    bool loadImages(const XCHAR *path);
+    bool loadImages(STRING & path);
     bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue);
     inline void setFont(IFontManager *_font) { font = _font; }
 private :

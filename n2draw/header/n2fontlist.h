@@ -40,7 +40,7 @@ class nnFontList
 public:
     nnFontList();
     ~nnFontList();
-    bool readConfiguration(IXmlNode *node);
+    bool readConfiguration(IXmlNode *node, STRING  &src_path);
     bool loadImages(void);
     IFontManager* getManager(const char *name);
     bool add(const char *name, IFontManager*);

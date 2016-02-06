@@ -40,7 +40,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 //TestviewGlue.cpp : T1
 nnViewGlue::nnViewGlue(IChild *_parent)
-    :parent(_parent),vscroller(nullptr),hscroller(nullptr),view(nullptr)
+    :parent(_parent),view(nullptr),vscroller(nullptr),hscroller(nullptr)
 {
     if (parent)
     {
@@ -732,9 +732,8 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
     return res;
 }
 
-bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint)
+bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons /*buttons*/, nnPoint phyPoint)
 {
-    (buttons);
     bool res = true;
     if (parent)
     {
@@ -1705,7 +1704,7 @@ bool nnViewGlue::handlerRequestCommand(nnPoint phyPoint,int & command)
 
 
 
-bool nnViewGlue::loadImages(const XCHAR * _path)
+bool nnViewGlue::loadImages(STRING & _path)
 {
     bool res=false;
     if(toolview)

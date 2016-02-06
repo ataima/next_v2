@@ -40,7 +40,7 @@ SOURCES += \
 ../../source/n2selector.cpp              \
 ../../source/n2childapp.cpp              \
 ../../source/n2scroller.cpp              \
-
+../../source/n2caption.cpp              \
 
 
 
@@ -66,6 +66,7 @@ HEADERS += \
 ../../header/n2selector.h              \
 ../../header/n2childapp.h              \
 ../../header/n2scroller.h              \
+../../header/n2caption.h              \
 
 
 

@@ -111,7 +111,7 @@ public:
     bool resize(int w, int h);
     inline int getPageWidth(void) { return phy_Size.x / const_Size.x;  }
     inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
-    bool loadImages(const XCHAR *_path);
+    bool loadImages(STRING &_path);
     inline  bool createDraw(void) { return view->createMainBitmap(phy_Size); }
 private:
     bool getVisibleArea(nnRect & area);

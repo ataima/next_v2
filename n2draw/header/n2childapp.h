@@ -45,7 +45,7 @@ public:
     nnChildApp(unsigned int _id=0);
     ~nnChildApp();
     void clean(void);
-    bool createObjects(IConfig *configuration,STRING & conf_file_name);
+    bool createObjects(IConfig *configuration,STRING & conf_file_name,STRING &confPath);
     bool setExtHandler( extHandler  _hook, void *unkObj);
     //IHandler * getHandler(void) { return static_cast<IHandler *>(this); }
     inline  IManager * getManager(void)                { return object_manager; }

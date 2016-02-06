@@ -239,6 +239,18 @@ class imagesConfigurationAlreadyLoadException
 public:
     explicit  imagesConfigurationAlreadyLoadException(int off) throw()
         :n2exception("imagesConfigurationAlreadyLoadException") ,offset(off) {}
+    char const* msg()
+    {
+        std::stringstream ss;
+        const char *b_msg=n2exception::msg();
+        ss<<"exception:"<<b_msg<<std::endl<<" image at offset : "<<offset<<"already loaded"<< std::endl;
+        delete b_msg;
+        int size=ss.str().size();
+        char *buff=new char[size+2];
+        memcpy(buff,ss.str().c_str(),size);
+        buff[size]='\0';
+        return buff;
+    }
 };
 
 class imagesConfigurationUnknowFileException

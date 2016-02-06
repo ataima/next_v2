@@ -63,7 +63,7 @@ void nnFontList::clear(void)
 }
 
 
-bool nnFontList::readConfiguration(IXmlNode *node)
+bool nnFontList::readConfiguration(IXmlNode *node,STRING & src_path)
 {
     bool res = false;
     STRING name;
@@ -74,21 +74,10 @@ bool nnFontList::readConfiguration(IXmlNode *node)
         IXmlNode *xpath = conf->find(X("PATH"));
         if (xpath)
         {
-            char buff[_MAX_PATH];
             const XCHAR *v = xpath->getValue();
-            if (getcwd(buff, _MAX_PATH))
-            {
-                std::string cpath(buff);
-                AtoU toU(cpath);
-                path = toU.utf16();
-                path += X("/");
-                path += v;
-                path += X("/");
-            }
-            else
-            {
-                path = v;
-            }
+            path=src_path;
+            path += v;
+            path += X("/");
         }
         int numItems = 0;
         IXmlNode *items = conf->find(X("ITEMS"));
@@ -113,36 +102,27 @@ bool nnFontList::readConfiguration(IXmlNode *node)
                     IXmlNode *t = it->find(X("NAME"));
                     if (t)
                     {
+                        STRING current=path;
                         name = t->getValue();
-                        UtoA toA(name);
-                        if (toA.good())
+                        current += name;
+                        current += X("/");
+                        int width, height;
+                        t = it->find(X("WIDTH"));
+                        if (t)
                         {
-                            path += X("/");
-                            path += toA.utf8();
-                            path += X("/");
-                            int width, height;
-                            t = it->find(X("WIDTH"));
-                            if (t)
+                            width = t->getLong();
+                            if (width > 0)
                             {
-                                width = t->getLong();
-                                if (width > 0)
+                                t = it->find(X("HEIGHT"));
+                                if (t)
                                 {
-                                    t = it->find(X("HEIGHT"));
-                                    if (t)
+                                    height = t->getLong();
+                                    if (height > 0)
                                     {
-                                        height = t->getLong();
-                                        if (height > 0)
-                                        {
-                                            IFontManager *mn = new nnFontManager(path.c_str(),width,height);
-                                            fonts[toA.utf8()] = mn;
-                                            if (mn)
-                                                res = mn->readConfiguration(it);                                            
-                                        }
-                                        else
-                                        {
-                                            xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("HEIGHT"));
-                                            throw(e);
-                                        }
+                                        IFontManager *mn = new nnFontManager(current.c_str(),width,height);
+                                        fonts[name] = mn;
+                                        if (mn)
+                                            res = mn->readConfiguration(it);
                                     }
                                     else
                                     {
@@ -152,7 +132,7 @@ bool nnFontList::readConfiguration(IXmlNode *node)
                                 }
                                 else
                                 {
-                                    xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("WIDTH"));
+                                    xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("HEIGHT"));
                                     throw(e);
                                 }
                             }
@@ -164,9 +144,10 @@ bool nnFontList::readConfiguration(IXmlNode *node)
                         }
                         else
                         {
-                            xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("NAME"));
+                            xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("WIDTH"));
                             throw(e);
                         }
+
                     }
                     else
                     {

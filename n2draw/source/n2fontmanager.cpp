@@ -167,7 +167,7 @@ bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned
 
 
 
-bool nnFontManager::setPath(const XCHAR *_path)
+bool nnFontManager::setPath(STRING  &_path)
 {
     path.clear();
     path = _path;

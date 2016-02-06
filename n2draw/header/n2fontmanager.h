@@ -50,7 +50,7 @@ public:
     ~nnFontManager();
     inline int getFontWidth(void) { return fWidth; }
     inline int getFontHeight(void) { return fHeight; }
-    bool setPath(const XCHAR *_path);
+    bool setPath(STRING &_path);
     inline STRING  & getDefaulPath(void) const { return *const_cast<STRING*>(&path); }
     bool readConfiguration(IXmlNode *node);
     bool loadImages(void);

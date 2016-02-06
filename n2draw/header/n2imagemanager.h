@@ -44,13 +44,13 @@ class nnImageManager
     objImageList availObj;
     listImage allImages;
 public:
-    nnImageManager(const XCHAR * _path=nullptr);
+    nnImageManager(STRING & _path);
     ~nnImageManager();
-    bool setPath(const XCHAR *_path);
+    bool setPath(STRING &_path);
     inline STRING  & getDefaulPath(void) const { return *const_cast<STRING*>(&path); }
     bool readConfiguration(IXmlNode *node);
     bool loadImages(void);
-    bool loadImages(objImageList * extlist);
+    bool loadImages(listCommandItem *items);
     bmpImage * getImage(int id);
     bmpImage * getImage(const XCHAR * name);
     inline  const objImageList * getAvailObj(void) { return &availObj; }

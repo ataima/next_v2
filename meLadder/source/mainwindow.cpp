@@ -143,19 +143,19 @@ void MainWindow::init()
         try {
             QString   path=qApp->applicationDirPath();
 #ifdef __APPLE__
-        #ifdef _UNICODE
-                    path+=X("/../../..";
-        #else
-                    path+="/../../..";
-        #endif
+                    path+=X("/../../..");
 #endif
+            path+=X("/");
+            STRING file;
 #ifdef _UNICODE
-            path+=X("/conf_utf16.xml";
+            file=X("conf_utf16.xml");
 #else
-            path+="/conf_utf8.xml";
+            file="/conf_utf8.xml";
 #endif
+
+
             STRING conf=path.FROMQSTRING();
-            client=n2App->createObjects(conf);
+            client=n2App->createObjects(file,conf);
         }
         catch(n2exception *e)
         {
@@ -182,10 +182,10 @@ void MainWindow::init()
         }
         if(client!=nullptr)
         {
-            showMaximized();
             client->setExtHandler( &MainWindow::externCommandRequest,
                                    this
                                  );
+            showMaximized();
         }
         else
         {

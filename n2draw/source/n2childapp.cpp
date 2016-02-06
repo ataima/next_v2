@@ -81,12 +81,13 @@ void nnChildApp::clean(void)
 }
 
 
-bool nnChildApp::createObjects(IConfig *configuration,STRING & conf_file_name)
+bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, STRING & confPath)
 {
     bool res = false;
     if (configuration != nullptr)
     {
-        res = configuration->readConfiguration(conf_file_name.c_str());
+        STRING conf=confPath+conf_file_name;
+        res = configuration->readConfiguration(conf.c_str());
         if (res == true)
         {
             IXmlNode * root = configuration->getRoot();
@@ -115,7 +116,7 @@ bool nnChildApp::createObjects(IConfig *configuration,STRING & conf_file_name)
                                 if (res)
                                 {
                                     line = __LINE__;
-                                    imageManager = new nnImageManager();
+                                    imageManager = new nnImageManager(confPath);
                                     IImageManager *img = imageManager;
                                     MEMCHK(IImageManager, img);
                                     conf_manager = root->find(X("IMAGES"));
@@ -137,7 +138,7 @@ bool nnChildApp::createObjects(IConfig *configuration,STRING & conf_file_name)
                                             fonts = new nnFontList();       
                                             IFontList *flist = fonts;
                                             MEMCHK(IFontList, flist);
-                                            res = flist->readConfiguration(conf_manager);
+                                            res = flist->readConfiguration(conf_manager,confPath);
                                         }
                                         else
                                         {
@@ -225,7 +226,7 @@ bool nnChildApp::loadImages(void)
         }
         if (view)
         {
-            res = view->loadImages(imageManager->getDefaulPath().c_str());
+            res = view->loadImages(imageManager->getDefaulPath());
             if (!res)
             {
                 appManagerConfigureLoadImageException *e = new appManagerConfigureLoadImageException();

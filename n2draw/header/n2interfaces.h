@@ -8,6 +8,11 @@
 #include <map>
 
 #include "n2point.h"
+
+
+#ifndef _MSC_VER
+#pragma pack(0)
+#endif
 //////////////////////////////////////////////////////
 
 #define  BUFFLENGTH  512
@@ -34,6 +39,7 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #define  XCHAR     char16_t
 #define  STRSTR   std::char_traits<char16_t>::find
 #define  STRLEN   std::char_traits<char16_t>::length
+#define  STRCPY   std::char_traits<char16_t>::copy
 #define  STRING   std::u16string
 #define  SSTREAM  u16stringstream
 #define  STRCMP   std::char_traits<char16_t>::compare
@@ -49,6 +55,7 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #define  XCHAR    char
 #define  STRSTR   std::char_traits<char>::find
 #define  STRLEN   std::char_traits<char>::length
+#define  STRCPY   std::char_traits<char>::copy
 #define  STRING   std::string
 #define  SSTREAM  std::stringstream
 #define  SSTREAMOUT  std::cout
@@ -197,8 +204,8 @@ typedef struct nn_tag_command_item
     unsigned char maskR;
     unsigned char maskG;
     unsigned char maskB;
-    std::string file;
-    std::string info;
+    STRING   file;
+    STRING   info;
 } commandItem;
 
 typedef std::vector<commandItem> listCommandItem;
@@ -211,7 +218,7 @@ class ICommander
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual void setFont(IFontManager *_font) = 0;
-    virtual bool loadImages(const XCHAR *path)=0;
+    virtual bool loadImages(STRING &path)=0;
     virtual bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue) = 0;
     virtual bool handlerRequestCommand(nnPoint & pos, int & command) = 0;
     virtual bool handlerMouseMove(nnPoint & pos, IExtHandler *hook) = 0;
@@ -399,11 +406,11 @@ class listImage;
 class IImageManager
 {
 public:
-    virtual bool setPath(const XCHAR * _path) =0;
+    virtual bool setPath(STRING & _path) =0;
     virtual STRING  & getDefaulPath(void) const = 0;
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool loadImages(void) = 0;
-    virtual bool loadImages(objImageList *objs) = 0;
+    virtual  bool loadImages(listCommandItem * items) = 0;
     virtual bmpImage * getImage(int id) = 0;
     virtual bmpImage * getImage(const XCHAR * name) = 0;
     virtual const  objImageList * getAvailObj(void) = 0;
@@ -414,7 +421,7 @@ public:
 class IFontManager
 {
 public:
-    virtual bool setPath(const XCHAR * _path) = 0;
+    virtual bool setPath(STRING & _path) = 0;
     virtual STRING  & getDefaulPath(void) const = 0;
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool loadImages(void) = 0;
@@ -432,7 +439,7 @@ typedef std::list<std::string> fontNameList;
 class IFontList
 {
 public:
-    virtual bool readConfiguration(IXmlNode *node) = 0;
+    virtual bool readConfiguration(IXmlNode *node,STRING  &path) = 0;
     virtual bool loadImages(void)=0;
     virtual IFontManager* getManager(const char *name) = 0;
     virtual bool add(const char *name, IFontManager*) = 0;
@@ -450,7 +457,7 @@ public:
     virtual bool handlerRequestCommand(nnPoint & pos, int & command) = 0;
     virtual bool handlerMouseMove(nnPoint & pos, IExtHandler *hook) = 0;
     virtual ICommander *getActiveCommander(void)=0;
-    virtual bool loadImages(const XCHAR *path)=0;
+    virtual bool loadImages(STRING & path)=0;
     virtual bool checkIntCommand(int command)=0;
     virtual void setDrawPosition(nnPoint & pos)=0;
     virtual void setFont(IFontManager *_font) = 0;
@@ -576,7 +583,7 @@ public:
     virtual bool resize(int w, int h) = 0;
     virtual int getPageWidth(void)=0;
     virtual int getPageHeight(void)=0;
-    virtual bool loadImages(const XCHAR *_path)=0;
+    virtual bool loadImages(STRING & _path)=0;
     virtual bool createDraw(void) = 0;
     virtual ~IViewGlue() {}
 };
@@ -595,7 +602,7 @@ public:
     virtual IImageManager * getImage(void) = 0;    
     virtual IExtHandler * getHandler(void) = 0;
     virtual void clean(void) = 0;
-    virtual bool createObjects(IConfig *configuration,STRING & conf_file_name) = 0;    
+    virtual bool createObjects(IConfig *configuration,STRING & conf_file_name,STRING & path_name) = 0;
     virtual bool setExtHandler(extHandler  _hook, void *unkObj) = 0;
     virtual bool getCurrentFile(std::string & filename) = 0;
     virtual ~IChild() {}
@@ -606,7 +613,7 @@ class IAppManager
 {
 public:
     static  IAppManager * getInstance(int v=0);
-    virtual IChild * createObjects(STRING & conf_file_name) = 0;
+    virtual IChild * createObjects(STRING & conf_file_name,STRING & path_name) = 0;
     virtual bool closeAll(void) = 0;
     virtual IChild *activate(int v) = 0;
     virtual IChild *active(void) = 0;
