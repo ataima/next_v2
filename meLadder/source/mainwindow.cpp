@@ -150,7 +150,7 @@ void MainWindow::init()
 #ifdef _UNICODE
             file=X("conf_utf16.xml");
 #else
-            file="/conf_utf8.xml";
+            file="conf_utf8.xml";
 #endif
 
 

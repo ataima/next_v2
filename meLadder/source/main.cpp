@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
         MainWindow *mainWin = new MainWindow;
+        mainWin->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
         mainWin->show();
         return app.exec();
 }

@@ -102,12 +102,12 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
             int height2 = strImage->getHeight();
             if (height1 > height2)
             {
-                offY = (height1 - height2) / 2;
-            }
+            offY = (height1 - height2) / 2;
             caption.drawMaskSprite(*strImage,height1, offY, 0, 0, 0);
             delete strImage;
             caption.frameRect(0, 0, end - 1, height1 - 1,0,0,0,0xffffffff);
             bkg.drawSprite(caption, 0, bkg.getHeight() - phyArea.height() / 2);
+            }
         }
     }
     for (int i = 0; i < num_item; i++)
@@ -117,7 +117,7 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
         btRect[i].start.y = 0;
         btRect[i].stop.x = start + image[i]->getWidth();
         btRect[i].stop.y = image[i]->getHeight();
-#if 0
+#if 1
         bkg.frameRect(btRect[i].start.x, bkg.getHeight() - btRect[i].start.y-5,
             btRect[i].stop.x, bkg.getHeight() - btRect[i].stop.y-5, 255, 0, 0, 0xffffffff);
 #endif
