@@ -294,7 +294,7 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                 int w = getScrollableHorzSize();
                 if (w)
                 {
-                    hscroller = new nnScroller(0, w);
+                    hscroller = new nnScroller(parent,0, w);
                     //hscroller->setHorzArea(phy_Size.x, phy_Size.y);
                     hscroller->hide();
                 }
@@ -308,7 +308,7 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                 int h = getScrollableVertSize();
                 if (h)
                 {
-                    vscroller = new nnScroller(0, h);
+                    vscroller = new nnScroller(parent,0, h);
                     //vscroller->setVertArea(phy_Size.x, phy_Size.y);
                     vscroller->hide();
                 }
@@ -527,6 +527,7 @@ bool nnViewGlue::updateDraw(void)
 bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
 {
     bool res = false;
+    //nnLOG(show_status,"handlerMouseMove in : ", show_cmd);
     if (parent)
     {
             IExtHandler *hook = parent->getHandler();
@@ -612,18 +613,20 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
                     res = caption->handlerMouseMove(phyPoint, show_cmd, hook);
             }
     }
+    //nnLOG(show_status, "handlerMouseMove out : ", show_cmd);
     return res;
 }
 
 
 bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint)
 {
-    bool res = false;
+    bool res = false;    
     if (parent)
     {
             IExtHandler *hook = parent->getHandler();
             if (buttons == nn_m_button_left && show_cmd == show_none)
             {
+                //todo move into selector
                 if (status == s_unselect || status == selected)
                     status = start_activate;
                     IManager *manager = parent->getManager();
@@ -652,37 +655,8 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
             }
             else if (buttons == nn_m_button_left && show_cmd == show_toolbar)
             {
-                int command = 0;
-                bmpImage & bkg = view->getMainBitmap();
-                nnPoint point = phyPoint;
-                point.y = bkg.getHeight() - point.y;
-                res = handlerRequestCommand(point, command);
-                if (res)
-                {
-                    if (toolview)
-                    {
-                        if (toolview->checkIntCommand(command))
-                        {
-                            show_cmd = show_toolbar;
-                            toolview->setDrawPosition(phyPoint);
-                            res = true;
-                        }
-                        else
-                        {
-                            res = toolview->checkIntCommand(0);
-                            if (hook)
-                            {
-                                nnAbstractParam<int> *t=new nnAbstractParam<int>(command);
-                                hook->doHandler(action_host_command, t);
-                            }
-                            show_cmd = show_none;
-                        }
-                    }
-                    if (hook)
-                    {
-                        if (hook)hook->doHandler(action_redraw);
-                    }
-                }
+                if (toolview)
+                    res = toolview->handlerMouseButtonDown(phyPoint, show_cmd, hook);
             }
             else if (buttons == nn_m_button_right && show_cmd == show_none)
             {
@@ -713,19 +687,19 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoi
                 if (buttons == nn_m_button_left && show_cmd == show_scroller_horz)
                 {
                     if (hscroller)
-                        res = hscroller->handlerMouseButtonDown(phyPoint, this);
+                        res = hscroller->handlerMouseButtonDown(phyPoint, show_cmd, hook);
                 }
                 else
                     if (buttons == nn_m_button_left && show_cmd == show_scroller_vert)
                     {
                         if (vscroller)
-                            res = vscroller->handlerMouseButtonDown(phyPoint, this);
+                            res = vscroller->handlerMouseButtonDown(phyPoint,  show_cmd, hook);
                     }
                     else
                         if (buttons == nn_m_button_left && show_cmd == show_caption)
                         {
                             if (caption)
-                                res = caption->handlerMouseButtonDown(phyPoint, this);
+                                res = caption->handlerMouseButtonDown(phyPoint, show_cmd, hook);
                         }
 
     }
@@ -952,7 +926,7 @@ bool nnViewGlue::resize(int w, int h)
                                 int w = getScrollableHorzSize();
                                 if (w)
                                 {
-                                    hscroller = new nnScroller(0, w);
+                                    hscroller = new nnScroller(parent,0, w);
                                     hscroller->hide();
                                 }
                                 if (hscroller)
@@ -990,7 +964,7 @@ bool nnViewGlue::resize(int w, int h)
                                 int h = getScrollableVertSize();
                                 if (h)
                                 {
-                                    vscroller = new nnScroller(0, h);
+                                    vscroller = new nnScroller(parent,0, h);
                                     vscroller->hide();
                                 }
                                 if (vscroller)
@@ -1688,18 +1662,6 @@ bool nnViewGlue::resizeSelectArea(const int vx,const int vy)
 }
 
 
-bool nnViewGlue::handlerRequestCommand(nnPoint phyPoint,int & command)
-{
-    bool res=false;
-    if(toolview && show_cmd== show_toolbar)
-    {
-        if(toolview->getActiveCommander()!=nullptr)
-        {
-            res=toolview->handlerRequestCommand(phyPoint,command);
-        }
-    }
-    return res;
-}
 
 
 

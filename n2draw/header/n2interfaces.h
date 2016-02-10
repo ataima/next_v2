@@ -1,6 +1,31 @@
 #ifndef N2INTERFACES
 #define N2INTERFACES
 
+/**************************************************************
+Copyright(c) 2015 Angelo Coppi
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files(the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions :
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+********************************************************************/
+
 #include <string>
 #include <sstream>
 #include <vector>
@@ -16,7 +41,7 @@
 //////////////////////////////////////////////////////
 
 #define  BUFFLENGTH  512
-
+#define  _LOGGER_    1
 #ifdef _DOUBLE_UNICODE
 typedef std::basic_stringstream<char32_t> 	u32stringstream;
 #define  XCHAR    char32_t
@@ -73,8 +98,7 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 
 typedef enum tag_handler_Action
 {
-    action_redraw,
-    //action_update_from_ext_scroolbars,
+    action_redraw=0,
     action_update_statusbars_info,
     action_update_statusbars_panes,
     action_align_windows,
@@ -82,6 +106,7 @@ typedef enum tag_handler_Action
     action_medialize_windows,
     action_maximize_windows,
     action_close_windows,
+    action_move_window,
     action_host_command = 1000
 } handlerAction;
 
@@ -101,6 +126,207 @@ public:
   inline T value(void){return _value;}
   virtual ~nnAbstractParam() {}
 };
+
+#if _LOGGER_
+
+class IDebug
+{
+public:
+    virtual ~IDebug() {}
+    virtual void utf8(std::string & out) = 0;
+    virtual void getInfo(std::string & out) = 0;
+    virtual void getValue(std::string & out) = 0;
+    virtual void getFunction(std::string & out) = 0;
+    virtual int getLine(void) = 0;
+};
+
+template < class T> class nnDebug 
+    :public IDebug
+{
+    T _value;
+    const char * info;
+    const char *fname;
+    int line;
+public:
+    nnDebug(const char *_fname,int _line,const char * _info,T & _v) 
+        :_value(_v),info(_info),fname(_fname),line(_line)
+    {}
+    void utf8(std::string & out)
+        { 
+        std::stringstream ss; 
+        ss <<"["<<fname<<":"<<line<<"]"<< info << " = " << _value; 
+#ifdef _MSC_VER
+        ss << "\r" << std::endl;
+#else
+        ss << std::endl;
+#endif
+        out+=ss.str(); 
+        }
+    void getInfo(std::string & out) 
+        { std::stringstream ss; ss << info; out = ss.str(); }
+    void getValue(std::string & out) 
+        { std::stringstream ss; ss << _value; out = ss.str(); }
+    void getFunction(std::string & out) 
+        { std::stringstream ss; ss <<fname ; out = ss.str(); }
+    int getLine(void) 
+        { return line; }
+    virtual ~nnDebug()
+    {}
+};
+
+class nnDebugList  
+    : public IDebug    
+{    
+    std::list<IDebug * >items;
+public:
+    nnDebugList()
+    {}
+    void utf8(std::string & out)
+    {
+        std::stringstream ss;
+        std::list<IDebug * >::iterator it = items.begin();
+        std::list<IDebug * >::iterator _end = items.end();
+        if (it != _end)
+        {            
+            std::string t;
+            (*it)->getFunction(t);
+            ss << "[" <<t << ":" << (*it)->getLine() << "]";
+            while (it != _end)
+            {
+                IDebug *p = *it;
+                p->getInfo(t);
+                ss << ":" << t << " = ";
+                p->getValue(t);
+                ss << t;
+                it++;
+            }
+        }
+#ifdef _MSC_VER
+        ss << "\r"<<std::endl;
+#else
+        ss << std::endl;
+#endif
+        out += ss.str();
+    }
+    inline void add(IDebug *p) { items.push_back(p); }
+    inline void getInfo(std::string & out)
+    {
+        if (items.size() > 0)
+            items.front()->getInfo(out);
+    }
+    inline void getValue(std::string & out)
+    {
+        if (items.size() > 0)
+            items.front()->getValue(out);
+    }
+    inline void getFunction(std::string & out)
+    {
+        if (items.size() > 0)
+            items.front()->getFunction(out);
+    }
+    inline int getLine(void)
+    {
+        if (items.size() > 0)
+            return items.front()->getLine();
+        return -1;
+    }
+
+    virtual ~nnDebugList()
+    {
+        for (auto & i : items)
+        {
+            delete i;
+        }
+        items.clear();
+    }
+};
+
+class IPrinter
+{
+public :
+    virtual void out(std::string & msg) = 0;
+};
+
+
+class ILogger
+{
+protected:
+    static ILogger *instance;
+public:
+    virtual void log(IDebug *param) = 0;
+    static  ILogger * getInstance(void) { return instance; }
+    virtual void setOutput(IPrinter *printer) = 0;
+    virtual IPrinter *output(void) = 0;
+    virtual void reset()=0;
+};
+
+
+#define  nnLOG(type,info,value) \
+{\
+    nnDebug<type> *par= new nnDebug<type>(__FUNCTION__,__LINE__,info,value);\
+    ILogger *logger=ILogger::getInstance();\
+    if(logger)\
+        logger->log(par);\
+}\
+
+
+#define  nnLOG1(type,value) \
+{\
+    nnDebug<type> *par= new nnDebug<type>(__FUNCTION__,__LINE__,#value,value);\
+    ILogger *logger=ILogger::getInstance();\
+    if(logger)\
+        logger->log(par);\
+}\
+
+#define  nnLOG2(type,value1,value2) \
+{\
+    nnDebug<type> *par1= new nnDebug<type>(__FUNCTION__,__LINE__,#value1,value1);\
+    nnDebug<type> *par2= new nnDebug<type>(__FUNCTION__,__LINE__,#value2,value2);\
+    nnDebugList   *params = new nnDebugList();\
+    params->add(par1);\
+    params->add(par2);\
+    ILogger *logger=ILogger::getInstance();\
+    if(logger)\
+        logger->log(params);\
+}\
+
+#define  nnLOG3(type,value1,value2,value3) \
+{\
+    nnDebug<type> *par1= new nnDebug<type>(__FUNCTION__,__LINE__,#value1,value1);\
+    nnDebug<type> *par2= new nnDebug<type>(__FUNCTION__,__LINE__,#value2,value2);\
+    nnDebug<type> *par3= new nnDebug<type>(__FUNCTION__,__LINE__,#value3,value3);\
+    nnDebugList   *params = new nnDebugList();\
+    params->add(par1);\
+    params->add(par2);\
+    params->add(par3);\
+    ILogger *logger=ILogger::getInstance();\
+    if(logger)\
+        logger->log(params);\
+}\
+
+#define  nnLOG4(type,value1,value2,value3,value4) \
+{\
+    nnDebug<type> *par1= new nnDebug<type>(__FUNCTION__,__LINE__,#value1,value1);\
+    nnDebug<type> *par2= new nnDebug<type>(__FUNCTION__,__LINE__,#value2,value2);\
+    nnDebug<type> *par3= new nnDebug<type>(__FUNCTION__,__LINE__,#value3,value3);\
+    nnDebug<type> *par4= new nnDebug<type>(__FUNCTION__,__LINE__,#value4,value4);\
+    nnDebugList   *params = new nnDebugList();\
+    params->add(par1);\
+    params->add(par2);\
+    params->add(par3);\
+    params->add(par4);\
+    ILogger *logger=ILogger::getInstance();\
+    if(logger)\
+        logger->log(params);\
+}\
+
+#else
+#define  nnLOG(type,info,value1) 
+#define  nnLOG1(type,value1) 
+#define  nnLOG2(type,value1,value2) 
+#define  nnLOG3(type,value1,valu2,value3)
+#define  nnLOG4(type,value1,value2,value3,value4)  
+#endif
 
 
 typedef void  (*extHandler)(void *,size_t ,IParam *);
@@ -137,6 +363,30 @@ typedef enum tag_show_status
 }show_status;
 
 
+
+inline std::ostream & operator<<(std::ostream & os, const show_status & st)
+{
+    switch (st)
+    {
+    case show_none:
+        os << "show_none(0)";
+        break;
+    case show_toolbar:
+        os << "show_toolbar(1)";
+        break;
+    case show_scroller_horz:
+        os << "show_scroller_horz(2)";
+        break;
+    case show_scroller_vert:
+        os << "show_scroller_vert(3)";
+        break;
+    case show_caption:
+        os << "show_caption(4)";
+        break;
+    }
+    return os;
+}
+
 class IHandler
 {
 public:
@@ -156,7 +406,6 @@ public:
     virtual bool handlerRightButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerUpButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerDownButton(bool shitf, bool ctrl, bool alt) = 0;
-    virtual bool handlerRequestCommand(nnPoint phyPoint, int & command) = 0;
     virtual ~IHandler() {}
 };
 
@@ -201,6 +450,7 @@ typedef struct nn_tag_command_item
     nnPoint pos;
     int  command;
     nnRect rect;
+    nnRect btRect;
     unsigned char maskR;
     unsigned char maskG;
     unsigned char maskB;
@@ -220,7 +470,7 @@ public:
     virtual void setFont(IFontManager *_font) = 0;
     virtual bool loadImages(STRING &path)=0;
     virtual bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue) = 0;
-    virtual bool handlerRequestCommand(nnPoint & pos, int & command) = 0;
+    virtual bool checkRequestCommand(nnPoint & pos, int & command) = 0;
     virtual bool handlerMouseMove(nnPoint & pos, IExtHandler *hook) = 0;
     virtual ~ICommander() {}
 };
@@ -454,8 +704,8 @@ class IToolView
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
-    virtual bool handlerRequestCommand(nnPoint & pos, int & command) = 0;
     virtual bool handlerMouseMove(nnPoint & pos, IExtHandler *hook) = 0;
+    virtual bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook) = 0;
     virtual ICommander *getActiveCommander(void)=0;
     virtual bool loadImages(STRING & path)=0;
     virtual bool checkIntCommand(int command)=0;
@@ -463,6 +713,7 @@ public:
     virtual void setFont(IFontManager *_font) = 0;
     virtual ~IToolView() {}
 };
+
 
 //////////////////////////////////////////////////////
 
@@ -506,8 +757,8 @@ class IComponent
 {
 public:
     virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
-    virtual bool handlerMouseMove(nnPoint phyPoint, show_status & status, IExtHandler *hook) = 0;
-    virtual bool handlerMouseButtonDown(nnPoint phyPoint, IViewGlue * glue) = 0;
+    virtual bool handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook) = 0;
+    virtual bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook) = 0;
     virtual void addImage(int pos, bmpImage *image) = 0;
     virtual void hide(void) = 0;
     virtual void show(void) = 0;
@@ -569,7 +820,6 @@ public:
     virtual bool handlerRightButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerUpButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerDownButton(bool shitf, bool ctrl, bool alt) = 0;
-    virtual bool handlerRequestCommand(nnPoint phyPoint, int & command) = 0;
     virtual bool unselect() = 0;
     virtual bool getSelectAreaPhy(int & width, int & height) = 0;
     virtual bool getSelectStartPhy(int & x, int & y) = 0;
@@ -617,6 +867,9 @@ public:
     virtual bool closeAll(void) = 0;
     virtual IChild *activate(int v) = 0;
     virtual IChild *active(void) = 0;
+#if _LOGGER_
+    virtual void setPrinter(IPrinter * printer)=0;
+#endif
     virtual ~IAppManager() {}
 };
 

@@ -25,6 +25,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
+
+#include <sstream>
+
 typedef struct tag_nn_point
 {
     int x;
@@ -152,6 +155,11 @@ typedef struct tag_nn_point
         x += _x;
         y += _y;
     }
+    friend  inline  std::ostream & operator<<(std::ostream & os, const tag_nn_point & point)
+    {
+        os << "POINT[x:" << point.x << "-y:" << point.y << "]";
+        return os;
+    }
 } nnPoint;
 
 
@@ -258,6 +266,11 @@ typedef struct tag_nn_rect
             }
         }
         return res;
+    }
+    friend inline std::ostream & operator<<(std::ostream & os, const tag_nn_rect & rect)
+    {
+        os << "RECT:START["<<rect.start<<"]- STOP["<<rect.stop<<"]";
+        return os;
     }
 
 } nnRect;

@@ -151,8 +151,7 @@ bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned
         {
             it = allImages.find((int)i);
             if (it != allImages.end())
-            {
-                //TODO implement drawsprite with translate color
+            {                
                 res->drawSpriteTranslateColor(*it->second, pos_x, 0,255,255,255,red,green,blue);
             }
             pos_x += fWidth;

@@ -148,7 +148,7 @@ bool nnToolView::handlerRequestCommand( nnPoint & pos,int & command)
     bool res=false;
     if(active)
     {
-            res = active->handlerRequestCommand(pos, command);
+            res = active->checkRequestCommand(pos, command);
     }
     return res;
 }
@@ -194,7 +194,6 @@ bool nnToolView::checkIntCommand(int command)
     {
         active=it->second;
         active->setFont(font);
-
     }
     else
     {
@@ -204,4 +203,42 @@ bool nnToolView::checkIntCommand(int command)
     return res;
 }
 
+
+bool nnToolView::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
+{
+    bool res = false;
+    int command = 0;
+    res = handlerRequestCommand(phyPoint, command);
+    if (res)
+    {
+        if (checkIntCommand(command))
+        {
+            status = show_toolbar;
+            setDrawPosition(phyPoint);
+            res = true;
+        }
+        else
+        {
+            res = checkIntCommand(0);
+            if (hook)
+            {
+                if (command > action_host_command)
+                {
+                    nnAbstractParam<int> *t = new nnAbstractParam<int>(command);
+                    hook->doHandler(action_host_command, t);
+                }
+                else
+                {
+                    hook->doHandler(command);
+                }
+            }
+            status = show_none;
+        }        
+    }
+    if (hook)
+    {
+        hook->doHandler(action_redraw);
+    }
+    return res;
+}
 

@@ -121,7 +121,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 
 
-static nnAppManager *n2app = new nnAppManager();
+static nnAppManager *n2app = nullptr;
 //
 //  FUNZIONE: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -162,11 +162,7 @@ void directCommand(HWND hWnd, IParam *user_param)
             break;
         case 4005:
             break;
-        case 9999:
-            PostMessage(hWnd, WM_CLOSE, 0, 0);
-            break;
         }
-        delete t;
     }
 }
 
@@ -195,11 +191,28 @@ void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
                         int y = t->value().y;
                         ::SetWindowPos(hWnd, 0, 0, 0, x, y, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
                     }
+
                 }
                 break;
-            case action_close_windows:
+            case action_close_windows:                
+                delete n2app;
+                n2app = nullptr;
                 ::PostMessage(hWnd, WM_CLOSE, 0, 0L);
                 break;
+            case action_move_window:
+                {
+                    nnAbstractParam<nnPoint> *t = static_cast<nnAbstractParam<nnPoint>*>(user_param);
+                    if (t)
+                    {
+                        RECT rect;
+                        ::GetWindowRect(hWnd, &rect);
+                        int x = t->value().x+rect.left;
+                        int y = t->value().y+rect.top;
+                        ::MoveWindow(hWnd, x, y, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+                        //::SetWindowPos(hWnd, 0, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);                        
+                    }
+                }
+            break;
             case action_maximize_windows:
                 ::ShowWindow(hWnd, SW_MAXIMIZE);
                 break;
@@ -213,10 +226,35 @@ void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
     }
 }
 
+#if _LOGGER_
+class testLogger
+    :public IPrinter
+{
+    HWND editor;
+public :
+    testLogger(HWND hwnd) :editor(hwnd) {}
+    void out(std::string & msg) {
 
+        // move the caret to the end of the text
+        int outLength = GetWindowTextLength(editor);
+        if (outLength > 10000)
+        {
+            int pos = outLength - 10000;
+            SendMessage(editor, EM_SETSEL, 0, pos);
+            SendMessage(editor, EM_REPLACESEL, FALSE, 0L);
+            outLength = GetWindowTextLength(editor);
+        }
+        // insert the text at the new caret position
+        SendMessage(editor, EM_SETSEL, outLength, outLength);
+        SendMessage(editor, EM_REPLACESEL, FALSE, reinterpret_cast<LPARAM>(msg.c_str()));
+
+    }
+};
+#endif
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    static HWND edit=0;
     switch (message)
     {
     case WM_CREATE:
@@ -224,8 +262,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             CREATESTRUCT * cs = (CREATESTRUCT*)lParam;
             try {
+                n2app = new nnAppManager();
                 STRING s("conf_utf8.xml");
-                IChild *client = n2app->createObjects(s);
+                STRING p(".\\");
+                IChild *client = n2app->createObjects(s,p);
                 if (client)
                 {
                     client->setExtHandler( 
@@ -233,6 +273,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         hWnd
                         );
                 }
+#if _LOGGER_
+                if (!edit)
+                {
+                    edit = CreateWindowA("EDIT", nullptr, WS_VSCROLL | WS_BORDER | WS_CHILD | ES_MULTILINE| ES_AUTOVSCROLL| ES_AUTOHSCROLL| ES_READONLY,
+                        50, 50, 100, 100, hWnd, 0, 0, 0);
+                    testLogger *tL = new testLogger(edit);
+                    n2app->setPrinter(tL);
+                }
+#endif
             }
             catch (...) {}
         }
@@ -245,7 +294,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             IChild * child = n2app->active();
             if(child)
-                child->getView()->resize(w, h);
+                if (child->getView()->resize(w, h))
+                {                    
+                    if (edit)
+                    {
+                        MoveWindow(edit, 50,50, w-100, h-100, TRUE);
+                    }
+                }
+
         }
     }
         break;
@@ -366,6 +422,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_KEYDOWN: 
     {
+#if _LOGGER_
+        if (edit)
+        {
+            if (wParam == VK_F2)
+                ::ShowWindow(edit, SW_SHOW);
+            if (wParam == VK_F3)
+                ::ShowWindow(edit, SW_HIDE);
+        }
+#endif
         if (n2app!=nullptr)
         {
             IHandler *handler = n2app->active();

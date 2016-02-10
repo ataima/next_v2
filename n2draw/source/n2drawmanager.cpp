@@ -1119,7 +1119,7 @@ void nnObjUndoRedo::clearRedoObjs(void)
 }
 
 
-bool nnObjManager::readConfiguration(IXmlNode */*node*/)
+bool nnObjManager::readConfiguration(IXmlNode *)
 {
     // will need ?
     return true;

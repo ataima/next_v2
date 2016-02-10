@@ -37,6 +37,8 @@ void nnExtHandler::doHandler(size_t Tparam , IParam *in)
     {
         try {
             hook(unknow,Tparam,in);
+            if (in)
+                delete(in);
         }
         catch(...)
         {

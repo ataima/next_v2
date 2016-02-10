@@ -43,7 +43,7 @@ public:
     nnCommander();
     ~nnCommander();
     bool readConfiguration(IXmlNode *node) ;
-    bool handlerRequestCommand( nnPoint & pos,int & command);
+    bool checkRequestCommand( nnPoint & pos,int & command);
     bool handlerMouseMove( nnPoint & pos,IExtHandler *hook);
     bool loadImages(STRING & path);
     bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue);

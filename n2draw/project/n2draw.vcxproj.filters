@@ -81,6 +81,12 @@
     <ClInclude Include="..\header\n2caption.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\n2logger.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\n2utils.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\n2appmanager.cpp">
@@ -132,6 +138,12 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\n2caption.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2logger.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\n2utils.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

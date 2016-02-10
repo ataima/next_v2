@@ -24,6 +24,7 @@ public:
     bool draw(bmpImage & bkg, IViewGlue * glue);
     bool handlerRequestCommand( nnPoint & pos,int & command);
     bool handlerMouseMove( nnPoint & pos,IExtHandler *hook);
+    bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook);
     inline ICommander *getActiveCommander(void){return active;}
     bool loadImages(STRING  &path);
     bool checkIntCommand(int command);

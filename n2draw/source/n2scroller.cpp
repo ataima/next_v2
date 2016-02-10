@@ -30,7 +30,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-nnScroller::nnScroller(int _min, int _max):
+nnScroller::nnScroller(IChild *_parent, int _min, int _max):
+    parent(_parent),
     minPos(_min),maxPos(_max),
     currentPos(0),visible(false),
     mode(scrollerMode::mode_scroller_unknow)
@@ -49,7 +50,7 @@ nnScroller::~nnScroller()
 
 
 
-bool nnScroller::handlerMouseMove( nnPoint phyPoint, show_status & status, IExtHandler *hook)
+bool nnScroller::handlerMouseMove( nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
     bool res = false;
     if (phyArea.into(phyPoint))
@@ -95,39 +96,36 @@ bool nnScroller::handlerMouseMove( nnPoint phyPoint, show_status & status, IExtH
     return res;
 }
 
-bool nnScroller::handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue)
+bool nnScroller::handlerMouseButtonDown( nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
     bool res = false;
-    if (bt1Rect.into(phyPoint))
+    if (parent)
     {
-        if (glue)
+        if (bt1Rect.into(phyPoint))
         {
             if (mode == scrollerMode::mode_scroller_horz)
             {
-                res=glue->handlerPageLeftButton(false, false, false);
+                res = parent->handlerPageLeftButton(false, false, false);
             }
             else
                 if (mode == scrollerMode::mode_scroller_vert)
                 {
-                    res = glue->handlerPageUpButton(false, false, false);
+                    res = parent->handlerPageUpButton(false, false, false);
                 }
         }
-    }
-    else
-    if (bt2Rect.into(phyPoint))
-    {
-        if (glue)
-        {
-            if (mode == scrollerMode::mode_scroller_horz)
+        else
+            if (bt2Rect.into(phyPoint))
             {
-                res = glue->handlerPageRightButton(false, false, false);
-            }
-            else
-                if (mode == scrollerMode::mode_scroller_vert)
+                if (mode == scrollerMode::mode_scroller_horz)
                 {
-                    res = glue->handlerPageDownButton(false, false, false);
+                    res = parent->handlerPageRightButton(false, false, false);
                 }
-        }
+                else
+                    if (mode == scrollerMode::mode_scroller_vert)
+                    {
+                        res = parent->handlerPageDownButton(false, false, false);
+                    }
+            }
     }
     return res;
 }

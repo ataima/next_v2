@@ -28,7 +28,7 @@
 					<GREEN>255</GREEN>
 					<BLUE>255</BLUE>
 				</MASK>
-				<FILE>CONTACT.BMP</FILE>
+				<FILE>CONTACTNO.BMP</FILE>
 				<INFO> INSERT CONTACT</INFO>
 			</ITEM_0>
 			<ITEM_1>
@@ -60,7 +60,7 @@
 		<TOOLBARS_1>
 			<ID>1000</ID>
 			<COMMANDER>
-			<ITEM_NUM>1</ITEM_NUM>
+			<ITEM_NUM>2</ITEM_NUM>
 			<ITEM_0>
 				<POS_X>0</POS_X>
 				<POS_Y>40</POS_Y>
@@ -70,9 +70,21 @@
 					<GREEN>255</GREEN>
 					<BLUE>255</BLUE>
 				</MASK>
-				<FILE>CONTACT.BMP</FILE>
+				<FILE>CONTACTNO.BMP</FILE>
 				<INFO>General Memory Contact Normally Open</INFO>
 			</ITEM_0>
+			<ITEM_1>
+				<POS_X>48</POS_X>
+				<POS_Y>40</POS_Y>
+				<COMMAND>2001</COMMAND>
+				<MASK>
+					<RED>255</RED>
+					<GREEN>255</GREEN>
+					<BLUE>255</BLUE>
+				</MASK>
+				<FILE>CONTACTNC.BMP</FILE>
+				<INFO>General Memory Contact Normally Close</INFO>
+			</ITEM_1>
 			</COMMANDER>		
 		</TOOLBARS_1>
 		<TOOLBARS_2>
@@ -172,7 +184,7 @@
 			<ITEM_6>
 				<POS_X>260</POS_X>
 				<POS_Y>0</POS_Y>
-				<COMMAND>9999</COMMAND>
+				<COMMAND>7</COMMAND>
 				<MASK>
 					<RED>255</RED>
 					<GREEN>255</GREEN>

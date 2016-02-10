@@ -88,7 +88,6 @@ public:
     bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint);
     bool handlerScrollHorz(int pos);
     bool handlerScrollVert(int pos);
-    bool handlerRequestCommand(nnPoint phyPoint, int &command);
     bool handlerEscapeButton(bool shift,bool ctrl,bool alt);
     bool handlerHomeButton(bool shitf, bool ctrl, bool alt);
     bool handlerEndButton(bool shitf,bool ctrl,bool alt);

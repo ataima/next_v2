@@ -1,6 +1,6 @@
 
-#ifndef N2FONT_MANAGER__HEADER
-#define N2FONT_MANAGER__HEADER
+#ifndef N2FONT_MANAGER_HEADER
+#define N2FONT_MANAGER_HEADER
 
 
 /**************************************************************

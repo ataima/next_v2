@@ -33,7 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-class nnAppManager
+class nnAppManager final
     :public IAppManager
 {
 
@@ -52,6 +52,9 @@ public:
     IChild *activate(int v);
     IChild *active(void);
     static IAppManager *getInstance(void);
+#if _LOGGER_
+    void setPrinter(IPrinter * printer);
+#endif
 protected:
     bool clean(void);
 };

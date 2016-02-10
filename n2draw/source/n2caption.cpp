@@ -2,6 +2,7 @@
 #include "n2draw.h"
 #include "n2exception.h"
 #include "n2caption.h"
+#include "n2utils.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -33,18 +34,21 @@ const char *nnCaption::msg[nnCaption::num_item] = {
     "Iconize current window",
     "Medialize current window",
     "Maximize current window",
-    "Close current window"
+    "Close current window",
+    "Move current window"
 };
 
 
 
-nnCaption::nnCaption(IChild *_parent):
-    visible(true),hI(0),
+nnCaption::nnCaption(IChild *_parent) :
+    visible(true), hI(0),
     wI(0),
     curItem(-1),
     parent(_parent),
-    font(nullptr)
+    font(nullptr),
+    status(status_caption_none)
 {
+    lastPoint.set(0,0);
 }
 
 nnCaption::~nnCaption()
@@ -80,6 +84,7 @@ void nnCaption::setArea(nnPoint & phy)
             }
         }
         phyArea.set(0, 0, phy.x, hI/3);
+        nnLOG1(nnRect, phyArea);
 }
 
 bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
@@ -90,7 +95,8 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
     int end = start - wI;
     if (end > 0)
     {
-        if (caption.create(end, phyArea.height() / 2, 32, 255))
+        int hc1 = phyArea.height() / 2;
+        if (caption.create(end, hc1, 32, 255))
         {
             std::string f,file = "meLa : ";
             if (parent)
@@ -107,19 +113,17 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
             delete strImage;
             caption.frameRect(0, 0, end - 1, height1 - 1,0,0,0,0xffffffff);
             bkg.drawSprite(caption, 0, bkg.getHeight() - phyArea.height() / 2);
+            btRect[num_item-1].set(0, 0, end, height1);
             }
         }
     }
-    for (int i = 0; i < num_item; i++)
+    for (int i = 0; i < num_item-1; i++)
     {
         bkg.drawMaskSprite(*image[i], start, bkg.getHeight()-hI,255,255,255);
-        btRect[i].start.x = start;
-        btRect[i].start.y = 0;
-        btRect[i].stop.x = start + image[i]->getWidth();
-        btRect[i].stop.y = image[i]->getHeight();
-#if 1
-        bkg.frameRect(btRect[i].start.x, bkg.getHeight() - btRect[i].start.y-5,
-            btRect[i].stop.x, bkg.getHeight() - btRect[i].stop.y-5, 255, 0, 0, 0xffffffff);
+        btRect[i].set(start, 0, start + image[i]->getWidth(), image[i]->getHeight());
+#if 0
+        bkg.frameRect(btRect[i].start.x, bkg.getHeight() - btRect[i].start.y,
+            btRect[i].stop.x, bkg.getHeight() - btRect[i].stop.y, 255, 0, 0, 0xffffffff);
 #endif
         start += ((wI * 3) / 2);
     }
@@ -138,43 +142,60 @@ void nnCaption::addImage(int pos, bmpImage * _image)
     }
 }
 
-bool nnCaption::handlerMouseMove(nnPoint phyPoint, show_status & status, IExtHandler *hook)
+bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
     bool res = false;
-    if (phyArea.into(phyPoint))
+    if(getStatus()==status_caption_none)
     {
-        int t = itemFromPoint(phyPoint);
-
-        if (status == show_none)
+        if (phyArea.into(phyPoint))
         {
-            curItem = t;
-            show();
-            status = show_caption;
-            if (hook)
-                hook->doHandler(action_redraw);
-            phyArea.stop.y=hI;
+            int t = itemFromPoint(phyPoint);
+            if (status == show_none)
+            {
+                curItem = t;
+                show();
+                status = show_caption;
+                if (hook)
+                    hook->doHandler(action_redraw);
+                phyArea.stop.y=hI;
+            }
+            else
+            {
+                if (t != curItem)
+                {
+                    curItem = t;
+                    if (hook)
+                        hook->doHandler(action_redraw);
+                }
+            }
         }
         else
         {
-            if (t != curItem)
+            hide();
+            if (status == show_caption )
             {
-                curItem = t;
                 if (hook)
                     hook->doHandler(action_redraw);
+                status = show_none;
+                phyArea.stop.y = hI/3;
             }
         }
     }
     else
-    {
-        hide();
-        if (status == show_caption )
+        if (getStatus() == status_caption_move)
         {
             if (hook)
-                hook->doHandler(action_redraw);
-            status = show_none;
-            phyArea.stop.y = hI/3;
+            {
+                nnPoint diff =  phyPoint - lastPoint ;
+                nnLOG1(nnPoint, diff);
+                if (diff != 0)
+                {
+                    nnAbstractParam<nnPoint> *t = new nnAbstractParam<nnPoint>(diff);
+                    hook->doHandler(action_move_window, t);
+                    lastPoint = phyPoint-diff;
+                }
+            }
         }
-    }
     return res;
 }
 
@@ -191,17 +212,21 @@ int  nnCaption::itemFromPoint(nnPoint phyPoint)
     return -1;
 }
 
-bool nnCaption::handlerMouseButtonDown(nnPoint phyPoint, IViewGlue * )
+bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
     bool res = false;
-    if (parent)
+    if (getStatus() == status_caption_none)
     {
-        curItem = itemFromPoint(phyPoint);
-        IExtHandler *hook = parent->getHandler();
         if (hook)
         {
+            curItem = itemFromPoint(phyPoint);
             switch (curItem)
             {
+            case 4:
+                lastPoint = phyPoint;
+                setStatus(status_caption_move);
+                nnLOG1(nnPoint, lastPoint);
+                break;
             case 0:
                 hook->doHandler(action_iconize_windows);
                 break;
@@ -215,12 +240,15 @@ bool nnCaption::handlerMouseButtonDown(nnPoint phyPoint, IViewGlue * )
                 hook->doHandler(action_close_windows);
                 break;
             }
+            res = true;
         }
-        res = true;            
+    }
+    else
+    {        
+        setStatus(status_caption_none);
     }
     return res;
 }
-
 
 
 bool nnCaption::drawTips(bmpImage & bkg)
@@ -229,25 +257,8 @@ bool nnCaption::drawTips(bmpImage & bkg)
     bool res = false;
     if (curItem != -1 && font != nullptr)
     {
-        int len = strlen(msg[curItem]);
-        nnPoint sizeStr(font->getFontWidth()* len, font->getFontHeight());
-        const int offsetX = 20;
-        const int offsetY = 4;
-        bmpImage rectbkg;
-        res = rectbkg.create(sizeStr.x + 2 * offsetX, sizeStr.y + 2 * offsetY, 32, 255);
-        if (res)
-        {
-            bmpImage * strImage = font->getImage(msg[curItem], 0, 0, 255);
-            res = rectbkg.drawMaskSprite(*strImage, offsetX, offsetY, 0, 0, 0);
-            delete strImage;
-            if (res)
-            {
-                rectbkg.frameRect(0, 0, rectbkg.getWidth() - 1, rectbkg.getHeight() - 1, 0, 0, 0, 0xffffffff);
-                int posX = (bkg.getWidth() - rectbkg.getWidth() - offsetX);
-                res = bkg.drawSprite(rectbkg, posX, offsetY);
-            }
-        }
+        STRING m(msg[curItem]);
+        res = nnUtils::drawBottomLeftTips(bkg, *font, m);
     }
-
     return res;
 }

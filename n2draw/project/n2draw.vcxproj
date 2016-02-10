@@ -33,11 +33,13 @@
     <ClInclude Include="..\header\n2fontmanager.h" />
     <ClInclude Include="..\header\n2imagemanager.h" />
     <ClInclude Include="..\header\n2interfaces.h" />
+    <ClInclude Include="..\header\n2logger.h" />
     <ClInclude Include="..\header\n2miniXml.h" />
     <ClInclude Include="..\header\n2point.h" />
     <ClInclude Include="..\header\n2scroller.h" />
     <ClInclude Include="..\header\n2selector.h" />
     <ClInclude Include="..\header\n2toolview.h" />
+    <ClInclude Include="..\header\n2utils.h" />
     <ClInclude Include="..\header\n2utoatou.h" />
     <ClInclude Include="..\header\n2view.h" />
     <ClInclude Include="..\header\n2viewglue.h" />
@@ -57,9 +59,11 @@
     <ClCompile Include="..\source\n2scroller.cpp" />
     <ClCompile Include="..\source\n2selector.cpp" />
     <ClCompile Include="..\source\n2toolview.cpp" />
+    <ClCompile Include="..\source\n2utils.cpp" />
     <ClCompile Include="..\source\n2view.cpp" />
     <ClCompile Include="..\source\n2viewglue.cpp" />
     <ClCompile Include="..\source\n2childapp.cpp" />
+    <ClCompile Include="..\source\n2logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

@@ -42,8 +42,9 @@ class nnScroller final
     bmpImage  *image1;
     bmpImage  *image2;
     scrollerMode mode;
+    IChild *parent;
 public:
-    nnScroller(int _min, int _max);
+    nnScroller(IChild *_parent,int _min, int _max);
     ~nnScroller();
     bool draw(bmpImage & bkg, IViewGlue *);
     void setHorzArea(nnPoint & phy);
@@ -55,8 +56,8 @@ public:
                 { return currentPos; }
     inline void update(int _pos) 
                 { currentPos = _pos; }
-    bool handlerMouseMove( nnPoint phyPoint, show_status & status, IExtHandler *hook) ;
-    bool handlerMouseButtonDown( nnPoint phyPoint, IViewGlue * glue) ;
+    bool handlerMouseMove( nnPoint &phyPoint, show_status & status, IExtHandler *hook) ;
+    bool handlerMouseButtonDown( nnPoint &phyPoint, show_status & status, IExtHandler *hook) ;
     inline void hide(void) 
                 { visible = false; }
     inline void show(void) 

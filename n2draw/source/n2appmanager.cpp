@@ -10,6 +10,7 @@
 #include "n2exthandler.h"
 #include "n2childapp.h"
 #include "n2appmanager.h"
+#include "n2logger.h"
 
 
 
@@ -63,6 +64,13 @@ nnAppManager::nnAppManager():selected(-1)
 
 nnAppManager::~nnAppManager()
 {
+#if _LOGGER_
+    if (nnLogger::getInstance())
+    {
+        nnLogger::getInstance()->reset();
+        delete nnLogger::getInstance();
+    }
+#endif
     clean();
     delete configuration;
     configuration=nullptr;
@@ -112,7 +120,20 @@ IChild * nnAppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 }
 
 
-
+#if _LOGGER_
+void nnAppManager::setPrinter(IPrinter * printer)
+{
+    ILogger *current_logger = ILogger::getInstance();
+    if (current_logger == nullptr)
+    {
+        current_logger = new nnLogger();
+    }
+    if (current_logger)
+    {
+        current_logger->setOutput(printer);
+    }
+}
+#endif
 
 
 bool nnAppManager::closeAll(void)

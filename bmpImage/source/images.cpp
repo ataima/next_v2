@@ -726,9 +726,9 @@ size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height,un
     // palette is aligned on a 16 bytes boundary
     const size_t header_size = dib_size;
     // pixels are aligned on a 16 bytes boundary
-    dib_size += (size_t)CalculatePitch(CalculateLine(width, deep)) * (size_t)height;
+    dib_size += (size_t)CalculatePitch(CalculateLine(width, deep)) * (size_t)(height+1);
     const double dPitch = floor(((double)deep * width + 31.0) / 32.0) * 4.0;
-    const double dImageSize = (double)header_size + dPitch * height;
+    const double dImageSize = (double)header_size + dPitch * (height+1);
     if (dImageSize != (double)dib_size) {
         // here, we are sure to encounter a malloc overflow: try to avoid it ...
         return 0;
@@ -2048,7 +2048,8 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
     unsigned int pitch = getPitch(dest);
     unsigned int line = getLine(dest);
     unsigned  int depth = line / width;
-    unsigned char  *bits = getBits(dest);
+    unsigned char *bits_start = getBits(dest);
+    unsigned char *bits_stop= bits_start  + (height * pitch) + (width * depth);
     int dx,dy,end,x,y,mb;
     mb=1;
     int p;
@@ -2103,8 +2104,8 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
         if (y >= 0 && y <= height && end>0)
         {
             do {
-                unsigned char  *pos = bits + (y * pitch) + (x * depth);
-                if (mb&maskDot)
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (pos<bits_stop && mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE] = blue;
                     pos[ID_RGBA_GREEN] = green;
@@ -2122,8 +2123,8 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
         if (x >= 0 && x <= width && end>0)
         {
             do {
-                unsigned char  *pos = bits + (y * pitch) + (x * depth);
-                if (mb&maskDot)
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (pos<bits_stop && mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE] = blue;
                     pos[ID_RGBA_GREEN] = green;
@@ -2142,8 +2143,8 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
         {
             p = 2 * dy - dx;
             do {
-                unsigned char  *pos=bits+(y * pitch) + (x * depth);
-                if(mb&maskDot)
+                unsigned char  *pos=bits_start+(y * pitch) + (x * depth);
+                if(pos<bits_stop && mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE]=blue;
                     pos[ID_RGBA_GREEN]=green;
@@ -2169,8 +2170,8 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
         {
             p = 2 * dx - dy;
             do {
-                unsigned char  *pos=bits+(y * pitch) + (x * depth);
-                if(mb&maskDot)
+                unsigned char  *pos=bits_start+(y * pitch) + (x * depth);
+                if(pos<bits_stop && mb&maskDot)
                 {
                     pos[ID_RGBA_BLUE]=blue;
                     pos[ID_RGBA_GREEN]=green;

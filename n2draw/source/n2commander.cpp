@@ -3,7 +3,7 @@
 #include "n2commander.h"
 #include "n2exception.h"
 #include "n2imagemanager.h"
-#include "images.h"
+#include "n2utils.h"
 
 
 /**************************************************************
@@ -231,14 +231,16 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
 
 
 
-bool nnCommander::handlerRequestCommand( nnPoint & pos,int & command)
+bool nnCommander::checkRequestCommand( nnPoint & pos,int & command)
 {
     bool res=false;
     listCommandItem::iterator it=items.begin();
     listCommandItem::iterator end=items.end();
+    nnLOG(nnPoint, "current click mouse position :", pos);
     while(it!=end)
     {
-        if(it->rect.into(pos))
+        nnLOG(nnRect, "ITEM position :", it->btRect);
+        if(it->btRect.into(pos))
         {
             command=it->command;
             res=true;
@@ -278,11 +280,19 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
     {
         bmpImage & icon = *images->getImage(it->command);
         unsigned int x = pos.x + it->pos.x;
-        unsigned int y = bmpHeight - (pos.y + it->pos.y);
+        unsigned int y1 = pos.y + it->pos.y;
+        unsigned int y = bmpHeight - y1;
+        unsigned int icon_width = icon.getWidth();
+        unsigned int icon_height = icon.getHeight();
         res = bkg.drawMaskSprite(icon, x, y, it->maskR, it->maskG, it->maskB);
-        it->rect.set(x, y, x + icon.getWidth(), y + icon.getHeight());
+        it->rect.set(x, y, x + icon_width, y + icon_height);
+        it->btRect.set(x, y1- icon_height, x + icon_width, y1 );
         if (!res)
             break;
+#if 1
+        bkg.frameRect(it->btRect.start.x, bkg.getHeight() - it->btRect.start.y,
+            it->btRect.stop.x, bkg.getHeight() - it->btRect.stop.y, 255, 0, 0, 0xffffffff);
+#endif
         it++;
     }
     if (curItem != nullptr)
@@ -294,32 +304,13 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 }
 
 
-bool nnCommander::drawTips(bmpImage & bkg, nnPoint & /*pos*/, IViewGlue */*glue*/)
+bool nnCommander::drawTips(bmpImage & bkg, nnPoint & , IViewGlue *)
 {
 
     bool res = false;
     if (curItem != nullptr && font != nullptr)
     {
-        size_t len = curItem->info.size();
-        nnPoint sizeStr(font->getFontWidth()* len, font->getFontHeight());
-        const int offsetX = 20;
-        const int offsetY = 4;
-        bmpImage rectbkg;
-        res=rectbkg.create(sizeStr.x+2*offsetX, sizeStr.y+2*offsetY,32, 255);
-        if (res)
-        {
-            UtoA toA(curItem->info);
-            bmpImage * strImage = font->getImage(toA.utf8(), 0, 0, 255);
-            res = rectbkg.drawMaskSprite(*strImage,offsetX,offsetY,0,0,0);
-            delete strImage;
-            if(res)
-            {
-                rectbkg.frameRect(0, 0, rectbkg.getWidth()-1, rectbkg.getHeight()-1, 0, 0, 0,0xffffffff);
-                int posX = ( bkg.getWidth() - rectbkg.getWidth()-offsetX);
-                res = bkg.drawSprite(rectbkg, posX, offsetY);
-            }
-        }
+        res = nnUtils::drawBottomLeftTips(bkg, *font, curItem->info);
     }
-
     return res;
 }

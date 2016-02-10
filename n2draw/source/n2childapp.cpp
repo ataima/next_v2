@@ -391,11 +391,3 @@ bool nnChildApp::handlerDownButton(bool shift, bool ctrl, bool alt)
     return res;
 }
 
-bool nnChildApp::handlerRequestCommand(nnPoint phyPoint, int & command)
-{
-    bool res = false;
-    if (view)
-        res = view->handlerRequestCommand(phyPoint, command);
-    return res;
-}
-

@@ -33,7 +33,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 class nnCaption final
     :public ICaption
 {
-    static const int num_item = 4;
+    typedef enum tag_status_caption
+    {
+        status_caption_none,
+        status_caption_move,
+    }status_caption;
+    static const int num_item = 5;
     std::string title;
     bool visible;
     int hI;
@@ -45,14 +50,16 @@ class nnCaption final
     static const char *msg[num_item];
     IChild *parent;
     IFontManager *font;
+    status_caption status;
+    nnPoint lastPoint;
 public:
     nnCaption(IChild *_parent);
     ~nnCaption();
     void setTitle(XCHAR *_name);
     bool draw(bmpImage & bkg, IViewGlue *);
     void addImage(int pos, bmpImage * image);
-    bool handlerMouseMove(nnPoint phyPoint, show_status & status, IExtHandler *hook);
-    bool handlerMouseButtonDown(nnPoint phyPoint, IViewGlue * glue);
+    bool handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook);
+    bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook);
     void setArea(nnPoint & phy);
     inline void setFont(IFontManager *_font) { font = _font; }
     inline void hide(void)
@@ -66,6 +73,8 @@ public:
 private :
     int itemFromPoint(nnPoint phyPoint);
     bool drawTips(bmpImage & bkg);
+    inline void setStatus(status_caption  st) { status = st; }
+    inline status_caption & getStatus(void) { return status; }
 };
 
 
