@@ -30,14 +30,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "n2interfaces.h"
 
 
+typedef enum tag_status_caption
+{
+    status_caption_none,
+    status_caption_move,
+}status_caption;
+
+
 class nnCaption final
     :public ICaption
 {
-    typedef enum tag_status_caption
-    {
-        status_caption_none,
-        status_caption_move,
-    }status_caption;
     static const int num_item = 5;
     std::string title;
     bool visible;
@@ -76,6 +78,22 @@ private :
     inline void setStatus(status_caption  st) { status = st; }
     inline status_caption & getStatus(void) { return status; }
 };
+
+
+
+inline std::ostream & operator<<(std::ostream & os, const status_caption & st)
+{
+    switch (st)
+    {
+    case status_caption_none:
+        os << "status_caption_none(0)";
+        break;
+    case status_caption_move:
+        os << "status_caption_move(1)";
+        break;
+    }
+    return os;
+}
 
 
 

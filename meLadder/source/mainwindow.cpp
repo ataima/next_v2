@@ -128,6 +128,20 @@ void MainWindow::documentWasModified()
     setWindowModified(true);
 }
 
+
+
+#if _LOGGER_
+class testLogger
+    :public IPrinter
+{
+public :
+    void out(std::string & msg)
+    {
+     qDebug()<<msg.c_str();
+    }
+};
+#endif
+
 void MainWindow::init()
 {
     setAttribute(Qt::WA_DeleteOnClose);
@@ -185,7 +199,16 @@ void MainWindow::init()
             client->setExtHandler( &MainWindow::externCommandRequest,
                                    this
                                  );
-            showMaximized();
+#if _LOGGER_
+                {
+                    testLogger *tL = new testLogger();
+                    n2App->setPrinter(tL);
+                }
+#endif
+            QDesktopWidget dw;
+            int x=dw.width()*0.6;
+            int y=dw.height()*0.6;
+            resize(x,y);
         }
         else
         {
@@ -242,11 +265,7 @@ void MainWindow::directCommand(IParam * user_param)
         case 4005:
             //paste();
             break;
-        case 9999:
-            close();
-            break;
         }
-        delete t;
     }
 }
 
@@ -277,7 +296,6 @@ void MainWindow::requestCommand(size_t type_param,IParam * user_param)
             }
             QSize s(x,y);
             resize(s);
-            delete t;
         }
     }
     break;
@@ -288,6 +306,36 @@ void MainWindow::requestCommand(size_t type_param,IParam * user_param)
         break;
     case action_host_command:
         directCommand(user_param);
+        break;
+    case action_close_windows:
+        delete n2App;
+        n2App = nullptr;
+        close();
+        break;
+    case action_move_window:
+        {
+            nnAbstractParam<nnPoint> *t = static_cast<nnAbstractParam<nnPoint>*>(user_param);
+            if (t)
+            {
+                int x = t->value().x+pos().x();
+                int y = t->value().y+pos().y();
+                move(x,y);
+            }
+        }
+    break;
+    case action_maximize_windows:
+        showMaximized();
+        break;
+    case action_iconize_windows:
+        showMinimized();
+        break;
+    case action_medialize_windows:
+    {
+        QDesktopWidget dw;
+        int x=dw.width()*0.6;
+        int y=dw.height()*0.6;
+        resize(x,y);
+    }
         break;
     }
 }

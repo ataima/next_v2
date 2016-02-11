@@ -49,6 +49,8 @@ nnCaption::nnCaption(IChild *_parent) :
     status(status_caption_none)
 {
     lastPoint.set(0,0);
+    for(auto i=0;i<num_item;i++)
+        image[i]=nullptr;
 }
 
 nnCaption::~nnCaption()
@@ -90,46 +92,53 @@ void nnCaption::setArea(nnPoint & phy)
 bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
 {
     bool res = false;
-    bmpImage caption;
-    int start = phyArea.width() - ((wI*num_item) * 3) / 2;
-    int end = start - wI;
-    if (end > 0)
+    if(visible)
     {
-        int hc1 = phyArea.height() / 2;
-        if (caption.create(end, hc1, 32, 255))
+        bmpImage caption;
+        int start = phyArea.width() - ((wI*num_item) * 3) / 2;
+        int end = start - wI;
+        nnLOG2(int ,start,end);
+        if (end > 0)
         {
             std::string f,file = "meLa : ";
             if (parent)
                 parent->getCurrentFile(f);
             file += f;
             bmpImage *strImage = font->getImage(file.c_str(), 32, 32, 32);
-            int offY = 0;
-            int height1 = caption.getHeight();
-            int height2 = strImage->getHeight();
-            if (height1 > height2)
+            if(strImage)
             {
-            offY = (height1 - height2) / 2;
-            caption.drawMaskSprite(*strImage,height1, offY, 0, 0, 0);
-            delete strImage;
-            caption.frameRect(0, 0, end - 1, height1 - 1,0,0,0,0xffffffff);
-            bkg.drawSprite(caption, 0, bkg.getHeight() - phyArea.height() / 2);
-            btRect[num_item-1].set(0, 0, end, height1);
+                int offX,offY = 2;
+                int height1 = strImage->getHeight()+2*offY;
+                if (caption.create(end, height1, 32, 255))
+                {
+                caption.drawMaskSprite(*strImage,height1, offY, 0, 0, 0);
+                delete strImage;
+                caption.frameRect(0, 0, end - 1, height1 - 1,0,0,0,0xffffffff);
+                if(image[0])
+                {
+                    offY=(image[0]->getHeight()-height1)/2;
+                    offX=2*offY;
+                }
+                nnLOG2(int ,offY,offX);
+                bkg.drawSprite(caption, offX, (bkg.getHeight() - offY-height1));
+                btRect[num_item-1].set(offX, offY, end+offX, height1+offY);
+                }
             }
         }
-    }
-    for (int i = 0; i < num_item-1; i++)
-    {
-        bkg.drawMaskSprite(*image[i], start, bkg.getHeight()-hI,255,255,255);
-        btRect[i].set(start, 0, start + image[i]->getWidth(), image[i]->getHeight());
-#if 0
-        bkg.frameRect(btRect[i].start.x, bkg.getHeight() - btRect[i].start.y,
-            btRect[i].stop.x, bkg.getHeight() - btRect[i].stop.y, 255, 0, 0, 0xffffffff);
-#endif
-        start += ((wI * 3) / 2);
-    }
-    if (curItem != -1)
-    {
-        drawTips(bkg);
+        for (int i = 0; i < num_item-1; i++)
+        {
+            bkg.drawMaskSprite(*image[i], start, bkg.getHeight()-hI,255,255,255);
+            btRect[i].set(start, 0, start + image[i]->getWidth(), image[i]->getHeight());
+    #if 0
+            bkg.frameRect(btRect[i].start.x, bkg.getHeight() - btRect[i].start.y,
+                btRect[i].stop.x, bkg.getHeight() - btRect[i].stop.y, 255, 0, 0, 0xffffffff);
+    #endif
+            start += ((wI * 3) / 2);
+        }
+        if (curItem != -1)
+        {
+            drawTips(bkg);
+        }
     }
     return res;
 }
@@ -158,6 +167,8 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                 if (hook)
                     hook->doHandler(action_redraw);
                 phyArea.stop.y=hI;
+                nnLOG(status_caption,"CURRENT STATUS:",getStatus());
+                nnLOG(show_status,"VIEW SHOW STATUS:",status);
             }
             else
             {
@@ -171,13 +182,15 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
         }
         else
         {
-            hide();
             if (status == show_caption )
             {
+                hide();
                 if (hook)
                     hook->doHandler(action_redraw);
                 status = show_none;
                 phyArea.stop.y = hI/3;
+                nnLOG(status_caption,"CURRENT STATUS:",getStatus());
+                nnLOG(show_status,"VIEW SHOW STATUS:",status);
             }
         }
     }
