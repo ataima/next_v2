@@ -206,8 +206,10 @@ void MainWindow::init()
                 }
 #endif
             QDesktopWidget dw;
-            int x=dw.width()*0.6;
-            int y=dw.height()*0.6;
+            MaxWidth=dw.width();
+            MaxHeight=dw.height();
+            int x=MaxWidth*0.6;
+            int y=MaxHeight*0.6;
             resize(x,y);
         }
         else
@@ -299,10 +301,23 @@ void MainWindow::requestCommand(size_t type_param,IParam * user_param)
         }
     }
     break;
-    case action_update_statusbars_panes:
+    case action_update_selected_panes:
+        break;
+    case action_update_scroller_panes:
+        break;
     case action_update_statusbars_info:
+        break;
     case action_redraw:
-        refreshPixmap();
+        if (thread()!=QThread::currentThread())
+        {
+         QMetaObject::invokeMethod(this,
+         "refreshPixmapAsync",
+         Qt::QueuedConnection);
+        }
+        else
+        {
+            refreshPixmap();
+        }
         break;
     case action_host_command:
         directCommand(user_param);
@@ -310,7 +325,16 @@ void MainWindow::requestCommand(size_t type_param,IParam * user_param)
     case action_close_windows:
         delete n2App;
         n2App = nullptr;
-        close();
+        if (thread()!=QThread::currentThread())
+        {
+         QMetaObject::invokeMethod(this,
+         "closeAsync",
+         Qt::QueuedConnection);
+        }
+        else
+        {
+            close();
+        }
         break;
     case action_move_window:
         {
@@ -319,22 +343,62 @@ void MainWindow::requestCommand(size_t type_param,IParam * user_param)
             {
                 int x = t->value().x+pos().x();
                 int y = t->value().y+pos().y();
-                move(x,y);
+                //
+                if (thread()!=QThread::currentThread())
+                {
+                 QPoint pos(x,y);
+                 QMetaObject::invokeMethod(this,
+                 "moveAsync",
+                 Qt::QueuedConnection,
+                 Q_ARG(const QPoint &, pos));
+                }
+                else
+                {
+                    move(x,y);
+                }
             }
         }
     break;
     case action_maximize_windows:
-        showMaximized();
+        if (thread()!=QThread::currentThread())
+        {
+         QMetaObject::invokeMethod(this,
+         "showMaximizedAsync",
+         Qt::QueuedConnection);
+        }
+        else
+        {
+            showMaximized();
+        }
         break;
     case action_iconize_windows:
-        showMinimized();
+        if (thread()!=QThread::currentThread())
+        {
+         QMetaObject::invokeMethod(this,
+         "showMinimizedAsync",
+         Qt::QueuedConnection);
+        }
+        else
+        {
+            showMinimized();
+        }
         break;
     case action_medialize_windows:
     {
-        QDesktopWidget dw;
-        int x=dw.width()*0.6;
-        int y=dw.height()*0.6;
-        resize(x,y);
+        int x=MaxWidth*0.6;
+        int y=MaxHeight*0.6;
+        if (thread()!=QThread::currentThread())
+        {
+         QMetaObject::invokeMethod(this,
+         "resizeAsync",
+         Qt::QueuedConnection,
+         Q_ARG(int,x),
+         Q_ARG(int,y));
+        }
+        else
+        {
+            resize(x,y);
+        }
     }
         break;
     }
