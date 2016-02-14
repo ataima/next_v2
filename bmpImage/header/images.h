@@ -136,8 +136,9 @@ public:
         unsigned char newRed,unsigned char newGreen, unsigned char newBlue);
     bool setPixel(unsigned int _x,unsigned int _y,unsigned char red,unsigned char green,unsigned char blue);
     bool getPixel(unsigned int _x,unsigned int _y,unsigned char  & red,unsigned char & green,unsigned char & blue);
-    bool line( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned int mask);
+    bool line( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned int mask=0xffffffff);
     bool frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue,unsigned int mask);
+    bool border(unsigned char red, unsigned char green, unsigned char blue, unsigned int mask);
 #ifdef _MSC_VER
     void show(int x, int y);
 #endif
@@ -179,8 +180,14 @@ protected:
 
     static bool setPixel(LPBITMAPFILEHEADER dest,unsigned int x,unsigned int y,unsigned char red,unsigned char green,unsigned char blue);
     static bool getPixel(LPBITMAPFILEHEADER dest, unsigned int x, unsigned int y, unsigned char  & red, unsigned char & green, unsigned char & blue);
-    static bool line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
+    static bool line24mask(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
                         unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot);
+    static bool line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
+        unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot);
+    static bool line24(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
+        unsigned char red, unsigned char green, unsigned char blue);
+    static bool line32(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
+        unsigned char red, unsigned char green, unsigned char blue);
     static bool translateColor(LPBITMAPFILEHEADER dest,unsigned char oriRed, unsigned char oriGreen,
         unsigned char oriBlue, unsigned char newRed,
         unsigned char newGreen, unsigned char  newBlue);

@@ -269,15 +269,14 @@ void nnScroller::drawBar(bmpImage & bkg, nnPoint & start, nnPoint & stop)
         int pos,width = stop.x - start.x;
         int height = stop.y - start.y;
         pmp.create(width,height, 32, 255);
-        pmp.frameRect(0, 0, width-1, height-1, 128, 128, 128, 0xffffffff);
+        pmp.border(128, 128, 128, 0xffffffff);
         if (mode == scrollerMode::mode_scroller_horz)
         {
             pos = ((width*currentPos) / (maxPos - minPos));
             if (pos)
             {
-            curs.create(pos-1, height - 5, 32, 192);
+            curs.create(pos-1, height - 6, 32, 192);
             pmp.drawSprite(curs, 3, 3);
-            pmp.frameRect(2, 2, pos, height - 3, 0, 0, 64, 0xffffffff);
             }
         }
         else
@@ -285,9 +284,8 @@ void nnScroller::drawBar(bmpImage & bkg, nnPoint & start, nnPoint & stop)
             pos =((height*currentPos) / (maxPos - minPos));
             if (pos)
             {
-                curs.create(width - 5, pos-1, 32, 192);
-                pmp.drawSprite(curs, 3, height - pos-2);
-                pmp.frameRect(2, height -3  - pos, width - 3, height - 4, 0, 0, 64, 0xffffffff);
+                curs.create(width - 6, pos-6, 32, 192);
+                pmp.drawSprite(curs, 3, 3);
             }
         }
         bkg.drawSprite(pmp, start.x,  start.y);

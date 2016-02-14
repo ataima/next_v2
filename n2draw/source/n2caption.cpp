@@ -113,7 +113,7 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
                 {
                 caption.drawMaskSprite(*strImage,height1, offY, 0, 0, 0);
                 delete strImage;
-                caption.frameRect(0, 0, end - 1, height1 - 1,0,0,0,0xffffffff);
+                caption.border(0,0,0,0xffffffff);
                 if(image[0])
                 {
                     offY=(image[0]->getHeight()-height1)/2;

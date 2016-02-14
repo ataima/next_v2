@@ -2032,14 +2032,29 @@ bool bmpImage::line( int x1, int y1, int x2, int y2,
                     unsigned char red,unsigned char green,
                      unsigned char blue,unsigned int mask)
 {
-    return line(m_hBitmap,x1,y1,x2,y2,red,green,blue,mask);
+    int depth = getBitsPerPixel();
+    if (depth == 24)
+        {
+            if(mask==0xffffffff)
+                return line24(m_hBitmap, x1, y1, x2, y2, red, green, blue);
+            else
+                return line24mask(m_hBitmap, x1, y1, x2, y2, red, green, blue, mask);
+        }
+    else
+        if (depth == 32)
+        {
+            if (mask == 0xffffffff)
+                return line32(m_hBitmap, x1, y1, x2, y2, red, green, blue);
+            else
+                return line32mask(m_hBitmap, x1, y1, x2, y2, red, green, blue, mask);
+        }
+    return false;
 }
 
-bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
-                    unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot)
+bool bmpImage::line24(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
+                    unsigned char red, unsigned char green, unsigned char blue)
 {
     bool res=false;
-    if(maskDot==0)return true;
     int width,height;
     width=(int)getWidth(dest);
     height = (int)getHeight(dest);
@@ -2049,9 +2064,7 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
     unsigned int line = getLine(dest);
     unsigned  int depth = line / width;
     unsigned char *bits_start = getBits(dest);
-    unsigned char *bits_stop= bits_start  + (height * pitch) + (width * depth);
-    int dx,dy,end,x,y,mb;
-    mb=1;
+    int dx,dy,end,x,y;
     int p;
     if(y1>y2)
         dy=y1-y2;
@@ -2101,39 +2114,29 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
     }
     if(dy==0)
     {
-        if (y >= 0 && y <= height && end>0)
+        if (y >= 0 && y < height && end>0)
         {
             do {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
-                if (pos<bits_stop && mb&maskDot)
-                {
-                    pos[ID_RGBA_BLUE] = blue;
-                    pos[ID_RGBA_GREEN] = green;
-                    pos[ID_RGBA_RED] = red;
-                }
+                pos[ID_RGBA_BLUE] = blue;
+                pos[ID_RGBA_GREEN] = green;
+                pos[ID_RGBA_RED] = red;
                 x++;
-                mb <<= 1;
-                if (!mb)mb = 1;
-            } while (x < end);
+            } while (x <= end);
             res = true;
         }
     }
     else if(dx==0)
     {
-        if (x >= 0 && x <= width && end>0)
+        if (x >= 0 && x < width && end>0)
         {
             do {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
-                if (pos<bits_stop && mb&maskDot)
-                {
-                    pos[ID_RGBA_BLUE] = blue;
-                    pos[ID_RGBA_GREEN] = green;
-                    pos[ID_RGBA_RED] = red;
-                }
+                pos[ID_RGBA_BLUE] = blue;
+                pos[ID_RGBA_GREEN] = green;
+                pos[ID_RGBA_RED] = red;
                 y++;
-                mb <<= 1;
-                if (!mb)mb = 1;
-            } while (y < end);
+            } while (y <= end);
             res = true;
         }
     }
@@ -2144,15 +2147,10 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
             p = 2 * dy - dx;
             do {
                 unsigned char  *pos=bits_start+(y * pitch) + (x * depth);
-                if(pos<bits_stop && mb&maskDot)
-                {
-                    pos[ID_RGBA_BLUE]=blue;
-                    pos[ID_RGBA_GREEN]=green;
-                    pos[ID_RGBA_RED]=red;
-                }
+                pos[ID_RGBA_BLUE]=blue;
+                pos[ID_RGBA_GREEN]=green;
+                pos[ID_RGBA_RED]=red;
                 x++;
-                mb<<=1;
-                if(!mb)mb=1;
                 if(p < 0)
                 {
                     p = p + 2 * dy;
@@ -2171,15 +2169,10 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
             p = 2 * dx - dy;
             do {
                 unsigned char  *pos=bits_start+(y * pitch) + (x * depth);
-                if(pos<bits_stop && mb&maskDot)
-                {
-                    pos[ID_RGBA_BLUE]=blue;
-                    pos[ID_RGBA_GREEN]=green;
-                    pos[ID_RGBA_RED]=red;
-                }
+                pos[ID_RGBA_BLUE]=blue;
+                pos[ID_RGBA_GREEN]=green;
+                pos[ID_RGBA_RED]=red;
                 y++;
-                mb<<=1;
-                if(!mb)mb=1;
                 if(p < 0)
                 {
                     p = p + 2 * dx;
@@ -2195,6 +2188,461 @@ bool bmpImage::line(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
     }
     res=true;
     return res;
+}
+
+
+bool bmpImage::line24mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
+    unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot)
+{
+    bool res = false;
+    if (maskDot == 0)return true;
+    int width, height;
+    width = (int)getWidth(dest);
+    height = (int)getHeight(dest);
+    if (width == 0)return false;
+    if (height == 0)return false;
+    unsigned int pitch = getPitch(dest);
+    unsigned int line = getLine(dest);
+    unsigned  int depth = line / width;
+    unsigned char *bits_start = getBits(dest);
+    int dx, dy, end, x, y, mb;
+    mb = 1;
+    int p;
+    if (y1>y2)
+        dy = y1 - y2;
+    else
+        dy = y2 - y1;
+    if (x1>x2)
+    {
+        dx = x1 - x2;
+        x = x2;
+        y = y2;
+        if (dx>dy)
+        {
+            end = x1;
+        }
+        else
+        {
+            end = y1;
+        }
+    }
+    else
+    {
+        dx = x2 - x1;
+        x = x1;
+        y = y1;
+        if (dx != 0)
+        {
+            if (dx>dy)
+                end = x2;
+            else
+                end = y2;
+        }
+        else
+        {
+            if (y1>y2)
+            {
+                y = y2;
+                x = x2;
+                end = y1;
+            }
+            else
+            {
+                y = y1;
+                x = x1;
+                end = y2;
+            }
+        }
+    }
+    if (dy == 0)
+    {
+        if (y >= 0 && y < height && end>0)
+        {
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if ( mb&maskDot )
+                {
+                    pos[ID_RGBA_BLUE] = blue;
+                    pos[ID_RGBA_GREEN] = green;
+                    pos[ID_RGBA_RED] = red;
+                }
+                x++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+            } while (x <= end);
+            res = true;
+        }
+    }
+    else if (dx == 0)
+    {
+        if (x >= 0 && x < width && end>0)
+        {
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (mb&maskDot)
+                {
+                    pos[ID_RGBA_BLUE] = blue;
+                    pos[ID_RGBA_GREEN] = green;
+                    pos[ID_RGBA_RED] = red;
+                }
+                y++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+            } while (y <= end);
+            res = true;
+        }
+    }
+    else
+    {
+        if (dx>dy && end > 0)
+        {
+            p = 2 * dy - dx;
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (mb&maskDot)
+                {
+                    pos[ID_RGBA_BLUE] = blue;
+                    pos[ID_RGBA_GREEN] = green;
+                    pos[ID_RGBA_RED] = red;
+                }
+                x++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+                if (p < 0)
+                {
+                    p = p + 2 * dy;
+                }
+                else
+                {
+                    y++;
+                    p = p + 2 * (dy - dx);
+                }
+            } while (x <= end);
+            res = true;
+        }
+        else
+            if (dy>dx && end > 0)
+            {
+                p = 2 * dx - dy;
+                do {
+                    unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                    if (mb&maskDot)
+                    {
+                        pos[ID_RGBA_BLUE] = blue;
+                        pos[ID_RGBA_GREEN] = green;
+                        pos[ID_RGBA_RED] = red;
+                    }
+                    y++;
+                    mb <<= 1;
+                    if (!mb)mb = 1;
+                    if (p < 0)
+                    {
+                        p = p + 2 * dx;
+                    }
+                    else
+                    {
+                        x++;
+                        p = p + 2 * (dx - dy);
+                    }
+                } while (y <= end);
+                res = true;
+            }
+    }
+    res = true;
+    return res;
+}
+
+bool bmpImage::line32(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
+    unsigned char red, unsigned char green, unsigned char blue)
+{
+    bool res = false;
+    int width, height;
+    width = (int)getWidth(dest);
+    height = (int)getHeight(dest);
+    if (width == 0)return false;
+    if (height == 0)return false;
+    unsigned int pitch = getPitch(dest);
+    unsigned int line = getLine(dest);
+    unsigned  int depth = line / width;
+    unsigned char *bits_start = getBits(dest);
+    int dx, dy, end, x, y;
+    int p;
+    if (y1>y2)
+        dy = y1 - y2;
+    else
+        dy = y2 - y1;
+    if (x1>x2)
+    {
+        dx = x1 - x2;
+        x = x2;
+        y = y2;
+        if (dx>dy)
+        {
+            end = x1;
+        }
+        else
+        {
+            end = y1;
+        }
+    }
+    else
+    {
+        dx = x2 - x1;
+        x = x1;
+        y = y1;
+        if (dx != 0)
+        {
+            if (dx>dy)
+                end = x2;
+            else
+                end = y2;
+        }
+        else
+        {
+            if (y1>y2)
+            {
+                y = y2;
+                x = x2;
+                end = y1;
+            }
+            else
+            {
+                y = y1;
+                x = x1;
+                end = y2;
+            }
+        }
+    }
+    unsigned int newCol = (red << 16) | (green << 8) | blue;    
+    if (dy == 0)
+    {
+        if (y >= 0 && y < height && end>0)
+        {
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                *reinterpret_cast<unsigned int *>(pos) = newCol;
+                x++;
+            } while (x <= end);
+            res = true;
+        }
+    }
+    else if (dx == 0)
+    {
+        if (x >= 0 && x < width && end>0)
+        {
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                *reinterpret_cast<unsigned int *>(pos) = newCol;
+                y++;
+            } while (y <= end);
+            res = true;
+        }
+    }
+    else
+    {
+        if (dx>dy && end > 0)
+        {
+            p = 2 * dy - dx;
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                *reinterpret_cast<unsigned int *>(pos) = newCol;
+                x++;
+                if (p < 0)
+                {
+                    p = p + 2 * dy;
+                }
+                else
+                {
+                    y++;
+                    p = p + 2 * (dy - dx);
+                }
+            } while (x <= end);
+            res = true;
+        }
+        else
+            if (dy>dx && end > 0)
+            {
+                p = 2 * dx - dy;
+                do {
+                    unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                    *reinterpret_cast<unsigned int *>(pos) = newCol;
+                    y++;
+                    if (p < 0)
+                    {
+                        p = p + 2 * dx;
+                    }
+                    else
+                    {
+                        x++;
+                        p = p + 2 * (dx - dy);
+                    }
+                } while (y <= end);
+                res = true;
+            }
+    }
+    res = true;
+    return res;
+}
+
+bool bmpImage::line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
+    unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot)
+{
+    bool res = false;
+    if (maskDot == 0)return true;
+    int width, height;
+    width = (int)getWidth(dest);
+    height = (int)getHeight(dest);
+    if (width == 0)return false;
+    if (height == 0)return false;
+    unsigned int pitch = getPitch(dest);
+    unsigned int line = getLine(dest);
+    unsigned  int depth = line / width;
+    unsigned char *bits_start = getBits(dest);
+    int dx, dy, end, x, y, mb;
+    mb = 1;
+    int p;
+    if (y1>y2)
+        dy = y1 - y2;
+    else
+        dy = y2 - y1;
+    if (x1>x2)
+    {
+        dx = x1 - x2;
+        x = x2;
+        y = y2;
+        if (dx>dy)
+        {
+            end = x1;
+        }
+        else
+        {
+            end = y1;
+        }
+    }
+    else
+    {
+        dx = x2 - x1;
+        x = x1;
+        y = y1;
+        if (dx != 0)
+        {
+            if (dx>dy)
+                end = x2;
+            else
+                end = y2;
+        }
+        else
+        {
+            if (y1>y2)
+            {
+                y = y2;
+                x = x2;
+                end = y1;
+            }
+            else
+            {
+                y = y1;
+                x = x1;
+                end = y2;
+            }
+        }
+    }
+    unsigned int newCol = (red << 16) | (green << 8) | blue;
+    if (dy == 0)
+    {
+        if (y >= 0 && y < height && end>0)
+        {
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (mb&maskDot)
+                {
+                    *reinterpret_cast<unsigned int *>(pos) = newCol;
+                }
+                x++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+            } while (x <= end);
+            res = true;
+        }
+    }
+    else if (dx == 0)
+    {
+        if (x >= 0 && x < width && end>0)
+        {
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (mb&maskDot)
+                {
+                    *reinterpret_cast<unsigned int *>(pos) = newCol;
+                }
+                y++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+            } while (y <= end);
+            res = true;
+        }
+    }
+    else
+    {
+        if (dx>dy && end > 0)
+        {
+            p = 2 * dy - dx;
+            do {
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (mb&maskDot)
+                {
+                    *reinterpret_cast<unsigned int *>(pos) = newCol;
+                }
+                x++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+                if (p < 0)
+                {
+                    p = p + 2 * dy;
+                }
+                else
+                {
+                    y++;
+                    p = p + 2 * (dy - dx);
+                }
+            } while (x <= end);
+            res = true;
+        }
+        else
+            if (dy>dx && end > 0)
+            {
+                p = 2 * dx - dy;
+                do {
+                    unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                    if (mb&maskDot)
+                    {
+                        *reinterpret_cast<unsigned int *>(pos) = newCol;
+                    }
+                    y++;
+                    mb <<= 1;
+                    if (!mb)mb = 1;
+                    if (p < 0)
+                    {
+                        p = p + 2 * dx;
+                    }
+                    else
+                    {
+                        x++;
+                        p = p + 2 * (dx - dy);
+                    }
+                } while (y <= end);
+                res = true;
+            }
+    }
+    res = true;
+    return res;
+}
+
+bool bmpImage::border(unsigned char red, unsigned char green, unsigned char blue, unsigned int mask)
+{
+    int width = getWidth()-1;
+    int height = getHeight()-1;
+    return frameRect(0, 0, width, height, red, green, blue, mask);
 }
 
 bool bmpImage::frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue,unsigned int mask)

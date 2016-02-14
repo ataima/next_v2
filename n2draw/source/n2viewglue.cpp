@@ -847,7 +847,7 @@ bool nnViewGlue::needScrollBarVert(void)
         IManager  * manager = parent->getManager();
         if (manager)
         {
-            int h = (manager->getHeight() + 2)*const_Size.y;
+            int h = manager->getHeight()*const_Size.y;
             res= (phy_Size.y < h);
         }
     }
