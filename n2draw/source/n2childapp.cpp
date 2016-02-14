@@ -262,132 +262,419 @@ bool nnChildApp::setExtHandler( extHandler _hook, void *unkObj)
 
 
 
-bool nnChildApp::handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint)
+bool nnChildApp::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerMouseMove(buttons, phyPoint);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>
+    {
+        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+            :nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>(call, view, buttons, phyPoint)
+        {}
+        static void call(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+        {
+            view->handlerMouseMove(buttons, phyPoint);
+        }
+    };
     bool res = false;
     if (view)
-        res=view->handlerMouseMove(buttons, phyPoint);
+        {
+            pulse_caller(view, buttons, phyPoint);        
+            res = true;
+        }
     return res;
 }
 
-bool nnChildApp::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint)
+bool nnChildApp::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerMouseButtonDown(buttons, phyPoint);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>
+    {
+        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+            :nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>(call, view, buttons, phyPoint)
+        {}
+        static void call(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+        {
+            view->handlerMouseButtonDown(buttons, phyPoint);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerMouseButtonDown(buttons, phyPoint);
+    {
+        pulse_caller(view, buttons, phyPoint);
+        res = true;
+    }
     return res;
 }
 
-bool nnChildApp::nnChildApp::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint)
+bool nnChildApp::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerMouseButtonUp(buttons, phyPoint);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>
+    {
+        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+            :nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>(call, view, buttons, phyPoint)
+        {}
+        static void call(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+        {
+            view->handlerMouseButtonUp(buttons, phyPoint);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerMouseButtonUp(buttons, phyPoint);
+    {
+        pulse_caller(view, buttons, phyPoint);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerScrollHorz(int pos)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerScrollHorz(pos);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse2<IViewGlue *, int>
+    {
+        pulse_caller(IViewGlue *  view, int pos)
+            :nnPulse2<IViewGlue *, int>(call, view, pos)
+        {}
+        static void call(IViewGlue *  view, int pos)
+        {
+            view->handlerScrollHorz(pos);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerScrollHorz(pos);
+    {
+        pulse_caller(view,pos);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerScrollVert(int pos)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerScrollVert(pos);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse2<IViewGlue *, int>
+    {
+        pulse_caller(IViewGlue *  view, int pos)
+            :nnPulse2<IViewGlue *, int>(call, view, pos)
+        {}
+        static void call(IViewGlue *  view, int pos)
+        {
+            view->handlerScrollVert(pos);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerScrollVert(pos);
+    {
+        pulse_caller(view, pos);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerEscapeButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerEscapeButton(shift,ctrl,alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerEscapeButton(shift,ctrl,alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerEscapeButton(shift,ctrl,alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerHomeButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerHomeButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerHomeButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerHomeButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerEndButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerEndButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerEndButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerEndButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerPageUpButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerPageUpButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerPageUpButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerPageUpButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
-
 }
 
 bool nnChildApp::handlerPageDownButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerPageDownButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerPageDownButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerPageDownButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerPageRightButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerPageRightButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerPageRightButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerPageRightButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerPageLeftButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerPageLeftButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerPageLeftButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerPageLeftButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerLeftButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerLeftButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerLeftButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerLeftButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerRightButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerRightButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view,shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerRightButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerRightButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerUpButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerUpButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerUpButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerUpButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerDownButton(bool shift, bool ctrl, bool alt)
 {
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerDownButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerDownButton(shift, ctrl, alt);
+        }
+    };
     bool res = false;
     if (view)
-        res = view->handlerDownButton(shift, ctrl, alt);
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
     return res;
 }
 

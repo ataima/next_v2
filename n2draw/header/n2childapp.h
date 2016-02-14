@@ -39,7 +39,7 @@ class nnChildApp
     IFontList               *fonts;
     IViewGlue               *view;
     IImageManager           *imageManager;
-    IExtHandler             *externalHandler;
+    IExtHandler             *externalHandler;    
     unsigned int            id;
 public:
     nnChildApp(unsigned int _id=0);
@@ -54,9 +54,9 @@ public:
     inline  IImageManager * getImage(void)             { return imageManager; }
     inline  IExtHandler * getHandler(void)             { return externalHandler; }
     // remap handler
-    bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint) ;
-    bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint) ;
-    bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint) ;
+    bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint) ;
+    bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint) ;
+    bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoint) ;
     bool handlerScrollHorz(int pos) ;
     bool handlerScrollVert(int pos) ;
     bool handlerEscapeButton(bool shift, bool ctrl, bool alt) ;

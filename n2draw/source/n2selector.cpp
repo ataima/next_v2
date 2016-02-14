@@ -30,11 +30,14 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-nnSelector::nnSelector(void)
+nnSelector::nnSelector(IChild *_parent):
+    parent(_parent)
 {
     hide();
     error = false;
     toAlpha = "ABCDEFGHILMNOPQRSTUVXYZ";
+    select_start.set(-1);
+    select_stop.set(-1);
 }
 
 
@@ -70,15 +73,14 @@ bool nnSelector::translateY( int p, std::string & out )
     return res;
 }
 
-void nnSelector::draw(bmpImage & image, 
-   const nnPoint &sel_start, const nnPoint &sel_stop, IViewGlue * glue)
+void nnSelector::draw(bmpImage & image,IViewGlue * glue)
 {
     if (visible)
     {
         nnPoint start, stop,size;
         size = glue->getConstPhy();
-        start = glue->getCoordPhy( sel_start);
-        stop  = glue->getCoordPhy( sel_stop);        
+        start = glue->getCoordPhy( select_start);
+        stop  = glue->getCoordPhy( select_stop);        
         stop += size;
         unsigned int height=image.getHeight();
         start.y = height - start.y;
@@ -101,22 +103,22 @@ void nnSelector::draw(bmpImage & image,
         }
         if (font)
         {
-            nnPoint diff = sel_stop - sel_start;
+            nnPoint diff = select_stop - select_start;
             if (diff.y >= 2 || diff.x >= 2)
             {
                 bmpImage * strImage;
                 std::string conv;
                 char buff[128];
-                if (translateY(sel_start.x, conv))
+                if (translateY(select_start.x, conv))
                 {
-                    sprintf(buff, "%s:%d", conv.c_str(), sel_start.x);
+                    sprintf(buff, "%s:%d", conv.c_str(), select_start.y);
                     strImage = font->getImage(buff, 16, 16, 224);
                     image.drawMaskSprite(*strImage, start.x + 2, start.y - 14, 0, 0, 0);
                     delete strImage;
                 }
-                if (translateY(sel_stop.x, conv))
+                if (translateY(select_stop.x, conv))
                 {
-                    sprintf(buff, "%s:%d", conv.c_str(), sel_stop.x);
+                    sprintf(buff, "%s:%d", conv.c_str(), select_stop.y);
                     strImage = font->getImage(buff, 16, 224, 16);
                     image.drawMaskSprite(*strImage, stop.x - (8 * strlen(buff)) - 2, stop.y + 4, 0, 0, 0);
                     delete strImage;
@@ -124,5 +126,321 @@ void nnSelector::draw(bmpImage & image,
             }
         }
     }
+}
+
+bool nnSelector::handlerMouseMove(nnPoint & logPoint)
+{
+    bool res = false;
+    if (status == start_activate)
+        status = start_resize;
+    if (status == start_resize)
+    {
+        if (parent)
+        {
+            IExtHandler *hook = parent->getHandler();
+            if (logPoint != select_stop)
+            {
+
+                IManager *manager = parent->getManager();
+                if (manager)
+                {
+                    nnPoint maxStop = manager->getSchema();
+                    maxStop -= 1;
+                    bool error = false;
+                    if (logPoint.x > maxStop.x)
+                    {
+                        error = true;
+                        logPoint.x = maxStop.x;
+                    }
+                    if (logPoint.y > maxStop.y)
+                    {
+                        error = true;
+                        logPoint.y = maxStop.y;
+                    }
+                    setError(error);
+                    if (logPoint.x < select_start.x || logPoint.y < select_start.y)
+                    {
+                        select_stop = select_start;
+                        select_start = logPoint;
+                    }
+                    else
+                    {
+                        select_stop = logPoint;
+                    }
+                    if (hook)
+                    {
+                        nnRect v(select_start, select_stop);
+                        nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                        hook->doHandler(action_update_selected_panes, p);
+                        hook->doHandler(action_redraw);
+                    }
+                    res = true;
+                }
+            }
+        }
+    }
+    return res;
+}
+
+bool nnSelector::handlerMouseButtonDown(nnPoint &logPoint, show_status & s_status)
+{
+    bool res = false;
+    //todo move into selector
+    if (status == s_unselect || status == selected)
+        status = start_activate;
+    if (parent)
+    {
+        IExtHandler *hook = parent->getHandler();
+        IManager *manager = parent->getManager();
+        if (manager )
+        {            
+            nnPoint maxStop = manager->getSchema();
+            maxStop -= 1;
+            bool error = false;
+            if (logPoint.x > maxStop.x)
+            {
+                error = true;
+                logPoint.x = maxStop.x;
+            }
+            if (logPoint.y > maxStop.y)
+            {
+                error = true;
+                logPoint.y = maxStop.y;
+            }
+            setError(error);
+            selectStart(logPoint);
+            select_stop = select_start;
+            show();
+            if (hook)
+            {
+                nnRect v(select_start, select_stop);
+                nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                hook->doHandler(action_update_selected_panes, p);
+                hook->doHandler(action_redraw);
+
+            }
+            res = true;
+        }
+    }
+    return res;
+}
+
+//TestviewGlue.cpp : T3
+bool nnSelector::selectStart(nnPoint pos)
+{
+    bool res = false;
+    if (parent)
+    {
+        IManager  * manager = parent->getManager();
+        if (manager)
+        {
+            int log_height = manager->getHeight(); //logic coord
+            int log_width = manager->getWidth(); //logic coord
+            if (pos.x < log_width && pos.y < log_height)
+            {
+                select_start = pos;
+                res = true;
+            }
+        }
+    }
+    return res;
+}
+//TestviewGlue.cpp : T3
+bool nnSelector::selectStop(nnPoint pos)
+{
+    bool res = false;
+    if (parent != nullptr)
+    {
+        IManager  * manager = parent->getManager();
+        if (manager)
+        {
+            int log_height = manager->getHeight(); //logic coord
+            int log_width = manager->getWidth(); //logic coord
+            if (pos.x < log_width && pos.y < log_height)
+            {
+                select_stop = pos;
+                res = true;
+            }
+        }
+    }
+    return res;
+}
+
+
+//TestviewGlue.cpp : T3
+bool nnSelector::unselect()
+{
+    select_start.x = -1;
+    select_start.y = -1;
+    select_stop.x = -1;
+    select_stop.y = -1;
+    status = s_unselect;
+    hide();
+    if (parent)
+    {
+        IExtHandler *hook = parent->getHandler();
+        if (hook)
+        {
+            nnRect v(select_start, select_stop);
+            nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+            hook->doHandler(action_update_selected_panes, p);
+            hook->doHandler(action_redraw);
+        }
+    }
+    return true;
+}
+
+
+int nnSelector::isSelected(void)
+{
+    int res = 0;
+    if (visible)
+    {
+        if (isStartValid() && isStopValid())
+        {
+            if (select_start != select_stop)
+            {
+                nnPoint diff = select_stop - select_start;
+                res = diff.maxElem();
+            }
+            else
+            {
+                res = 1;
+            }
+        }
+    }
+    return res;
+}
+
+bool nnSelector::resizeSelectArea(const int vx, const int vy)
+{
+    bool res = false;
+    if (parent)
+    {
+        if (status == selected)
+        {
+            IManager  * manager = parent->getManager();
+            if (isStartValid() && isStopValid())
+            {
+                if (manager)
+                {
+                    if (vx != 0)
+                    {
+                        int w = manager->getWidth() - 1;
+                        if (vx < 0)
+                        {
+                            nnPoint diff = select_stop - select_start;
+                            if (diff.x>0)
+                            {
+                                select_stop.x += vx;
+                                res = true;
+                            }
+                        }
+                        if (vx > 0)
+                        {
+                            if (select_stop.x < w)
+                                select_stop.x += vx;
+                            res = true;
+                        }
+                    }
+                    if (vy != 0)
+                    {
+                        int h = manager->getHeight() - 1;
+                        if (vy < 0)
+                        {
+                            nnPoint diff = select_stop - select_start;
+                            if (diff.y>0)
+                            {
+                                select_stop.y += vy;
+                                res = true;
+                            }
+                        }
+                        if (vy > 0)
+                        {
+                            if (select_stop.y < h)
+                                select_stop.y += vy;
+                            res = true;
+                        }
+                    }
+                }
+            }
+            if (res)
+            {
+                IExtHandler *hook = parent->getHandler();
+                if (hook)
+                {
+                    nnRect v(select_start, select_stop);
+                    nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                    hook->doHandler(action_update_selected_panes, p);
+                    hook->doHandler(action_redraw);
+                }
+            }
+        }
+    }
+    return res;
+}
+
+
+bool nnSelector::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & logPoint)
+{
+    bool res = true;
+    if (parent && buttons==nn_mouse_buttons::nn_m_button_left)
+    {
+            IExtHandler *hook = parent->getHandler();
+            if (status == start_resize)
+            {
+                if (parent)
+                {
+                    IManager *manager = parent->getManager();
+                    if (manager)
+                    {
+                        status = stop_resize;
+                        nnPoint maxStop = manager->getSchema();
+                        maxStop -= 1;
+                        bool error = false;
+                        if (logPoint.x > maxStop.x)
+                        {
+                            error = true;
+                            logPoint.x = maxStop.x;
+                        }
+                        if (logPoint.y > maxStop.y)
+                        {
+                            error = true;
+                            logPoint.y = maxStop.y;
+                        }
+                        setError(error);
+                        if (logPoint != select_stop)
+                        {
+                            select_stop = logPoint;
+                        }
+                        if (hook)
+                        {
+                            nnRect v(select_start, select_stop);
+                            nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                            hook->doHandler(action_update_selected_panes, p);
+                            hook->doHandler(action_redraw);
+                        }
+                        status = selected;
+                    }
+                }
+            }
+            else if (status == start_activate)
+            {
+                if (logPoint != select_stop)
+                {
+                    select_stop = logPoint;
+                }
+                if (hook)
+                {
+                    nnRect v(select_start, select_stop);
+                    nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                    hook->doHandler(action_update_selected_panes, p);
+                    hook->doHandler(action_redraw);
+                }
+                status = selected;
+            }
+
+    }
+    return res;
 }
 

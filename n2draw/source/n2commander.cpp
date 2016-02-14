@@ -239,10 +239,10 @@ bool nnCommander::checkRequestCommand( nnPoint & pos,int & command)
     nnLOG(nnPoint, "current click mouse position :", pos);
     while(it!=end)
     {
-        nnLOG(nnRect, "ITEM position :", it->btRect);
         if(it->btRect.into(pos))
         {
             command=it->command;
+            nnLOG(int, "ITEM :", it->command);
             res=true;
             break;
         }

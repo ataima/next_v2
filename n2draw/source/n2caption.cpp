@@ -86,7 +86,7 @@ void nnCaption::setArea(nnPoint & phy)
             }
         }
         phyArea.set(0, 0, phy.x, hI/3);
-        nnLOG1(nnRect, phyArea);
+        //nnLOG1(nnRect, phyArea);
 }
 
 bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
@@ -97,7 +97,7 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
         bmpImage caption;
         int start = phyArea.width() - ((wI*num_item) * 3) / 2;
         int end = start - wI;
-        nnLOG2(int ,start,end);
+        //nnLOG2(int ,start,end);
         if (end > 0)
         {
             std::string f,file = "meLa : ";
@@ -119,7 +119,7 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
                     offY=(image[0]->getHeight()-height1)/2;
                     offX=2*offY;
                 }
-                nnLOG2(int ,offY,offX);
+                //nnLOG2(int ,offY,offX);
                 bkg.drawSprite(caption, offX, (bkg.getHeight() - offY-height1));
                 btRect[num_item-1].set(offX, offY, end+offX, height1+offY);
                 }
@@ -167,8 +167,8 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                 if (hook)
                     hook->doHandler(action_redraw);
                 phyArea.stop.y=hI;
-                nnLOG(status_caption,"CURRENT STATUS:",getStatus());
-                nnLOG(show_status,"VIEW SHOW STATUS:",status);
+                //nnLOG(status_caption,"CURRENT STATUS:",getStatus());
+                //nnLOG(show_status,"VIEW SHOW STATUS:",status);
             }
             else
             {
@@ -179,6 +179,7 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                         hook->doHandler(action_redraw);
                 }
             }
+            res = true;
         }
         else
         {
@@ -189,8 +190,9 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                     hook->doHandler(action_redraw);
                 status = show_none;
                 phyArea.stop.y = hI/3;
-                nnLOG(status_caption,"CURRENT STATUS:",getStatus());
-                nnLOG(show_status,"VIEW SHOW STATUS:",status);
+                //nnLOG(status_caption,"CURRENT STATUS:",getStatus());
+                //nnLOG(show_status,"VIEW SHOW STATUS:",status);
+                res = true;
             }
         }
     }
@@ -200,13 +202,14 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
             if (hook)
             {
                 nnPoint diff =  phyPoint - lastPoint ;
-                nnLOG1(nnPoint, diff);
+                //nnLOG1(nnPoint, diff);
                 if (diff != 0)
                 {
                     nnAbstractParam<nnPoint> *t = new nnAbstractParam<nnPoint>(diff);
                     hook->doHandler(action_move_window, t);
                     lastPoint = phyPoint-diff;
                 }
+                res = true;
             }
         }
     return res;

@@ -171,14 +171,19 @@ void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
 {
     if (dest)
     {
+        //nnLOG1(size_t, type_param);
         HWND hWnd = static_cast< HWND>(dest);
             switch (type_param)
             {
             case action_host_command:
                 directCommand(hWnd,user_param);
                 break;
+            case action_update_selected_panes:
+                break;
+            case action_update_scroller_panes:
+                break;
             case action_update_statusbars_info:
-            case action_update_statusbars_panes:
+                break;
             case action_redraw:
                 refreshPixmap(hWnd);
                 break;
@@ -194,7 +199,8 @@ void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
 
                 }
                 break;
-            case action_close_windows:                
+            case action_close_windows:  
+                n2app->closeAll();
                 delete n2app;
                 n2app = nullptr;
                 ::PostMessage(hWnd, WM_CLOSE, 0, 0L);

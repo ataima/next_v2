@@ -155,6 +155,17 @@ typedef struct tag_nn_point
         x += _x;
         y += _y;
     }
+    inline int maxElem(void)
+    {
+        int u = x;
+        if (u < 0)u -= u;
+        int v = y;
+        if (v < 0)v -= v;
+        if (u > v)
+            return u;
+        else
+            return v;
+    }
     friend  inline  std::ostream & operator<<(std::ostream & os, const tag_nn_point & point)
     {
         os << "POINT[x:" << point.x << "-y:" << point.y << "]";

@@ -215,6 +215,10 @@ bool nnToolView::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status,
         {
             status = show_toolbar;
             setDrawPosition(phyPoint);
+            if (hook)
+            {
+                hook->doHandler(action_redraw);
+            }
             res = true;
         }
         else
@@ -234,10 +238,6 @@ bool nnToolView::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status,
             }
             status = show_none;
         }        
-    }
-    if (hook)
-    {
-        hook->doHandler(action_redraw);
     }
     return res;
 }

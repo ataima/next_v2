@@ -55,6 +55,7 @@ bool nnScroller::handlerMouseMove( nnPoint &phyPoint, show_status & status, IExt
     bool res = false;
     if (phyArea.into(phyPoint))
     {
+        res = true;
         if (status == show_none)
         {
             show();
@@ -83,6 +84,7 @@ bool nnScroller::handlerMouseMove( nnPoint &phyPoint, show_status & status, IExt
             if (hook)
                 hook->doHandler(action_redraw);
             status = show_none;
+            res = true;
         }
         else
         if (status == show_scroller_vert && 
@@ -91,6 +93,7 @@ bool nnScroller::handlerMouseMove( nnPoint &phyPoint, show_status & status, IExt
             if (hook)
                 hook->doHandler(action_redraw);
             status = show_none;
+            res = true;
         }
     }
     return res;

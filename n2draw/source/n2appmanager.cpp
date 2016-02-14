@@ -64,14 +64,7 @@ nnAppManager::nnAppManager():selected(-1)
 
 nnAppManager::~nnAppManager()
 {
-#if _LOGGER_
-    if (nnLogger::getInstance())
-    {
-        nnLogger::getInstance()->reset();
-        delete nnLogger::getInstance();
-    }
-#endif
-    clean();
+    closeAll();
     delete configuration;
     configuration=nullptr;
     instance=nullptr;
@@ -138,8 +131,18 @@ void nnAppManager::setPrinter(IPrinter * printer)
 
 bool nnAppManager::closeAll(void)
 {
-    clean();
-    selected = -1;
+    if (childs.size() > 0)
+    {
+#if _LOGGER_
+        if (nnLogger::getInstance())
+        {
+            nnLogger::getInstance()->reset();
+            delete nnLogger::getInstance();
+        }
+#endif
+        clean();
+        selected = -1;
+    }
     return true;
 }
 
@@ -187,7 +190,9 @@ bool nnAppManager::clean(void)
     for (auto i : childs)
     {
         i.second->clean();
+        delete i.second;
     }
+    childs.clear();
     return childs.empty();
 }
 

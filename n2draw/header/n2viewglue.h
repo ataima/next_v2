@@ -40,18 +40,9 @@ class nnViewGlue
 {
    
 
-    typedef enum tag_status_select
-    {
-        s_unselect,
-        start_activate,
-        start_resize,
-        stop_resize,
-        selected
-    }status_select;
 
 
-    nnPoint select_start;
-    nnPoint select_stop;
+
     nnPoint const_Size;
     nnPoint phy_Size;
     nnPoint offset_Pos;
@@ -59,14 +50,12 @@ class nnViewGlue
     IChild *parent;
     IView     *view;
     IToolView *toolview;
-    status_select status;
     ISelector *selector;
     IScroller *vscroller;
     IScroller *hscroller;
     ICaption *caption;
     show_status show_cmd;
     
-
 public:
     nnViewGlue(IChild *_parent);
     ~nnViewGlue();
@@ -76,16 +65,10 @@ public:
     nnPoint getCoordLog(const nnPoint & phyPoint);
     inline  nnPoint getConstPhy(void) { return const_Size; }
     bool readConfiguration(IXmlNode * node);
-    bool selectStart(int xpos, int ypos);
-    bool selectStop(int xpos1, int ypos1);
-    bool selectStart(nnPoint pos);
-    bool selectStop(nnPoint pos);
-    bool unselect();
     bool getSelectAreaPhy(int & width, int & height);
-    bool getSelectStartPhy(int & x, int & y);
-    bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint);
-    bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint);
-    bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint);
+    bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint);
+    bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint);
+    bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoint);
     bool handlerScrollHorz(int pos);
     bool handlerScrollVert(int pos);
     bool handlerEscapeButton(bool shift,bool ctrl,bool alt);
@@ -99,10 +82,9 @@ public:
     bool handlerRightButton(bool shitf, bool ctrl, bool alt);
     bool handlerUpButton(bool shitf, bool ctrl, bool alt);
     bool handlerDownButton(bool shitf, bool ctrl, bool alt);
-    inline bool isStartValid(void) { return select_start != -1; }
-    inline bool isStopValid(void) { return select_stop != -1; }
-    inline bool select(nnPoint pos1, nnPoint pos2) { return selectStart(pos1) && selectStop(pos2); }
-    inline bool getSelectArea(nnPoint &start, nnPoint &stop) { start = select_start; stop = select_stop; return true; }
+    bool select(nnPoint pos1, nnPoint pos2);
+    bool getSelectArea(nnPoint &start, nnPoint &stop);
+    bool unselect();
     bmpImage & getDraw(void);
     bool updateDraw(void);
     inline nnPoint getOffsetView(void) { return offset_Pos; }
@@ -115,7 +97,6 @@ public:
 private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);
-    bool resizeSelectArea(const int vx,const int vy);
     bool needScrollBarHorz(void);
     bool needScrollBarVert(void);
     int  getScrollableHorzSize(void);

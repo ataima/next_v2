@@ -26,16 +26,21 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
+
+
+
+
 nnExtHandler::nnExtHandler(extHandler & _hook, void *unkObj)
     :hook(_hook),unknow(unkObj)
 {}
 
 
-void nnExtHandler::doHandler(size_t Tparam , IParam *in)
+void nnExtHandler::send(extHandler hook, void *unknow, size_t Tparam, IParam *in )
 {
-    if(hook && unknow)
+    nnLOG1(size_t, Tparam);
+    if(hook && unknow )
     {
-        try {
+        try {            
             hook(unknow,Tparam,in);
             if (in)
                 delete(in);
@@ -50,3 +55,12 @@ void nnExtHandler::doHandler(size_t Tparam , IParam *in)
 
 
 
+
+void nnExtHandler::doHandler(size_t Tparam, IParam *in)
+{
+    if (hook && unknow)
+    {
+        std::thread th(&nnExtHandler::send, hook,unknow,Tparam,in);
+        th.detach();
+    }
+}

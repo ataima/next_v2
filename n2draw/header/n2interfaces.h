@@ -31,7 +31,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <vector>
 #include <list>
 #include <map>
-
 #include "n2point.h"
 
 
@@ -100,7 +99,8 @@ typedef enum tag_handler_Action
 {
     action_redraw=0,
     action_update_statusbars_info,
-    action_update_statusbars_panes,
+    action_update_selected_panes,
+    action_update_scroller_panes,
     action_align_windows,
     action_iconize_windows,
     action_medialize_windows,
@@ -128,6 +128,11 @@ public:
 };
 
 #if _LOGGER_
+
+
+
+
+
 
 class IDebug
 {
@@ -290,6 +295,18 @@ public:
         logger->log(params);\
 }\
 
+#define  nnLOG22(type1,type2,value1,value2) \
+{\
+    nnDebug<type1> *par1= new nnDebug<type1>(__FUNCTION__,__LINE__,#value1,value1);\
+    nnDebug<type2> *par2= new nnDebug<type2>(__FUNCTION__,__LINE__,#value2,value2);\
+    nnDebugList   *params = new nnDebugList();\
+    params->add(par1);\
+    params->add(par2);\
+    ILogger *logger=ILogger::getInstance();\
+    if(logger)\
+        logger->log(params);\
+}\
+
 #define  nnLOG3(type,value1,value2,value3) \
 {\
     nnDebug<type> *par1= new nnDebug<type>(__FUNCTION__,__LINE__,#value1,value1);\
@@ -331,7 +348,7 @@ public:
 
 typedef void  (*extHandler)(void *,size_t ,IParam *);
 
-
+typedef std::pair<size_t, IParam *> ePair;
 
 
 class IExtHandler
@@ -390,9 +407,9 @@ inline std::ostream & operator<<(std::ostream & os, const show_status & st)
 class IHandler
 {
 public:
-    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
-    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
-    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
+    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint) = 0;
+    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint) = 0;
+    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoint) = 0;
     virtual bool handlerScrollHorz(int pos) = 0;
     virtual bool handlerScrollVert(int pos) = 0;
     virtual bool handlerEscapeButton(bool shift, bool ctrl, bool alt) = 0;
@@ -720,14 +737,34 @@ public:
 class ISelector
 {
 public:
-    virtual void draw(bmpImage & image,
-        const nnPoint &start, const nnPoint &stop, IViewGlue * glue)=0;
+    virtual void draw(bmpImage & image,IViewGlue * glue)=0;
+    virtual bool handlerMouseMove(nnPoint & logPoint) = 0;
+    virtual bool handlerMouseButtonDown(nnPoint &logPoint,
+                           show_status & status) = 0;
+    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & logPoint)=0;
     virtual void hide(void)=0;
     virtual void show(void)=0;
     virtual bool getStatus(void)=0;
     virtual void setError(bool st)=0;
     virtual void setFont(IFontManager *font) = 0;
     virtual ~ISelector() {}
+    /*
+    virtual bool selectStart(int xpos, int ypos) = 0;
+    virtual bool selectStop(int xpos1, int ypos1) = 0;
+    virtual bool selectStart(nnPoint pos) = 0;
+    virtual bool selectStop(nnPoint pos1) = 0;
+    */
+    virtual bool isSelectedValid(void) = 0;
+    virtual bool isStartValid(void) = 0;
+    virtual bool isStopValid(void) = 0;
+    virtual int  isSelected(void) = 0;
+    virtual bool unselect() = 0;
+    virtual bool getSelectArea(nnPoint &start, nnPoint &stop) = 0;
+    virtual bool select(nnPoint pos1, nnPoint pos2) = 0;
+    virtual nnPoint & getSelectStart(void) = 0;
+    virtual nnPoint & getSelectStop(void) = 0;
+    virtual bool resizeSelectArea(const int vx, const int vy)=0;
+
 };
 
 //////////////////////////////////////////////////////
@@ -798,15 +835,8 @@ public:
     virtual nnPoint getMirrorCoordPhy(int height,int x, int y) = 0;
     virtual nnPoint getCoordLog(const nnPoint & phyPoint) = 0;
     virtual nnPoint getConstPhy(void)=0;
+    virtual bool unselect() = 0;
     virtual bool readConfiguration(IXmlNode * node) = 0;
-    virtual bool selectStart(int xpos, int ypos) = 0;
-    virtual bool selectStop(int xpos1, int ypos1) = 0;
-    virtual bool selectStart(nnPoint pos) = 0;
-    virtual bool selectStop(nnPoint pos1) = 0;
-    virtual bool select(nnPoint pos1, nnPoint pos2) = 0;
-    virtual bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
-    virtual bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
-    virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint phyPoint) = 0;
     virtual bool handlerScrollHorz(int pos) = 0;
     virtual bool handlerScrollVert(int pos) = 0;
     virtual bool handlerEscapeButton(bool shift, bool ctrl, bool alt) = 0;
@@ -820,12 +850,9 @@ public:
     virtual bool handlerRightButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerUpButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerDownButton(bool shitf, bool ctrl, bool alt) = 0;
-    virtual bool unselect() = 0;
     virtual bool getSelectAreaPhy(int & width, int & height) = 0;
-    virtual bool getSelectStartPhy(int & x, int & y) = 0;
-    virtual bool isStartValid(void) = 0;
-    virtual bool isStopValid(void) = 0;
     virtual bool getSelectArea(nnPoint &start, nnPoint &stop) = 0;
+    virtual bool select(nnPoint pos1, nnPoint pos2) = 0;
     virtual bmpImage & getDraw(void) = 0;
     virtual bool updateDraw(void) = 0;
     virtual nnPoint getOffsetView(void) = 0;
@@ -875,6 +902,69 @@ public:
 
 
 
+#include <thread>
+
+template < class T > class nnPulse1
+{
+    typedef void(*target)(T);
+public:
+    nnPulse1(target  hook, T  t)
+    {
+        if (hook)
+        {
+            std::thread th(hook, t);
+            th.detach();
+        }
+    }
+};
+
+
+template < class T, class U> class nnPulse2
+{
+    typedef void(*target)(T, U);
+public:
+    nnPulse2(target  hook, T t, U  u)
+    {
+        if (hook)
+        {
+            std::thread th(hook, t, u);
+            th.detach();
+        }
+    }
+};
+
+
+
+template < class T,class U,class V> class nnPulse3
+{
+public:
+    typedef void(*target)(T ,U ,V );
+public:
+    nnPulse3(target  hook, T t, U  u, V v)
+    {
+        if (hook)
+        {
+            std::thread th( hook, t, u, v);
+            th.detach();
+        }
+    }
+};
+
+
+template < class T, class U, class V,class Z> class nnPulse4
+{
+public:
+    typedef void(*target)(T, U, V,Z);
+public:
+    nnPulse4(target  hook, T t, U  u, V v,Z z)
+    {
+        if (hook)
+        {
+            std::thread th(hook, t, u, v, z);
+            th.detach();
+        }
+    }
+};
 
 
 #endif // N2INTERFACES
