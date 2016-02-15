@@ -13,6 +13,9 @@
 #include "n2scroller.h"
 #include "n2caption.h"
 #include "n2viewglue.h"
+#include "n2capturepos.h"
+
+
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
 
@@ -40,15 +43,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 //TestviewGlue.cpp : T1
 nnViewGlue::nnViewGlue(IChild *_parent)
-    :parent(_parent),view(nullptr),vscroller(nullptr),hscroller(nullptr)
+    :parent(_parent),view(nullptr),
+    vscroller(nullptr),hscroller(nullptr)
 {
     if (parent)
     {
-        selector = new nnSelector(_parent);
+        selector = new nnSelector(parent);
         const_Size.set(0);
         setPhyView(0, 0);
         offset_Pos.set(0);
         caption = new nnCaption(parent);
+        capture = new nnCapturePos(parent);
         unselect();
     }
 }
@@ -95,6 +100,12 @@ nnViewGlue::~nnViewGlue()
     {
         delete hscroller;
         hscroller = nullptr;
+    }
+    if (capture)
+    {
+        capture->setFont(nullptr);
+        delete capture;
+        capture = nullptr;
     }
 }
 
@@ -284,6 +295,7 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                             caption->setFont(font);
                             toolview->setFont(font);
                             view->setFont(font);
+                            capture->setFont(font);
                             res = toolview->readConfiguration(conf);
                         }
                     }
@@ -407,6 +419,11 @@ bmpImage & nnViewGlue::getDraw(void)
             if (toolview)
                 toolview->draw(image, this);
         }
+        if (show_cmd == show_capture)
+        {
+            if (capture)
+                capture->draw(image, this);
+        }
         if (show_cmd == show_none)
         {
             if (selector)
@@ -493,6 +510,12 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
                 if (caption)
                     res = caption->handlerMouseMove(phyPoint, show_cmd, hook);
             }
+            else
+            if (show_cmd == show_capture)
+            {
+                if(capture)
+                    res=capture->handlerMouseMove(phyPoint, show_cmd, hook);
+            }
     }
     //nnLOG(show_status, "handlerMouseMove out : ", show_cmd);
     return res;
@@ -559,6 +582,13 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
                             if (caption)
                                 res = caption->handlerMouseButtonDown(phyPoint, show_cmd, hook);
                         }
+                        else
+                            if (buttons == nn_m_button_left && show_cmd == show_capture)
+                            {
+                                if (capture)
+                                    res = capture->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+                            }
+
 
     }
     return res;
@@ -723,7 +753,7 @@ bool nnViewGlue::resize(int w, int h)
                 IExtHandler *hook = parent->getHandler();
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> *t = new nnAbstractParam<nnPoint>(phy_Size);
+                    auto *t = new nnAbstractParam<nnPoint>(phy_Size);
                     hook->doHandler(action_align_windows, t);
                 }
                 res = view->remapMainBitmap(phy_Size);
@@ -926,7 +956,7 @@ bool nnViewGlue::handlerHomeButton(bool shitf, bool ctrl, bool alt)
                     hscroller->update(0);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -956,7 +986,7 @@ bool nnViewGlue::handlerEndButton(bool shitf, bool ctrl, bool alt)
                     hscroller->update(offset_Pos.x);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -987,7 +1017,7 @@ bool nnViewGlue::handlerPageUpButton(bool shitf, bool ctrl, bool alt)
                     vscroller->update(offset_Pos.y);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -1007,7 +1037,7 @@ bool nnViewGlue::handlerPageUpButton(bool shitf, bool ctrl, bool alt)
                     vscroller->update(offset_Pos.y);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -1040,7 +1070,7 @@ bool nnViewGlue::handlerPageDownButton(bool shitf, bool ctrl, bool alt)
                     vscroller->update(offset_Pos.y);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -1060,7 +1090,7 @@ bool nnViewGlue::handlerPageDownButton(bool shitf, bool ctrl, bool alt)
                     vscroller->update(offset_Pos.y);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -1092,7 +1122,7 @@ bool nnViewGlue::handlerPageRightButton(bool shitf, bool ctrl, bool alt)
                     hscroller->update(offset_Pos.x);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -1112,7 +1142,7 @@ bool nnViewGlue::handlerPageRightButton(bool shitf, bool ctrl, bool alt)
                         hscroller->update(offset_Pos.x);
                     if (hook)
                     {
-                        nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                        auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                         hook->doHandler(action_update_scroller_panes, p);
                         hook->doHandler(action_redraw);
                     }
@@ -1143,7 +1173,7 @@ bool nnViewGlue::handlerPageLeftButton(bool shitf, bool ctrl, bool alt)
                     hscroller->update(offset_Pos.x);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -1163,7 +1193,7 @@ bool nnViewGlue::handlerPageLeftButton(bool shitf, bool ctrl, bool alt)
                     hscroller->update(offset_Pos.x);
                 if (hook)
                 {
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -1201,7 +1231,7 @@ bool nnViewGlue::handlerLeftButton(bool shift, bool ctrl, bool alt)
                         hscroller->update(offset_Pos.x);
                     if (hook)
                     {
-                        nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                        auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                         hook->doHandler(action_update_scroller_panes, p);
                         hook->doHandler(action_redraw);
                     }
@@ -1240,7 +1270,7 @@ bool nnViewGlue::handlerRightButton(bool shift, bool ctrl, bool alt)
                             hscroller->update(offset_Pos.x);
                         if (hook)
                         {
-                            nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                            auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                             hook->doHandler(action_update_scroller_panes, p);
                             hook->doHandler(action_redraw);
                         }
@@ -1278,7 +1308,7 @@ bool nnViewGlue::handlerUpButton(bool shift, bool ctrl, bool alt)
                         vscroller->update(offset_Pos.y);
                     if (hook)
                     {
-                        nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                        auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                         hook->doHandler(action_update_scroller_panes, p);
                         hook->doHandler(action_redraw);
                     }
@@ -1315,7 +1345,7 @@ bool nnViewGlue::handlerDownButton(bool shift, bool ctrl, bool alt)
                     vscroller->update(offset_Pos.y);
                 if (hook)
                 { 
-                    nnAbstractParam<nnPoint> * p = new nnAbstractParam<nnPoint>(offset_Pos);
+                    auto * p = new nnAbstractParam<nnPoint>(offset_Pos);
                     hook->doHandler(action_update_scroller_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -1477,3 +1507,13 @@ bool nnViewGlue::loadImages(STRING & _path)
 }
 
 
+bool  nnViewGlue::Capture(int command,unsigned int image)
+{
+    bool res = false;
+    if (capture)
+    {
+        capture->setCommand(command,image);
+        show_cmd = show_capture;
+    }
+    return res;
+}

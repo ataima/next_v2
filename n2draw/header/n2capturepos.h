@@ -1,6 +1,5 @@
-#ifndef N2_UTILS_HEADER
-#define N2_UTILS_HEADER
-
+#ifndef N2_CAPTURE_HEADER
+#define N2_CAPTURE_HEADER
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -27,19 +26,29 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-
-
-#include "images.h"
 #include "n2interfaces.h"
 
-
-
-class nnUtils
+class nnCapturePos
+    : public ICapture
 {
-public :
-    static bool drawBottomRightTips(bmpImage & bkg, IFontManager & font, std::string  & info);
-    static bool drawBottomLeftTips(bmpImage & bkg, IFontManager & font, std::string  & info);
+    int command;
+    unsigned int off_image;
+    bmpImage * curImage;
+    IChild *parent;
+    nnPoint logPos;
+    IFontManager * font;
+public:
+    nnCapturePos(IChild *_parent);
+    ~nnCapturePos();
+    void setCommand(int c, unsigned int image);
+    void draw(bmpImage & image, IViewGlue * glue);
+    virtual bool handlerMouseMove(nnPoint &phyPoint, 
+                    show_status & status, IExtHandler *hook);
+    virtual bool handlerMouseButtonDown(nnPoint &phyPoint,
+                    show_status & status, IExtHandler *hook);
+    inline void setFont(IFontManager *_font) { font = _font; }
+private:
+    bool drawTips(bmpImage & bkg);
 };
+#endif // N2_CAPTURE_HEADER
 
-
-#endif

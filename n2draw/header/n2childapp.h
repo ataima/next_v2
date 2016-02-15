@@ -71,6 +71,9 @@ public:
     bool handlerUpButton(bool shitf, bool ctrl, bool alt) ;
     bool handlerDownButton(bool shitf, bool ctrl, bool alt) ;
     inline  bool getCurrentFile(std::string & filename) { filename = "prova"; return true; }
+    bool Capture(int command,unsigned int image);
+    bool addContact(nnPoint & pos, nnObjContact * contact);
+    bool addCoil(nnPoint & pos, nnObjCoil * coil);
 private:
     bool loadImages(void);
 };

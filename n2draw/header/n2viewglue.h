@@ -39,10 +39,6 @@ class nnViewGlue
     :public IViewGlue
 {
    
-
-
-
-
     nnPoint const_Size;
     nnPoint phy_Size;
     nnPoint offset_Pos;
@@ -54,8 +50,8 @@ class nnViewGlue
     IScroller *vscroller;
     IScroller *hscroller;
     ICaption *caption;
+    ICapture *capture;
     show_status show_cmd;
-    
 public:
     nnViewGlue(IChild *_parent);
     ~nnViewGlue();
@@ -94,6 +90,8 @@ public:
     inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
     bool loadImages(STRING &_path);
     inline  bool createDraw(void) { return view->createMainBitmap(phy_Size); }
+    bool Capture(int command,unsigned int image);
+
 private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);

@@ -258,7 +258,39 @@ bool nnChildApp::setExtHandler( extHandler _hook, void *unkObj)
 }
 
 
+bool nnChildApp::Capture(int command,unsigned int image)
+{
+    bool res = false;
+    if (view)
+    {
+        res = view->Capture(command,image);
+    }
+    return res;
+}
 
+
+
+bool nnChildApp::addContact(nnPoint & pos, nnObjContact * contact)
+{
+    bool res = false;
+    if (object_manager && contact)
+    {
+        res=object_manager->addContact(pos.x, pos.y, contact);
+        view->updateDraw();
+    }
+    return res;
+}
+
+bool nnChildApp::addCoil(nnPoint & pos, nnObjCoil * coil)
+{
+    bool res = false;
+    if (object_manager && coil)
+    {
+        res = object_manager->addCoil(pos.x, coil);
+        view->updateDraw();
+    }
+    return res;
+}
 
 
 

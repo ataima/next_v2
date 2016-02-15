@@ -2,6 +2,7 @@
 //
 
 #include <windows.h>
+#include "..\..\n2draw\header\n2draw.h"
 #include "..\..\n2draw\header\n2interfaces.h"
 #include "..\..\n2draw\header\n2appmanager.h"
 #include "..\..\bmpImage\header\images.h"
@@ -148,20 +149,20 @@ void directCommand(HWND hWnd, IParam *user_param)
     if (t)
     {
         // from conf...xml toolbars
-        switch (t->value())
+        int v = t->value();
+        nnLOG1(int,v);
+        switch (v)
         {
-        case 4000:
+        case 2000:
+            n2app->active()->Capture(2000, contactGenericAnd);
             break;
-        case 4001:
+        case 2001:
+            n2app->active()->Capture(2001, contactGenericOr);
             break;
-        case 4002:
+        case 3000:
+            n2app->active()->Capture(3000, coilGeneric);
             break;
-        case 4003:
-            break;
-        case 4004:
-            break;
-        case 4005:
-            break;
+        
         }
     }
 }
@@ -171,7 +172,6 @@ void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
 {
     if (dest)
     {
-        //nnLOG1(size_t, type_param);
         HWND hWnd = static_cast< HWND>(dest);
             switch (type_param)
             {
@@ -227,6 +227,32 @@ void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
                 break;
             case action_medialize_windows:
                 ::ShowWindow(hWnd, SW_SHOWDEFAULT);
+                break;
+            case action_select_position:
+                {
+                    if (user_param)
+                    {
+                        nnAbstractParamList *list = static_cast<nnAbstractParamList *>(user_param);
+                        nnAbstractParam<nnPoint> *p1 = static_cast<nnAbstractParam<nnPoint> *>(list->at(0));
+                        nnAbstractParam<int> *p2 = static_cast<nnAbstractParam<int> *>(list->at(1));
+                        nnPoint pos = p1->value();
+                        int command = p2->value();
+                        nnLOG1(nnPoint, pos);
+                        nnLOG1(int, command);
+                        switch (command)
+                        {
+                        case 2000:
+                            n2app->active()->addContact(pos, new nnContactNO());
+                            break;
+                        case 2001:
+                            n2app->active()->addContact(pos, new nnContactNC());
+                            break;
+                        case 3000:
+                            n2app->active()->addCoil(pos, new nnGenericCoil());
+                            break;
+                        }
+                    }
+                }
                 break;
             }
     }

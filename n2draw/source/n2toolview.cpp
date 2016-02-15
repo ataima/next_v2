@@ -226,17 +226,18 @@ bool nnToolView::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status,
             res = checkIntCommand(0);
             if (hook)
             {
+                status = show_none;
                 if (command > action_host_command)
                 {
-                    nnAbstractParam<int> *t = new nnAbstractParam<int>(command);
+                    auto *t = new nnAbstractParam<int>(command);
                     hook->doHandler(action_host_command, t);
+                    hook->doHandler(action_redraw);
                 }
                 else
                 {
                     hook->doHandler(command);
                 }
             }
-            status = show_none;
         }        
     }
     return res;

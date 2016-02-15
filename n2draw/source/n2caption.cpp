@@ -205,7 +205,7 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                 //nnLOG1(nnPoint, diff);
                 if (diff != 0)
                 {
-                    nnAbstractParam<nnPoint> *t = new nnAbstractParam<nnPoint>(diff);
+                    auto *t = new nnAbstractParam<nnPoint>(diff);
                     hook->doHandler(action_move_window, t);
                     lastPoint = phyPoint-diff;
                 }
@@ -241,7 +241,6 @@ bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, 
             case 4:
                 lastPoint = phyPoint;
                 setStatus(status_caption_move);
-                nnLOG1(nnPoint, lastPoint);
                 break;
             case 0:
                 hook->doHandler(action_iconize_windows);
@@ -273,7 +272,7 @@ bool nnCaption::drawTips(bmpImage & bkg)
     bool res = false;
     if (curItem != -1 && font != nullptr)
     {
-        STRING m(msg[curItem]);
+        std::string m(msg[curItem]);
         res = nnUtils::drawBottomLeftTips(bkg, *font, m);
     }
     return res;

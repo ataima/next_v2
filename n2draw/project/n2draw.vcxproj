@@ -22,6 +22,7 @@
     <ClInclude Include="..\header\MerlinoVCPU.h" />
     <ClInclude Include="..\header\n2appmanager.h" />
     <ClInclude Include="..\header\n2caption.h" />
+    <ClInclude Include="..\header\n2capturepos.h" />
     <ClInclude Include="..\header\n2childapp.h" />
     <ClInclude Include="..\header\n2commander.h" />
     <ClInclude Include="..\header\n2connection.h" />
@@ -47,6 +48,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\n2appmanager.cpp" />
     <ClCompile Include="..\source\n2caption.cpp" />
+    <ClCompile Include="..\source\n2capturepos.cpp" />
     <ClCompile Include="..\source\n2commander.cpp" />
     <ClCompile Include="..\source\n2connection.cpp" />
     <ClCompile Include="..\source\n2draw.cpp" />

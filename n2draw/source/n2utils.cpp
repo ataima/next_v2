@@ -25,7 +25,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
-bool nnUtils::drawBottomRightTips(bmpImage & bkg, IFontManager & font, STRING  & info)
+bool nnUtils::drawBottomRightTips(bmpImage & bkg, IFontManager & font, std::string  & info)
 {
 
     bool res = false;
@@ -37,8 +37,7 @@ bool nnUtils::drawBottomRightTips(bmpImage & bkg, IFontManager & font, STRING  &
     res = rectbkg.create(bkg.getWidth(), sizeStr.y + 2 * offsetY, 32, 255);
     if (res)
     {
-        UtoA toA(info);
-        bmpImage * strImage = font.getImage(toA.utf8(), 0, 0, 255);
+        bmpImage * strImage = font.getImage(info.c_str(), 0, 0, 255);
         res = rectbkg.drawMaskSprite(*strImage, offsetX, offsetY, 0, 0, 0);
         delete strImage;
         if (res)
@@ -50,7 +49,7 @@ bool nnUtils::drawBottomRightTips(bmpImage & bkg, IFontManager & font, STRING  &
     return res;
 }
 
-bool nnUtils::drawBottomLeftTips(bmpImage & bkg, IFontManager & font, STRING  & info)
+bool nnUtils::drawBottomLeftTips(bmpImage & bkg, IFontManager & font, std::string  & info)
 {
 
     bool res = false;
@@ -63,8 +62,7 @@ bool nnUtils::drawBottomLeftTips(bmpImage & bkg, IFontManager & font, STRING  & 
     res = rectbkg.create(t_width, sizeStr.y + 2 * offsetY, 32, 255);
     if (res)
     {
-        UtoA toA(info);
-        bmpImage * strImage = font.getImage(toA.utf8(), 0, 0, 255);
+        bmpImage * strImage = font.getImage(info.c_str(), 0, 0, 255);
         res = rectbkg.drawMaskSprite(*strImage, t_width-2*offsetX- sizeStr.x, offsetY, 0, 0, 0);
         delete strImage;
         if (res)

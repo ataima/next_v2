@@ -41,6 +41,14 @@ nnSelector::nnSelector(IChild *_parent):
 }
 
 
+nnSelector::~nnSelector()
+{
+    hide();
+    error = false;
+    select_start.set(-1);
+    select_stop.set(-1);
+}
+
 bool nnSelector::translateY( int p, std::string & out )
 {
     bool res = false;
@@ -170,7 +178,7 @@ bool nnSelector::handlerMouseMove(nnPoint & logPoint)
                     if (hook)
                     {
                         nnRect v(select_start, select_stop);
-                        nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                        auto *p = new nnAbstractParam<nnRect>(v);
                         hook->doHandler(action_update_selected_panes, p);
                         hook->doHandler(action_redraw);
                     }
@@ -214,7 +222,7 @@ bool nnSelector::handlerMouseButtonDown(nnPoint &logPoint, show_status & s_statu
             if (hook)
             {
                 nnRect v(select_start, select_stop);
-                nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                auto *p = new nnAbstractParam<nnRect>(v);
                 hook->doHandler(action_update_selected_panes, p);
                 hook->doHandler(action_redraw);
 
@@ -282,7 +290,7 @@ bool nnSelector::unselect()
         if (hook)
         {
             nnRect v(select_start, select_stop);
-            nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+            auto *p = new nnAbstractParam<nnRect>(v);
             hook->doHandler(action_update_selected_panes, p);
             hook->doHandler(action_redraw);
         }
@@ -370,7 +378,7 @@ bool nnSelector::resizeSelectArea(const int vx, const int vy)
                 if (hook)
                 {
                     nnRect v(select_start, select_stop);
-                    nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                    auto *p = new nnAbstractParam<nnRect>(v);
                     hook->doHandler(action_update_selected_panes, p);
                     hook->doHandler(action_redraw);
                 }
@@ -416,7 +424,7 @@ bool nnSelector::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & logPoi
                         if (hook)
                         {
                             nnRect v(select_start, select_stop);
-                            nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                            auto *p = new nnAbstractParam<nnRect>(v);
                             hook->doHandler(action_update_selected_panes, p);
                             hook->doHandler(action_redraw);
                         }
@@ -433,7 +441,7 @@ bool nnSelector::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & logPoi
                 if (hook)
                 {
                     nnRect v(select_start, select_stop);
-                    nnAbstractParam<nnRect> *p = new nnAbstractParam<nnRect>(v);
+                    auto *p = new nnAbstractParam<nnRect>(v);
                     hook->doHandler(action_update_selected_panes, p);
                     hook->doHandler(action_redraw);
                 }

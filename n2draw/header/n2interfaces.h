@@ -107,6 +107,7 @@ typedef enum tag_handler_Action
     action_maximize_windows,
     action_close_windows,
     action_move_window,
+    action_select_position,
     action_host_command = 1000
 } handlerAction;
 
@@ -114,6 +115,7 @@ typedef enum tag_handler_Action
 class IParam
 {
 public:
+    virtual void utf8(std::string & out) = 0;
     virtual ~IParam() {}
 };
 
@@ -124,7 +126,43 @@ template < class T> class nnAbstractParam
 public:
   nnAbstractParam(T & v):_value(v){}
   inline T value(void){return _value;}
+  inline void utf8(std::string & out) { std::stringstream s; s << _value; out = s.str();}
   virtual ~nnAbstractParam() {}
+};
+
+
+class nnAbstractParamList
+    :public IParam   
+    ,public std::vector<IParam *> 
+{    
+    
+public:
+    nnAbstractParamList(){}
+    void add(IParam * p)
+    {
+        if (p)
+            push_back(p);
+    }
+    void utf8(std::string & out)
+    {
+        std::stringstream s; 
+        for (auto & i : *this)
+        {
+            std::string o;
+            if (i)
+                i->utf8(o);
+            s << o << std::endl;
+        }
+        out = s.str();
+    }
+    virtual ~nnAbstractParamList()
+    {
+        for (auto & i : *this)
+        {
+            delete i;
+        }
+        clear();
+    }
 };
 
 #if _LOGGER_
@@ -377,6 +415,7 @@ typedef enum tag_show_status
     show_scroller_horz,
     show_scroller_vert,
     show_caption,
+    show_capture,
 }show_status;
 
 
@@ -399,6 +438,9 @@ inline std::ostream & operator<<(std::ostream & os, const show_status & st)
         break;
     case show_caption:
         os << "show_caption(4)";
+        break;
+    case show_capture:
+        os << "show_capture(5)";
         break;
     }
     return os;
@@ -767,6 +809,18 @@ public:
 
 };
 
+class ICapture
+{
+public:
+    virtual void setCommand(int c, unsigned int image) = 0;
+    virtual void draw(bmpImage & image, IViewGlue * glue) = 0;
+    virtual bool handlerMouseMove(nnPoint &phyPoint,
+        show_status & status, IExtHandler *hook) = 0;
+    virtual bool handlerMouseButtonDown(nnPoint &phyPoint,
+        show_status & status,IExtHandler *hook) = 0;
+    virtual void setFont(IFontManager *font) = 0;
+};
+
 //////////////////////////////////////////////////////
 class IView
 {
@@ -862,6 +916,7 @@ public:
     virtual int getPageHeight(void)=0;
     virtual bool loadImages(STRING & _path)=0;
     virtual bool createDraw(void) = 0;
+    virtual bool Capture(int command, unsigned int image) = 0;
     virtual ~IViewGlue() {}
 };
 
@@ -882,6 +937,9 @@ public:
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name,STRING & path_name) = 0;
     virtual bool setExtHandler(extHandler  _hook, void *unkObj) = 0;
     virtual bool getCurrentFile(std::string & filename) = 0;
+    virtual bool Capture(int command, unsigned int image) = 0;
+    virtual bool addContact(nnPoint & pos, nnObjContact * contact)=0;
+    virtual bool addCoil(nnPoint & pos, nnObjCoil * coil)=0;
     virtual ~IChild() {}
 };
 

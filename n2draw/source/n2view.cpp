@@ -54,10 +54,7 @@ bmpImage & nnView::getMainBitmap(void)
 bool nnView::draw(void)
 {
     bool res = false;
-    bool empty = false;
     int x, y;
-    int ix, iy;
-    ix = iy = 0;
     nnPoint map = {0};
     if (parent)
     {
@@ -68,19 +65,6 @@ bool nnView::draw(void)
             nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
             nnPoint off = glue->getOffsetView();
             nnPoint map = glue->getMap();
-            empty = mn.empty();
-            hashObjTable::iterator it = mn.begin();
-            hashObjTable::iterator end = mn.end();
-            if (!empty)
-            {
-                if (it != end)
-                {
-                    do
-                    {
-                        mn.revIndexes(const_cast<hashkey&>(it->first), ix, iy);
-                    } while (ix < off.x && iy < off.y && it != end);
-                }
-            }
             InnObj *obj;
             res = true;
             map += off;
@@ -88,13 +72,10 @@ bool nnView::draw(void)
             {
                 for (x = off.x; x < map.x; x++)
                 {
-                    if (empty == false && ix == x && iy == y)
+                    obj = manager->getObj(x, y);
+                    if (obj)
                     {
-                        obj = it->second;
                         res &= drawObj(obj, x, y, glue);
-                        it++;
-                        if (it != end)
-                            mn.revIndexes(const_cast<hashkey&>(it->first), ix, iy);
                     }
                     else
                     {

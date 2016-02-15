@@ -201,7 +201,7 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
                 if (hook)
                 {
                     STRING info =curItem->info;
-                    nnAbstractParam<STRING> *t= new nnAbstractParam<STRING>(info);
+                    auto *t= new nnAbstractParam<STRING>(info);
                     hook->doHandler(action_update_statusbars_info, t);
                     hook->doHandler(action_redraw);
                 }
@@ -219,7 +219,7 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
             if (hook)
             {
                 std::string sm("...");
-                nnAbstractParam<std::string> *t= new nnAbstractParam<std::string>(sm);
+                auto *t= new nnAbstractParam<std::string>(sm);
                 hook->doHandler(action_update_statusbars_info, t);
                 hook->doHandler(action_redraw);
             }
@@ -289,7 +289,7 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
         it->btRect.set(x, y1- icon_height, x + icon_width, y1 );
         if (!res)
             break;
-#if 1
+#if 0
         bkg.frameRect(it->btRect.start.x, bkg.getHeight() - it->btRect.start.y,
             it->btRect.stop.x, bkg.getHeight() - it->btRect.stop.y, 255, 0, 0, 0xffffffff);
 #endif
@@ -310,7 +310,9 @@ bool nnCommander::drawTips(bmpImage & bkg, nnPoint & , IViewGlue *)
     bool res = false;
     if (curItem != nullptr && font != nullptr)
     {
-        res = nnUtils::drawBottomLeftTips(bkg, *font, curItem->info);
+        UtoA toA(curItem->info);
+        std::string s = toA.utf8();
+        res = nnUtils::drawBottomLeftTips(bkg, *font, s );
     }
     return res;
 }

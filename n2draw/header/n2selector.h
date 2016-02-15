@@ -77,6 +77,7 @@ class nnSelector
     nnPoint select_stop;
 public:
     nnSelector(IChild * _parent);
+    ~nnSelector();
     void draw(bmpImage & image, IViewGlue * glue);
     inline void hide(void) { visible = false; }
     inline void show(void) { visible = true; }
