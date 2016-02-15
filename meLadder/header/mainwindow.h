@@ -53,6 +53,8 @@ private    :
     QPixmap pixmap;
     QString curFile;
     bool isUntitled;
+    int MaxWidth;
+    int MaxHeight;
 public:
     MainWindow();
     MainWindow(const QString &fileName);
@@ -69,6 +71,12 @@ private slots:
     void about();
     void documentWasModified();
     void resizeEvent(QResizeEvent *) override;
+    void moveAsync(const QPoint & p){move(p);}
+    void showMaximizedAsync(void) {showMaximized();}
+    void showMinimizedAsync(void) {showMinimized();}
+    void resizeAsync(int x,int y) {resize(x,y);}
+    void refreshPixmapAsync(void) {refreshPixmap();}
+    void closeAsync(void) {close();}
 private:
     void init();
     bool maybeSave();

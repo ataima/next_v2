@@ -1286,7 +1286,6 @@ bool nnViewGlue::handlerUpButton(bool shift, bool ctrl, bool alt)
     bool res = false;
     if (parent)
     {
-        IManager  * manager = parent->getManager();
             IExtHandler *hook = parent->getHandler();
             if (show_cmd == show_none)
             {
@@ -1323,7 +1322,6 @@ bool nnViewGlue::handlerDownButton(bool shift, bool ctrl, bool alt)
     bool res = false;
     if (parent)
     {
-        IManager  * manager = parent->getManager();
         IExtHandler *hook = parent->getHandler();
         if (show_cmd == show_none)
         {
@@ -1361,7 +1359,6 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
     needScroll=false;
     if (parent && selector)
     {
-        IExtHandler *hook = parent->getHandler();
         IManager  * manager = parent->getManager();
         if (selector->isSelectedValid() && selector->getStatus()==true)
         {
