@@ -36,10 +36,10 @@ const STRING nnObj::toString(void) const
     SSTREAM s;
     switch (v_context)
     {
-    case objNone:  s << X("objNone"); break;
-    case objWire: s << X("objWire"); break;
-    case objContact: s << X("objContact"); break;
-    case objCoil: s << X("objCoiX("); break;
+    case objNone:  s << X("undef object"); break;
+    case objWire: s << X("is a Wire"); break;
+    case objContact: s << X("is a Contact"); break;
+    case objCoil: s << X("is a Coil"); break;
     default: s << X("unknow"); break;
     }
     return s.str();
@@ -674,26 +674,39 @@ eWire nnObjWire::wireStringToEnum(const XCHAR *name)
     STRING value = name;
     if (value == X("wireHorizzontal"))
         return wireHorizzontal;
-    if (value == X("wireVertical"))
-        return wireVertical;
-    if (value == X("wireAngleUpRight"))
-        return wireAngleUpRight;
-    if (value == X("wireAngleUpLeft"))
-        return wireAngleUpLeft;
-    if (value == X("wireAngleDownRight"))
-        return wireAngleDownRight;
-    if (value == X("wireAngleDownLeft"))
-        return wireAngleDownLeft;
-    if (value == X("wireTHorizDown"))
-        return wireTHorizDown;
-    if (value == X("wireTHorizUp"))
-        return wireTHorizUp;
-    if (value == X("wireTVertRight"))
-        return wireTVertRight;
-    if (value == X("wireTVertLeft"))
-        return wireTVertLeft;
-    if (value == X("wireCross"))
-        return wireCross;
+    else
+        if (value == X("wireVertical"))
+            return wireVertical;
+        else
+            if (value == X("wireAngleUpRight"))
+                return wireAngleUpRight;
+            else
+                if (value == X("wireAngleUpLeft"))
+                    return wireAngleUpLeft;
+                else
+                    if (value == X("wireAngleDownRight"))
+                        return wireAngleDownRight;
+                    else
+                        if (value == X("wireAngleDownLeft"))
+                            return wireAngleDownLeft;
+                        else
+                            if (value == X("wireTHorizDown"))
+                                return wireTHorizDown;
+                            else
+                                if (value == X("wireTHorizUp"))
+                                    return wireTHorizUp;
+                                else
+                                    if (value == X("wireTVertRight"))
+                                        return wireTVertRight;
+                                    else
+                                        if (value == X("wireTVertLeft"))
+                                            return wireTVertLeft;
+                                        else
+                                            if (value == X("wireCross"))
+                                                return wireCross;
+                                            else
+                                                if (value == X("connectComponent"))
+                                                    return connectComponent;
     return noWire;
 }
 

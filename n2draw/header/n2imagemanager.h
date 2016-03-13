@@ -54,6 +54,8 @@ public:
     bmpImage * getImage(int id);
     bmpImage * getImage(const XCHAR * name);
     inline  const objImageList * getAvailObj(void) { return &availObj; }
+    inline int getMaxWidth(void)        { return allImages.getMaxWidth(); }
+    inline int getMaxHeight(void)           { return allImages.getMaxHeight(); }
 private :
     int internalStringToValue(const XCHAR *ptr);
 };

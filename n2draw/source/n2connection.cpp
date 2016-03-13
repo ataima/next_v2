@@ -81,6 +81,62 @@ bool nnConnection::connectComponent(IManager * manager, nnPoint & p_src, nnPoint
                 }
             }
         }
+        //else connection up to row 0 
+        else if (p_dst.y==0 && p_dst.x==p_src.x &&  dst == nullptr && src != nullptr)
+        {
+            // connection to power up
+            res=connectToPower(manager, p_src, p_dst);
+        }
+    }
+    return res;
+}
+
+
+
+bool nnConnection::connectToPower(IManager *manager, nnPoint &p_src, nnPoint & p_dst)
+{
+    bool res = false;
+    int u;
+    InnObj *v = nullptr;
+    //vert connection
+    if (p_src.y > p_dst.y)
+    {
+        for (u = 0; u < p_src.y; u++)
+        {
+            v = manager->getObj(p_src.x, u);
+            if (v == nullptr)
+            {
+                v = new nnObjWire(eWire::wireVertical);
+                MEMCHK(InnObj, v);
+                v->setConnections(1);
+                res = manager->addWire(p_src.x, u, v);
+                if (!res)break;
+            }
+            else if (v->isComponent())
+            {
+                positionBusyException *pe = new positionBusyException(p_src.x, u);
+                throw (pe);
+            }
+        }
+    }
+    else
+    {
+        for (u = 0; u < p_dst.y; u++)
+        {
+            v = manager->getObj(p_src.x, u);
+            if (v == nullptr)
+            {
+                v = new nnObjWire(eWire::wireVertical);
+                MEMCHK(InnObj, v);
+                res = manager->addWire(p_src.x, u, v);
+                if (!res)break;
+            }
+            else if (v->isComponent())
+            {
+                positionBusyException *pe = new positionBusyException(p_src.x, u);
+                throw (pe);
+            }
+        }
     }
     return res;
 }
@@ -174,12 +230,12 @@ bool nnConnection::connectHorzIncrUpSideComponent(IManager * manager, nnPoint & 
             if (num == 1)
             {
                 //vert to power positive
-                for (i = 0; i < p_src.y - 1; i++)
+                for (i = 0; i < p_src.y ; i++)
                 {
                     v = new nnObjWire(eWire::wireVertical);
                     MEMCHK(InnObj, v);
                     v->setConnections(1);
-                    res = manager->addWire(p_src.x, i, v);
+                    res = manager->addWire(p_dst.x, i, v);
                     if (!res)break;
                 }
             }
@@ -209,12 +265,17 @@ bool nnConnection::connectHorzIncrUpSideComponent(IManager * manager, nnPoint & 
             }
         }
     }
+    else
+        if (p_src.y == 0)
+        {
+            res = true;
+        }
     return res;
 }
 
 bool nnConnection::connectHorzIncrDownSideComponent(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
-    bool res = false;
+    bool res = true;
     int  i, num;
     InnObj *v = nullptr;
     InnObj *near_src = nullptr;
@@ -300,7 +361,7 @@ bool nnConnection::connectHorzIncrDownSideComponent(IManager * manager, nnPoint 
 
 bool nnConnection::connectHorzDecrUpSideComponent(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
-    bool res = false;
+    bool res = true;
     int  i, num;
     InnObj *v = nullptr;
     InnObj *near_src = nullptr;
@@ -339,7 +400,7 @@ bool nnConnection::connectHorzDecrUpSideComponent(IManager * manager, nnPoint & 
             if (num == 1)
             {
                 //vert to power positive
-                for (i = 0; i < p_src.y - 1; i++)
+                for (i = 0; i < p_src.y ; i++)
                 {
                     v = new nnObjWire(eWire::wireVertical);
                     MEMCHK(InnObj, v);
@@ -374,18 +435,24 @@ bool nnConnection::connectHorzDecrUpSideComponent(IManager * manager, nnPoint & 
             }
         }
     }
+    else
+        if(p_src.y == 0 )
+        {
+            res = true;
+        }
     return res;
 }
 
 bool nnConnection::connectHorzDecrDownSideComponent(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
-    bool res = false;
+    bool res = true;
     int  i, num;
     InnObj *v = nullptr;
     InnObj *near_src = nullptr;
     InnObj *near_dst = nullptr;
     if (p_src.y < manager->getHeight())
     {   //DOWN SIDE
+        // SRC unconnect-component DST connected component 
         near_src = manager->getObj(p_src.x, p_src.y + 1);
         near_dst = manager->getObj(p_dst.x, p_dst.y + 1);
         if (near_src == nullptr && near_dst == nullptr)

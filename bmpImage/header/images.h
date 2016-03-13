@@ -205,10 +205,14 @@ protected:
 class  listImage
     :public std::map<int ,bmpImage * >
 {
+    int bmpMaxWidth;
+    int bmpMaxHeight;
 public:
     listImage();
     ~listImage();
     bool Add(int index, bmpImage & b );
+    inline int getMaxWidth(void) { return bmpMaxWidth; }
+    inline int getMaxHeight(void) { return bmpMaxWidth; }
 };
 
 

@@ -33,14 +33,19 @@ class nnCapturePos
 {
     int command;
     unsigned int off_image;
+    unsigned char Rmask;
+    unsigned char Gmask;
+    unsigned char Bmask;
     bmpImage * curImage;
     IChild *parent;
-    nnPoint logPos;
+    nnPoint startLogPos;
+    nnPoint endLogPos;
     IFontManager * font;
 public:
-    nnCapturePos(IChild *_parent);
+    nnCapturePos(IChild *_parent, unsigned char _Rmask,
+        unsigned char _Gmask, unsigned char _Bmask);
     ~nnCapturePos();
-    void setCommand(int c, unsigned int image);
+    void setCommand(int c, unsigned int image, nnPoint & _startLogPos);
     void draw(bmpImage & image, IViewGlue * glue);
     virtual bool handlerMouseMove(nnPoint &phyPoint, 
                     show_status & status, IExtHandler *hook);

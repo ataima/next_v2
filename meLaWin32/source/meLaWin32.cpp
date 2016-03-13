@@ -150,20 +150,7 @@ void directCommand(HWND hWnd, IParam *user_param)
     {
         // from conf...xml toolbars
         int v = t->value();
-        nnLOG1(int,v);
-        switch (v)
-        {
-        case 2000:
-            n2app->active()->Capture(2000, contactGenericAnd);
-            break;
-        case 2001:
-            n2app->active()->Capture(2001, contactGenericOr);
-            break;
-        case 3000:
-            n2app->active()->Capture(3000, coilGeneric);
-            break;
-        
-        }
+        nnLOG(int,"extern request command",v);
     }
 }
 
@@ -234,23 +221,13 @@ void externCommandRequest(void * dest, size_t type_param, IParam *user_param)
                     {
                         nnAbstractParamList *list = static_cast<nnAbstractParamList *>(user_param);
                         nnAbstractParam<nnPoint> *p1 = static_cast<nnAbstractParam<nnPoint> *>(list->at(0));
-                        nnAbstractParam<int> *p2 = static_cast<nnAbstractParam<int> *>(list->at(1));
-                        nnPoint pos = p1->value();
-                        int command = p2->value();
-                        nnLOG1(nnPoint, pos);
-                        nnLOG1(int, command);
-                        switch (command)
-                        {
-                        case 2000:
-                            n2app->active()->addContact(pos, new nnContactNO());
-                            break;
-                        case 2001:
-                            n2app->active()->addContact(pos, new nnContactNC());
-                            break;
-                        case 3000:
-                            n2app->active()->addCoil(pos, new nnGenericCoil());
-                            break;
-                        }
+                        nnAbstractParam<nnPoint> *p2 = static_cast<nnAbstractParam<nnPoint> *>(list->at(1));
+                        nnAbstractParam<int> *p3 = static_cast<nnAbstractParam<int> *>(list->at(2));
+                        nnPoint start = p1->value();
+                        nnPoint end = p2->value();
+                        int command = p3->value();
+                        nnLOG2(nnPoint,start,end);
+                        nnLOG(int, "extern select position", command);
                     }
                 }
                 break;
@@ -279,7 +256,6 @@ public :
         // insert the text at the new caret position
         SendMessage(editor, EM_SETSEL, outLength, outLength);
         SendMessage(editor, EM_REPLACESEL, FALSE, reinterpret_cast<LPARAM>(msg.c_str()));
-
     }
 };
 #endif
@@ -470,23 +446,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 bool alt = false, ctrl = false, shift = false;
                 if (wParam == VK_HOME)
-                    handler->handlerHomeButton(shift, ctrl, alt);
+                handler->handlerHomeButton(shift, ctrl, alt);
+                else
                 if (wParam == VK_ESCAPE)
-                    handler->handlerEscapeButton(shift, ctrl, alt);
+                handler->handlerEscapeButton(shift, ctrl, alt);
+                else
                 if (wParam == VK_END)
-                    handler->handlerEndButton(shift, ctrl, alt);
+                handler->handlerEndButton(shift, ctrl, alt);
+                else
                 if (wParam == VK_LEFT)
-                    handler->handlerLeftButton(shift, ctrl, alt);
+                handler->handlerLeftButton(shift, ctrl, alt);
+                else
                 if (wParam == VK_UP)
-                    handler->handlerUpButton(shift, ctrl, alt);
+                handler->handlerUpButton(shift, ctrl, alt);
+                else
                 if (wParam == VK_RIGHT)
-                    handler->handlerRightButton(shift, ctrl, alt);
+                handler->handlerRightButton(shift, ctrl, alt);
+                else
                 if (wParam == VK_DOWN)
-                    handler->handlerDownButton(shift, ctrl, alt);
+                handler->handlerDownButton(shift, ctrl, alt);
+                else
                 if (wParam == VK_PRIOR)
-                    handler->handlerPageUpButton(shift, ctrl, alt);
+                handler->handlerPageUpButton(shift, ctrl, alt);
+                else
                 if (wParam == VK_NEXT)
-                    handler->handlerPageDownButton(shift, ctrl, alt);
+                handler->handlerPageDownButton(shift, ctrl, alt);
+                else
+                if (wParam == VK_DELETE)
+                    handler->handlerCancelButton(shift, ctrl, alt);
             }
         }
     }

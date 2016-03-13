@@ -9,6 +9,7 @@
 #include "n2fontlist.h"
 #include "n2exthandler.h"
 #include "n2childapp.h"
+#include "n2connection.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -35,6 +36,15 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
+void  nnChildApp::defaultCommandRequest(void * dest, size_t type_param, IParam *user_param)
+{
+    if (dest)
+    {
+        IChild *rel = reinterpret_cast<IChild*>(dest);
+        if (rel)
+            rel->defaultProcess(type_param, user_param);
+    }
+}
 
 
 nnChildApp::nnChildApp(unsigned int _id )
@@ -45,6 +55,8 @@ nnChildApp::nnChildApp(unsigned int _id )
     view = nullptr;
     imageManager = nullptr;
     externalHandler = nullptr;
+    extHandler _hook = static_cast<extHandler>(nnChildApp::defaultCommandRequest);
+    defaultHandler = new nnExtHandler(_hook,this,true);
     id=_id;
 }
 
@@ -76,7 +88,16 @@ void nnChildApp::clean(void)
         delete view;
         view = nullptr;
     }
-    externalHandler = nullptr;
+    if (externalHandler)
+    {
+        delete externalHandler;
+        externalHandler = nullptr;
+    }
+    if (defaultHandler)
+    {
+        delete defaultHandler;
+        defaultHandler = nullptr;
+    }
     id = -1;
 }
 
@@ -249,7 +270,7 @@ bool nnChildApp::loadImages(void)
 bool nnChildApp::setExtHandler( extHandler _hook, void *unkObj)
 {
     bool res = false;
-    nnExtHandler  *nh = new nnExtHandler( _hook, unkObj);
+    nnExtHandler  *nh = new nnExtHandler( _hook, unkObj,false);
     if (nh)
     {
         externalHandler = nh;
@@ -292,7 +313,16 @@ bool nnChildApp::addCoil(nnPoint & pos, nnObjCoil * coil)
     return res;
 }
 
-
+bool nnChildApp::connect(nnPoint & start, nnPoint & end)
+{
+    bool res = false;
+    if (object_manager )
+    {
+        res = nnConnection::connectComponent(object_manager, start, end);
+        view->updateDraw();
+    }
+    return res;
+}
 
 bool nnChildApp::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
@@ -709,4 +739,127 @@ bool nnChildApp::handlerDownButton(bool shift, bool ctrl, bool alt)
     }
     return res;
 }
+
+bool nnChildApp::handlerCancelButton(bool shift, bool ctrl, bool alt)
+{
+    //bool res = false;
+    //if (view)
+    //    res = view->handlerCancelButton(shift, ctrl, alt);
+    //return res;
+    struct  pulse_caller
+        : public nnPulse4<IViewGlue *, bool, bool, bool>
+    {
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
+        {}
+        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            view->handlerCancelButton(shift, ctrl, alt);
+        }
+    };
+    bool res = false;
+    if (view)
+    {
+        pulse_caller(view, shift, ctrl, alt);
+        res = true;
+    }
+    return res;
+}
+
+
+
+
+void  nnChildApp::defaultProcess(size_t type_param, IParam *user_param)
+{
+
+    switch (type_param)
+    {
+    case action_host_command:
+        {
+        nnAbstractParam<int> *t = static_cast<nnAbstractParam<int>*>(user_param);
+        if (t)
+        {
+            // from conf...xml toolbars
+            int v = t->value();
+            nnLOG1(int, v);
+            switch (v)
+            {
+            case 2000:// PLACE NO 
+                Capture(2000, contactGenericAnd);
+                break;
+            case 2001://PLACE NC
+                Capture(2001, contactGenericOr);
+                break;
+            case 3000://PLACE COIL
+                Capture(3000, coilGeneric);
+                break;
+            case 5000://CONNECT OBJ
+                Capture(5000,connectComponent);
+                break;
+            case 5002://DELETE OBJ
+                handlerCancelButton(false, false, false);
+                break;
+            default:
+                if (externalHandler)
+                    externalHandler->doHandler(type_param, user_param);
+                break;
+            }
+        }
+
+    }
+    break;
+    case action_select_position:
+    {
+        if (user_param)
+        {
+            nnAbstractParamList *list = static_cast<nnAbstractParamList *>(user_param);
+            nnAbstractParam<nnPoint> *p1 = static_cast<nnAbstractParam<nnPoint> *>(list->at(0));
+            nnAbstractParam<nnPoint> *p2 = static_cast<nnAbstractParam<nnPoint> *>(list->at(1));
+            nnAbstractParam<int> *p3 = static_cast<nnAbstractParam<int> *>(list->at(2));
+            nnPoint start = p1->value();
+            nnPoint end = p2->value();
+            int command = p3->value();
+            nnLOG2(nnPoint, start,end);
+            nnLOG1(int, command);
+            switch (command)
+            {
+            case 2000:
+                addContact(end, new nnContactNO());
+                break;
+            case 2001:
+                addContact(end, new nnContactNC());
+                break;
+            case 3000:
+                addCoil(end, new nnGenericCoil());
+                break;
+            case 5000:
+                connect(start, end);
+                break;
+            default:
+                if (externalHandler)
+                    externalHandler->doHandler(type_param, user_param);
+                break;
+            }
+        }
+    }
+    break;
+    case action_update_selected_panes:
+    case action_update_scroller_panes:
+    case action_update_statusbars_info:
+    case action_redraw:
+    case action_align_windows:
+    case action_close_windows:
+    case action_move_window:
+    case action_maximize_windows:
+    case action_iconize_windows:
+    case action_medialize_windows:
+        if (externalHandler)
+            externalHandler->doHandler(type_param, user_param);
+    break;
+    }
+    if (user_param)
+        delete user_param;
+}
+
+
 

@@ -29,7 +29,9 @@ public:
     bool loadImages(STRING  &path);
     bool checkIntCommand(int command);
     inline void setFont(IFontManager *_font) { font = _font; }
-    inline void setDrawPosition(nnPoint & p){ phyPos=p;}
+    inline void show(nnPoint & p){ phyPos=p;}
+    bool hide(void);
+
 };
 
 

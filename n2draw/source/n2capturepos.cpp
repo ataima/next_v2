@@ -4,6 +4,7 @@
 #include "n2capturepos.h"
 #include "n2utils.h"
 
+
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
 
@@ -29,11 +30,14 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-nnCapturePos::nnCapturePos(IChild *_parent)
+nnCapturePos::nnCapturePos(IChild *_parent,unsigned char _Rmask,
+    unsigned char _Gmask, unsigned char _Bmask)
     :parent(_parent),command(0)
-    ,off_image(0),curImage(nullptr)
+    ,off_image(0),curImage(nullptr),
+    Rmask(_Rmask),Gmask(_Gmask),Bmask(_Bmask)
 {
-    logPos.set(-1, -1);
+    endLogPos.set(-1, -1);
+    startLogPos.set(-1, -1);
 }
 
 nnCapturePos::~nnCapturePos()
@@ -41,13 +45,16 @@ nnCapturePos::~nnCapturePos()
     command = 0;
     off_image = 0;
     curImage = nullptr;
-    logPos.set(-1, -1);
+    Rmask = Gmask = Bmask = 0;
+    endLogPos.set(-1, -1);
+    startLogPos.set(-1, -1);
 }
 
-void nnCapturePos::setCommand(int c, unsigned int image)
+void nnCapturePos::setCommand(int c, unsigned int image,nnPoint & _startLogPos)
 { 
     command = c; 
-    off_image = image; 
+    off_image = image;
+    startLogPos = _startLogPos;
     if (parent)
     {
         IImageManager *images = parent->getImage();
@@ -59,8 +66,10 @@ void nnCapturePos::draw(bmpImage & image, IViewGlue * glue)
 {
     if (glue)
     {
-        nnPoint phy = glue->getCoordPhy(logPos);
-        image.drawSprite(*curImage, phy.x, image.getHeight()-curImage->getHeight() - phy.y);
+        nnPoint phy = glue->getCoordPhy(endLogPos);
+        image.drawMaskSprite(*curImage, phy.x, image.getHeight()-curImage->getHeight() - phy.y,
+            Rmask,Gmask,Bmask
+            );
     }
     drawTips(image);
 }
@@ -72,9 +81,9 @@ bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & status, IEx
     {
         IViewGlue *view = parent->getView();
         nnPoint current_pos = view->getCoordLog(phyPoint);
-        if (logPos != current_pos)
+        if (endLogPos != current_pos)
         {
-            logPos = current_pos;
+            endLogPos = current_pos;
             if (hook)
                 hook->doHandler(action_redraw);
             res = true;
@@ -90,25 +99,27 @@ bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & statu
     {
         IViewGlue *view = parent->getView();
         nnPoint current_pos = view->getCoordLog(phyPoint);
-        if (logPos != current_pos)
+        if (endLogPos != current_pos)
         {
-            logPos = current_pos;
+            endLogPos = current_pos;
         }
-        if (logPos.isValid())
+        if (endLogPos.isValid())
         {
             status = show_none;
             if (hook)
             {
-                auto *par = new nnAbstractParam<nnPoint>(logPos);
-                auto *par1 = new nnAbstractParam<int>(command);
+                auto *par1 = new nnAbstractParam<nnPoint>(startLogPos);
+                auto *par2 = new nnAbstractParam<nnPoint>(endLogPos);
+                auto *par3 = new nnAbstractParam<int>(command);
                 auto pars = new nnAbstractParamList();
-                pars->add(par);
                 pars->add(par1);
+                pars->add(par2);
+                pars->add(par3);
                 hook->doHandler(action_select_position, pars);
                 hook->doHandler(action_redraw);
             }
             command = -1;
-            logPos.set(-1, -1);
+            endLogPos.set(-1, -1);
             curImage = nullptr;
         }
     }
@@ -120,10 +131,10 @@ bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & statu
 bool nnCapturePos::drawTips(bmpImage & bkg)
 {
     bool res = false;
-    if (logPos.isValid() &&  font != nullptr)
+    if (endLogPos.isValid() &&  font != nullptr)
     {
         std::stringstream s;
-        s << "ROW:" << logPos.x << "   -   COL:" << logPos.y;
+        s << "ROW:" << endLogPos.x << "   -   COL:" << endLogPos.y;
         res = nnUtils::drawBottomLeftTips(bkg, *font, s.str());
     }
     return res;

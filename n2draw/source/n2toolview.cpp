@@ -184,6 +184,10 @@ bool nnToolView::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
     return res;
 }
 
+bool nnToolView::hide(void)
+{
+    return  checkIntCommand(0);
+}
 
 
 bool nnToolView::checkIntCommand(int command)
@@ -213,8 +217,8 @@ bool nnToolView::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status,
     {
         if (checkIntCommand(command))
         {
-            status = show_toolbar;
-            setDrawPosition(phyPoint);
+            //status = show_toolbar;
+            show(phyPoint);
             if (hook)
             {
                 hook->doHandler(action_redraw);

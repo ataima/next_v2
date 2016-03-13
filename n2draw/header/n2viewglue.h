@@ -45,12 +45,14 @@ class nnViewGlue
 
     IChild *parent;
     IView     *view;
-    IToolView *toolview;
+    IToolView *maintool;
+    IToolView *compotool;
     ISelector *selector;
     IScroller *vscroller;
     IScroller *hscroller;
     ICaption *caption;
     ICapture *capture;
+    IFontManager *curFont;
     show_status show_cmd;
 public:
     nnViewGlue(IChild *_parent);
@@ -78,6 +80,7 @@ public:
     bool handlerRightButton(bool shitf, bool ctrl, bool alt);
     bool handlerUpButton(bool shitf, bool ctrl, bool alt);
     bool handlerDownButton(bool shitf, bool ctrl, bool alt);
+    bool handlerCancelButton(bool shitf, bool ctrl, bool alt);
     bool select(nnPoint pos1, nnPoint pos2);
     bool getSelectArea(nnPoint &start, nnPoint &stop);
     bool unselect();
@@ -91,7 +94,7 @@ public:
     bool loadImages(STRING &_path);
     inline  bool createDraw(void) { return view->createMainBitmap(phy_Size); }
     bool Capture(int command,unsigned int image);
-
+    inline IFontManager *getCurrentFont(void) { return curFont; };
 private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);

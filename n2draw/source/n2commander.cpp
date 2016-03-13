@@ -32,11 +32,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 nnCommander::nnCommander()
+    :curItem(nullptr),
+    bmpHeight(0),
+    bmpWidth(0)
 {
     STRING empty;
     images= new nnImageManager(empty);
-    curItem=nullptr;
-    bmpHeight = 0;
 }
 
 nnCommander::~nnCommander()
@@ -48,6 +49,8 @@ nnCommander::~nnCommander()
         images=nullptr;
     }
     bmpHeight = 0;
+    bmpWidth = 0;
+    space.set(0, 0);
 }
 
 
@@ -57,10 +60,31 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
     if(conf)
     {
         int numItem;
-        IXmlNode *t=conf->find(X("ITEM_NUM"));
+        maxExt.set(0, 0);
+        IXmlNode *t=conf->find(X("SPACE_X"));
         if(t)
         {
-            numItem=t->getLong();
+            space.x=t->getLong();
+        }
+        else
+        {
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("SPACE_X"));
+            throw (pe);
+        }
+        t = conf->find(X("SPACE_Y"));
+        if (t)
+        {
+            space.y = t->getLong();
+        }
+        else
+        {
+            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("SPACE_Y"));
+            throw (pe);
+        }
+        t = conf->find(X("ITEM_NUM"));
+        if (t)
+        {
+            numItem = t->getLong();
         }
         else
         {
@@ -80,7 +104,12 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                     IXmlNode *v = t->find(X("POS_X"));
                     if(v)
                     {
-                        item.pos.x=v->getLong();
+                        int u;
+                        item.pos.x=u=v->getLong();
+                        if (u < 0)
+                            u = -u;
+                        if (u > maxExt.x)
+                            maxExt.x = u;                        
                     }
                     else
                     {
@@ -90,7 +119,12 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                     v = t->find(X("POS_Y"));
                     if(v)
                     {
-                        item.pos.y=v->getLong();
+                        int u;
+                        item.pos.y=u=v->getLong();
+                        if (u < 0)
+                            u = -u;
+                        if (u > maxExt.y)
+                            maxExt.y = u;
                     }
                     else
                     {
@@ -178,6 +212,7 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                 i++;
                 numItem--;
             }
+            maxExt += 1;
             res=true;
         }
     }
@@ -273,14 +308,20 @@ bool nnCommander::loadImages(STRING  &path)
 bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 {    
     bool res = false;
+    nnLOG1(nnPoint, pos);
     listCommandItem::iterator it = items.begin();
     listCommandItem::iterator _end = items.end();
     bmpHeight  = bkg.getHeight();
+    bmpWidth = bkg.getWidth();
+    nnPoint quadrant;
+    getQuadrant(pos, quadrant);
     while (it != _end)
     {
-        bmpImage & icon = *images->getImage(it->command);
-        unsigned int x = pos.x + it->pos.x;
-        unsigned int y1 = pos.y + it->pos.y;
+        int spX = (images->getMaxWidth() + space.x);
+        int spY = (images->getMaxHeight() + space.y);
+        bmpImage & icon = *images->getImage(it->command);       
+        unsigned int x = pos.x + it->pos.x*spX +quadrant.x*spX-spX/2;
+        unsigned int y1 = pos.y + it->pos.y*spY+quadrant.y*spY+spY/2;
         unsigned int y = bmpHeight - y1;
         unsigned int icon_width = icon.getWidth();
         unsigned int icon_height = icon.getHeight();
@@ -295,6 +336,7 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 #endif
         it++;
     }
+    nnLOG1(commandItem *, curItem);
     if (curItem != nullptr)
     {
         drawTips(bkg, pos, glue);
@@ -315,4 +357,24 @@ bool nnCommander::drawTips(bmpImage & bkg, nnPoint & , IViewGlue *)
         res = nnUtils::drawBottomLeftTips(bkg, *font, s );
     }
     return res;
+}
+
+
+void nnCommander::getQuadrant(nnPoint & pos, nnPoint & res)
+{
+    int divX = bmpWidth / 5;
+    int divY = bmpHeight / 5;
+    int pX = pos.x / divX;
+    int pY = pos.y / divY;
+    res.set(0, 0);
+    nnLOG2(int, pX, pY);
+    if (pX == 0)
+        res.x = maxExt.x;
+    if (pX == 4)
+        res.x = -maxExt.x;
+    if (pY == 0)
+        res.y = maxExt.y;
+    if (pY == 4)
+        res.y = -maxExt.y;
+    nnLOG1(nnPoint, res);
 }

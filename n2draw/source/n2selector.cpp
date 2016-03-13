@@ -1,6 +1,7 @@
 
 #include "images.h"
 #include "n2draw.h"
+#include "n2moreinfo.h"
 #include "n2selector.h"
 #include "n2exception.h"
 
@@ -38,6 +39,7 @@ nnSelector::nnSelector(IChild *_parent):
     toAlpha = "ABCDEFGHILMNOPQRSTUVXYZ";
     select_start.set(-1);
     select_stop.set(-1);
+    info = new nnMoreInfo(_parent);
 }
 
 
@@ -47,6 +49,11 @@ nnSelector::~nnSelector()
     error = false;
     select_start.set(-1);
     select_stop.set(-1);
+    if (info)
+    {
+        delete info;
+        info = nullptr;
+    }
 }
 
 bool nnSelector::translateY( int p, std::string & out )
@@ -134,6 +141,8 @@ void nnSelector::draw(bmpImage & image,IViewGlue * glue)
             }
         }
     }
+    if (!error && info)
+        info->draw(image, glue);
 }
 
 bool nnSelector::handlerMouseMove(nnPoint & logPoint)
@@ -154,7 +163,7 @@ bool nnSelector::handlerMouseMove(nnPoint & logPoint)
                 {
                     nnPoint maxStop = manager->getSchema();
                     maxStop -= 1;
-                    bool error = false;
+                    error = false;
                     if (logPoint.x > maxStop.x)
                     {
                         error = true;
@@ -165,7 +174,6 @@ bool nnSelector::handlerMouseMove(nnPoint & logPoint)
                         error = true;
                         logPoint.y = maxStop.y;
                     }
-                    setError(error);
                     if (logPoint.x < select_start.x || logPoint.y < select_start.y)
                     {
                         select_stop = select_start;
@@ -193,7 +201,8 @@ bool nnSelector::handlerMouseMove(nnPoint & logPoint)
 bool nnSelector::handlerMouseButtonDown(nnPoint &logPoint, show_status & s_status)
 {
     bool res = false;
-    //todo move into selector
+    if (info)
+        info->hide();
     if (status == s_unselect || status == selected)
         status = start_activate;
     if (parent)
@@ -204,7 +213,7 @@ bool nnSelector::handlerMouseButtonDown(nnPoint &logPoint, show_status & s_statu
         {            
             nnPoint maxStop = manager->getSchema();
             maxStop -= 1;
-            bool error = false;
+            error = false;
             if (logPoint.x > maxStop.x)
             {
                 error = true;
@@ -215,7 +224,6 @@ bool nnSelector::handlerMouseButtonDown(nnPoint &logPoint, show_status & s_statu
                 error = true;
                 logPoint.y = maxStop.y;
             }
-            setError(error);
             selectStart(logPoint);
             select_stop = select_start;
             show();
@@ -304,7 +312,7 @@ int nnSelector::isSelected(void)
     int res = 0;
     if (visible)
     {
-        if (isStartValid() && isStopValid())
+        if (isStartValid() && isStopValid() && !error)
         {
             if (select_start != select_stop)
             {
@@ -319,6 +327,28 @@ int nnSelector::isSelected(void)
     }
     return res;
 }
+
+
+
+bool nnSelector::isSelectedComponent(void)
+{
+    bool res = false;
+    int sel = isSelected();
+    if (sel == 1 && parent)
+    {
+        IManager *manager = parent->getManager();
+        if (manager)
+        {
+            InnObj * obj = manager->getObj(select_start.x, select_start.y);
+            if (obj)
+            {
+                res = obj->isComponent();
+            }
+        }
+    }
+    return res;
+}
+
 
 bool nnSelector::resizeSelectArea(const int vx, const int vy)
 {
@@ -382,6 +412,10 @@ bool nnSelector::resizeSelectArea(const int vx, const int vy)
                     hook->doHandler(action_update_selected_panes, p);
                     hook->doHandler(action_redraw);
                 }
+                if (!error &&  info && status == selected && select_start == select_stop)
+                {
+                    info->handlerMouseButtonDown(select_start, 0xffff00, hook);
+                }
             }
         }
     }
@@ -405,7 +439,7 @@ bool nnSelector::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & logPoi
                         status = stop_resize;
                         nnPoint maxStop = manager->getSchema();
                         maxStop -= 1;
-                        bool error = false;
+                        error = false;
                         if (logPoint.x > maxStop.x)
                         {
                             error = true;
@@ -416,7 +450,6 @@ bool nnSelector::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & logPoi
                             error = true;
                             logPoint.y = maxStop.y;
                         }
-                        setError(error);
                         if (logPoint != select_stop)
                         {
                             select_stop = logPoint;
@@ -447,8 +480,51 @@ bool nnSelector::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & logPoi
                 }
                 status = selected;
             }
-
+            if (info && status == selected && select_start == select_stop)
+            {
+                info->handlerMouseButtonDown(select_start, 0xffff00, hook);
+            }
     }
     return res;
 }
 
+bool nnSelector::select(nnPoint pos1, nnPoint pos2)
+{
+    bool res = selectStart(pos1) && selectStop(pos2); 
+    if (parent)
+    {
+        IManager *manager = parent->getManager();
+        if (manager)
+        {
+            nnPoint maxStop = manager->getSchema();
+            error = false;
+            if (select_start.x > maxStop.x)
+            {
+                error = true;
+                select_start.x = maxStop.x;
+            }
+            if (select_start.y > maxStop.y)
+            {
+                error = true;
+                select_start.y = maxStop.y;
+            }
+            if (select_stop.x > maxStop.x)
+            {
+                error = true;
+                select_stop.x = maxStop.x;
+            }
+            if (select_stop.y > maxStop.y)
+            {
+                error = true;
+                select_stop.y = maxStop.y;
+            }
+            if (!error && status == selected && select_start == select_stop && info)
+            {
+                IExtHandler *hook = parent->getHandler();
+                info->hide();
+                info->handlerMouseButtonDown(select_start, 0xffff00, hook);
+            }
+        }
+    }
+    return res;
+}

@@ -2773,6 +2773,7 @@ void bmpImage::show(int x, int y)
 #endif
 ///////////////////////////////////////////////////////////////// IMAGE LIST
 listImage::listImage()
+    :bmpMaxWidth(0),bmpMaxHeight(0)
 {
 
 }
@@ -2802,6 +2803,12 @@ bool listImage::Add(int index, bmpImage & b)
         {
             t->attach(b);
             (*this)[index] = t;
+            int width = t->getWidth();
+            int height = t->getHeight();
+            if (width > bmpMaxWidth)
+                bmpMaxWidth = width;
+            if (height > bmpMaxHeight)
+                bmpMaxHeight = height;
             res = true;
         }
     }

@@ -411,7 +411,8 @@ typedef enum tag_mouse_button_def
 typedef enum tag_show_status
 {
     show_none = 0,
-    show_toolbar,
+    show_toolbar_main,
+    show_toolbar_compo,
     show_scroller_horz,
     show_scroller_vert,
     show_caption,
@@ -427,20 +428,23 @@ inline std::ostream & operator<<(std::ostream & os, const show_status & st)
     case show_none:
         os << "show_none(0)";
         break;
-    case show_toolbar:
-        os << "show_toolbar(1)";
+    case show_toolbar_main :
+        os << "show_toolbar_main(1)";
+        break;
+    case show_toolbar_compo:
+        os << "show_toolbar_compo(2)";
         break;
     case show_scroller_horz:
-        os << "show_scroller_horz(2)";
+        os << "show_scroller_horz(3)";
         break;
     case show_scroller_vert:
-        os << "show_scroller_vert(3)";
+        os << "show_scroller_vert(4)";
         break;
     case show_caption:
-        os << "show_caption(4)";
+        os << "show_caption(5)";
         break;
     case show_capture:
-        os << "show_capture(5)";
+        os << "show_capture(6)";
         break;
     }
     return os;
@@ -465,6 +469,7 @@ public:
     virtual bool handlerRightButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerUpButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual bool handlerDownButton(bool shitf, bool ctrl, bool alt) = 0;
+    virtual bool handlerCancelButton(bool shitf, bool ctrl, bool alt) = 0;
     virtual ~IHandler() {}
 };
 
@@ -608,6 +613,7 @@ enum tag_wire
     wireTVertRight,
     wireTVertLeft,
     wireCross,
+    connectComponent,
 };
 
 typedef tag_wire eWire;
@@ -723,6 +729,8 @@ public:
     virtual bmpImage * getImage(int id) = 0;
     virtual bmpImage * getImage(const XCHAR * name) = 0;
     virtual const  objImageList * getAvailObj(void) = 0;
+    virtual int getMaxWidth(void) = 0;
+    virtual int getMaxHeight(void) = 0;
     virtual ~IImageManager() {}
 };
 
@@ -768,7 +776,8 @@ public:
     virtual ICommander *getActiveCommander(void)=0;
     virtual bool loadImages(STRING & path)=0;
     virtual bool checkIntCommand(int command)=0;
-    virtual void setDrawPosition(nnPoint & pos)=0;
+    virtual void show(nnPoint & pos)=0;
+    virtual bool hide(void) = 0;
     virtual void setFont(IFontManager *_font) = 0;
     virtual ~IToolView() {}
 };
@@ -790,16 +799,11 @@ public:
     virtual void setError(bool st)=0;
     virtual void setFont(IFontManager *font) = 0;
     virtual ~ISelector() {}
-    /*
-    virtual bool selectStart(int xpos, int ypos) = 0;
-    virtual bool selectStop(int xpos1, int ypos1) = 0;
-    virtual bool selectStart(nnPoint pos) = 0;
-    virtual bool selectStop(nnPoint pos1) = 0;
-    */
     virtual bool isSelectedValid(void) = 0;
     virtual bool isStartValid(void) = 0;
     virtual bool isStopValid(void) = 0;
     virtual int  isSelected(void) = 0;
+    virtual bool isSelectedComponent(void) = 0;
     virtual bool unselect() = 0;
     virtual bool getSelectArea(nnPoint &start, nnPoint &stop) = 0;
     virtual bool select(nnPoint pos1, nnPoint pos2) = 0;
@@ -812,13 +816,25 @@ public:
 class ICapture
 {
 public:
-    virtual void setCommand(int c, unsigned int image) = 0;
+    virtual void setCommand(int c, unsigned int image,nnPoint & pos) = 0;
     virtual void draw(bmpImage & image, IViewGlue * glue) = 0;
     virtual bool handlerMouseMove(nnPoint &phyPoint,
         show_status & status, IExtHandler *hook) = 0;
     virtual bool handlerMouseButtonDown(nnPoint &phyPoint,
         show_status & status,IExtHandler *hook) = 0;
     virtual void setFont(IFontManager *font) = 0;
+};
+
+
+
+class IMoreInfo
+{
+public:
+    virtual bool handlerMouseButtonDown(nnPoint &logPoint, int color, IExtHandler *hook) = 0;
+    virtual void draw(bmpImage & image, IViewGlue * glue)=0;
+    virtual void hide(void) = 0;
+    virtual void show(void) = 0;
+
 };
 
 //////////////////////////////////////////////////////
@@ -917,6 +933,7 @@ public:
     virtual bool loadImages(STRING & _path)=0;
     virtual bool createDraw(void) = 0;
     virtual bool Capture(int command, unsigned int image) = 0;
+    virtual IFontManager *getCurrentFont(void) = 0;
     virtual ~IViewGlue() {}
 };
 
@@ -937,9 +954,10 @@ public:
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name,STRING & path_name) = 0;
     virtual bool setExtHandler(extHandler  _hook, void *unkObj) = 0;
     virtual bool getCurrentFile(std::string & filename) = 0;
-    virtual bool Capture(int command, unsigned int image) = 0;
-    virtual bool addContact(nnPoint & pos, nnObjContact * contact)=0;
-    virtual bool addCoil(nnPoint & pos, nnObjCoil * coil)=0;
+    //virtual bool Capture(int command, unsigned int image) = 0;
+    //virtual bool addContact(nnPoint & pos, nnObjContact * contact)=0;
+    //virtual bool addCoil(nnPoint & pos, nnObjCoil * coil)=0;
+    virtual void defaultProcess(size_t type_param, IParam *user_param)=0;
     virtual ~IChild() {}
 };
 

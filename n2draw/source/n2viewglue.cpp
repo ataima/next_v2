@@ -44,7 +44,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 //TestviewGlue.cpp : T1
 nnViewGlue::nnViewGlue(IChild *_parent)
     :parent(_parent),view(nullptr),
-    vscroller(nullptr),hscroller(nullptr)
+    vscroller(nullptr),
+    hscroller(nullptr),
+    curFont(nullptr)
 {
     if (parent)
     {
@@ -53,7 +55,7 @@ nnViewGlue::nnViewGlue(IChild *_parent)
         setPhyView(0, 0);
         offset_Pos.set(0);
         caption = new nnCaption(parent);
-        capture = new nnCapturePos(parent);
+        capture = new nnCapturePos(parent,255,255,255);
         unselect();
     }
 }
@@ -76,6 +78,7 @@ bool nnViewGlue::unselect()
 
 nnViewGlue::~nnViewGlue()
 {
+    curFont = nullptr;
     const_Size.set(0);
     setPhyView(0, 0);
     offset_Pos.set(0);
@@ -204,7 +207,8 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                     {
                     case 1:
                         view = new nnView(parent);
-                        toolview = new nnToolView();
+                        maintool = new nnToolView();
+                        compotool = new nnToolView();
                         break;
                     default:
                     {
@@ -214,7 +218,8 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                     break;
                     }
                     MEMCHK(IView, view);
-                    MEMCHK(IToolView, toolview);
+                    MEMCHK(IToolView, maintool);
+                    MEMCHK(IToolView, compotool);                    
                 }
                 else
                 {
@@ -285,25 +290,36 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                 }
                 if (res)
                 {
-                    conf = node->find(X("PHY_TOOLBARS"));
+                    conf = node->find(X("MAIN_TOOLBARS"));
                     if (conf)
                     {
-                        if (toolview)
-                        {
-                            IFontManager *font = getFontFromName("Courier_10_14");
-                            selector->setFont(font);
-                            caption->setFont(font);
-                            toolview->setFont(font);
-                            view->setFont(font);
-                            capture->setFont(font);
-                            res = toolview->readConfiguration(conf);
+                        if (maintool)
+                        {                            
+                            res = maintool->readConfiguration(conf);
                         }
                     }
                     else
                     {
                         res = false;
-                        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("PHY_TOOLBARS"));
+                        xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("MAIN_TOOLBARS"));
                         throw (pe);
+                    }
+                    if (res)
+                    {
+                        conf = node->find(X("COMP_TOOLBARS"));
+                        if (conf)
+                        {
+                            if (compotool)
+                            {
+                                res = compotool->readConfiguration(conf);
+                            }
+                        }
+                        else
+                        {
+                            res = false;
+                            xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("COMP_TOOLBARS"));
+                            throw (pe);
+                        }
                     }
                 }
             }
@@ -339,6 +355,16 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                 }
             }
         }
+    }
+    if (res)
+    {
+        curFont = getFontFromName("Courier_10_14");
+        selector->setFont(curFont);
+        caption->setFont(curFont);
+        maintool->setFont(curFont);
+        compotool->setFont(curFont);
+        view->setFont(curFont);
+        capture->setFont(curFont);
     }
     return res;
 }
@@ -404,26 +430,37 @@ bmpImage & nnViewGlue::getDraw(void)
             if (caption)
                 caption->draw(image, this);
         }
+        else
         if (show_cmd == show_scroller_horz)
         {
             if (hscroller)
                 hscroller->draw(image, this);
         }
+        else
         if (show_cmd == show_scroller_vert)
         {
             if (vscroller)
                 vscroller->draw(image, this);
         }
-        if (show_cmd == show_toolbar)
+        else
+        if (show_cmd == show_toolbar_main)
         {
-            if (toolview)
-                toolview->draw(image, this);
+            if (maintool)
+                maintool->draw(image, this);
         }
+        else
+        if (show_cmd == show_toolbar_compo)
+        {
+            if (compotool)
+                compotool->draw(image, this);
+        }
+        else
         if (show_cmd == show_capture)
         {
             if (capture)
                 capture->draw(image, this);
         }
+        else
         if (show_cmd == show_none)
         {
             if (selector)
@@ -456,7 +493,7 @@ bool nnViewGlue::updateDraw(void)
 bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
     bool res = false;
-    nnLOG(show_status,"handlerMouseMove in : ", show_cmd);
+    //nnLOG(show_status,"handlerMouseMove in : ", show_cmd);
     if (parent)
     {
             IExtHandler *hook = parent->getHandler();
@@ -485,11 +522,19 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
                     }
             }
             else
-            if (show_cmd == show_toolbar)
+            if (show_cmd == show_toolbar_main)
             {
-                if (toolview)
+                if (maintool)
                 {
-                    res = toolview->handlerMouseMove(phyPoint, hook);
+                    res = maintool->handlerMouseMove(phyPoint, hook);
+                }
+            }
+            else
+            if (show_cmd == show_toolbar_compo)
+            {
+                if (compotool)
+                {
+                    res = compotool->handlerMouseMove(phyPoint, hook);
                 }
             }
             else
@@ -533,18 +578,30 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
                 if (selector)
                     res = selector->handlerMouseButtonDown(getCoordLog(phyPoint), show_cmd);
             }
-            else if (buttons == nn_m_button_left && show_cmd == show_toolbar)
+            else if (buttons == nn_m_button_left && show_cmd == show_toolbar_main)
             {
-                if (toolview)
-                    res = toolview->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+                if (maintool)
+                    res = maintool->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+            }
+            else if (buttons == nn_m_button_left && show_cmd == show_toolbar_compo)
+            {
+                if (compotool)
+                    res = compotool->handlerMouseButtonDown(phyPoint, show_cmd, hook);
             }
             else if (buttons == nn_m_button_right && show_cmd == show_none)
             {
-                if (toolview && view)
+                if (selector)
                 {
-                    //TODO move to toolbar
-                    show_cmd = show_toolbar;
-                    toolview->setDrawPosition(phyPoint);
+                    if (selector->isSelectedComponent())
+                    {
+                        show_cmd = show_toolbar_compo;
+                        compotool->show(phyPoint);
+                    }
+                    else
+                    {
+                        show_cmd = show_toolbar_main;
+                        maintool->show(phyPoint);
+                    }
                     res = true;
                     if (hook)
                     {
@@ -552,16 +609,22 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
                     }
                 }
             }
-            else if (buttons == nn_m_button_right && show_cmd == show_toolbar)
+            else if (buttons == nn_m_button_right && show_cmd == show_toolbar_main)
             {
-                if (view)
-                {
-                    res = toolview->checkIntCommand(0);
-                    show_cmd = show_none;
+                    res = maintool->hide();
+                    unselect();
                     if (hook)
                     {
                         if (hook)hook->doHandler(action_redraw);
                     }
+            }
+            else if (buttons == nn_m_button_right && show_cmd == show_toolbar_compo)
+            {
+                res = compotool->hide();
+                unselect();
+                if (hook)
+                {
+                    if (hook)hook->doHandler(action_redraw);
                 }
             }
             else
@@ -587,6 +650,8 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
                             {
                                 if (capture)
                                     res = capture->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+                                if (selector)
+                                    res = selector->handlerMouseButtonDown(getCoordLog(phyPoint), show_cmd);
                             }
 
 
@@ -1363,8 +1428,8 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
         if (selector->isSelectedValid() && selector->getStatus()==true)
         {
             nnRect vis;
-            nnPoint & select_start = selector->getSelectStart();
-            nnPoint & select_stop = selector->getSelectStop();
+            nnPoint  select_start = selector->getSelectStart();
+            nnPoint  select_stop = selector->getSelectStop();
             if (vx != 0)
             {
                 if (manager)
@@ -1393,6 +1458,7 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
                             updateDraw();
                             needScroll = true;
                         }
+                        selector->select(select_start, select_stop);
                         res = true;
                     }
                 }
@@ -1425,6 +1491,7 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
                             updateDraw();
                             needScroll = true;
                         }
+                        selector->select(select_start, select_stop);
                         res = true;
                     }
                 }
@@ -1443,9 +1510,13 @@ bool nnViewGlue::moveSelectArea(const int vx,const int vy,bool &needScroll)
 bool nnViewGlue::loadImages(STRING & _path)
 {
     bool res=false;
-    if(toolview)
+    if(maintool)
     {
-        res=toolview->loadImages(_path);
+        res=maintool->loadImages(_path);
+    }
+    if (compotool)
+    {
+        res = compotool->loadImages(_path);
     }
     if (parent)
     {
@@ -1509,8 +1580,52 @@ bool  nnViewGlue::Capture(int command,unsigned int image)
     bool res = false;
     if (capture)
     {
-        capture->setCommand(command,image);
+        capture->setCommand(command,image,selector->getSelectStart());
         show_cmd = show_capture;
+    }
+    return res;
+}
+
+
+bool nnViewGlue::handlerCancelButton(bool shift, bool ctrl, bool alt)
+{
+    bool res = false;
+    if (parent)
+    {
+        IExtHandler *hook = parent->getHandler();
+        if (show_cmd == show_none && !shift && !ctrl && !alt && selector && selector->getStatus())
+        {
+            int sel = selector->isSelected();
+            if (sel != 0)
+            {
+                IManager *manager = parent->getManager();
+                if (manager)
+                {
+                    int i, u;
+                    nnPoint start,stop;
+                    getSelectArea(start, stop);
+                    if (sel > 1)
+                    {
+                        for (i = start.x; i < stop.x; i++)
+                        {
+                            for (u = start.y; u < stop.y; u++)
+                            {
+                                manager->removeObj(i, u);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        manager->removeObj(start.x, start.y);
+                    }
+                }
+                updateDraw();
+                if (hook)
+                {
+                    if (hook)hook->doHandler(action_redraw);
+                }
+            }
+        }
     }
     return res;
 }

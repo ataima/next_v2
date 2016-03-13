@@ -75,6 +75,7 @@ class nnSelector
     IChild *parent;
     nnPoint select_start;
     nnPoint select_stop;
+    IMoreInfo *info;
 public:
     nnSelector(IChild * _parent);
     ~nnSelector();
@@ -87,8 +88,6 @@ public:
     bool handlerMouseMove(nnPoint & logPoint);
     bool handlerMouseButtonDown(nnPoint & logPoint,show_status & status);
     bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint  & logPoint);
-    //bool selectStart(int xpos, int ypos);
-    //bool selectStop(int xpos1, int ypos1);
     bool unselect();
     inline bool isSelectedValid(void) { return (isStartValid() && isStopValid() ); }
     inline bool isStartValid(void) { return select_start != -1; }
@@ -96,7 +95,8 @@ public:
     inline nnPoint & getSelectStart(void) { return select_start; }
     inline nnPoint & getSelectStop(void) { return select_stop; }
     int isSelected(void);
-    inline bool select(nnPoint pos1, nnPoint pos2) { return selectStart(pos1) && selectStop(pos2); }
+    bool isSelectedComponent(void);
+    bool select(nnPoint pos1, nnPoint pos2);
     inline bool getSelectArea(nnPoint &start, nnPoint &stop) { start = select_start; stop = select_stop; return true; }
     bool resizeSelectArea(const int vx, const int vy);
 private:

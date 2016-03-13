@@ -40,6 +40,7 @@ class nnChildApp
     IViewGlue               *view;
     IImageManager           *imageManager;
     IExtHandler             *externalHandler;    
+    IExtHandler             *defaultHandler;
     unsigned int            id;
 public:
     nnChildApp(unsigned int _id=0);
@@ -52,7 +53,7 @@ public:
     inline  IFontList * getFont(void)                  { return fonts; }
     inline  IViewGlue * getView(void)                  { return view; }
     inline  IImageManager * getImage(void)             { return imageManager; }
-    inline  IExtHandler * getHandler(void)             { return externalHandler; }
+    inline  IExtHandler * getHandler(void)             { return defaultHandler; }
     // remap handler
     bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint) ;
     bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint) ;
@@ -70,11 +71,15 @@ public:
     bool handlerRightButton(bool shitf, bool ctrl, bool alt) ;
     bool handlerUpButton(bool shitf, bool ctrl, bool alt) ;
     bool handlerDownButton(bool shitf, bool ctrl, bool alt) ;
+    bool handlerCancelButton(bool shitf, bool ctrl, bool alt);
     inline  bool getCurrentFile(std::string & filename) { filename = "prova"; return true; }
-    bool Capture(int command,unsigned int image);
+    void defaultProcess( size_t type_param, IParam *user_param);
+private:
+    static void  defaultCommandRequest(void * dest, size_t type_param, IParam *user_param);
+    bool Capture(int command, unsigned int image);
     bool addContact(nnPoint & pos, nnObjContact * contact);
     bool addCoil(nnPoint & pos, nnObjCoil * coil);
-private:
+    bool connect(nnPoint & start, nnPoint & end);
     bool loadImages(void);
 };
 
