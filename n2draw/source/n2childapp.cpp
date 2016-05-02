@@ -296,8 +296,21 @@ bool nnChildApp::addContact(nnPoint & pos, nnObjContact * contact)
     bool res = false;
     if (object_manager && contact)
     {
-        res=object_manager->addContact(pos.x, pos.y, contact);
-        view->updateDraw();
+        InnObj *obj = object_manager->getObj(pos.x, pos.y);
+        if (obj == nullptr)
+        {
+            res = object_manager->addContact(pos.x, pos.y, contact);
+            view->updateDraw();
+        }
+        else
+        {
+            if (!obj->isComponent())
+            {
+                //iswire
+                res = object_manager->replaceObj(pos.x, pos.y, contact);
+                view->updateDraw();
+            }
+        }
     }
     return res;
 }

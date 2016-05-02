@@ -545,8 +545,8 @@ bool nnObjManager::linkObj(int x, int y, InnObj *obj)
                     obj->connect(neighbourDw);
                 }
             }
-            else
-            {
+        //    else
+        //    {
                 //up & down =null
                 // check for horizzontal connection on wire
                 InnObj *neighbourLeft = nullptr;
@@ -563,7 +563,7 @@ bool nnObjManager::linkObj(int x, int y, InnObj *obj)
                     res = obj->connect(neighbourLeft);
                 if (neighbourRight != nullptr && !neighbourRight->isComponent())
                     res = obj->connect(neighbourRight);
-            }
+        //    }
             res = true;
         }
 
