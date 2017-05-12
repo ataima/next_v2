@@ -16,7 +16,7 @@ CONFIG += staticlib
 
 DEFINES += N2DRAW_LIBRARY
 
-# DEFINES += _UNICODE
+#DEFINES += _UNICODE
 
 
 windows{
@@ -42,7 +42,9 @@ SOURCES += \
 ../../source/n2scroller.cpp              \
 ../../source/n2caption.cpp               \
 ../../source/n2logger.cpp                \
-../..//source/n2utils.cpp                \
+../../source/n2utils.cpp                 \
+../../source/n2moreinfo.cpp              \
+../../source/n2capturepos.cpp            \
 
 
 
@@ -71,7 +73,7 @@ HEADERS += \
 ../../header/n2caption.h               \
 ../../header/n2logger.h                \
 ../../header/n2utils.h                 \
-
+../../header/n2capturepos.h            \
 
 
 DESTDIR =../../../../dist
@@ -79,18 +81,24 @@ DESTDIR =../../../../dist
 TARGET = n2draw
 
 
+
+
 INCLUDEPATH +=../../header
 INCLUDEPATH +=../../../bmpImage/header
 
 
 linux {
-CONFIG += c++11
+CONFIG += c++14
 }
 
 macx{
-CONFIG += c++11
+CONFIG += c++14
 }
 
 ios{
-CONFIG += c++11
+CONFIG += c++14
 }
+
+
+
+INCLUDEPATH -= $$QMAKE_DEFAULT_INCDIRS

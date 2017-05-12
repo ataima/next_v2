@@ -33,11 +33,12 @@ class nnCapturePos
 {
     int command;
     unsigned int off_image;
+    IChild *parent;
     unsigned char Rmask;
     unsigned char Gmask;
     unsigned char Bmask;
     bmpImage * curImage;
-    IChild *parent;
+
     nnPoint startLogPos;
     nnPoint endLogPos;
     IFontManager * font;

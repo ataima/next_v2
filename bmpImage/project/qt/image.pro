@@ -28,6 +28,7 @@ DESTDIR = ../../../../dist
 
 TARGET = bmpImage
 
+
 INCLUDEPATH +=../../header
 
 linux {
@@ -41,3 +42,5 @@ CONFIG += c++11
 ios{
 CONFIG += c++11
 }
+
+INCLUDEPATH -= $$QMAKE_DEFAULT_INCDIRS

@@ -1041,7 +1041,6 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
 LPBITMAPFILEHEADER bmpImage::Rotate180(LPBITMAPFILEHEADER src)
 {
 
-    LPBITMAPFILEHEADER res = nullptr;
     unsigned int x, y, k, pos;
 
     const unsigned int bpp = getBitsPerPixel(src);
@@ -1068,7 +1067,6 @@ LPBITMAPFILEHEADER bmpImage::Rotate180(LPBITMAPFILEHEADER src)
                     k ? dst_bits[pos >> 3] |= (0x80 >> (pos & 0x7)) : dst_bits[pos >> 3] &= (0xFF7F >> (pos & 0x7));
                 }
             }
-            res = dst;
         }
         else if ((bpp == 8) || (bpp == 24) || (bpp == 32))
         {
@@ -1086,7 +1084,6 @@ LPBITMAPFILEHEADER bmpImage::Rotate180(LPBITMAPFILEHEADER src)
                     dst_bits -= bytespp;
                 }
             }
-            res = dst;
         }
     }
     return dst;
@@ -1097,8 +1094,6 @@ LPBITMAPFILEHEADER bmpImage::Rotate180(LPBITMAPFILEHEADER src)
 
 LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
 {
-
-    LPBITMAPFILEHEADER res = nullptr;
 
     int x2, dlineup;
 
@@ -1144,7 +1139,6 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
                     }
                 }
             }
-            res = dst;
         }
         else if ((bpp == 8) || (bpp == 24) || (bpp == 32)) {
             // anything other than BW :
@@ -1182,7 +1176,6 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
                     }
                 }
             }
-            res = dst;
         }
     }
     return dst;

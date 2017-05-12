@@ -198,7 +198,7 @@ bool nnSelector::handlerMouseMove(nnPoint & logPoint)
     return res;
 }
 
-bool nnSelector::handlerMouseButtonDown(nnPoint &logPoint, show_status & s_status)
+bool nnSelector::handlerMouseButtonDown(nnPoint &logPoint, show_status & /*s_status*/)
 {
     bool res = false;
     if (info)

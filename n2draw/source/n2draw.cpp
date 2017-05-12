@@ -330,6 +330,12 @@ bool nnObjWire::connectFromUp(int num)
         setWire(eWire::wireCross);
         res = true;
         break;
+    case eWire::connectComponent:
+        {
+        wireConnetComponentException  *e = new wireConnetComponentException();
+        throw(e);
+        }
+        break;
     }
     return res;
 }
@@ -373,6 +379,12 @@ bool nnObjWire::disconnectFromUp(int /*num*/)
     case eWire::wireTHorizUp:
         setWire(wireHorizzontal);
         res = true;
+        break;
+    case eWire::connectComponent:
+        {
+        wireConnetComponentException  *e = new wireConnetComponentException();
+        throw(e);
+        }
         break;
     }
     return res;
@@ -425,6 +437,12 @@ bool nnObjWire::connectFromDown(int num)
         setWire(eWire::wireCross);
         res = true;
         break;
+    case eWire::connectComponent:
+        {
+        wireConnetComponentException  *e = new wireConnetComponentException();
+        throw(e);
+        }
+        break;
     }
     return res;
 }
@@ -466,6 +484,12 @@ bool nnObjWire::disconnectFromDown(int /*num*/)
     case eWire::wireTHorizDown:
         setWire(wireHorizzontal);
         res = true;
+        break;
+    case eWire::connectComponent:
+        {
+        wireConnetComponentException  *e = new wireConnetComponentException();
+        throw(e);
+        }
         break;
     }
 
@@ -519,6 +543,12 @@ bool nnObjWire::connectFromLeft(int num)
         setWire(eWire::wireCross);
         res = true;
         break;
+    case eWire::connectComponent:
+        {
+        wireConnetComponentException  *e = new wireConnetComponentException();
+        throw(e);
+        }
+        break;
     }
     return res;
 }
@@ -556,6 +586,12 @@ bool nnObjWire::disconnectFromLeft(int num)
     case eWire::wireTVertRight:
         setWire(eWire::wireVertical);
         res = true;
+        break;
+    case eWire::connectComponent:
+        {
+        wireConnetComponentException  *e = new wireConnetComponentException();
+        throw(e);
+        }
         break;
     }
     return res;
@@ -607,6 +643,12 @@ bool nnObjWire::connectFromRight(int num)
         setWire(eWire::wireCross);
         res = true;
         break;
+    case eWire::connectComponent:
+        {
+        wireConnetComponentException  *e = new wireConnetComponentException();
+        throw(e);
+        }
+        break;
     }
     return res;
 }
@@ -649,6 +691,12 @@ bool nnObjWire::disconnectFromRight(int /*num*/)
     case eWire::wireTVertLeft:
         setWire(eWire::wireVertical);
         res = true;
+        break;
+    case eWire::connectComponent:
+        {
+        wireConnetComponentException  *e = new wireConnetComponentException();
+        throw(e);
+        }
         break;
     }
     return res;
@@ -1014,7 +1062,7 @@ bool nnObjComponent::disconnectFromUp(void)
         v_num[0] = 0;
         res = true;
     }
-    return false;
+    return res;
 }
 
 bool nnObjComponent::disconnectFromDown(void)
@@ -1025,7 +1073,7 @@ bool nnObjComponent::disconnectFromDown(void)
         v_num[1] = 0;
         res = true;
     }
-    return false;
+    return res;
 }
 
 

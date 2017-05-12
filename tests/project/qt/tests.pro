@@ -1,8 +1,11 @@
-QT += core
-
-
 macx:QT       += macextras
 macx:QMAKE_MAC_SDK = macosx10.9
+
+
+QT += core gui widgets
+
+
+
 
 TARGET = tests
 CONFIG += console
@@ -59,13 +62,15 @@ INCLUDEPATH +=../../../n2draw/header
 
 
 linux {
-CONFIG += c++11
+CONFIG += c++14
 }
 
 macx{
-CONFIG += c++11
+CONFIG += c++14
 }
 
 ios{
-CONFIG += c++11
+CONFIG += c++14
 }
+
+INCLUDEPATH -= $$QMAKE_DEFAULT_INCDIRS

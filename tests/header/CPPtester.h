@@ -70,7 +70,7 @@ typedef struct exc_fail
 #define CA_ASSERT(b) \
 {\
 	caContainerTest::totalAssert++;\
-	if(b==0)\
+    if((b)==0)\
 {\
 	EXC_FAIL fail(__FILE__,__LINE__);\
 	throw(fail);\
@@ -80,7 +80,7 @@ typedef struct exc_fail
 #define CA_ASSERT_M(msg,b) \
 {\
 	caContainerTest::totalAssert++;\
-	if(b==0)\
+    if((b)==0)\
 {\
 	EXC_FAIL fail(__FILE__,__LINE__,msg);\
 	throw(fail);\
@@ -90,7 +90,7 @@ typedef struct exc_fail
 #define CA_NASSERT(b) \
 {\
 	caContainerTest::totalAssert++;\
-	if(b!=0)\
+    if((b)!=0)\
 {\
 	EXC_FAIL fail(__FILE__,__LINE__);\
 	throw(fail);\

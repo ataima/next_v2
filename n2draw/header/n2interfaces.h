@@ -301,6 +301,7 @@ public:
     virtual void setOutput(IPrinter *printer) = 0;
     virtual IPrinter *output(void) = 0;
     virtual void reset()=0;
+    virtual ~ILogger(){}
 };
 
 
@@ -823,6 +824,7 @@ public:
     virtual bool handlerMouseButtonDown(nnPoint &phyPoint,
         show_status & status,IExtHandler *hook) = 0;
     virtual void setFont(IFontManager *font) = 0;
+    virtual ~ICapture(){};
 };
 
 
@@ -834,6 +836,7 @@ public:
     virtual void draw(bmpImage & image, IViewGlue * glue)=0;
     virtual void hide(void) = 0;
     virtual void show(void) = 0;
+    virtual ~IMoreInfo(){}
 
 };
 
@@ -979,69 +982,6 @@ public:
 
 
 #include <thread>
-
-template < class T > class nnPulse1
-{
-    typedef void(*target)(T);
-public:
-    nnPulse1(target  hook, T  t)
-    {
-        if (hook)
-        {
-            std::thread th(hook, t);
-            th.detach();
-        }
-    }
-};
-
-
-template < class T, class U> class nnPulse2
-{
-    typedef void(*target)(T, U);
-public:
-    nnPulse2(target  hook, T t, U  u)
-    {
-        if (hook)
-        {
-            std::thread th(hook, t, u);
-            th.detach();
-        }
-    }
-};
-
-
-
-template < class T,class U,class V> class nnPulse3
-{
-public:
-    typedef void(*target)(T ,U ,V );
-public:
-    nnPulse3(target  hook, T t, U  u, V v)
-    {
-        if (hook)
-        {
-            std::thread th( hook, t, u, v);
-            th.detach();
-        }
-    }
-};
-
-
-template < class T, class U, class V,class Z> class nnPulse4
-{
-public:
-    typedef void(*target)(T, U, V,Z);
-public:
-    nnPulse4(target  hook, T t, U  u, V v,Z z)
-    {
-        if (hook)
-        {
-            std::thread th(hook, t, u, v, z);
-            th.detach();
-        }
-    }
-};
-
 
 #endif // N2INTERFACES
 

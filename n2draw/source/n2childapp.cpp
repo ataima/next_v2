@@ -339,25 +339,23 @@ bool nnChildApp::connect(nnPoint & start, nnPoint & end)
 
 bool nnChildApp::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerMouseMove(buttons, phyPoint);
-    //return res;
-    struct  pulse_caller
-        : public nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>
+    struct pulse_caller
     {
-        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
-            :nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>(call, view, buttons, phyPoint)
-        {}
-        static void call(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+        static void hook(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint   phyPoint)
         {
-            view->handlerMouseMove(buttons, phyPoint);
+        view->handlerMouseMove(buttons, phyPoint);
+        }
+        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint   phyPoint )
+        {
+                std::thread th( pulse_caller::hook, view, buttons, phyPoint);
+                th.detach();
         }
     };
     bool res = false;
     if (view)
         {
-            pulse_caller(view, buttons, phyPoint);        
+            nnPoint p=phyPoint;
+            pulse_caller(view, buttons, p);
             res = true;
         }
     return res;
@@ -365,25 +363,23 @@ bool nnChildApp::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
 
 bool nnChildApp::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerMouseButtonDown(buttons, phyPoint);
-    //return res;
-    struct  pulse_caller
-        : public nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>
+    struct pulse_caller
     {
-        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
-            :nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>(call, view, buttons, phyPoint)
-        {}
-        static void call(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+        static void hook(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint  phyPoint)
         {
-            view->handlerMouseButtonDown(buttons, phyPoint);
+        view->handlerMouseButtonDown(buttons, phyPoint);
+        }
+        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint  phyPoint )
+        {
+                std::thread th( pulse_caller::hook, view, buttons, phyPoint);
+                th.detach();
         }
     };
     bool res = false;
     if (view)
     {
-        pulse_caller(view, buttons, phyPoint);
+        nnPoint p=phyPoint;
+        pulse_caller(view, buttons, p);
         res = true;
     }
     return res;
@@ -395,21 +391,25 @@ bool nnChildApp::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoi
     //if (view)
     //    res = view->handlerMouseButtonUp(buttons, phyPoint);
     //return res;
-    struct  pulse_caller
-        : public nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>
+
+    struct pulse_caller
     {
-        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
-            :nnPulse3<IViewGlue *, nn_mouse_buttons, nnPoint &>(call, view, buttons, phyPoint)
-        {}
-        static void call(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint & phyPoint)
+        static void hook(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint  phyPoint)
         {
-            view->handlerMouseButtonUp(buttons, phyPoint);
+        view->handlerMouseButtonUp(buttons, phyPoint);
+        }
+        pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint  phyPoint )
+        {
+                std::thread th( pulse_caller::hook, view, buttons, phyPoint);
+                th.detach();
         }
     };
+
     bool res = false;
     if (view)
     {
-        pulse_caller(view, buttons, phyPoint);
+        nnPoint p=phyPoint;
+        pulse_caller(view, buttons, p);
         res = true;
     }
     return res;
@@ -417,19 +417,16 @@ bool nnChildApp::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoi
 
 bool nnChildApp::handlerScrollHorz(int pos)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerScrollHorz(pos);
-    //return res;
     struct  pulse_caller
-        : public nnPulse2<IViewGlue *, int>
     {
-        pulse_caller(IViewGlue *  view, int pos)
-            :nnPulse2<IViewGlue *, int>(call, view, pos)
-        {}
-        static void call(IViewGlue *  view, int pos)
+        static void hook(IViewGlue *  view, int pos)
         {
             view->handlerScrollHorz(pos);
+        }
+        pulse_caller(IViewGlue *  view, int pos)           
+        {
+            std::thread th( pulse_caller::hook, view,pos);
+            th.detach();
         }
     };
     bool res = false;
@@ -443,19 +440,16 @@ bool nnChildApp::handlerScrollHorz(int pos)
 
 bool nnChildApp::handlerScrollVert(int pos)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerScrollVert(pos);
-    //return res;
-    struct  pulse_caller
-        : public nnPulse2<IViewGlue *, int>
+    struct  pulse_caller        
     {
-        pulse_caller(IViewGlue *  view, int pos)
-            :nnPulse2<IViewGlue *, int>(call, view, pos)
-        {}
-        static void call(IViewGlue *  view, int pos)
+        static void hook(IViewGlue *  view, int pos)
         {
             view->handlerScrollVert(pos);
+        }
+        pulse_caller(IViewGlue *  view, int pos)
+        {
+            std::thread th( pulse_caller::hook, view,pos);
+            th.detach();
         }
     };
     bool res = false;
@@ -469,19 +463,16 @@ bool nnChildApp::handlerScrollVert(int pos)
 
 bool nnChildApp::handlerEscapeButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerEscapeButton(shift,ctrl,alt);
-    //return res;
-    struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
-    {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+    struct  pulse_caller        
+    {        
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerEscapeButton(shift,ctrl,alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -495,19 +486,16 @@ bool nnChildApp::handlerEscapeButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerHomeButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerHomeButton(shift, ctrl, alt);
-    //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerHomeButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -521,19 +509,16 @@ bool nnChildApp::handlerHomeButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerEndButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerEndButton(shift, ctrl, alt);
-    //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerEndButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -547,19 +532,16 @@ bool nnChildApp::handlerEndButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerPageUpButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerPageUpButton(shift, ctrl, alt);
-    //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerPageUpButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -578,14 +560,15 @@ bool nnChildApp::handlerPageDownButton(bool shift, bool ctrl, bool alt)
     //    res = view->handlerPageDownButton(shift, ctrl, alt);
     //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerPageDownButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -599,19 +582,16 @@ bool nnChildApp::handlerPageDownButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerPageRightButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerPageRightButton(shift, ctrl, alt);
-    //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerPageRightButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -625,19 +605,17 @@ bool nnChildApp::handlerPageRightButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerPageLeftButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerPageLeftButton(shift, ctrl, alt);
-    //return res;
+
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerPageLeftButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -651,19 +629,16 @@ bool nnChildApp::handlerPageLeftButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerLeftButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerLeftButton(shift, ctrl, alt);
-    //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerLeftButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -677,19 +652,16 @@ bool nnChildApp::handlerLeftButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerRightButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerRightButton(shift, ctrl, alt);
-    //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view,shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerRightButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -708,14 +680,15 @@ bool nnChildApp::handlerUpButton(bool shift, bool ctrl, bool alt)
     //    res = view->handlerUpButton(shift, ctrl, alt);
     //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerUpButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -729,19 +702,16 @@ bool nnChildApp::handlerUpButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerDownButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerDownButton(shift, ctrl, alt);
-    //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerDownButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;
@@ -755,19 +725,16 @@ bool nnChildApp::handlerDownButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerCancelButton(bool shift, bool ctrl, bool alt)
 {
-    //bool res = false;
-    //if (view)
-    //    res = view->handlerCancelButton(shift, ctrl, alt);
-    //return res;
     struct  pulse_caller
-        : public nnPulse4<IViewGlue *, bool, bool, bool>
     {
-        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
-            :nnPulse4<IViewGlue *, bool, bool, bool>(call, view, shift, ctrl, alt)
-        {}
-        static void call(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerCancelButton(shift, ctrl, alt);
+        }
+        pulse_caller(IViewGlue *  view, bool shift, bool ctrl, bool alt)
+        {
+            std::thread th( pulse_caller::hook, view,shift,ctrl,alt);
+            th.detach();
         }
     };
     bool res = false;

@@ -55,14 +55,14 @@ bool nnView::draw(void)
 {
     bool res = false;
     int x, y;
-    nnPoint map = {0};
+    //nnPoint map = {0};
     if (parent)
     {
         IManager *manager = parent->getManager();
         IViewGlue * glue = parent->getView();
         if (glue != nullptr)
         {
-            nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
+            //nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
             nnPoint off = glue->getOffsetView();
             nnPoint map = glue->getMap();
             InnObj *obj;

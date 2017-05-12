@@ -135,7 +135,8 @@ bool nnCapturePos::drawTips(bmpImage & bkg)
     {
         std::stringstream s;
         s << "ROW:" << endLogPos.x << "   -   COL:" << endLogPos.y;
-        res = nnUtils::drawBottomLeftTips(bkg, *font, s.str());
+        std::string l= s.str();
+        res = nnUtils::drawBottomLeftTips(bkg, *font, l );
     }
     return res;
 }

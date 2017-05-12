@@ -177,6 +177,16 @@ public:
 
 };
 
+
+class wireConnetComponentException
+    :public n2exception
+{
+public:
+    explicit wireConnetComponentException() throw()
+        :n2exception("wireConnetComponentException"){}
+
+};
+
 class positionBusyException
     :public n2exception
 {

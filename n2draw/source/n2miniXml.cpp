@@ -581,7 +581,6 @@ miniXmlParse::~miniXmlParse()
 
 bool miniXmlParse::parse(void)
 {
-
     bool res = false;
     if (buff != nullptr && max_size > 0 && root != nullptr)
     {
@@ -590,25 +589,37 @@ bool miniXmlParse::parse(void)
         {
             if(*p_index!=X('<'))
             {
+#ifdef _UNICODE
             XCHAR p=*p_index;
-            if((int)(p)==0xfffe)
+            if(p==0xfffe)
             {
                 //bad format of xml
                 xmlBadFormatException * e = new xmlBadFormatException();
                 throw(e);
             }
             else
-                if((int)(p)==0xfeff)
+                if(p==0xfeff)
                 {
                 p_index++;
+               p_index++;
                 }
+           }
+#else
+         p_index++;
+         if(*p_index!=X('<'))
+         {
+             //bad format of xml
+             xmlBadFormatException * e = new xmlBadFormatException();
+             throw(e);
+         }
+#endif
             }
-        }
         bool first = false;
         do
         {
             res = getTokens(&current, &first);
         } while (res == true && p_index < p_end);
+    }
     }
     return res;
 }

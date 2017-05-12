@@ -501,8 +501,11 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
             {
                 if (buttons == nn_m_button_left)
                 {
-                    if (selector)
-                        selector->handlerMouseMove(getCoordLog(phyPoint));
+
+                    if (selector){
+                        nnPoint nn=getCoordLog(phyPoint);
+                        selector->handlerMouseMove(nn);
+                    }
                 }
                 else
                     if (buttons == nn_m_button_unknow)
@@ -575,8 +578,10 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
             IExtHandler *hook = parent->getHandler();
             if (buttons == nn_m_button_left && show_cmd == show_none)
             {
-                if (selector)
-                    res = selector->handlerMouseButtonDown(getCoordLog(phyPoint), show_cmd);
+                if (selector){
+                    nnPoint nn=getCoordLog(phyPoint);
+                    res = selector->handlerMouseButtonDown(nn, show_cmd);
+                }
             }
             else if (buttons == nn_m_button_left && show_cmd == show_toolbar_main)
             {
@@ -650,8 +655,10 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
                             {
                                 if (capture)
                                     res = capture->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-                                if (selector)
-                                    res = selector->handlerMouseButtonDown(getCoordLog(phyPoint), show_cmd);
+                                if (selector){
+                                    nnPoint nn=getCoordLog(phyPoint);
+                                    res = selector->handlerMouseButtonDown(nn, show_cmd);
+                                    }
                             }
 
 
@@ -666,7 +673,8 @@ bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoi
     {
         if (show_cmd == show_none)
         {
-            res = selector->handlerMouseButtonUp(buttons, getCoordLog(phyPoint));
+            nnPoint nn=getCoordLog(phyPoint);
+            res = selector->handlerMouseButtonUp(buttons, nn);
         }
     }
     return res;
