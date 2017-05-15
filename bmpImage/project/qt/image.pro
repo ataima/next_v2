@@ -32,15 +32,15 @@ TARGET = bmpImage
 INCLUDEPATH +=../../header
 
 linux {
-CONFIG += c++11
+CONFIG += c++14
 }
 
 macx{
-CONFIG += c++11
+CONFIG += c++14
 }
 
 ios{
-CONFIG += c++11
+CONFIG += c++14
 }
 
 INCLUDEPATH -= $$QMAKE_DEFAULT_INCDIRS

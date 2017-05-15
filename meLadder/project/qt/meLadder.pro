@@ -64,8 +64,7 @@ linux:!android {
 INCLUDEPATH += /usr/include
 }
 
-RESOURCES += \
-    ../../resource/mela.qrc
+RESOURCES +=
 
 
 linux {
