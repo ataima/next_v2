@@ -133,7 +133,7 @@ public:
 		_tm = localtime(&t);
 		sprintf(buff, "%02d:%02d:%2d", _tm->tm_hour, _tm->tm_min, _tm->tm_sec);
 	}
-	static void getUser(char *buff, int len)
+    static void getUser(char *buff, int /*len*/)
 	{
 #if defined (_WIN32) || defined (_WIN64)|| defined(BORLAND)
         //unsigned long w = len;
@@ -1246,9 +1246,9 @@ public:
 		return file;
 	}
 	/// implementation of ...
-    virtual void startDocument(const char *info) {(info);}
+    virtual void startDocument(const char */*info*/) {}
 	/// implementation of ...
-    virtual void endDocument(const char *info) {(info);}
+    virtual void endDocument(const char */*info*/) {}
 };
 
 
@@ -1289,9 +1289,8 @@ public:
 		fflush(file);
 	}
 	/// implementation of ...
-	virtual void addResult(const char *info, int f = 0, int timeU = 0)
+    virtual void addResult(const char *info, int /*f = 0*/, int timeU = 0)
 	{
-        (f);
 		if (timeU != -1)
 			fprintf(file, "%s:%d ms\n", info, timeU);
 		else
@@ -1334,24 +1333,19 @@ public:
 		type = f_xml;
 	}
 	/// implementation of ...
-	void startDocument(const char *info)
+    void startDocument(const char */*info*/)
 	{
-        (info);
 		const char msg[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		fprintf(file, "%s", msg);
 	}
 	/// implementation of ...
-	void addInfo(const char *info)
+    void addInfo(const char */*info*/)
 	{
-        (info);
 		/*fprintf(file,"<!--%s-->",info);*/
 	}
 	/// implementation of ...
-	void addResult(const char *info, int f = 0, int timeU = 0)
+    void addResult(const char */*info*/, int /*f = 0*/, int /*timeU = 0*/)
 	{
-        (info);
-        (f);
-        (timeU);
 		/*fprintf(file,"<!--%s %d,%d-->",info,f,timeU);*/
 	}
 };
@@ -1374,19 +1368,15 @@ public:
 		type = f_html;
 	}
 	/// implementation of ...
-    void startDocument(const char *info) {(info);}
+    void startDocument(const char */*info*/) {}
 	/// implementation of ...
-	void addInfo(const char *info)
+    void addInfo(const char */*info*/)
     {
-        (info);
 		/*fprintf(file,"<!--%s-->",info);*/
 	}
 	/// implementation of ...
-	void addResult(const char *info, int f = 0, int timeU = 0)
+    void addResult(const char * /*info*/, int /*f = 0*/, int /*timeU = 0*/)
 	{
-        (info);
-        (f);
-        (timeU);
 		/*fprintf(file,"<!--%s %d,%d-->",info,f,timeU);*/
 	}
 };
@@ -1572,9 +1562,8 @@ public:
 		return test;
 	}
 	/// method for register the class in the suite and prepare the output
-	int RegisterTest(const char *name, const char *out, int option, int *testReq, int *numTestReq, int familyReq)
-	{
-        (name);
+    int RegisterTest(const char */*name*/, const char *out, int option, int *testReq, int *numTestReq, int familyReq)
+	{        
 		int res = 0;
 		int i;
 		totalTest = 0;

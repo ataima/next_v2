@@ -60,7 +60,7 @@ LIBS +=   $$DESTDIR/libbmpImage.a
 INCLUDEPATH +=../../header
 INCLUDEPATH +=../../../bmpImage/header
 INCLUDEPATH +=../../../n2draw/header
-linux {
+linux:!android {
 INCLUDEPATH += /usr/include
 }
 
@@ -69,15 +69,15 @@ RESOURCES += \
 
 
 linux {
-CONFIG += c++11
+CONFIG += c++14
 }
 
 macx{
-CONFIG += c++11
+CONFIG += c++14
 }
 
 ios{
-CONFIG += c++11
+CONFIG += c++14
 }
 
 
