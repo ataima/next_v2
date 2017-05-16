@@ -44,7 +44,7 @@ SOURCES += \
 ../../source/n2logger.cpp                \
 ../../source/n2utils.cpp                 \
 ../../source/n2moreinfo.cpp              \
-../../source/n2capturepos.cpp            \
+../../source/n2capturepos.cpp
 
 
 
@@ -73,7 +73,7 @@ HEADERS += \
 ../../header/n2caption.h               \
 ../../header/n2logger.h                \
 ../../header/n2utils.h                 \
-../../header/n2capturepos.h            \
+../../header/n2capturepos.h
 
 
 DESTDIR =../../../../dist

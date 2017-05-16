@@ -72,7 +72,11 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #ifdef _MSC_VER
 #define  FOPEN    fopen
 #else
+#ifdef __ANDROID__
+#define  FOPEN    android_fopen
+#else
 #define  FOPEN    fopen
+#endif
 #endif
 #define  X(msg)   u##msg
 #else
@@ -87,8 +91,25 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #define  FROMQSTRING()   toStdString()
 #ifdef _MSC_VER
 #define  FOPEN    fopen
+#define  FCLOSE   fclose
+#define  FSEEK    fseek
+#define  FTELL    ftell
+#define  FREAD    fread
+#else
+#ifdef __ANDROID__
+#define  FOPEN    android_fopen
+#define  FOPEN    android_fopen
+#define  FCLOSE   android_fclose
+#define  FSEEK    android_fseek
+#define  FTELL    android_ftell
+#define  FREAD    android_fread
 #else
 #define  FOPEN    fopen
+#define  FCLOSE   fclose
+#define  FSEEK    fseek
+#define  FTELL    ftell
+#define  FREAD    fread
+#endif
 #endif
 #define  STRCMP   std::char_traits<char>::compare
 #define  X(msg)   msg

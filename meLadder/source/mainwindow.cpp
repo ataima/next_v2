@@ -158,9 +158,17 @@ void MainWindow::init()
             QString   path=qApp->applicationDirPath();
 #ifdef __APPLE__
                     path+=X("/../../..");
-#endif
+#else
+#ifdef __ANDROID__
+           path=X("assets:/");
+#else
             path+=X("/");
-            STRING file;
+
+#endif
+#endif
+
+           STRING file;
+
 #ifdef _UNICODE
             file=X("conf_utf16.xml");
 #else

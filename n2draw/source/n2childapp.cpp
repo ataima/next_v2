@@ -10,6 +10,7 @@
 #include "n2exthandler.h"
 #include "n2childapp.h"
 #include "n2connection.h"
+#include<dirent.h>
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -100,6 +101,8 @@ void nnChildApp::clean(void)
     }
     id = -1;
 }
+
+
 
 
 bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, STRING & confPath)
@@ -211,13 +214,13 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
             }
             else
             {
-                appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf_file_name);
+                appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf);
                 throw(e);
             }
         }
         else
         {
-            appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf_file_name);
+            appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf);
             throw(e);
         }
     }
