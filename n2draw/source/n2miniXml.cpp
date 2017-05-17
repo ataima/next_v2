@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include "n2utoatou.h"
 #include "n2exception.h"
+#include "n2resource.h"
 
 #ifndef _MSC_VER
 #include <unistd.h> 
@@ -430,11 +431,7 @@ bool miniXmlNode::save(const XCHAR *out, miniXmlNode * root)
     {
         STRING fileout(out);
         UtoA toA(fileout);
-#ifdef _MSC_VER
-        FILE *out = FOPEN(toA.utf8(), "wb");
-#else
-        FILE *out = FOPEN(toA.utf8(), "wb");
-#endif
+        FILE *out = fopen(toA.utf8(), "wb");
         if (out != nullptr)
         {
             root->print(out);
@@ -516,48 +513,12 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
         UtoA toA(filename_in);
         try
         {
-#ifdef _MSC_VER
-        FILE *in =FOPEN(toA.utf8(), "rb");
-#else
-        FILE *in = FOPEN(toA.utf8(), "rb");
-#endif
-        if (in != nullptr)
-        {
-            p_end = p_index = nullptr;
-            fseek(in,0L,SEEK_END);
-            long fsize=ftell(in);
-            fseek(in,0L,SEEK_SET);
-            if(fsize>0)
-            {
-                fsize/=sizeof(XCHAR);
-                buff = new XCHAR[fsize];
-                if (buff != nullptr)
-                {
-                    long temp=fsize;
-                    p_end=p_index = buff;
-                    do{
-                        max_size = fread(buff, sizeof(XCHAR), temp, in);
-                        if (max_size != 0)
-                        {
-                            temp-=max_size;
-                            p_end+=max_size;
-                        }
-                        else
-                            break;
-                    }while(temp>0);
-                }
-            }
-            else
-            {
-                root = nullptr;
-                buff = nullptr;
-            }
-            fclose(in);
-        }
-        else
+        int res=nnResource::Get(filename_in.c_str(),(const unsigned char **)&filebuff,&max_size);
+        if(res)
         {
             root = nullptr;
-            buff = nullptr;
+            filebuff=nullptr;
+            max_size=0;
         }
         }catch(...)
         {
@@ -568,21 +529,22 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
     else
     {
         root = nullptr;
-        buff = nullptr;
+        filebuff=nullptr;
+        max_size=0;
     }
 
 }
 
 miniXmlParse::~miniXmlParse()
 {
-    if (buff != nullptr)
-        delete[]buff;
+    filebuff=nullptr;
+    max_size=0;
 }
 
 bool miniXmlParse::parse(void)
 {
     bool res = false;
-    if (buff != nullptr && max_size > 0 && root != nullptr)
+    if (filebuff != nullptr && max_size > 0 && root != nullptr)
     {
         miniXmlNode *current = root;
         if(p_index!=nullptr)

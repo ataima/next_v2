@@ -133,7 +133,9 @@ function recurs_dir(){
 function create_c_function(){
 	local VV=""
 	local NAME=""
-	echo "#include \"n2resource.h\"" >$2
+        echo "//file autogenerate from script file linkresource.sh" >$2
+        echo "//do not change. Any changes will be lost at next regeneration" >>$2
+        echo "#include \"n2resource.h\"" >>$2
 	echo "#include <map>" >>$2
 	echo "" >>$2
 	echo "" >>$2
@@ -143,60 +145,59 @@ function create_c_function(){
 	echo "    const char *file;" >>$2
 	echo "    const unsigned char *resource;">>$2
 	echo "    size_t size;" >>$2
-	echo "    set(const char *_file,const char *_resource,size_t _size):" >>$2
-	echo "    		file(_file),resource(_resource),size(_size){}" >>$2
-	echo "} memresource,*ptrmemresource" >>$2
+        echo "    void set(const char *_file,const unsigned char *_resource,size_t _size){" >>$2
+        echo "    		file=_file;resource=_resource;size=_size;}" >>$2
+        echo "} memresource,*ptrmemresource;" >>$2
 	echo "" >>$2
 	echo "" >>$2
 	echo "" >>$2
-	echo "typedef std::map<const char *file,memresource>  ResourceFile" >>$2
+        echo "typedef std::map<const char *,memresource >  ResourceFile;" >>$2
 	echo "" >>$2
 	echo "" >>$2
 	echo "" >>$2
-	echo "static ResourceFile appResource" >>$2
-	echo "" >>$2
-	echo "" >>$2
-	echo "" >>$2
-	echo "void resource_init(void){" >>$2	
+        echo "static ResourceFile appResource;" >>$2
+        echo "" >>$2
+        echo "" >>$2
+        echo "" >>$2
+        for VV in $1; do
+                NAME=$(echo resource_$VV | sed -e 's#/#_#g' | sed -e 's/\./_/g')
+                echo "//declare image of file $VV to array $NAME">>$2
+                echo "//size =  $(wc $VV)">>$2
+                echo "const unsigned char $NAME[] __attribute__ ((aligned (32)))={">>$2
+                cat $VV | xxd -i  >> $2
+                echo "};">>$2
+                echo "" >>$2
+                echo "" >>$2
+                echo "" >>$2
+        done
+        echo "int nnResource::Get(const char *file,const unsigned char ** ptr,size_t *size){" >>$2
+        echo "int res=-1;" >>$2
+        echo "std::map<const char *,memresource >::iterator it=appResource.find(file);"  >>$2
+        echo "if( it!=appResource.end()) {"  >>$2
+        echo "	*ptr=it->second.resource;"  >>$2
+        echo "	*size=it->second.size;"  >>$2
+        echo "	res=0;"  >>$2
+        echo "	}"  >>$2
+        echo "return res;"  >>$2
+        echo "}" >>$2
+        echo "" >>$2
+        echo "" >>$2
+        echo "" >>$2
+        echo "void nnResource::Init(void){" >>$2
 	echo "memresource res;" >>$2
 	for VV in $1; do
 		NAME=$(echo resource_$VV | sed -e 's#/#_#g' | sed -e 's/\./_/g')
 		echo "res.set(\"$VV\",$NAME,sizeof($NAME));">>$2
-		echo "appResource[\"$VV\"]=res">>$2
+                echo "appResource[\"$VV\"]=res;">>$2
 	done
 	echo "}" >>$2
-	echo "" >>$2
-	echo "" >>$2
-	echo "" >>$2
-	echo "int getresource(const char *file,unsigned char ** ptr,size_t *size){" >>$2
-	echo "int res=-1;" >>$2	
-	echo "std::map::iterator it=appResource.find(file);"  >>$2
-	echo "if( it!=appResource.end()) {"  >>$2
-	echo "	*ptr=it->second.resource;"  >>$2
-	echo "	*size=it->second.size;"  >>$2
-	echo "	res=0"  >>$2	
-	echo "	}"  >>$2
-	echo "return res"  >>$2
-	echo "}" >>$2
-	echo "" >>$2
-	echo "" >>$2
-	echo "" >>$2
+        echo "" >>$2
+        echo "" >>$2
+        echo "" >>$2
 }
 
 
-# $1 array of fullpath files
-# $2 output file..
-function import_files(){
-local NAME=""
-for VV in $1; do
-		NAME=$(echo resource_$VV | sed -e 's#/#_#g' | sed -e 's/\./_/g')
-		echo "//image of file $VV to array $NAME">>$2
-		echo "//size =  $(wc $VV)">>$2
-		echo "const unsigned char $NAME[] __attribute__ ((aligned (32)))={">>$2
-		cat $VV | xxd -i  >> $2
-		echo "};">>$2
-	done 
-}
+
 
 # input resource path
 function main(){
@@ -217,13 +218,15 @@ local ALL_FILES
 	fi	
 	ALL_FILES=$(recurs_dir "$1") 
 	create_c_function "$ALL_FILES" "$2"
-	RES=$?
-	if [ $RES -eq 0 ]; then 
-		import_files "$ALL_FILES" "$2"
-		RES=$?
-	fi	
+	RES=$?	
+        chmod -w "$2"
 	exit $RES	
 }
 
 
-main $@
+
+if [ $# -eq 0 ]; then
+	main resource n2draw/source/n2resource.cpp
+else
+	main $@
+fi

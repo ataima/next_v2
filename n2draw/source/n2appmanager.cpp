@@ -11,7 +11,7 @@
 #include "n2childapp.h"
 #include "n2appmanager.h"
 #include "n2logger.h"
-
+#include "n2resource.h"
 
 
 /**************************************************************
@@ -75,6 +75,7 @@ IAppManager *nnAppManager::getInstance(void)
 {
     if(instance==nullptr)
     {
+        nnResource::Init();
         instance = new nnAppManager();
     }
     return instance;

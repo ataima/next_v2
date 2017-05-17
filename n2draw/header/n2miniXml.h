@@ -93,7 +93,7 @@ private:
 class miniXmlParse
 {
     miniXmlNode * root; ///out
-    XCHAR * buff;
+    const XCHAR * filebuff;
     size_t max_size;
     XCHAR *p_index;
     XCHAR *p_end;

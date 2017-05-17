@@ -1,3 +1,5 @@
+//file autogenerate from script file linkresource.sh
+//do not change. Any changes will be lost at next regeneration
 #include "n2resource.h"
 #include <map>
 
@@ -8,316 +10,23 @@ typedef struct resource_tag{
     const char *file;
     const unsigned char *resource;
     size_t size;
-    set(const char *_file,const char *_resource,size_t _size):
-    		file(_file),resource(_resource),size(_size){}
-} memresource,*ptrmemresource
+    void set(const char *_file,const unsigned char *_resource,size_t _size){
+    		file=_file;resource=_resource;size=_size;}
+} memresource,*ptrmemresource;
 
 
 
-typedef std::map<const char *file,memresource>  ResourceFile
+typedef std::map<const char *,memresource >  ResourceFile;
 
 
 
-static ResourceFile appResource
+static ResourceFile appResource;
 
 
 
-void resource_init(void){
-memresource res;
-res.set("dist/conf_utf16.xml",resource_dist_conf_utf16_xml,sizeof(resource_dist_conf_utf16_xml));
-appResource["dist/conf_utf16.xml"]=res
-res.set("dist/conf_utf8.xml",resource_dist_conf_utf8_xml,sizeof(resource_dist_conf_utf8_xml));
-appResource["dist/conf_utf8.xml"]=res
-res.set("dist/old/AND.BMP",resource_dist_old_AND_BMP,sizeof(resource_dist_old_AND_BMP));
-appResource["dist/old/AND.BMP"]=res
-res.set("dist/old/BORDER.BMP",resource_dist_old_BORDER_BMP,sizeof(resource_dist_old_BORDER_BMP));
-appResource["dist/old/BORDER.BMP"]=res
-res.set("dist/old/CLOSE.BMP",resource_dist_old_CLOSE_BMP,sizeof(resource_dist_old_CLOSE_BMP));
-appResource["dist/old/CLOSE.BMP"]=res
-res.set("dist/old/COIL.BMP",resource_dist_old_COIL_BMP,sizeof(resource_dist_old_COIL_BMP));
-appResource["dist/old/COIL.BMP"]=res
-res.set("dist/old/CONNECT.BMP",resource_dist_old_CONNECT_BMP,sizeof(resource_dist_old_CONNECT_BMP));
-appResource["dist/old/CONNECT.BMP"]=res
-res.set("dist/old/CONTACTNC.BMP",resource_dist_old_CONTACTNC_BMP,sizeof(resource_dist_old_CONTACTNC_BMP));
-appResource["dist/old/CONTACTNC.BMP"]=res
-res.set("dist/old/CONTACTNO.BMP",resource_dist_old_CONTACTNO_BMP,sizeof(resource_dist_old_CONTACTNO_BMP));
-appResource["dist/old/CONTACTNO.BMP"]=res
-res.set("dist/old/COPY.BMP",resource_dist_old_COPY_BMP,sizeof(resource_dist_old_COPY_BMP));
-appResource["dist/old/COPY.BMP"]=res
-res.set("dist/old/Courier_10_14/100_10_14.bmp",resource_dist_old_Courier_10_14_100_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_100_10_14_bmp));
-appResource["dist/old/Courier_10_14/100_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/101_10_14.bmp",resource_dist_old_Courier_10_14_101_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_101_10_14_bmp));
-appResource["dist/old/Courier_10_14/101_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/102_10_14.bmp",resource_dist_old_Courier_10_14_102_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_102_10_14_bmp));
-appResource["dist/old/Courier_10_14/102_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/103_10_14.bmp",resource_dist_old_Courier_10_14_103_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_103_10_14_bmp));
-appResource["dist/old/Courier_10_14/103_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/104_10_14.bmp",resource_dist_old_Courier_10_14_104_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_104_10_14_bmp));
-appResource["dist/old/Courier_10_14/104_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/105_10_14.bmp",resource_dist_old_Courier_10_14_105_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_105_10_14_bmp));
-appResource["dist/old/Courier_10_14/105_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/106_10_14.bmp",resource_dist_old_Courier_10_14_106_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_106_10_14_bmp));
-appResource["dist/old/Courier_10_14/106_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/107_10_14.bmp",resource_dist_old_Courier_10_14_107_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_107_10_14_bmp));
-appResource["dist/old/Courier_10_14/107_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/108_10_14.bmp",resource_dist_old_Courier_10_14_108_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_108_10_14_bmp));
-appResource["dist/old/Courier_10_14/108_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/109_10_14.bmp",resource_dist_old_Courier_10_14_109_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_109_10_14_bmp));
-appResource["dist/old/Courier_10_14/109_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/110_10_14.bmp",resource_dist_old_Courier_10_14_110_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_110_10_14_bmp));
-appResource["dist/old/Courier_10_14/110_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/111_10_14.bmp",resource_dist_old_Courier_10_14_111_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_111_10_14_bmp));
-appResource["dist/old/Courier_10_14/111_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/112_10_14.bmp",resource_dist_old_Courier_10_14_112_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_112_10_14_bmp));
-appResource["dist/old/Courier_10_14/112_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/113_10_14.bmp",resource_dist_old_Courier_10_14_113_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_113_10_14_bmp));
-appResource["dist/old/Courier_10_14/113_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/114_10_14.bmp",resource_dist_old_Courier_10_14_114_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_114_10_14_bmp));
-appResource["dist/old/Courier_10_14/114_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/115_10_14.bmp",resource_dist_old_Courier_10_14_115_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_115_10_14_bmp));
-appResource["dist/old/Courier_10_14/115_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/116_10_14.bmp",resource_dist_old_Courier_10_14_116_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_116_10_14_bmp));
-appResource["dist/old/Courier_10_14/116_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/117_10_14.bmp",resource_dist_old_Courier_10_14_117_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_117_10_14_bmp));
-appResource["dist/old/Courier_10_14/117_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/118_10_14.bmp",resource_dist_old_Courier_10_14_118_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_118_10_14_bmp));
-appResource["dist/old/Courier_10_14/118_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/119_10_14.bmp",resource_dist_old_Courier_10_14_119_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_119_10_14_bmp));
-appResource["dist/old/Courier_10_14/119_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/120_10_14.bmp",resource_dist_old_Courier_10_14_120_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_120_10_14_bmp));
-appResource["dist/old/Courier_10_14/120_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/121_10_14.bmp",resource_dist_old_Courier_10_14_121_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_121_10_14_bmp));
-appResource["dist/old/Courier_10_14/121_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/122_10_14.bmp",resource_dist_old_Courier_10_14_122_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_122_10_14_bmp));
-appResource["dist/old/Courier_10_14/122_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/123_10_14.bmp",resource_dist_old_Courier_10_14_123_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_123_10_14_bmp));
-appResource["dist/old/Courier_10_14/123_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/124_10_14.bmp",resource_dist_old_Courier_10_14_124_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_124_10_14_bmp));
-appResource["dist/old/Courier_10_14/124_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/125_10_14.bmp",resource_dist_old_Courier_10_14_125_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_125_10_14_bmp));
-appResource["dist/old/Courier_10_14/125_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/126_10_14.bmp",resource_dist_old_Courier_10_14_126_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_126_10_14_bmp));
-appResource["dist/old/Courier_10_14/126_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/32_10_14.bmp",resource_dist_old_Courier_10_14_32_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_32_10_14_bmp));
-appResource["dist/old/Courier_10_14/32_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/33_10_14.bmp",resource_dist_old_Courier_10_14_33_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_33_10_14_bmp));
-appResource["dist/old/Courier_10_14/33_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/34_10_14.bmp",resource_dist_old_Courier_10_14_34_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_34_10_14_bmp));
-appResource["dist/old/Courier_10_14/34_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/35_10_14.bmp",resource_dist_old_Courier_10_14_35_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_35_10_14_bmp));
-appResource["dist/old/Courier_10_14/35_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/36_10_14.bmp",resource_dist_old_Courier_10_14_36_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_36_10_14_bmp));
-appResource["dist/old/Courier_10_14/36_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/37_10_14.bmp",resource_dist_old_Courier_10_14_37_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_37_10_14_bmp));
-appResource["dist/old/Courier_10_14/37_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/38_10_14.bmp",resource_dist_old_Courier_10_14_38_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_38_10_14_bmp));
-appResource["dist/old/Courier_10_14/38_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/39_10_14.bmp",resource_dist_old_Courier_10_14_39_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_39_10_14_bmp));
-appResource["dist/old/Courier_10_14/39_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/40_10_14.bmp",resource_dist_old_Courier_10_14_40_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_40_10_14_bmp));
-appResource["dist/old/Courier_10_14/40_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/41_10_14.bmp",resource_dist_old_Courier_10_14_41_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_41_10_14_bmp));
-appResource["dist/old/Courier_10_14/41_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/42_10_14.bmp",resource_dist_old_Courier_10_14_42_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_42_10_14_bmp));
-appResource["dist/old/Courier_10_14/42_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/43_10_14.bmp",resource_dist_old_Courier_10_14_43_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_43_10_14_bmp));
-appResource["dist/old/Courier_10_14/43_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/44_10_14.bmp",resource_dist_old_Courier_10_14_44_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_44_10_14_bmp));
-appResource["dist/old/Courier_10_14/44_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/45_10_14.bmp",resource_dist_old_Courier_10_14_45_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_45_10_14_bmp));
-appResource["dist/old/Courier_10_14/45_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/46_10_14.bmp",resource_dist_old_Courier_10_14_46_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_46_10_14_bmp));
-appResource["dist/old/Courier_10_14/46_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/47_10_14.bmp",resource_dist_old_Courier_10_14_47_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_47_10_14_bmp));
-appResource["dist/old/Courier_10_14/47_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/48_10_14.bmp",resource_dist_old_Courier_10_14_48_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_48_10_14_bmp));
-appResource["dist/old/Courier_10_14/48_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/49_10_14.bmp",resource_dist_old_Courier_10_14_49_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_49_10_14_bmp));
-appResource["dist/old/Courier_10_14/49_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/50_10_14.bmp",resource_dist_old_Courier_10_14_50_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_50_10_14_bmp));
-appResource["dist/old/Courier_10_14/50_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/51_10_14.bmp",resource_dist_old_Courier_10_14_51_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_51_10_14_bmp));
-appResource["dist/old/Courier_10_14/51_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/52_10_14.bmp",resource_dist_old_Courier_10_14_52_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_52_10_14_bmp));
-appResource["dist/old/Courier_10_14/52_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/53_10_14.bmp",resource_dist_old_Courier_10_14_53_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_53_10_14_bmp));
-appResource["dist/old/Courier_10_14/53_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/54_10_14.bmp",resource_dist_old_Courier_10_14_54_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_54_10_14_bmp));
-appResource["dist/old/Courier_10_14/54_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/55_10_14.bmp",resource_dist_old_Courier_10_14_55_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_55_10_14_bmp));
-appResource["dist/old/Courier_10_14/55_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/56_10_14.bmp",resource_dist_old_Courier_10_14_56_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_56_10_14_bmp));
-appResource["dist/old/Courier_10_14/56_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/57_10_14.bmp",resource_dist_old_Courier_10_14_57_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_57_10_14_bmp));
-appResource["dist/old/Courier_10_14/57_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/58_10_14.bmp",resource_dist_old_Courier_10_14_58_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_58_10_14_bmp));
-appResource["dist/old/Courier_10_14/58_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/59_10_14.bmp",resource_dist_old_Courier_10_14_59_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_59_10_14_bmp));
-appResource["dist/old/Courier_10_14/59_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/60_10_14.bmp",resource_dist_old_Courier_10_14_60_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_60_10_14_bmp));
-appResource["dist/old/Courier_10_14/60_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/61_10_14.bmp",resource_dist_old_Courier_10_14_61_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_61_10_14_bmp));
-appResource["dist/old/Courier_10_14/61_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/62_10_14.bmp",resource_dist_old_Courier_10_14_62_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_62_10_14_bmp));
-appResource["dist/old/Courier_10_14/62_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/63_10_14.bmp",resource_dist_old_Courier_10_14_63_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_63_10_14_bmp));
-appResource["dist/old/Courier_10_14/63_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/64_10_14.bmp",resource_dist_old_Courier_10_14_64_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_64_10_14_bmp));
-appResource["dist/old/Courier_10_14/64_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/65_10_14.bmp",resource_dist_old_Courier_10_14_65_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_65_10_14_bmp));
-appResource["dist/old/Courier_10_14/65_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/66_10_14.bmp",resource_dist_old_Courier_10_14_66_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_66_10_14_bmp));
-appResource["dist/old/Courier_10_14/66_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/67_10_14.bmp",resource_dist_old_Courier_10_14_67_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_67_10_14_bmp));
-appResource["dist/old/Courier_10_14/67_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/68_10_14.bmp",resource_dist_old_Courier_10_14_68_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_68_10_14_bmp));
-appResource["dist/old/Courier_10_14/68_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/69_10_14.bmp",resource_dist_old_Courier_10_14_69_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_69_10_14_bmp));
-appResource["dist/old/Courier_10_14/69_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/70_10_14.bmp",resource_dist_old_Courier_10_14_70_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_70_10_14_bmp));
-appResource["dist/old/Courier_10_14/70_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/71_10_14.bmp",resource_dist_old_Courier_10_14_71_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_71_10_14_bmp));
-appResource["dist/old/Courier_10_14/71_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/72_10_14.bmp",resource_dist_old_Courier_10_14_72_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_72_10_14_bmp));
-appResource["dist/old/Courier_10_14/72_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/73_10_14.bmp",resource_dist_old_Courier_10_14_73_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_73_10_14_bmp));
-appResource["dist/old/Courier_10_14/73_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/74_10_14.bmp",resource_dist_old_Courier_10_14_74_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_74_10_14_bmp));
-appResource["dist/old/Courier_10_14/74_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/75_10_14.bmp",resource_dist_old_Courier_10_14_75_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_75_10_14_bmp));
-appResource["dist/old/Courier_10_14/75_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/76_10_14.bmp",resource_dist_old_Courier_10_14_76_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_76_10_14_bmp));
-appResource["dist/old/Courier_10_14/76_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/77_10_14.bmp",resource_dist_old_Courier_10_14_77_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_77_10_14_bmp));
-appResource["dist/old/Courier_10_14/77_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/78_10_14.bmp",resource_dist_old_Courier_10_14_78_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_78_10_14_bmp));
-appResource["dist/old/Courier_10_14/78_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/79_10_14.bmp",resource_dist_old_Courier_10_14_79_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_79_10_14_bmp));
-appResource["dist/old/Courier_10_14/79_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/80_10_14.bmp",resource_dist_old_Courier_10_14_80_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_80_10_14_bmp));
-appResource["dist/old/Courier_10_14/80_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/81_10_14.bmp",resource_dist_old_Courier_10_14_81_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_81_10_14_bmp));
-appResource["dist/old/Courier_10_14/81_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/82_10_14.bmp",resource_dist_old_Courier_10_14_82_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_82_10_14_bmp));
-appResource["dist/old/Courier_10_14/82_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/83_10_14.bmp",resource_dist_old_Courier_10_14_83_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_83_10_14_bmp));
-appResource["dist/old/Courier_10_14/83_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/84_10_14.bmp",resource_dist_old_Courier_10_14_84_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_84_10_14_bmp));
-appResource["dist/old/Courier_10_14/84_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/85_10_14.bmp",resource_dist_old_Courier_10_14_85_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_85_10_14_bmp));
-appResource["dist/old/Courier_10_14/85_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/86_10_14.bmp",resource_dist_old_Courier_10_14_86_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_86_10_14_bmp));
-appResource["dist/old/Courier_10_14/86_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/87_10_14.bmp",resource_dist_old_Courier_10_14_87_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_87_10_14_bmp));
-appResource["dist/old/Courier_10_14/87_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/88_10_14.bmp",resource_dist_old_Courier_10_14_88_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_88_10_14_bmp));
-appResource["dist/old/Courier_10_14/88_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/89_10_14.bmp",resource_dist_old_Courier_10_14_89_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_89_10_14_bmp));
-appResource["dist/old/Courier_10_14/89_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/90_10_14.bmp",resource_dist_old_Courier_10_14_90_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_90_10_14_bmp));
-appResource["dist/old/Courier_10_14/90_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/91_10_14.bmp",resource_dist_old_Courier_10_14_91_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_91_10_14_bmp));
-appResource["dist/old/Courier_10_14/91_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/92_10_14.bmp",resource_dist_old_Courier_10_14_92_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_92_10_14_bmp));
-appResource["dist/old/Courier_10_14/92_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/93_10_14.bmp",resource_dist_old_Courier_10_14_93_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_93_10_14_bmp));
-appResource["dist/old/Courier_10_14/93_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/94_10_14.bmp",resource_dist_old_Courier_10_14_94_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_94_10_14_bmp));
-appResource["dist/old/Courier_10_14/94_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/95_10_14.bmp",resource_dist_old_Courier_10_14_95_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_95_10_14_bmp));
-appResource["dist/old/Courier_10_14/95_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/96_10_14.bmp",resource_dist_old_Courier_10_14_96_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_96_10_14_bmp));
-appResource["dist/old/Courier_10_14/96_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/97_10_14.bmp",resource_dist_old_Courier_10_14_97_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_97_10_14_bmp));
-appResource["dist/old/Courier_10_14/97_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/98_10_14.bmp",resource_dist_old_Courier_10_14_98_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_98_10_14_bmp));
-appResource["dist/old/Courier_10_14/98_10_14.bmp"]=res
-res.set("dist/old/Courier_10_14/99_10_14.bmp",resource_dist_old_Courier_10_14_99_10_14_bmp,sizeof(resource_dist_old_Courier_10_14_99_10_14_bmp));
-appResource["dist/old/Courier_10_14/99_10_14.bmp"]=res
-res.set("dist/old/CROSS.BMP",resource_dist_old_CROSS_BMP,sizeof(resource_dist_old_CROSS_BMP));
-appResource["dist/old/CROSS.BMP"]=res
-res.set("dist/old/CUT.BMP",resource_dist_old_CUT_BMP,sizeof(resource_dist_old_CUT_BMP));
-appResource["dist/old/CUT.BMP"]=res
-res.set("dist/old/DELETE.BMP",resource_dist_old_DELETE_BMP,sizeof(resource_dist_old_DELETE_BMP));
-appResource["dist/old/DELETE.BMP"]=res
-res.set("dist/old/EXIT.BMP",resource_dist_old_EXIT_BMP,sizeof(resource_dist_old_EXIT_BMP));
-appResource["dist/old/EXIT.BMP"]=res
-res.set("dist/old/HORZ.BMP",resource_dist_old_HORZ_BMP,sizeof(resource_dist_old_HORZ_BMP));
-appResource["dist/old/HORZ.BMP"]=res
-res.set("dist/old/ICONIZE.BMP",resource_dist_old_ICONIZE_BMP,sizeof(resource_dist_old_ICONIZE_BMP));
-appResource["dist/old/ICONIZE.BMP"]=res
-res.set("dist/old/L1.BMP",resource_dist_old_L1_BMP,sizeof(resource_dist_old_L1_BMP));
-appResource["dist/old/L1.BMP"]=res
-res.set("dist/old/L2.BMP",resource_dist_old_L2_BMP,sizeof(resource_dist_old_L2_BMP));
-appResource["dist/old/L2.BMP"]=res
-res.set("dist/old/L3.BMP",resource_dist_old_L3_BMP,sizeof(resource_dist_old_L3_BMP));
-appResource["dist/old/L3.BMP"]=res
-res.set("dist/old/L4.BMP",resource_dist_old_L4_BMP,sizeof(resource_dist_old_L4_BMP));
-appResource["dist/old/L4.BMP"]=res
-res.set("dist/old/MAXIMIZE.BMP",resource_dist_old_MAXIMIZE_BMP,sizeof(resource_dist_old_MAXIMIZE_BMP));
-appResource["dist/old/MAXIMIZE.BMP"]=res
-res.set("dist/old/MEDIALIZE.BMP",resource_dist_old_MEDIALIZE_BMP,sizeof(resource_dist_old_MEDIALIZE_BMP));
-appResource["dist/old/MEDIALIZE.BMP"]=res
-res.set("dist/old/MOVE.BMP",resource_dist_old_MOVE_BMP,sizeof(resource_dist_old_MOVE_BMP));
-appResource["dist/old/MOVE.BMP"]=res
-res.set("dist/old/NEW.BMP",resource_dist_old_NEW_BMP,sizeof(resource_dist_old_NEW_BMP));
-appResource["dist/old/NEW.BMP"]=res
-res.set("dist/old/OPEN.BMP",resource_dist_old_OPEN_BMP,sizeof(resource_dist_old_OPEN_BMP));
-appResource["dist/old/OPEN.BMP"]=res
-res.set("dist/old/OR.BMP",resource_dist_old_OR_BMP,sizeof(resource_dist_old_OR_BMP));
-appResource["dist/old/OR.BMP"]=res
-res.set("dist/old/PASTE.BMP",resource_dist_old_PASTE_BMP,sizeof(resource_dist_old_PASTE_BMP));
-appResource["dist/old/PASTE.BMP"]=res
-res.set("dist/old/REDO.BMP",resource_dist_old_REDO_BMP,sizeof(resource_dist_old_REDO_BMP));
-appResource["dist/old/REDO.BMP"]=res
-res.set("dist/old/RELE.BMP",resource_dist_old_RELE_BMP,sizeof(resource_dist_old_RELE_BMP));
-appResource["dist/old/RELE.BMP"]=res
-res.set("dist/old/SAVE.BMP",resource_dist_old_SAVE_BMP,sizeof(resource_dist_old_SAVE_BMP));
-appResource["dist/old/SAVE.BMP"]=res
-res.set("dist/old/SELCONNECT.BMP",resource_dist_old_SELCONNECT_BMP,sizeof(resource_dist_old_SELCONNECT_BMP));
-appResource["dist/old/SELCONNECT.BMP"]=res
-res.set("dist/old/SETTING.BMP",resource_dist_old_SETTING_BMP,sizeof(resource_dist_old_SETTING_BMP));
-appResource["dist/old/SETTING.BMP"]=res
-res.set("dist/old/SHL.BMP",resource_dist_old_SHL_BMP,sizeof(resource_dist_old_SHL_BMP));
-appResource["dist/old/SHL.BMP"]=res
-res.set("dist/old/SHR.BMP",resource_dist_old_SHR_BMP,sizeof(resource_dist_old_SHR_BMP));
-appResource["dist/old/SHR.BMP"]=res
-res.set("dist/old/SVD.BMP",resource_dist_old_SVD_BMP,sizeof(resource_dist_old_SVD_BMP));
-appResource["dist/old/SVD.BMP"]=res
-res.set("dist/old/SVU.BMP",resource_dist_old_SVU_BMP,sizeof(resource_dist_old_SVU_BMP));
-appResource["dist/old/SVU.BMP"]=res
-res.set("dist/old/T1.BMP",resource_dist_old_T1_BMP,sizeof(resource_dist_old_T1_BMP));
-appResource["dist/old/T1.BMP"]=res
-res.set("dist/old/T2.BMP",resource_dist_old_T2_BMP,sizeof(resource_dist_old_T2_BMP));
-appResource["dist/old/T2.BMP"]=res
-res.set("dist/old/T3.BMP",resource_dist_old_T3_BMP,sizeof(resource_dist_old_T3_BMP));
-appResource["dist/old/T3.BMP"]=res
-res.set("dist/old/T4.BMP",resource_dist_old_T4_BMP,sizeof(resource_dist_old_T4_BMP));
-appResource["dist/old/T4.BMP"]=res
-res.set("dist/old/UNDO.BMP",resource_dist_old_UNDO_BMP,sizeof(resource_dist_old_UNDO_BMP));
-appResource["dist/old/UNDO.BMP"]=res
-res.set("dist/old/VERT.BMP",resource_dist_old_VERT_BMP,sizeof(resource_dist_old_VERT_BMP));
-appResource["dist/old/VERT.BMP"]=res
-}
-
-
-
-int getresource(const char *file,unsigned char ** ptr,size_t *size){
-int res=-1;
-std::map::iterator it=appResource.find(file);
-if( it!=appResource.end()) {
-	*ptr=it->second.resource;
-	*size=it->second.size;
-	res=0
-	}
-return res
-}
-
-
-
-//image of file dist/conf_utf16.xml to array resource_dist_conf_utf16_xml
-//size =    244   281 10124 dist/conf_utf16.xml
-const unsigned char resource_dist_conf_utf16_xml[] __attribute__ ((aligned (32)))={
+//declare image of file resource/conf_utf16.xml to array resource_resource_conf_utf16_xml
+//size =    244   281 10124 resource/conf_utf16.xml
+const unsigned char resource_resource_conf_utf16_xml[] __attribute__ ((aligned (32)))={
   0xff, 0xfe, 0x3c, 0x00, 0x41, 0x00, 0x50, 0x00, 0x50, 0x00, 0x3e, 0x00,
   0x0d, 0x00, 0x0a, 0x00, 0x09, 0x00, 0x3c, 0x00, 0x44, 0x00, 0x45, 0x00,
   0x46, 0x00, 0x41, 0x00, 0x55, 0x00, 0x4c, 0x00, 0x54, 0x00, 0x5f, 0x00,
@@ -1163,9 +872,12 @@ const unsigned char resource_dist_conf_utf16_xml[] __attribute__ ((aligned (32))
   0x0d, 0x00, 0x0a, 0x00, 0x3c, 0x00, 0x2f, 0x00, 0x41, 0x00, 0x50, 0x00,
   0x50, 0x00, 0x3e, 0x00, 0x0d, 0x00, 0x0a, 0x00
 };
-//image of file dist/conf_utf8.xml to array resource_dist_conf_utf8_xml
-//size =    774   817 15064 dist/conf_utf8.xml
-const unsigned char resource_dist_conf_utf8_xml[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/conf_utf8.xml to array resource_resource_conf_utf8_xml
+//size =    774   817 15064 resource/conf_utf8.xml
+const unsigned char resource_resource_conf_utf8_xml[] __attribute__ ((aligned (32)))={
   0x3c, 0x41, 0x50, 0x50, 0x3e, 0x0d, 0x0a, 0x09, 0x3c, 0x44, 0x45, 0x46,
   0x41, 0x55, 0x4c, 0x54, 0x5f, 0x57, 0x49, 0x44, 0x54, 0x48, 0x3e, 0x32,
   0x30, 0x30, 0x3c, 0x2f, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x5f,
@@ -2423,9 +2135,12 @@ const unsigned char resource_dist_conf_utf8_xml[] __attribute__ ((aligned (32)))
   0x46, 0x4f, 0x4e, 0x54, 0x53, 0x3e, 0x0d, 0x0a, 0x3c, 0x2f, 0x41, 0x50,
   0x50, 0x3e, 0x0d, 0x0a
 };
-//image of file dist/old/AND.BMP to array resource_dist_old_AND_BMP
-//size =     0    1 5814 dist/old/AND.BMP
-const unsigned char resource_dist_old_AND_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/AND.BMP to array resource_resource_old_AND_BMP
+//size =     0    1 5814 resource/old/AND.BMP
+const unsigned char resource_resource_old_AND_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -2912,9 +2627,12 @@ const unsigned char resource_dist_old_AND_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/BORDER.BMP to array resource_dist_old_BORDER_BMP
-//size =     0    1 5814 dist/old/BORDER.BMP
-const unsigned char resource_dist_old_BORDER_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/BORDER.BMP to array resource_resource_old_BORDER_BMP
+//size =     0    1 5814 resource/old/BORDER.BMP
+const unsigned char resource_resource_old_BORDER_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -3401,9 +3119,12 @@ const unsigned char resource_dist_old_BORDER_BMP[] __attribute__ ((aligned (32))
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/CLOSE.BMP to array resource_dist_old_CLOSE_BMP
-//size =     0    1 6966 dist/old/CLOSE.BMP
-const unsigned char resource_dist_old_CLOSE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/CLOSE.BMP to array resource_resource_old_CLOSE_BMP
+//size =     0    1 6966 resource/old/CLOSE.BMP
+const unsigned char resource_resource_old_CLOSE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -3986,9 +3707,12 @@ const unsigned char resource_dist_old_CLOSE_BMP[] __attribute__ ((aligned (32)))
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/COIL.BMP to array resource_dist_old_COIL_BMP
-//size =     0    1 6966 dist/old/COIL.BMP
-const unsigned char resource_dist_old_COIL_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/COIL.BMP to array resource_resource_old_COIL_BMP
+//size =     0    1 6966 resource/old/COIL.BMP
+const unsigned char resource_resource_old_COIL_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -4571,9 +4295,12 @@ const unsigned char resource_dist_old_COIL_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/CONNECT.BMP to array resource_dist_old_CONNECT_BMP
-//size =     0   21 6966 dist/old/CONNECT.BMP
-const unsigned char resource_dist_old_CONNECT_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/CONNECT.BMP to array resource_resource_old_CONNECT_BMP
+//size =     0   21 6966 resource/old/CONNECT.BMP
+const unsigned char resource_resource_old_CONNECT_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -5156,9 +4883,12 @@ const unsigned char resource_dist_old_CONNECT_BMP[] __attribute__ ((aligned (32)
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/CONTACTNC.BMP to array resource_dist_old_CONTACTNC_BMP
-//size =     0    1 6966 dist/old/CONTACTNC.BMP
-const unsigned char resource_dist_old_CONTACTNC_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/CONTACTNC.BMP to array resource_resource_old_CONTACTNC_BMP
+//size =     0    1 6966 resource/old/CONTACTNC.BMP
+const unsigned char resource_resource_old_CONTACTNC_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -5741,9 +5471,12 @@ const unsigned char resource_dist_old_CONTACTNC_BMP[] __attribute__ ((aligned (3
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/CONTACTNO.BMP to array resource_dist_old_CONTACTNO_BMP
-//size =     0    1 6966 dist/old/CONTACTNO.BMP
-const unsigned char resource_dist_old_CONTACTNO_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/CONTACTNO.BMP to array resource_resource_old_CONTACTNO_BMP
+//size =     0    1 6966 resource/old/CONTACTNO.BMP
+const unsigned char resource_resource_old_CONTACTNO_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -6326,9 +6059,12 @@ const unsigned char resource_dist_old_CONTACTNO_BMP[] __attribute__ ((aligned (3
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/COPY.BMP to array resource_dist_old_COPY_BMP
-//size =     0    3 3126 dist/old/COPY.BMP
-const unsigned char resource_dist_old_COPY_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/COPY.BMP to array resource_resource_old_COPY_BMP
+//size =     0    3 3126 resource/old/COPY.BMP
+const unsigned char resource_resource_old_COPY_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x20, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c,
@@ -6591,9 +6327,12 @@ const unsigned char resource_dist_old_COPY_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/Courier_10_14/100_10_14.bmp to array resource_dist_old_Courier_10_14_100_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/100_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_100_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/100_10_14.bmp to array resource_resource_old_Courier_10_14_100_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/100_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_100_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -6647,9 +6386,12 @@ const unsigned char resource_dist_old_Courier_10_14_100_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/101_10_14.bmp to array resource_dist_old_Courier_10_14_101_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/101_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_101_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/101_10_14.bmp to array resource_resource_old_Courier_10_14_101_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/101_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_101_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -6703,9 +6445,12 @@ const unsigned char resource_dist_old_Courier_10_14_101_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/102_10_14.bmp to array resource_dist_old_Courier_10_14_102_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/102_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_102_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/102_10_14.bmp to array resource_resource_old_Courier_10_14_102_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/102_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_102_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -6759,9 +6504,12 @@ const unsigned char resource_dist_old_Courier_10_14_102_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/103_10_14.bmp to array resource_dist_old_Courier_10_14_103_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/103_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_103_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/103_10_14.bmp to array resource_resource_old_Courier_10_14_103_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/103_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_103_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -6815,9 +6563,12 @@ const unsigned char resource_dist_old_Courier_10_14_103_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/104_10_14.bmp to array resource_dist_old_Courier_10_14_104_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/104_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_104_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/104_10_14.bmp to array resource_resource_old_Courier_10_14_104_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/104_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_104_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -6871,9 +6622,12 @@ const unsigned char resource_dist_old_Courier_10_14_104_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/105_10_14.bmp to array resource_dist_old_Courier_10_14_105_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/105_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_105_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/105_10_14.bmp to array resource_resource_old_Courier_10_14_105_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/105_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_105_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -6927,9 +6681,12 @@ const unsigned char resource_dist_old_Courier_10_14_105_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/106_10_14.bmp to array resource_dist_old_Courier_10_14_106_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/106_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_106_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/106_10_14.bmp to array resource_resource_old_Courier_10_14_106_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/106_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_106_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -6983,9 +6740,12 @@ const unsigned char resource_dist_old_Courier_10_14_106_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/107_10_14.bmp to array resource_dist_old_Courier_10_14_107_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/107_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_107_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/107_10_14.bmp to array resource_resource_old_Courier_10_14_107_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/107_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_107_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7039,9 +6799,12 @@ const unsigned char resource_dist_old_Courier_10_14_107_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/108_10_14.bmp to array resource_dist_old_Courier_10_14_108_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/108_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_108_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/108_10_14.bmp to array resource_resource_old_Courier_10_14_108_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/108_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_108_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7095,9 +6858,12 @@ const unsigned char resource_dist_old_Courier_10_14_108_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/109_10_14.bmp to array resource_dist_old_Courier_10_14_109_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/109_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_109_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/109_10_14.bmp to array resource_resource_old_Courier_10_14_109_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/109_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_109_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7151,9 +6917,12 @@ const unsigned char resource_dist_old_Courier_10_14_109_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/110_10_14.bmp to array resource_dist_old_Courier_10_14_110_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/110_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_110_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/110_10_14.bmp to array resource_resource_old_Courier_10_14_110_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/110_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_110_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7207,9 +6976,12 @@ const unsigned char resource_dist_old_Courier_10_14_110_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/111_10_14.bmp to array resource_dist_old_Courier_10_14_111_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/111_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_111_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/111_10_14.bmp to array resource_resource_old_Courier_10_14_111_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/111_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_111_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7263,9 +7035,12 @@ const unsigned char resource_dist_old_Courier_10_14_111_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/112_10_14.bmp to array resource_dist_old_Courier_10_14_112_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/112_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_112_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/112_10_14.bmp to array resource_resource_old_Courier_10_14_112_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/112_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_112_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7319,9 +7094,12 @@ const unsigned char resource_dist_old_Courier_10_14_112_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/113_10_14.bmp to array resource_dist_old_Courier_10_14_113_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/113_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_113_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/113_10_14.bmp to array resource_resource_old_Courier_10_14_113_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/113_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_113_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7375,9 +7153,12 @@ const unsigned char resource_dist_old_Courier_10_14_113_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/114_10_14.bmp to array resource_dist_old_Courier_10_14_114_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/114_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_114_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/114_10_14.bmp to array resource_resource_old_Courier_10_14_114_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/114_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_114_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7431,9 +7212,12 @@ const unsigned char resource_dist_old_Courier_10_14_114_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/115_10_14.bmp to array resource_dist_old_Courier_10_14_115_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/115_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_115_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/115_10_14.bmp to array resource_resource_old_Courier_10_14_115_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/115_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_115_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7487,9 +7271,12 @@ const unsigned char resource_dist_old_Courier_10_14_115_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/116_10_14.bmp to array resource_dist_old_Courier_10_14_116_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/116_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_116_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/116_10_14.bmp to array resource_resource_old_Courier_10_14_116_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/116_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_116_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7543,9 +7330,12 @@ const unsigned char resource_dist_old_Courier_10_14_116_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/117_10_14.bmp to array resource_dist_old_Courier_10_14_117_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/117_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_117_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/117_10_14.bmp to array resource_resource_old_Courier_10_14_117_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/117_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_117_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7599,9 +7389,12 @@ const unsigned char resource_dist_old_Courier_10_14_117_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/118_10_14.bmp to array resource_dist_old_Courier_10_14_118_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/118_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_118_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/118_10_14.bmp to array resource_resource_old_Courier_10_14_118_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/118_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_118_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7655,9 +7448,12 @@ const unsigned char resource_dist_old_Courier_10_14_118_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/119_10_14.bmp to array resource_dist_old_Courier_10_14_119_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/119_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_119_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/119_10_14.bmp to array resource_resource_old_Courier_10_14_119_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/119_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_119_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7711,9 +7507,12 @@ const unsigned char resource_dist_old_Courier_10_14_119_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/120_10_14.bmp to array resource_dist_old_Courier_10_14_120_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/120_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_120_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/120_10_14.bmp to array resource_resource_old_Courier_10_14_120_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/120_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_120_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7767,9 +7566,12 @@ const unsigned char resource_dist_old_Courier_10_14_120_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/121_10_14.bmp to array resource_dist_old_Courier_10_14_121_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/121_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_121_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/121_10_14.bmp to array resource_resource_old_Courier_10_14_121_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/121_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_121_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7823,9 +7625,12 @@ const unsigned char resource_dist_old_Courier_10_14_121_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/122_10_14.bmp to array resource_dist_old_Courier_10_14_122_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/122_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_122_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/122_10_14.bmp to array resource_resource_old_Courier_10_14_122_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/122_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_122_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7879,9 +7684,12 @@ const unsigned char resource_dist_old_Courier_10_14_122_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/123_10_14.bmp to array resource_dist_old_Courier_10_14_123_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/123_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_123_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/123_10_14.bmp to array resource_resource_old_Courier_10_14_123_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/123_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_123_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7935,9 +7743,12 @@ const unsigned char resource_dist_old_Courier_10_14_123_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/124_10_14.bmp to array resource_dist_old_Courier_10_14_124_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/124_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_124_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/124_10_14.bmp to array resource_resource_old_Courier_10_14_124_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/124_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_124_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -7991,9 +7802,12 @@ const unsigned char resource_dist_old_Courier_10_14_124_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/125_10_14.bmp to array resource_dist_old_Courier_10_14_125_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/125_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_125_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/125_10_14.bmp to array resource_resource_old_Courier_10_14_125_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/125_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_125_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8047,9 +7861,12 @@ const unsigned char resource_dist_old_Courier_10_14_125_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/126_10_14.bmp to array resource_dist_old_Courier_10_14_126_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/126_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_126_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/126_10_14.bmp to array resource_resource_old_Courier_10_14_126_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/126_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_126_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8103,9 +7920,12 @@ const unsigned char resource_dist_old_Courier_10_14_126_10_14_bmp[] __attribute_
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/32_10_14.bmp to array resource_dist_old_Courier_10_14_32_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/32_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_32_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/32_10_14.bmp to array resource_resource_old_Courier_10_14_32_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/32_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_32_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8159,9 +7979,12 @@ const unsigned char resource_dist_old_Courier_10_14_32_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/33_10_14.bmp to array resource_dist_old_Courier_10_14_33_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/33_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_33_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/33_10_14.bmp to array resource_resource_old_Courier_10_14_33_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/33_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_33_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8215,9 +8038,12 @@ const unsigned char resource_dist_old_Courier_10_14_33_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/34_10_14.bmp to array resource_dist_old_Courier_10_14_34_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/34_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_34_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/34_10_14.bmp to array resource_resource_old_Courier_10_14_34_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/34_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_34_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8271,9 +8097,12 @@ const unsigned char resource_dist_old_Courier_10_14_34_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/35_10_14.bmp to array resource_dist_old_Courier_10_14_35_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/35_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_35_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/35_10_14.bmp to array resource_resource_old_Courier_10_14_35_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/35_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_35_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8327,9 +8156,12 @@ const unsigned char resource_dist_old_Courier_10_14_35_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/36_10_14.bmp to array resource_dist_old_Courier_10_14_36_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/36_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_36_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/36_10_14.bmp to array resource_resource_old_Courier_10_14_36_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/36_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_36_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8383,9 +8215,12 @@ const unsigned char resource_dist_old_Courier_10_14_36_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/37_10_14.bmp to array resource_dist_old_Courier_10_14_37_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/37_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_37_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/37_10_14.bmp to array resource_resource_old_Courier_10_14_37_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/37_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_37_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8439,9 +8274,12 @@ const unsigned char resource_dist_old_Courier_10_14_37_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/38_10_14.bmp to array resource_dist_old_Courier_10_14_38_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/38_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_38_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/38_10_14.bmp to array resource_resource_old_Courier_10_14_38_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/38_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_38_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8495,9 +8333,12 @@ const unsigned char resource_dist_old_Courier_10_14_38_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/39_10_14.bmp to array resource_dist_old_Courier_10_14_39_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/39_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_39_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/39_10_14.bmp to array resource_resource_old_Courier_10_14_39_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/39_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_39_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8551,9 +8392,12 @@ const unsigned char resource_dist_old_Courier_10_14_39_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/40_10_14.bmp to array resource_dist_old_Courier_10_14_40_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/40_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_40_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/40_10_14.bmp to array resource_resource_old_Courier_10_14_40_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/40_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_40_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8607,9 +8451,12 @@ const unsigned char resource_dist_old_Courier_10_14_40_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/41_10_14.bmp to array resource_dist_old_Courier_10_14_41_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/41_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_41_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/41_10_14.bmp to array resource_resource_old_Courier_10_14_41_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/41_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_41_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8663,9 +8510,12 @@ const unsigned char resource_dist_old_Courier_10_14_41_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/42_10_14.bmp to array resource_dist_old_Courier_10_14_42_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/42_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_42_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/42_10_14.bmp to array resource_resource_old_Courier_10_14_42_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/42_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_42_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8719,9 +8569,12 @@ const unsigned char resource_dist_old_Courier_10_14_42_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/43_10_14.bmp to array resource_dist_old_Courier_10_14_43_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/43_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_43_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/43_10_14.bmp to array resource_resource_old_Courier_10_14_43_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/43_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_43_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8775,9 +8628,12 @@ const unsigned char resource_dist_old_Courier_10_14_43_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/44_10_14.bmp to array resource_dist_old_Courier_10_14_44_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/44_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_44_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/44_10_14.bmp to array resource_resource_old_Courier_10_14_44_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/44_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_44_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8831,9 +8687,12 @@ const unsigned char resource_dist_old_Courier_10_14_44_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/45_10_14.bmp to array resource_dist_old_Courier_10_14_45_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/45_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_45_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/45_10_14.bmp to array resource_resource_old_Courier_10_14_45_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/45_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_45_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8887,9 +8746,12 @@ const unsigned char resource_dist_old_Courier_10_14_45_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/46_10_14.bmp to array resource_dist_old_Courier_10_14_46_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/46_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_46_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/46_10_14.bmp to array resource_resource_old_Courier_10_14_46_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/46_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_46_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8943,9 +8805,12 @@ const unsigned char resource_dist_old_Courier_10_14_46_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/47_10_14.bmp to array resource_dist_old_Courier_10_14_47_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/47_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_47_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/47_10_14.bmp to array resource_resource_old_Courier_10_14_47_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/47_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_47_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -8999,9 +8864,12 @@ const unsigned char resource_dist_old_Courier_10_14_47_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/48_10_14.bmp to array resource_dist_old_Courier_10_14_48_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/48_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_48_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/48_10_14.bmp to array resource_resource_old_Courier_10_14_48_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/48_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_48_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9055,9 +8923,12 @@ const unsigned char resource_dist_old_Courier_10_14_48_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/49_10_14.bmp to array resource_dist_old_Courier_10_14_49_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/49_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_49_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/49_10_14.bmp to array resource_resource_old_Courier_10_14_49_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/49_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_49_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9111,9 +8982,12 @@ const unsigned char resource_dist_old_Courier_10_14_49_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/50_10_14.bmp to array resource_dist_old_Courier_10_14_50_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/50_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_50_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/50_10_14.bmp to array resource_resource_old_Courier_10_14_50_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/50_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_50_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9167,9 +9041,12 @@ const unsigned char resource_dist_old_Courier_10_14_50_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/51_10_14.bmp to array resource_dist_old_Courier_10_14_51_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/51_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_51_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/51_10_14.bmp to array resource_resource_old_Courier_10_14_51_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/51_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_51_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9223,9 +9100,12 @@ const unsigned char resource_dist_old_Courier_10_14_51_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/52_10_14.bmp to array resource_dist_old_Courier_10_14_52_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/52_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_52_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/52_10_14.bmp to array resource_resource_old_Courier_10_14_52_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/52_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_52_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9279,9 +9159,12 @@ const unsigned char resource_dist_old_Courier_10_14_52_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/53_10_14.bmp to array resource_dist_old_Courier_10_14_53_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/53_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_53_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/53_10_14.bmp to array resource_resource_old_Courier_10_14_53_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/53_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_53_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9335,9 +9218,12 @@ const unsigned char resource_dist_old_Courier_10_14_53_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/54_10_14.bmp to array resource_dist_old_Courier_10_14_54_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/54_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_54_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/54_10_14.bmp to array resource_resource_old_Courier_10_14_54_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/54_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_54_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9391,9 +9277,12 @@ const unsigned char resource_dist_old_Courier_10_14_54_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/55_10_14.bmp to array resource_dist_old_Courier_10_14_55_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/55_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_55_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/55_10_14.bmp to array resource_resource_old_Courier_10_14_55_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/55_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_55_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9447,9 +9336,12 @@ const unsigned char resource_dist_old_Courier_10_14_55_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/56_10_14.bmp to array resource_dist_old_Courier_10_14_56_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/56_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_56_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/56_10_14.bmp to array resource_resource_old_Courier_10_14_56_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/56_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_56_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9503,9 +9395,12 @@ const unsigned char resource_dist_old_Courier_10_14_56_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/57_10_14.bmp to array resource_dist_old_Courier_10_14_57_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/57_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_57_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/57_10_14.bmp to array resource_resource_old_Courier_10_14_57_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/57_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_57_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9559,9 +9454,12 @@ const unsigned char resource_dist_old_Courier_10_14_57_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/58_10_14.bmp to array resource_dist_old_Courier_10_14_58_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/58_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_58_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/58_10_14.bmp to array resource_resource_old_Courier_10_14_58_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/58_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_58_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9615,9 +9513,12 @@ const unsigned char resource_dist_old_Courier_10_14_58_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/59_10_14.bmp to array resource_dist_old_Courier_10_14_59_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/59_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_59_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/59_10_14.bmp to array resource_resource_old_Courier_10_14_59_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/59_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_59_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9671,9 +9572,12 @@ const unsigned char resource_dist_old_Courier_10_14_59_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/60_10_14.bmp to array resource_dist_old_Courier_10_14_60_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/60_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_60_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/60_10_14.bmp to array resource_resource_old_Courier_10_14_60_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/60_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_60_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9727,9 +9631,12 @@ const unsigned char resource_dist_old_Courier_10_14_60_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/61_10_14.bmp to array resource_dist_old_Courier_10_14_61_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/61_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_61_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/61_10_14.bmp to array resource_resource_old_Courier_10_14_61_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/61_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_61_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9783,9 +9690,12 @@ const unsigned char resource_dist_old_Courier_10_14_61_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/62_10_14.bmp to array resource_dist_old_Courier_10_14_62_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/62_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_62_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/62_10_14.bmp to array resource_resource_old_Courier_10_14_62_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/62_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_62_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9839,9 +9749,12 @@ const unsigned char resource_dist_old_Courier_10_14_62_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/63_10_14.bmp to array resource_dist_old_Courier_10_14_63_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/63_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_63_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/63_10_14.bmp to array resource_resource_old_Courier_10_14_63_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/63_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_63_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9895,9 +9808,12 @@ const unsigned char resource_dist_old_Courier_10_14_63_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/64_10_14.bmp to array resource_dist_old_Courier_10_14_64_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/64_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_64_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/64_10_14.bmp to array resource_resource_old_Courier_10_14_64_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/64_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_64_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -9951,9 +9867,12 @@ const unsigned char resource_dist_old_Courier_10_14_64_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/65_10_14.bmp to array resource_dist_old_Courier_10_14_65_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/65_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_65_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/65_10_14.bmp to array resource_resource_old_Courier_10_14_65_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/65_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_65_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10007,9 +9926,12 @@ const unsigned char resource_dist_old_Courier_10_14_65_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/66_10_14.bmp to array resource_dist_old_Courier_10_14_66_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/66_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_66_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/66_10_14.bmp to array resource_resource_old_Courier_10_14_66_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/66_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_66_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10063,9 +9985,12 @@ const unsigned char resource_dist_old_Courier_10_14_66_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/67_10_14.bmp to array resource_dist_old_Courier_10_14_67_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/67_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_67_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/67_10_14.bmp to array resource_resource_old_Courier_10_14_67_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/67_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_67_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10119,9 +10044,12 @@ const unsigned char resource_dist_old_Courier_10_14_67_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/68_10_14.bmp to array resource_dist_old_Courier_10_14_68_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/68_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_68_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/68_10_14.bmp to array resource_resource_old_Courier_10_14_68_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/68_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_68_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10175,9 +10103,12 @@ const unsigned char resource_dist_old_Courier_10_14_68_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/69_10_14.bmp to array resource_dist_old_Courier_10_14_69_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/69_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_69_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/69_10_14.bmp to array resource_resource_old_Courier_10_14_69_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/69_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_69_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10231,9 +10162,12 @@ const unsigned char resource_dist_old_Courier_10_14_69_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/70_10_14.bmp to array resource_dist_old_Courier_10_14_70_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/70_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_70_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/70_10_14.bmp to array resource_resource_old_Courier_10_14_70_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/70_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_70_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10287,9 +10221,12 @@ const unsigned char resource_dist_old_Courier_10_14_70_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/71_10_14.bmp to array resource_dist_old_Courier_10_14_71_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/71_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_71_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/71_10_14.bmp to array resource_resource_old_Courier_10_14_71_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/71_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_71_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10343,9 +10280,12 @@ const unsigned char resource_dist_old_Courier_10_14_71_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/72_10_14.bmp to array resource_dist_old_Courier_10_14_72_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/72_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_72_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/72_10_14.bmp to array resource_resource_old_Courier_10_14_72_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/72_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_72_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10399,9 +10339,12 @@ const unsigned char resource_dist_old_Courier_10_14_72_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/73_10_14.bmp to array resource_dist_old_Courier_10_14_73_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/73_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_73_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/73_10_14.bmp to array resource_resource_old_Courier_10_14_73_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/73_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_73_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10455,9 +10398,12 @@ const unsigned char resource_dist_old_Courier_10_14_73_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/74_10_14.bmp to array resource_dist_old_Courier_10_14_74_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/74_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_74_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/74_10_14.bmp to array resource_resource_old_Courier_10_14_74_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/74_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_74_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10511,9 +10457,12 @@ const unsigned char resource_dist_old_Courier_10_14_74_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/75_10_14.bmp to array resource_dist_old_Courier_10_14_75_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/75_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_75_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/75_10_14.bmp to array resource_resource_old_Courier_10_14_75_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/75_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_75_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10567,9 +10516,12 @@ const unsigned char resource_dist_old_Courier_10_14_75_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/76_10_14.bmp to array resource_dist_old_Courier_10_14_76_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/76_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_76_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/76_10_14.bmp to array resource_resource_old_Courier_10_14_76_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/76_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_76_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10623,9 +10575,12 @@ const unsigned char resource_dist_old_Courier_10_14_76_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/77_10_14.bmp to array resource_dist_old_Courier_10_14_77_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/77_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_77_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/77_10_14.bmp to array resource_resource_old_Courier_10_14_77_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/77_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_77_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10679,9 +10634,12 @@ const unsigned char resource_dist_old_Courier_10_14_77_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/78_10_14.bmp to array resource_dist_old_Courier_10_14_78_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/78_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_78_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/78_10_14.bmp to array resource_resource_old_Courier_10_14_78_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/78_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_78_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10735,9 +10693,12 @@ const unsigned char resource_dist_old_Courier_10_14_78_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/79_10_14.bmp to array resource_dist_old_Courier_10_14_79_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/79_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_79_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/79_10_14.bmp to array resource_resource_old_Courier_10_14_79_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/79_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_79_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10791,9 +10752,12 @@ const unsigned char resource_dist_old_Courier_10_14_79_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/80_10_14.bmp to array resource_dist_old_Courier_10_14_80_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/80_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_80_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/80_10_14.bmp to array resource_resource_old_Courier_10_14_80_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/80_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_80_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10847,9 +10811,12 @@ const unsigned char resource_dist_old_Courier_10_14_80_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/81_10_14.bmp to array resource_dist_old_Courier_10_14_81_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/81_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_81_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/81_10_14.bmp to array resource_resource_old_Courier_10_14_81_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/81_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_81_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10903,9 +10870,12 @@ const unsigned char resource_dist_old_Courier_10_14_81_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/82_10_14.bmp to array resource_dist_old_Courier_10_14_82_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/82_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_82_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/82_10_14.bmp to array resource_resource_old_Courier_10_14_82_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/82_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_82_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -10959,9 +10929,12 @@ const unsigned char resource_dist_old_Courier_10_14_82_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/83_10_14.bmp to array resource_dist_old_Courier_10_14_83_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/83_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_83_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/83_10_14.bmp to array resource_resource_old_Courier_10_14_83_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/83_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_83_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11015,9 +10988,12 @@ const unsigned char resource_dist_old_Courier_10_14_83_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/84_10_14.bmp to array resource_dist_old_Courier_10_14_84_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/84_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_84_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/84_10_14.bmp to array resource_resource_old_Courier_10_14_84_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/84_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_84_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11071,9 +11047,12 @@ const unsigned char resource_dist_old_Courier_10_14_84_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/85_10_14.bmp to array resource_dist_old_Courier_10_14_85_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/85_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_85_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/85_10_14.bmp to array resource_resource_old_Courier_10_14_85_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/85_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_85_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11127,9 +11106,12 @@ const unsigned char resource_dist_old_Courier_10_14_85_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/86_10_14.bmp to array resource_dist_old_Courier_10_14_86_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/86_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_86_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/86_10_14.bmp to array resource_resource_old_Courier_10_14_86_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/86_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_86_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11183,9 +11165,12 @@ const unsigned char resource_dist_old_Courier_10_14_86_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/87_10_14.bmp to array resource_dist_old_Courier_10_14_87_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/87_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_87_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/87_10_14.bmp to array resource_resource_old_Courier_10_14_87_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/87_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_87_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11239,9 +11224,12 @@ const unsigned char resource_dist_old_Courier_10_14_87_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/88_10_14.bmp to array resource_dist_old_Courier_10_14_88_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/88_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_88_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/88_10_14.bmp to array resource_resource_old_Courier_10_14_88_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/88_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_88_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11295,9 +11283,12 @@ const unsigned char resource_dist_old_Courier_10_14_88_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/89_10_14.bmp to array resource_dist_old_Courier_10_14_89_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/89_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_89_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/89_10_14.bmp to array resource_resource_old_Courier_10_14_89_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/89_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_89_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11351,9 +11342,12 @@ const unsigned char resource_dist_old_Courier_10_14_89_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/90_10_14.bmp to array resource_dist_old_Courier_10_14_90_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/90_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_90_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/90_10_14.bmp to array resource_resource_old_Courier_10_14_90_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/90_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_90_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11407,9 +11401,12 @@ const unsigned char resource_dist_old_Courier_10_14_90_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/91_10_14.bmp to array resource_dist_old_Courier_10_14_91_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/91_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_91_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/91_10_14.bmp to array resource_resource_old_Courier_10_14_91_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/91_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_91_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11463,9 +11460,12 @@ const unsigned char resource_dist_old_Courier_10_14_91_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/92_10_14.bmp to array resource_dist_old_Courier_10_14_92_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/92_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_92_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/92_10_14.bmp to array resource_resource_old_Courier_10_14_92_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/92_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_92_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11519,9 +11519,12 @@ const unsigned char resource_dist_old_Courier_10_14_92_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/93_10_14.bmp to array resource_dist_old_Courier_10_14_93_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/93_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_93_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/93_10_14.bmp to array resource_resource_old_Courier_10_14_93_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/93_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_93_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11575,9 +11578,12 @@ const unsigned char resource_dist_old_Courier_10_14_93_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/94_10_14.bmp to array resource_dist_old_Courier_10_14_94_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/94_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_94_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/94_10_14.bmp to array resource_resource_old_Courier_10_14_94_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/94_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_94_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11631,9 +11637,12 @@ const unsigned char resource_dist_old_Courier_10_14_94_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/95_10_14.bmp to array resource_dist_old_Courier_10_14_95_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/95_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_95_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/95_10_14.bmp to array resource_resource_old_Courier_10_14_95_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/95_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_95_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11687,9 +11696,12 @@ const unsigned char resource_dist_old_Courier_10_14_95_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/96_10_14.bmp to array resource_dist_old_Courier_10_14_96_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/96_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_96_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/96_10_14.bmp to array resource_resource_old_Courier_10_14_96_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/96_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_96_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11743,9 +11755,12 @@ const unsigned char resource_dist_old_Courier_10_14_96_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/97_10_14.bmp to array resource_dist_old_Courier_10_14_97_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/97_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_97_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/97_10_14.bmp to array resource_resource_old_Courier_10_14_97_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/97_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_97_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11799,9 +11814,12 @@ const unsigned char resource_dist_old_Courier_10_14_97_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/98_10_14.bmp to array resource_dist_old_Courier_10_14_98_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/98_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_98_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/98_10_14.bmp to array resource_resource_old_Courier_10_14_98_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/98_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_98_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11855,9 +11873,12 @@ const unsigned char resource_dist_old_Courier_10_14_98_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/Courier_10_14/99_10_14.bmp to array resource_dist_old_Courier_10_14_99_10_14_bmp
-//size =    1   2 614 dist/old/Courier_10_14/99_10_14.bmp
-const unsigned char resource_dist_old_Courier_10_14_99_10_14_bmp[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/Courier_10_14/99_10_14.bmp to array resource_resource_old_Courier_10_14_99_10_14_bmp
+//size =    1   2 614 resource/old/Courier_10_14/99_10_14.bmp
+const unsigned char resource_resource_old_Courier_10_14_99_10_14_bmp[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x66, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x0e, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x02,
@@ -11911,9 +11932,12 @@ const unsigned char resource_dist_old_Courier_10_14_99_10_14_bmp[] __attribute__
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00
 };
-//image of file dist/old/CROSS.BMP to array resource_dist_old_CROSS_BMP
-//size =     0    1 5814 dist/old/CROSS.BMP
-const unsigned char resource_dist_old_CROSS_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/CROSS.BMP to array resource_resource_old_CROSS_BMP
+//size =     0    1 5814 resource/old/CROSS.BMP
+const unsigned char resource_resource_old_CROSS_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -12400,9 +12424,12 @@ const unsigned char resource_dist_old_CROSS_BMP[] __attribute__ ((aligned (32)))
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/CUT.BMP to array resource_dist_old_CUT_BMP
-//size =     0   16 3126 dist/old/CUT.BMP
-const unsigned char resource_dist_old_CUT_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/CUT.BMP to array resource_resource_old_CUT_BMP
+//size =     0   16 3126 resource/old/CUT.BMP
+const unsigned char resource_resource_old_CUT_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x20, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c,
@@ -12665,9 +12692,12 @@ const unsigned char resource_dist_old_CUT_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/DELETE.BMP to array resource_dist_old_DELETE_BMP
-//size =     0    1 6966 dist/old/DELETE.BMP
-const unsigned char resource_dist_old_DELETE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/DELETE.BMP to array resource_resource_old_DELETE_BMP
+//size =     0    1 6966 resource/old/DELETE.BMP
+const unsigned char resource_resource_old_DELETE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -13250,9 +13280,12 @@ const unsigned char resource_dist_old_DELETE_BMP[] __attribute__ ((aligned (32))
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/EXIT.BMP to array resource_dist_old_EXIT_BMP
-//size =     0    1 6966 dist/old/EXIT.BMP
-const unsigned char resource_dist_old_EXIT_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/EXIT.BMP to array resource_resource_old_EXIT_BMP
+//size =     0    1 6966 resource/old/EXIT.BMP
+const unsigned char resource_resource_old_EXIT_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -13835,9 +13868,12 @@ const unsigned char resource_dist_old_EXIT_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/HORZ.BMP to array resource_dist_old_HORZ_BMP
-//size =     0    1 5814 dist/old/HORZ.BMP
-const unsigned char resource_dist_old_HORZ_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/HORZ.BMP to array resource_resource_old_HORZ_BMP
+//size =     0    1 5814 resource/old/HORZ.BMP
+const unsigned char resource_resource_old_HORZ_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -14324,9 +14360,12 @@ const unsigned char resource_dist_old_HORZ_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/ICONIZE.BMP to array resource_dist_old_ICONIZE_BMP
-//size =     0    1 6966 dist/old/ICONIZE.BMP
-const unsigned char resource_dist_old_ICONIZE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/ICONIZE.BMP to array resource_resource_old_ICONIZE_BMP
+//size =     0    1 6966 resource/old/ICONIZE.BMP
+const unsigned char resource_resource_old_ICONIZE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -14909,9 +14948,12 @@ const unsigned char resource_dist_old_ICONIZE_BMP[] __attribute__ ((aligned (32)
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/L1.BMP to array resource_dist_old_L1_BMP
-//size =     0    1 5814 dist/old/L1.BMP
-const unsigned char resource_dist_old_L1_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/L1.BMP to array resource_resource_old_L1_BMP
+//size =     0    1 5814 resource/old/L1.BMP
+const unsigned char resource_resource_old_L1_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -15398,9 +15440,12 @@ const unsigned char resource_dist_old_L1_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/L2.BMP to array resource_dist_old_L2_BMP
-//size =     0    1 5814 dist/old/L2.BMP
-const unsigned char resource_dist_old_L2_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/L2.BMP to array resource_resource_old_L2_BMP
+//size =     0    1 5814 resource/old/L2.BMP
+const unsigned char resource_resource_old_L2_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -15887,9 +15932,12 @@ const unsigned char resource_dist_old_L2_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/L3.BMP to array resource_dist_old_L3_BMP
-//size =     0    1 5814 dist/old/L3.BMP
-const unsigned char resource_dist_old_L3_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/L3.BMP to array resource_resource_old_L3_BMP
+//size =     0    1 5814 resource/old/L3.BMP
+const unsigned char resource_resource_old_L3_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -16376,9 +16424,12 @@ const unsigned char resource_dist_old_L3_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/L4.BMP to array resource_dist_old_L4_BMP
-//size =     0    1 5814 dist/old/L4.BMP
-const unsigned char resource_dist_old_L4_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/L4.BMP to array resource_resource_old_L4_BMP
+//size =     0    1 5814 resource/old/L4.BMP
+const unsigned char resource_resource_old_L4_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -16865,9 +16916,12 @@ const unsigned char resource_dist_old_L4_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/MAXIMIZE.BMP to array resource_dist_old_MAXIMIZE_BMP
-//size =     0    1 6966 dist/old/MAXIMIZE.BMP
-const unsigned char resource_dist_old_MAXIMIZE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/MAXIMIZE.BMP to array resource_resource_old_MAXIMIZE_BMP
+//size =     0    1 6966 resource/old/MAXIMIZE.BMP
+const unsigned char resource_resource_old_MAXIMIZE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -17450,9 +17504,12 @@ const unsigned char resource_dist_old_MAXIMIZE_BMP[] __attribute__ ((aligned (32
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/MEDIALIZE.BMP to array resource_dist_old_MEDIALIZE_BMP
-//size =     0    1 6966 dist/old/MEDIALIZE.BMP
-const unsigned char resource_dist_old_MEDIALIZE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/MEDIALIZE.BMP to array resource_resource_old_MEDIALIZE_BMP
+//size =     0    1 6966 resource/old/MEDIALIZE.BMP
+const unsigned char resource_resource_old_MEDIALIZE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -18035,9 +18092,12 @@ const unsigned char resource_dist_old_MEDIALIZE_BMP[] __attribute__ ((aligned (3
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/MOVE.BMP to array resource_dist_old_MOVE_BMP
-//size =     0    1 6966 dist/old/MOVE.BMP
-const unsigned char resource_dist_old_MOVE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/MOVE.BMP to array resource_resource_old_MOVE_BMP
+//size =     0    1 6966 resource/old/MOVE.BMP
+const unsigned char resource_resource_old_MOVE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -18620,9 +18680,12 @@ const unsigned char resource_dist_old_MOVE_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/NEW.BMP to array resource_dist_old_NEW_BMP
-//size =     0    3 3126 dist/old/NEW.BMP
-const unsigned char resource_dist_old_NEW_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/NEW.BMP to array resource_resource_old_NEW_BMP
+//size =     0    3 3126 resource/old/NEW.BMP
+const unsigned char resource_resource_old_NEW_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x20, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c,
@@ -18885,9 +18948,12 @@ const unsigned char resource_dist_old_NEW_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/OPEN.BMP to array resource_dist_old_OPEN_BMP
-//size =     0    3 3126 dist/old/OPEN.BMP
-const unsigned char resource_dist_old_OPEN_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/OPEN.BMP to array resource_resource_old_OPEN_BMP
+//size =     0    3 3126 resource/old/OPEN.BMP
+const unsigned char resource_resource_old_OPEN_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x20, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c,
@@ -19150,9 +19216,12 @@ const unsigned char resource_dist_old_OPEN_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/OR.BMP to array resource_dist_old_OR_BMP
-//size =     0    1 5814 dist/old/OR.BMP
-const unsigned char resource_dist_old_OR_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/OR.BMP to array resource_resource_old_OR_BMP
+//size =     0    1 5814 resource/old/OR.BMP
+const unsigned char resource_resource_old_OR_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -19639,9 +19708,12 @@ const unsigned char resource_dist_old_OR_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/PASTE.BMP to array resource_dist_old_PASTE_BMP
-//size =     1   12 3126 dist/old/PASTE.BMP
-const unsigned char resource_dist_old_PASTE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/PASTE.BMP to array resource_resource_old_PASTE_BMP
+//size =     1   12 3126 resource/old/PASTE.BMP
+const unsigned char resource_resource_old_PASTE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x20, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c,
@@ -19904,9 +19976,12 @@ const unsigned char resource_dist_old_PASTE_BMP[] __attribute__ ((aligned (32)))
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/REDO.BMP to array resource_dist_old_REDO_BMP
-//size =     0    1 6966 dist/old/REDO.BMP
-const unsigned char resource_dist_old_REDO_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/REDO.BMP to array resource_resource_old_REDO_BMP
+//size =     0    1 6966 resource/old/REDO.BMP
+const unsigned char resource_resource_old_REDO_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -20489,9 +20564,12 @@ const unsigned char resource_dist_old_REDO_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/RELE.BMP to array resource_dist_old_RELE_BMP
-//size =     0    1 5814 dist/old/RELE.BMP
-const unsigned char resource_dist_old_RELE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/RELE.BMP to array resource_resource_old_RELE_BMP
+//size =     0    1 5814 resource/old/RELE.BMP
+const unsigned char resource_resource_old_RELE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -20978,9 +21056,12 @@ const unsigned char resource_dist_old_RELE_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/SAVE.BMP to array resource_dist_old_SAVE_BMP
-//size =     0    3 3126 dist/old/SAVE.BMP
-const unsigned char resource_dist_old_SAVE_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/SAVE.BMP to array resource_resource_old_SAVE_BMP
+//size =     0    3 3126 resource/old/SAVE.BMP
+const unsigned char resource_resource_old_SAVE_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x20, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c,
@@ -21243,9 +21324,12 @@ const unsigned char resource_dist_old_SAVE_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/SELCONNECT.BMP to array resource_dist_old_SELCONNECT_BMP
-//size =     0    1 5814 dist/old/SELCONNECT.BMP
-const unsigned char resource_dist_old_SELCONNECT_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/SELCONNECT.BMP to array resource_resource_old_SELCONNECT_BMP
+//size =     0    1 5814 resource/old/SELCONNECT.BMP
+const unsigned char resource_resource_old_SELCONNECT_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -21732,9 +21816,12 @@ const unsigned char resource_dist_old_SELCONNECT_BMP[] __attribute__ ((aligned (
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x24, 0x1c, 0xed, 0x24, 0x1c, 0xed,
   0x24, 0x1c, 0xed, 0x24, 0x1c, 0xed
 };
-//image of file dist/old/SETTING.BMP to array resource_dist_old_SETTING_BMP
-//size =     0    1 6966 dist/old/SETTING.BMP
-const unsigned char resource_dist_old_SETTING_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/SETTING.BMP to array resource_resource_old_SETTING_BMP
+//size =     0    1 6966 resource/old/SETTING.BMP
+const unsigned char resource_resource_old_SETTING_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -22317,9 +22404,12 @@ const unsigned char resource_dist_old_SETTING_BMP[] __attribute__ ((aligned (32)
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/SHL.BMP to array resource_dist_old_SHL_BMP
-//size =     0    1 6966 dist/old/SHL.BMP
-const unsigned char resource_dist_old_SHL_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/SHL.BMP to array resource_resource_old_SHL_BMP
+//size =     0    1 6966 resource/old/SHL.BMP
+const unsigned char resource_resource_old_SHL_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -22902,9 +22992,12 @@ const unsigned char resource_dist_old_SHL_BMP[] __attribute__ ((aligned (32)))={
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-//image of file dist/old/SHR.BMP to array resource_dist_old_SHR_BMP
-//size =     0    1 6966 dist/old/SHR.BMP
-const unsigned char resource_dist_old_SHR_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/SHR.BMP to array resource_resource_old_SHR_BMP
+//size =     0    1 6966 resource/old/SHR.BMP
+const unsigned char resource_resource_old_SHR_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -23487,9 +23580,12 @@ const unsigned char resource_dist_old_SHR_BMP[] __attribute__ ((aligned (32)))={
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-//image of file dist/old/SVD.BMP to array resource_dist_old_SVD_BMP
-//size =     0    1 6966 dist/old/SVD.BMP
-const unsigned char resource_dist_old_SVD_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/SVD.BMP to array resource_resource_old_SVD_BMP
+//size =     0    1 6966 resource/old/SVD.BMP
+const unsigned char resource_resource_old_SVD_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -24072,9 +24168,12 @@ const unsigned char resource_dist_old_SVD_BMP[] __attribute__ ((aligned (32)))={
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-//image of file dist/old/SVU.BMP to array resource_dist_old_SVU_BMP
-//size =     0    1 6966 dist/old/SVU.BMP
-const unsigned char resource_dist_old_SVU_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/SVU.BMP to array resource_resource_old_SVU_BMP
+//size =     0    1 6966 resource/old/SVU.BMP
+const unsigned char resource_resource_old_SVU_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -24657,9 +24756,12 @@ const unsigned char resource_dist_old_SVU_BMP[] __attribute__ ((aligned (32)))={
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-//image of file dist/old/T1.BMP to array resource_dist_old_T1_BMP
-//size =     0    1 5814 dist/old/T1.BMP
-const unsigned char resource_dist_old_T1_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/T1.BMP to array resource_resource_old_T1_BMP
+//size =     0    1 5814 resource/old/T1.BMP
+const unsigned char resource_resource_old_T1_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -25146,9 +25248,12 @@ const unsigned char resource_dist_old_T1_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/T2.BMP to array resource_dist_old_T2_BMP
-//size =     0    1 5814 dist/old/T2.BMP
-const unsigned char resource_dist_old_T2_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/T2.BMP to array resource_resource_old_T2_BMP
+//size =     0    1 5814 resource/old/T2.BMP
+const unsigned char resource_resource_old_T2_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -25635,9 +25740,12 @@ const unsigned char resource_dist_old_T2_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/T3.BMP to array resource_dist_old_T3_BMP
-//size =     0    1 5814 dist/old/T3.BMP
-const unsigned char resource_dist_old_T3_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/T3.BMP to array resource_resource_old_T3_BMP
+//size =     0    1 5814 resource/old/T3.BMP
+const unsigned char resource_resource_old_T3_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -26124,9 +26232,12 @@ const unsigned char resource_dist_old_T3_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/T4.BMP to array resource_dist_old_T4_BMP
-//size =     0    1 5814 dist/old/T4.BMP
-const unsigned char resource_dist_old_T4_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/T4.BMP to array resource_resource_old_T4_BMP
+//size =     0    1 5814 resource/old/T4.BMP
+const unsigned char resource_resource_old_T4_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -26613,9 +26724,12 @@ const unsigned char resource_dist_old_T4_BMP[] __attribute__ ((aligned (32)))={
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
-//image of file dist/old/UNDO.BMP to array resource_dist_old_UNDO_BMP
-//size =     0    1 6966 dist/old/UNDO.BMP
-const unsigned char resource_dist_old_UNDO_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/UNDO.BMP to array resource_resource_old_UNDO_BMP
+//size =     0    1 6966 resource/old/UNDO.BMP
+const unsigned char resource_resource_old_UNDO_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0x36, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b,
@@ -27198,9 +27312,12 @@ const unsigned char resource_dist_old_UNDO_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-//image of file dist/old/VERT.BMP to array resource_dist_old_VERT_BMP
-//size =     0    1 5814 dist/old/VERT.BMP
-const unsigned char resource_dist_old_VERT_BMP[] __attribute__ ((aligned (32)))={
+
+
+
+//declare image of file resource/old/VERT.BMP to array resource_resource_old_VERT_BMP
+//size =     0    1 5814 resource/old/VERT.BMP
+const unsigned char resource_resource_old_VERT_BMP[] __attribute__ ((aligned (32)))={
   0x42, 0x4d, 0xb6, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
   0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x30, 0x00,
   0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x16,
@@ -27687,3 +27804,299 @@ const unsigned char resource_dist_old_VERT_BMP[] __attribute__ ((aligned (32)))=
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0
 };
+
+
+
+int nnResource::Get(const char *file,const unsigned char ** ptr,size_t *size){
+int res=-1;
+std::map<const char *,memresource >::iterator it=appResource.find(file);
+if( it!=appResource.end()) {
+	*ptr=it->second.resource;
+	*size=it->second.size;
+	res=0;
+	}
+return res;
+}
+
+
+
+void nnResource::Init(void){
+memresource res;
+res.set("resource/conf_utf16.xml",resource_resource_conf_utf16_xml,sizeof(resource_resource_conf_utf16_xml));
+appResource["resource/conf_utf16.xml"]=res;
+res.set("resource/conf_utf8.xml",resource_resource_conf_utf8_xml,sizeof(resource_resource_conf_utf8_xml));
+appResource["resource/conf_utf8.xml"]=res;
+res.set("resource/old/AND.BMP",resource_resource_old_AND_BMP,sizeof(resource_resource_old_AND_BMP));
+appResource["resource/old/AND.BMP"]=res;
+res.set("resource/old/BORDER.BMP",resource_resource_old_BORDER_BMP,sizeof(resource_resource_old_BORDER_BMP));
+appResource["resource/old/BORDER.BMP"]=res;
+res.set("resource/old/CLOSE.BMP",resource_resource_old_CLOSE_BMP,sizeof(resource_resource_old_CLOSE_BMP));
+appResource["resource/old/CLOSE.BMP"]=res;
+res.set("resource/old/COIL.BMP",resource_resource_old_COIL_BMP,sizeof(resource_resource_old_COIL_BMP));
+appResource["resource/old/COIL.BMP"]=res;
+res.set("resource/old/CONNECT.BMP",resource_resource_old_CONNECT_BMP,sizeof(resource_resource_old_CONNECT_BMP));
+appResource["resource/old/CONNECT.BMP"]=res;
+res.set("resource/old/CONTACTNC.BMP",resource_resource_old_CONTACTNC_BMP,sizeof(resource_resource_old_CONTACTNC_BMP));
+appResource["resource/old/CONTACTNC.BMP"]=res;
+res.set("resource/old/CONTACTNO.BMP",resource_resource_old_CONTACTNO_BMP,sizeof(resource_resource_old_CONTACTNO_BMP));
+appResource["resource/old/CONTACTNO.BMP"]=res;
+res.set("resource/old/COPY.BMP",resource_resource_old_COPY_BMP,sizeof(resource_resource_old_COPY_BMP));
+appResource["resource/old/COPY.BMP"]=res;
+res.set("resource/old/Courier_10_14/100_10_14.bmp",resource_resource_old_Courier_10_14_100_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_100_10_14_bmp));
+appResource["resource/old/Courier_10_14/100_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/101_10_14.bmp",resource_resource_old_Courier_10_14_101_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_101_10_14_bmp));
+appResource["resource/old/Courier_10_14/101_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/102_10_14.bmp",resource_resource_old_Courier_10_14_102_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_102_10_14_bmp));
+appResource["resource/old/Courier_10_14/102_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/103_10_14.bmp",resource_resource_old_Courier_10_14_103_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_103_10_14_bmp));
+appResource["resource/old/Courier_10_14/103_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/104_10_14.bmp",resource_resource_old_Courier_10_14_104_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_104_10_14_bmp));
+appResource["resource/old/Courier_10_14/104_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/105_10_14.bmp",resource_resource_old_Courier_10_14_105_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_105_10_14_bmp));
+appResource["resource/old/Courier_10_14/105_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/106_10_14.bmp",resource_resource_old_Courier_10_14_106_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_106_10_14_bmp));
+appResource["resource/old/Courier_10_14/106_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/107_10_14.bmp",resource_resource_old_Courier_10_14_107_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_107_10_14_bmp));
+appResource["resource/old/Courier_10_14/107_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/108_10_14.bmp",resource_resource_old_Courier_10_14_108_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_108_10_14_bmp));
+appResource["resource/old/Courier_10_14/108_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/109_10_14.bmp",resource_resource_old_Courier_10_14_109_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_109_10_14_bmp));
+appResource["resource/old/Courier_10_14/109_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/110_10_14.bmp",resource_resource_old_Courier_10_14_110_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_110_10_14_bmp));
+appResource["resource/old/Courier_10_14/110_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/111_10_14.bmp",resource_resource_old_Courier_10_14_111_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_111_10_14_bmp));
+appResource["resource/old/Courier_10_14/111_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/112_10_14.bmp",resource_resource_old_Courier_10_14_112_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_112_10_14_bmp));
+appResource["resource/old/Courier_10_14/112_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/113_10_14.bmp",resource_resource_old_Courier_10_14_113_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_113_10_14_bmp));
+appResource["resource/old/Courier_10_14/113_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/114_10_14.bmp",resource_resource_old_Courier_10_14_114_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_114_10_14_bmp));
+appResource["resource/old/Courier_10_14/114_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/115_10_14.bmp",resource_resource_old_Courier_10_14_115_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_115_10_14_bmp));
+appResource["resource/old/Courier_10_14/115_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/116_10_14.bmp",resource_resource_old_Courier_10_14_116_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_116_10_14_bmp));
+appResource["resource/old/Courier_10_14/116_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/117_10_14.bmp",resource_resource_old_Courier_10_14_117_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_117_10_14_bmp));
+appResource["resource/old/Courier_10_14/117_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/118_10_14.bmp",resource_resource_old_Courier_10_14_118_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_118_10_14_bmp));
+appResource["resource/old/Courier_10_14/118_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/119_10_14.bmp",resource_resource_old_Courier_10_14_119_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_119_10_14_bmp));
+appResource["resource/old/Courier_10_14/119_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/120_10_14.bmp",resource_resource_old_Courier_10_14_120_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_120_10_14_bmp));
+appResource["resource/old/Courier_10_14/120_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/121_10_14.bmp",resource_resource_old_Courier_10_14_121_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_121_10_14_bmp));
+appResource["resource/old/Courier_10_14/121_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/122_10_14.bmp",resource_resource_old_Courier_10_14_122_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_122_10_14_bmp));
+appResource["resource/old/Courier_10_14/122_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/123_10_14.bmp",resource_resource_old_Courier_10_14_123_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_123_10_14_bmp));
+appResource["resource/old/Courier_10_14/123_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/124_10_14.bmp",resource_resource_old_Courier_10_14_124_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_124_10_14_bmp));
+appResource["resource/old/Courier_10_14/124_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/125_10_14.bmp",resource_resource_old_Courier_10_14_125_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_125_10_14_bmp));
+appResource["resource/old/Courier_10_14/125_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/126_10_14.bmp",resource_resource_old_Courier_10_14_126_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_126_10_14_bmp));
+appResource["resource/old/Courier_10_14/126_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/32_10_14.bmp",resource_resource_old_Courier_10_14_32_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_32_10_14_bmp));
+appResource["resource/old/Courier_10_14/32_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/33_10_14.bmp",resource_resource_old_Courier_10_14_33_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_33_10_14_bmp));
+appResource["resource/old/Courier_10_14/33_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/34_10_14.bmp",resource_resource_old_Courier_10_14_34_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_34_10_14_bmp));
+appResource["resource/old/Courier_10_14/34_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/35_10_14.bmp",resource_resource_old_Courier_10_14_35_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_35_10_14_bmp));
+appResource["resource/old/Courier_10_14/35_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/36_10_14.bmp",resource_resource_old_Courier_10_14_36_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_36_10_14_bmp));
+appResource["resource/old/Courier_10_14/36_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/37_10_14.bmp",resource_resource_old_Courier_10_14_37_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_37_10_14_bmp));
+appResource["resource/old/Courier_10_14/37_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/38_10_14.bmp",resource_resource_old_Courier_10_14_38_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_38_10_14_bmp));
+appResource["resource/old/Courier_10_14/38_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/39_10_14.bmp",resource_resource_old_Courier_10_14_39_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_39_10_14_bmp));
+appResource["resource/old/Courier_10_14/39_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/40_10_14.bmp",resource_resource_old_Courier_10_14_40_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_40_10_14_bmp));
+appResource["resource/old/Courier_10_14/40_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/41_10_14.bmp",resource_resource_old_Courier_10_14_41_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_41_10_14_bmp));
+appResource["resource/old/Courier_10_14/41_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/42_10_14.bmp",resource_resource_old_Courier_10_14_42_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_42_10_14_bmp));
+appResource["resource/old/Courier_10_14/42_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/43_10_14.bmp",resource_resource_old_Courier_10_14_43_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_43_10_14_bmp));
+appResource["resource/old/Courier_10_14/43_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/44_10_14.bmp",resource_resource_old_Courier_10_14_44_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_44_10_14_bmp));
+appResource["resource/old/Courier_10_14/44_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/45_10_14.bmp",resource_resource_old_Courier_10_14_45_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_45_10_14_bmp));
+appResource["resource/old/Courier_10_14/45_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/46_10_14.bmp",resource_resource_old_Courier_10_14_46_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_46_10_14_bmp));
+appResource["resource/old/Courier_10_14/46_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/47_10_14.bmp",resource_resource_old_Courier_10_14_47_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_47_10_14_bmp));
+appResource["resource/old/Courier_10_14/47_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/48_10_14.bmp",resource_resource_old_Courier_10_14_48_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_48_10_14_bmp));
+appResource["resource/old/Courier_10_14/48_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/49_10_14.bmp",resource_resource_old_Courier_10_14_49_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_49_10_14_bmp));
+appResource["resource/old/Courier_10_14/49_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/50_10_14.bmp",resource_resource_old_Courier_10_14_50_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_50_10_14_bmp));
+appResource["resource/old/Courier_10_14/50_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/51_10_14.bmp",resource_resource_old_Courier_10_14_51_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_51_10_14_bmp));
+appResource["resource/old/Courier_10_14/51_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/52_10_14.bmp",resource_resource_old_Courier_10_14_52_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_52_10_14_bmp));
+appResource["resource/old/Courier_10_14/52_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/53_10_14.bmp",resource_resource_old_Courier_10_14_53_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_53_10_14_bmp));
+appResource["resource/old/Courier_10_14/53_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/54_10_14.bmp",resource_resource_old_Courier_10_14_54_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_54_10_14_bmp));
+appResource["resource/old/Courier_10_14/54_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/55_10_14.bmp",resource_resource_old_Courier_10_14_55_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_55_10_14_bmp));
+appResource["resource/old/Courier_10_14/55_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/56_10_14.bmp",resource_resource_old_Courier_10_14_56_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_56_10_14_bmp));
+appResource["resource/old/Courier_10_14/56_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/57_10_14.bmp",resource_resource_old_Courier_10_14_57_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_57_10_14_bmp));
+appResource["resource/old/Courier_10_14/57_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/58_10_14.bmp",resource_resource_old_Courier_10_14_58_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_58_10_14_bmp));
+appResource["resource/old/Courier_10_14/58_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/59_10_14.bmp",resource_resource_old_Courier_10_14_59_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_59_10_14_bmp));
+appResource["resource/old/Courier_10_14/59_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/60_10_14.bmp",resource_resource_old_Courier_10_14_60_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_60_10_14_bmp));
+appResource["resource/old/Courier_10_14/60_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/61_10_14.bmp",resource_resource_old_Courier_10_14_61_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_61_10_14_bmp));
+appResource["resource/old/Courier_10_14/61_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/62_10_14.bmp",resource_resource_old_Courier_10_14_62_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_62_10_14_bmp));
+appResource["resource/old/Courier_10_14/62_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/63_10_14.bmp",resource_resource_old_Courier_10_14_63_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_63_10_14_bmp));
+appResource["resource/old/Courier_10_14/63_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/64_10_14.bmp",resource_resource_old_Courier_10_14_64_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_64_10_14_bmp));
+appResource["resource/old/Courier_10_14/64_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/65_10_14.bmp",resource_resource_old_Courier_10_14_65_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_65_10_14_bmp));
+appResource["resource/old/Courier_10_14/65_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/66_10_14.bmp",resource_resource_old_Courier_10_14_66_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_66_10_14_bmp));
+appResource["resource/old/Courier_10_14/66_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/67_10_14.bmp",resource_resource_old_Courier_10_14_67_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_67_10_14_bmp));
+appResource["resource/old/Courier_10_14/67_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/68_10_14.bmp",resource_resource_old_Courier_10_14_68_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_68_10_14_bmp));
+appResource["resource/old/Courier_10_14/68_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/69_10_14.bmp",resource_resource_old_Courier_10_14_69_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_69_10_14_bmp));
+appResource["resource/old/Courier_10_14/69_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/70_10_14.bmp",resource_resource_old_Courier_10_14_70_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_70_10_14_bmp));
+appResource["resource/old/Courier_10_14/70_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/71_10_14.bmp",resource_resource_old_Courier_10_14_71_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_71_10_14_bmp));
+appResource["resource/old/Courier_10_14/71_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/72_10_14.bmp",resource_resource_old_Courier_10_14_72_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_72_10_14_bmp));
+appResource["resource/old/Courier_10_14/72_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/73_10_14.bmp",resource_resource_old_Courier_10_14_73_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_73_10_14_bmp));
+appResource["resource/old/Courier_10_14/73_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/74_10_14.bmp",resource_resource_old_Courier_10_14_74_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_74_10_14_bmp));
+appResource["resource/old/Courier_10_14/74_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/75_10_14.bmp",resource_resource_old_Courier_10_14_75_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_75_10_14_bmp));
+appResource["resource/old/Courier_10_14/75_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/76_10_14.bmp",resource_resource_old_Courier_10_14_76_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_76_10_14_bmp));
+appResource["resource/old/Courier_10_14/76_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/77_10_14.bmp",resource_resource_old_Courier_10_14_77_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_77_10_14_bmp));
+appResource["resource/old/Courier_10_14/77_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/78_10_14.bmp",resource_resource_old_Courier_10_14_78_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_78_10_14_bmp));
+appResource["resource/old/Courier_10_14/78_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/79_10_14.bmp",resource_resource_old_Courier_10_14_79_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_79_10_14_bmp));
+appResource["resource/old/Courier_10_14/79_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/80_10_14.bmp",resource_resource_old_Courier_10_14_80_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_80_10_14_bmp));
+appResource["resource/old/Courier_10_14/80_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/81_10_14.bmp",resource_resource_old_Courier_10_14_81_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_81_10_14_bmp));
+appResource["resource/old/Courier_10_14/81_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/82_10_14.bmp",resource_resource_old_Courier_10_14_82_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_82_10_14_bmp));
+appResource["resource/old/Courier_10_14/82_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/83_10_14.bmp",resource_resource_old_Courier_10_14_83_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_83_10_14_bmp));
+appResource["resource/old/Courier_10_14/83_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/84_10_14.bmp",resource_resource_old_Courier_10_14_84_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_84_10_14_bmp));
+appResource["resource/old/Courier_10_14/84_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/85_10_14.bmp",resource_resource_old_Courier_10_14_85_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_85_10_14_bmp));
+appResource["resource/old/Courier_10_14/85_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/86_10_14.bmp",resource_resource_old_Courier_10_14_86_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_86_10_14_bmp));
+appResource["resource/old/Courier_10_14/86_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/87_10_14.bmp",resource_resource_old_Courier_10_14_87_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_87_10_14_bmp));
+appResource["resource/old/Courier_10_14/87_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/88_10_14.bmp",resource_resource_old_Courier_10_14_88_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_88_10_14_bmp));
+appResource["resource/old/Courier_10_14/88_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/89_10_14.bmp",resource_resource_old_Courier_10_14_89_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_89_10_14_bmp));
+appResource["resource/old/Courier_10_14/89_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/90_10_14.bmp",resource_resource_old_Courier_10_14_90_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_90_10_14_bmp));
+appResource["resource/old/Courier_10_14/90_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/91_10_14.bmp",resource_resource_old_Courier_10_14_91_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_91_10_14_bmp));
+appResource["resource/old/Courier_10_14/91_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/92_10_14.bmp",resource_resource_old_Courier_10_14_92_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_92_10_14_bmp));
+appResource["resource/old/Courier_10_14/92_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/93_10_14.bmp",resource_resource_old_Courier_10_14_93_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_93_10_14_bmp));
+appResource["resource/old/Courier_10_14/93_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/94_10_14.bmp",resource_resource_old_Courier_10_14_94_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_94_10_14_bmp));
+appResource["resource/old/Courier_10_14/94_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/95_10_14.bmp",resource_resource_old_Courier_10_14_95_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_95_10_14_bmp));
+appResource["resource/old/Courier_10_14/95_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/96_10_14.bmp",resource_resource_old_Courier_10_14_96_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_96_10_14_bmp));
+appResource["resource/old/Courier_10_14/96_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/97_10_14.bmp",resource_resource_old_Courier_10_14_97_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_97_10_14_bmp));
+appResource["resource/old/Courier_10_14/97_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/98_10_14.bmp",resource_resource_old_Courier_10_14_98_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_98_10_14_bmp));
+appResource["resource/old/Courier_10_14/98_10_14.bmp"]=res;
+res.set("resource/old/Courier_10_14/99_10_14.bmp",resource_resource_old_Courier_10_14_99_10_14_bmp,sizeof(resource_resource_old_Courier_10_14_99_10_14_bmp));
+appResource["resource/old/Courier_10_14/99_10_14.bmp"]=res;
+res.set("resource/old/CROSS.BMP",resource_resource_old_CROSS_BMP,sizeof(resource_resource_old_CROSS_BMP));
+appResource["resource/old/CROSS.BMP"]=res;
+res.set("resource/old/CUT.BMP",resource_resource_old_CUT_BMP,sizeof(resource_resource_old_CUT_BMP));
+appResource["resource/old/CUT.BMP"]=res;
+res.set("resource/old/DELETE.BMP",resource_resource_old_DELETE_BMP,sizeof(resource_resource_old_DELETE_BMP));
+appResource["resource/old/DELETE.BMP"]=res;
+res.set("resource/old/EXIT.BMP",resource_resource_old_EXIT_BMP,sizeof(resource_resource_old_EXIT_BMP));
+appResource["resource/old/EXIT.BMP"]=res;
+res.set("resource/old/HORZ.BMP",resource_resource_old_HORZ_BMP,sizeof(resource_resource_old_HORZ_BMP));
+appResource["resource/old/HORZ.BMP"]=res;
+res.set("resource/old/ICONIZE.BMP",resource_resource_old_ICONIZE_BMP,sizeof(resource_resource_old_ICONIZE_BMP));
+appResource["resource/old/ICONIZE.BMP"]=res;
+res.set("resource/old/L1.BMP",resource_resource_old_L1_BMP,sizeof(resource_resource_old_L1_BMP));
+appResource["resource/old/L1.BMP"]=res;
+res.set("resource/old/L2.BMP",resource_resource_old_L2_BMP,sizeof(resource_resource_old_L2_BMP));
+appResource["resource/old/L2.BMP"]=res;
+res.set("resource/old/L3.BMP",resource_resource_old_L3_BMP,sizeof(resource_resource_old_L3_BMP));
+appResource["resource/old/L3.BMP"]=res;
+res.set("resource/old/L4.BMP",resource_resource_old_L4_BMP,sizeof(resource_resource_old_L4_BMP));
+appResource["resource/old/L4.BMP"]=res;
+res.set("resource/old/MAXIMIZE.BMP",resource_resource_old_MAXIMIZE_BMP,sizeof(resource_resource_old_MAXIMIZE_BMP));
+appResource["resource/old/MAXIMIZE.BMP"]=res;
+res.set("resource/old/MEDIALIZE.BMP",resource_resource_old_MEDIALIZE_BMP,sizeof(resource_resource_old_MEDIALIZE_BMP));
+appResource["resource/old/MEDIALIZE.BMP"]=res;
+res.set("resource/old/MOVE.BMP",resource_resource_old_MOVE_BMP,sizeof(resource_resource_old_MOVE_BMP));
+appResource["resource/old/MOVE.BMP"]=res;
+res.set("resource/old/NEW.BMP",resource_resource_old_NEW_BMP,sizeof(resource_resource_old_NEW_BMP));
+appResource["resource/old/NEW.BMP"]=res;
+res.set("resource/old/OPEN.BMP",resource_resource_old_OPEN_BMP,sizeof(resource_resource_old_OPEN_BMP));
+appResource["resource/old/OPEN.BMP"]=res;
+res.set("resource/old/OR.BMP",resource_resource_old_OR_BMP,sizeof(resource_resource_old_OR_BMP));
+appResource["resource/old/OR.BMP"]=res;
+res.set("resource/old/PASTE.BMP",resource_resource_old_PASTE_BMP,sizeof(resource_resource_old_PASTE_BMP));
+appResource["resource/old/PASTE.BMP"]=res;
+res.set("resource/old/REDO.BMP",resource_resource_old_REDO_BMP,sizeof(resource_resource_old_REDO_BMP));
+appResource["resource/old/REDO.BMP"]=res;
+res.set("resource/old/RELE.BMP",resource_resource_old_RELE_BMP,sizeof(resource_resource_old_RELE_BMP));
+appResource["resource/old/RELE.BMP"]=res;
+res.set("resource/old/SAVE.BMP",resource_resource_old_SAVE_BMP,sizeof(resource_resource_old_SAVE_BMP));
+appResource["resource/old/SAVE.BMP"]=res;
+res.set("resource/old/SELCONNECT.BMP",resource_resource_old_SELCONNECT_BMP,sizeof(resource_resource_old_SELCONNECT_BMP));
+appResource["resource/old/SELCONNECT.BMP"]=res;
+res.set("resource/old/SETTING.BMP",resource_resource_old_SETTING_BMP,sizeof(resource_resource_old_SETTING_BMP));
+appResource["resource/old/SETTING.BMP"]=res;
+res.set("resource/old/SHL.BMP",resource_resource_old_SHL_BMP,sizeof(resource_resource_old_SHL_BMP));
+appResource["resource/old/SHL.BMP"]=res;
+res.set("resource/old/SHR.BMP",resource_resource_old_SHR_BMP,sizeof(resource_resource_old_SHR_BMP));
+appResource["resource/old/SHR.BMP"]=res;
+res.set("resource/old/SVD.BMP",resource_resource_old_SVD_BMP,sizeof(resource_resource_old_SVD_BMP));
+appResource["resource/old/SVD.BMP"]=res;
+res.set("resource/old/SVU.BMP",resource_resource_old_SVU_BMP,sizeof(resource_resource_old_SVU_BMP));
+appResource["resource/old/SVU.BMP"]=res;
+res.set("resource/old/T1.BMP",resource_resource_old_T1_BMP,sizeof(resource_resource_old_T1_BMP));
+appResource["resource/old/T1.BMP"]=res;
+res.set("resource/old/T2.BMP",resource_resource_old_T2_BMP,sizeof(resource_resource_old_T2_BMP));
+appResource["resource/old/T2.BMP"]=res;
+res.set("resource/old/T3.BMP",resource_resource_old_T3_BMP,sizeof(resource_resource_old_T3_BMP));
+appResource["resource/old/T3.BMP"]=res;
+res.set("resource/old/T4.BMP",resource_resource_old_T4_BMP,sizeof(resource_resource_old_T4_BMP));
+appResource["resource/old/T4.BMP"]=res;
+res.set("resource/old/UNDO.BMP",resource_resource_old_UNDO_BMP,sizeof(resource_resource_old_UNDO_BMP));
+appResource["resource/old/UNDO.BMP"]=res;
+res.set("resource/old/VERT.BMP",resource_resource_old_VERT_BMP,sizeof(resource_resource_old_VERT_BMP));
+appResource["resource/old/VERT.BMP"]=res;
+}
+
+
+

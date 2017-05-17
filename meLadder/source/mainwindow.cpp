@@ -155,17 +155,7 @@ void MainWindow::init()
     {
         IChild *client=nullptr;
         try {
-            QString   path=qApp->applicationDirPath();
-#ifdef __APPLE__
-                    path+=X("/../../..");
-#else
-#ifdef __ANDROID__
-           path=X("assets:/");
-#else
-            path+=X("/");
-
-#endif
-#endif
+           STRING path="resource/";
 
            STRING file;
 
@@ -176,8 +166,7 @@ void MainWindow::init()
 #endif
 
 
-            STRING conf=path.FROMQSTRING();
-            client=n2App->createObjects(file,conf);
+            client=n2App->createObjects(file,path);
         }
         catch(n2exception *e)
         {
@@ -566,6 +555,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             break;
         case Qt::Key_Down:
             res=handler->handlerDownButton(shift,ctrl,alt);
+            break;
+        default:
             break;
         }
     }

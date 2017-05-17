@@ -302,12 +302,12 @@ bool nnObjManager::save(const STRING & name)
     int num_obj = 0;
     if (!name.empty())
     {
-        UtoA toA(name);
-#ifdef _MSC_VER
-        FILE *out = FOPEN(toA.utf8(),"w+");
-#else
-        FILE *out = FOPEN(toA.utf8(), "w+");
+#ifdef __ANDROID__
+        STRING newname="data:/"+name;
+        name=newname;
 #endif
+        UtoA toA(name);      
+        FILE *out = fopen(toA.utf8(), "w+");
         if (out != NULL)
         {
             miniXmlNode root(X("next_v2"), (XCHAR *)X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));

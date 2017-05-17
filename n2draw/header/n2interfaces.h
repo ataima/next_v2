@@ -51,11 +51,6 @@ typedef std::basic_stringstream<char32_t> 	u32stringstream;
 #define  STRCMP   std::char_traits<char32_t>::compare
 #define  ATOL     atol
 #define  FROMQSTRING()   toStdU32String()
-#ifdef _MSC_VER
-#define  FOPEN    fopen
-#else
-#define  FOPEN    fopen
-#endif
 #define  X(msg)   l##msg
 #else
 #ifdef _UNICODE
@@ -69,15 +64,6 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #define  STRCMP   std::char_traits<char16_t>::compare
 #define  ATOL     atol
 #define  FROMQSTRING()   toStdU16String()
-#ifdef _MSC_VER
-#define  FOPEN    fopen
-#else
-#ifdef __ANDROID__
-#define  FOPEN    android_fopen
-#else
-#define  FOPEN    fopen
-#endif
-#endif
 #define  X(msg)   u##msg
 #else
 #define  XCHAR    char
@@ -89,28 +75,6 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #define  SSTREAMOUT  std::cout
 #define  ATOL     atol
 #define  FROMQSTRING()   toStdString()
-#ifdef _MSC_VER
-#define  FOPEN    fopen
-#define  FCLOSE   fclose
-#define  FSEEK    fseek
-#define  FTELL    ftell
-#define  FREAD    fread
-#else
-#ifdef __ANDROID__
-#define  FOPEN    android_fopen
-#define  FOPEN    android_fopen
-#define  FCLOSE   android_fclose
-#define  FSEEK    android_fseek
-#define  FTELL    android_ftell
-#define  FREAD    android_fread
-#else
-#define  FOPEN    fopen
-#define  FCLOSE   fclose
-#define  FSEEK    fseek
-#define  FTELL    ftell
-#define  FREAD    fread
-#endif
-#endif
 #define  STRCMP   std::char_traits<char>::compare
 #define  X(msg)   msg
 #endif

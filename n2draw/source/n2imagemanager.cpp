@@ -3,6 +3,8 @@
 #include "n2draw.h"
 #include "n2imagemanager.h"
 #include "n2exception.h"
+#include "n2resource.h"
+
 
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -293,11 +295,15 @@ bool nnImageManager::loadImages(void)
         objImageList::iterator _end = availObj.end();
         while (it != _end)
         {
+            const unsigned char *lpbmp=nullptr;
+            size_t sizebmp=0;
             bmpImage image;
             filenameabs = path;
             filenameabs += it->second;
-            if (image.copyFromFile(filenameabs.c_str()))
+            res=nnResource::Get(filenameabs.c_str(),&lpbmp,&sizebmp);
+            if(res==false)
             {
+                    image.attach((LPBITMAPFILEHEADER)(lpbmp));
                     if (image.getBitsPerPixel() < 32)
                         image.convertTo32Bits();
 #if _MSC_VER
