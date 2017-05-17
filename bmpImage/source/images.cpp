@@ -82,7 +82,7 @@ CalculateScanLine(unsigned char *bits, unsigned int pitch, int scanline) {
 
 static inline  unsigned
 CalculateLine(unsigned int width, unsigned int bitdepth) {
-    return (unsigned int )(((unsigned long long)width * bitdepth + 7) / 8);
+    return (unsigned int )(((unsigned long long)(width * bitdepth) + 7) / 8);
 }
 
 static inline  unsigned int
@@ -280,6 +280,16 @@ bool bmpImage::attach(LPBITMAPFILEHEADER p)
     return true;
 }
 
+
+bool bmpImage::clone(LPBITMAPFILEHEADER p){
+    if (m_hBitmap){
+          freeBitmap(m_hBitmap);
+          m_hBitmap=nullptr;
+          }
+    if(p)
+         m_hBitmap=cloneImage(p);
+    return m_hBitmap!=nullptr;
+}
 
 
 bool bmpImage::portrait(bool mirror)
@@ -726,9 +736,9 @@ size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height,un
     // palette is aligned on a 16 bytes boundary
     const size_t header_size = dib_size;
     // pixels are aligned on a 16 bytes boundary
-    dib_size += (size_t)CalculatePitch(CalculateLine(width, deep)) * (size_t)(height+1);
+    dib_size += (size_t)CalculatePitch(CalculateLine(width, deep)) * (size_t)(height /*+1*/);
     const double dPitch = floor(((double)deep * width + 31.0) / 32.0) * 4.0;
-    const double dImageSize = (double)header_size + dPitch * (height+1);
+    const double dImageSize = (double)header_size + dPitch * (height /*+1*/);
     if (dImageSize != (double)dib_size) {
         // here, we are sure to encounter a malloc overflow: try to avoid it ...
         return 0;

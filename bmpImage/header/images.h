@@ -88,6 +88,7 @@ public:
     bool copyFromFile(const XCHAR *name);
     bool copyFrombmpImage(bmpImage & b);
     bool copyToFile(const XCHAR *name);
+    bool clone(LPBITMAPFILEHEADER p);
     bool create( int width,  int height,unsigned int deep,  unsigned char  color);
     bool isValid(void);
     bool clear(void);

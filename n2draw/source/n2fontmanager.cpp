@@ -117,7 +117,7 @@ bool nnFontManager::loadImages(void)
             res=nnResource::Get(filenameabs.c_str(),&lpbmp,&sizebmp);
             if(res==false)
             {
-                    image.attach((LPBITMAPFILEHEADER)(lpbmp));
+                    image.clone((LPBITMAPFILEHEADER)(lpbmp));
                     if (image.getBitsPerPixel() < 32)
                                 image.convertTo32Bits();
                     allImages.Add(it->first, image);

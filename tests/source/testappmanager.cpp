@@ -81,15 +81,19 @@ class test_app_manager
 
 REGISTER_CLASS(test_app_manager);
 
+
+#ifdef _MSC_VER
 void test_app_manager::draw(bmpImage * bmp)
 {
-#ifdef _MSC_VER
     void* dc = ::GetDC(NULL);
     ::StretchDIBits(dc, 0, 0,
         bmp->getWidth(), bmp->getHeight(),
         0, 0, bmp->getWidth(), bmp->getHeight(),
         bmp->getBits(), bmp->getInfo(), 0, SRCCOPY);
     ReleaseDC(NULL, dc);
+#else
+void test_app_manager::draw(bmpImage *)
+{
 #endif
 }
 
@@ -134,13 +138,14 @@ void test_app_manager::test1(void)
     nnConnection::connectComponent(childs->getManager(), p1, p2);
     res = childs->getView()->updateDraw();
     CA_ASSERT(res == true);
+    unsigned int i,a;
     bmpImage &bdraw = childs->getView()->getDraw();
-    for(unsigned int i=0;i<bdraw.getWidth();i+=100)
+    for( i=0;i<bdraw.getWidth();i+=100)
         bdraw.line(i,0,i,bdraw.getHeight(),255,0,0,0xfefefefe);
-    for(unsigned int u=0;u<bdraw.getHeight();u+=100)
-        bdraw.line(0,u,bdraw.getWidth(),u,0,0,255,0xfefefefe);
-        bdraw.line(0,0,bdraw.getWidth(),bdraw.getHeight(),0,255,0,0xfefefefe);
-        bdraw.line(0,0,200,bdraw.getHeight(),0,255,255,0xfefefefe);
+    for( a=0;a<bdraw.getHeight();a+=100)
+        bdraw.line(0,a,bdraw.getWidth(),a,0,0,255,0xfefefefe);
+    bdraw.line(0,0,bdraw.getWidth(),bdraw.getHeight(),0,255,0,0xfefefefe);
+    bdraw.line(0,0,200,bdraw.getHeight(),0,255,255,0xfefefefe);
     bdraw.frameRect(10,10,300,300,128,128,64,0xfefefefe);
     bdraw.frameRect(50,50,250,250,128,128,64,0xfefefefe);
     draw(&bdraw);

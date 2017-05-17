@@ -246,5 +246,4 @@ DISTFILES += \
     ../../../resource/old/T4.BMP \
     ../../../resource/old/UNDO.BMP \
     ../../../resource/old/VERT.BMP \
-    ../../../linkresource.sh \
     ../../../n2resource.sh

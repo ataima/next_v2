@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 class nnScroller final
 :public IScroller
 {
+    IChild *parent;
     int minPos;
     int maxPos;
     int currentPos;
@@ -42,7 +43,7 @@ class nnScroller final
     bmpImage  *image1;
     bmpImage  *image2;
     scrollerMode mode;
-    IChild *parent;
+
 public:
     nnScroller(IChild *_parent,int _min, int _max);
     ~nnScroller();

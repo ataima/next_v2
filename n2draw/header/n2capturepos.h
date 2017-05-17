@@ -31,14 +31,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 class nnCapturePos
     : public ICapture
 {
-    int command;
-    unsigned int off_image;
     IChild *parent;
     unsigned char Rmask;
     unsigned char Gmask;
     unsigned char Bmask;
+    int command;
+    unsigned int off_image;
     bmpImage * curImage;
-
     nnPoint startLogPos;
     nnPoint endLogPos;
     IFontManager * font;

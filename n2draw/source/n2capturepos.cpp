@@ -32,9 +32,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 nnCapturePos::nnCapturePos(IChild *_parent,unsigned char _Rmask,
     unsigned char _Gmask, unsigned char _Bmask)
-    :parent(_parent),command(0)
-    ,off_image(0),curImage(nullptr),
-    Rmask(_Rmask),Gmask(_Gmask),Bmask(_Bmask)
+    :parent(_parent),
+    Rmask(_Rmask),Gmask(_Gmask),Bmask(_Bmask),
+    command(0),off_image(0),curImage(nullptr)
 {
     endLogPos.set(-1, -1);
     startLogPos.set(-1, -1);
@@ -74,7 +74,7 @@ void nnCapturePos::draw(bmpImage & image, IViewGlue * glue)
     drawTips(image);
 }
 
-bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
+bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & /*status*/, IExtHandler *hook)
 {
     bool res = false;
     if (parent)

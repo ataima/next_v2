@@ -44,6 +44,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #ifdef _DOUBLE_UNICODE
 typedef std::basic_stringstream<char32_t> 	u32stringstream;
 #define  XCHAR    char32_t
+#define  KXCHAR   const char32_t
 #define  STRSTR   std::char_traits<char32_t>::find
 #define  STRLEN   std::char_traits<char32_t>::length
 #define  STRING   std::u32string
@@ -55,7 +56,8 @@ typedef std::basic_stringstream<char32_t> 	u32stringstream;
 #else
 #ifdef _UNICODE
 typedef std::basic_stringstream<char16_t> 	u16stringstream;
-#define  XCHAR     char16_t
+#define  XCHAR    char16_t
+#define  KXCHAR   const char16_t
 #define  STRSTR   std::char_traits<char16_t>::find
 #define  STRLEN   std::char_traits<char16_t>::length
 #define  STRCPY   std::char_traits<char16_t>::copy
@@ -67,6 +69,7 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #define  X(msg)   u##msg
 #else
 #define  XCHAR    char
+#define  KXCHAR   const char
 #define  STRSTR   std::char_traits<char>::find
 #define  STRLEN   std::char_traits<char>::length
 #define  STRCPY   std::char_traits<char>::copy
@@ -273,6 +276,7 @@ class IPrinter
 {
 public :
     virtual void out(std::string & msg) = 0;
+    virtual ~IPrinter(){}
 };
 
 

@@ -59,16 +59,18 @@ class test_image_manager
 ///////////////////////////////////////////////////
 
 REGISTER_CLASS(test_image_manager);
+#ifdef _MSC_VER
 
 void test_image_manager::draw(bmpImage * bmp)
 {
-#ifdef _MSC_VER
     void* dc = ::GetDC(NULL);
     ::StretchDIBits(dc, 0, 0,
         bmp->getWidth(), bmp->getHeight(),
         0, 0, bmp->getWidth(), bmp->getHeight(),
         bmp->getBits(), bmp->getInfo(), 0, SRCCOPY);
     ReleaseDC(NULL, dc);
+#else
+void test_image_manager::draw(bmpImage * ){
 #endif
 }
 

@@ -228,7 +228,7 @@ int  nnCaption::itemFromPoint(nnPoint phyPoint)
     return -1;
 }
 
-bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
+bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status*/, IExtHandler * hook)
 {
     bool res = false;
     if (getStatus() == status_caption_none)

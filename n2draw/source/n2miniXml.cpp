@@ -520,6 +520,11 @@ miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root)
             filebuff=nullptr;
             max_size=0;
         }
+        else
+        {
+            p_index=filebuff;
+            p_end=&filebuff[max_size];
+        }
         }catch(...)
         {
             appManagerConfigureFileUnknow  *e = new appManagerConfigureFileUnknow(_in);
@@ -592,7 +597,7 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
     {
         STRING token_name;
         STRING token_value;
-        XCHAR *p_temp = p_index;
+        XCHAR  *p_temp = (XCHAR *)p_index;
         skipSpaces();
         if (*p_index == X('<'))
         {
@@ -636,7 +641,7 @@ bool miniXmlParse::getTokens(miniXmlNode **node, bool *firstNode)
 
             }
         }
-        p_temp = p_index;
+        p_temp = (XCHAR *)p_index;
         if (*p_index == X('<'))
         {
             p_index++;

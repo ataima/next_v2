@@ -99,7 +99,7 @@ bool nnScroller::handlerMouseMove( nnPoint &phyPoint, show_status & status, IExt
     return res;
 }
 
-bool nnScroller::handlerMouseButtonDown( nnPoint &phyPoint, show_status & status, IExtHandler *hook)
+bool nnScroller::handlerMouseButtonDown( nnPoint &phyPoint, show_status & /*status*/, IExtHandler */*hook*/)
 {
     bool res = false;
     if (parent)

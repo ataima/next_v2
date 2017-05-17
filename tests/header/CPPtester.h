@@ -1195,6 +1195,8 @@ public:
 	virtual DOCTYPE getType(void) = 0;
 	/// interface merber for retrieve the FILE linked to obj
 	virtual FILE  *getFile(void) = 0;
+    //
+    virtual ~small_doc(){}
 };
 
 
@@ -1409,7 +1411,7 @@ public:
 		}
 	}
 	/// default desctructor
-	~docManager()
+    virtual ~docManager()
 	{
 		for (int i = 0; i < numFile; i++)
 		{

@@ -142,16 +142,15 @@ function create_c_function(){
 	echo "" >>$2
 	echo "// map filename to array file" >>$2
 	echo "typedef struct resource_tag{" >>$2
-	echo "    const char *file;" >>$2
 	echo "    const unsigned char *resource;">>$2
 	echo "    size_t size;" >>$2
-        echo "    void set(const char *_file,const unsigned char *_resource,size_t _size){" >>$2
-        echo "    		file=_file;resource=_resource;size=_size;}" >>$2
+        echo "    void set(const unsigned char *_resource,size_t _size){" >>$2
+        echo "    		resource=_resource;size=_size;}" >>$2
         echo "} memresource,*ptrmemresource;" >>$2
 	echo "" >>$2
 	echo "" >>$2
 	echo "" >>$2
-        echo "typedef std::map<const char *,memresource >  ResourceFile;" >>$2
+        echo "typedef std::map<std::string,memresource >  ResourceFile;" >>$2
 	echo "" >>$2
 	echo "" >>$2
 	echo "" >>$2
@@ -172,7 +171,8 @@ function create_c_function(){
         done
         echo "int nnResource::Get(const char *file,const unsigned char ** ptr,size_t *size){" >>$2
         echo "int res=-1;" >>$2
-        echo "std::map<const char *,memresource >::iterator it=appResource.find(file);"  >>$2
+        echo "std::string s=file;" >>$2
+        echo "std::map<std::string,memresource >::iterator it=appResource.find(s);"  >>$2
         echo "if( it!=appResource.end()) {"  >>$2
         echo "	*ptr=it->second.resource;"  >>$2
         echo "	*size=it->second.size;"  >>$2
@@ -185,10 +185,12 @@ function create_c_function(){
         echo "" >>$2
         echo "void nnResource::Init(void){" >>$2
 	echo "memresource res;" >>$2
+        echo "std::string name;" >>$2
 	for VV in $1; do
 		NAME=$(echo resource_$VV | sed -e 's#/#_#g' | sed -e 's/\./_/g')
-		echo "res.set(\"$VV\",$NAME,sizeof($NAME));">>$2
-                echo "appResource[\"$VV\"]=res;">>$2
+                echo "name=\"$VV\";">>$2
+                echo "res.set($NAME,sizeof($NAME));">>$2
+                echo "appResource[name]=res;">>$2
 	done
 	echo "}" >>$2
         echo "" >>$2

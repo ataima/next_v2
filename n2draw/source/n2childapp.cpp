@@ -120,7 +120,6 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
                 IXmlNode *conf_manager = root->find(X("APP"));
                 if (conf_manager != nullptr)
                 {
-                    //int line = __LINE__;
                     IXmlNode *size_default = conf_manager->find(X("DEFAULT_WIDTH"));
                     if (size_default != nullptr)
                     {
@@ -129,7 +128,6 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
                         if (size_default != nullptr)
                         {
                             int default_h = size_default->getLong();
-                            int line = __LINE__;
                             object_manager = new nnObjManager(default_w, default_h);
                             IManager *obj = object_manager;
                             MEMCHK(IManager , obj);
@@ -139,7 +137,6 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
                                 res = object_manager->readConfiguration(conf_manager);
                                 if (res)
                                 {
-                                    line = __LINE__;
                                     imageManager = new nnImageManager(confPath);
                                     IImageManager *img = imageManager;
                                     MEMCHK(IImageManager, img);
@@ -158,7 +155,6 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
                                         conf_manager = root->find(X("FONTS"));
                                         if (conf_manager)
                                         {
-                                            line = __LINE__;
                                             fonts = new nnFontList();       
                                             IFontList *flist = fonts;
                                             MEMCHK(IFontList, flist);
@@ -174,7 +170,6 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
                                             conf_manager = root->find(X("PHY_MAP"));
                                             if (conf_manager)
                                             {
-                                                line = __LINE__;
                                                 view = new nnViewGlue(this);                                                MEMCHK(IViewGlue, view);
                                                 res = view->readConfiguration(conf_manager);
                                             }

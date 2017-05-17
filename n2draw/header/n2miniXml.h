@@ -95,8 +95,8 @@ class miniXmlParse
     miniXmlNode * root; ///out
     const XCHAR * filebuff;
     size_t max_size;
-    XCHAR *p_index;
-    XCHAR *p_end;
+    KXCHAR *p_index;
+    KXCHAR *p_end;
 public:
     miniXmlParse(const XCHAR *filename, miniXmlNode * _root);
     ~miniXmlParse();
