@@ -145,6 +145,7 @@ public :
 void MainWindow::init()
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_AcceptTouchEvents);
 
     isUntitled = true;
 
@@ -461,6 +462,44 @@ void MainWindow::mouseMoveEvent( QMouseEvent *event )
     }
 }
 
+
+void MainWindow::touchEvent(QTouchEvent *ev)
+{
+  switch (ev->type())
+  {
+    case QEvent::TouchBegin:
+        qDebug()<<"Event began.";
+        break;
+    case QEvent::TouchEnd:
+        qDebug()<<"Event ended.";
+        break;
+    case QEvent::TouchUpdate:
+        qDebug()<<"Event updated.";
+        break;
+    default:
+        qDebug()<<"Event unknow.";
+        break;
+  }
+}
+
+
+void MainWindow::tabletEvent(QTabletEvent *event)
+{
+    switch (event->type()) {
+        case QEvent::TabletPress:
+            qDebug()<<"TabletPress";
+            break;
+        case QEvent::TabletMove:
+            qDebug()<<"TabletMove";
+            break;
+        case QEvent::TabletRelease:
+            qDebug()<<"TabletRelease";
+        default:
+            qDebug()<<"Tablet boh!";
+            break;
+    }
+    event->accept();
+}
 
 
 void MainWindow::mousePressEvent(QMouseEvent *event)

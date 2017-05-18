@@ -99,8 +99,7 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                 t=conf->find(X("ITEM_"),i);
                 if(t)
                 {
-                    commandItem item;
-                    memset(&item,0,sizeof(commandItem));
+                    commandItem item;                    
                     IXmlNode *v = t->find(X("POS_X"));
                     if(v)
                     {
