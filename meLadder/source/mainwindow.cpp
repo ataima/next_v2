@@ -41,7 +41,7 @@
 #include <QtWidgets>
 
 #include "mainwindow.h"
-#include "n2exception.h"
+#include "n2iface.h"
 
 MainWindow::MainWindow()
 {
@@ -145,45 +145,18 @@ public :
 void MainWindow::init()
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    setAttribute(Qt::WA_AcceptTouchEvents);
 
     isUntitled = true;
 
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
-    n2App=IAppManager::getInstance(0);
+    n2App=n2draw_get_instance();
     if(n2App)
     {
-        IChild *client=nullptr;
-        try {
-           STRING path="resource/";
-
-           STRING file;
-
-#ifdef _UNICODE
-            file=X("conf_utf16.xml");
-#else
-            file="conf_utf8.xml";
-#endif
-
-
-            client=n2App->createObjects(file,path);
-        }
-        catch(n2exception *e)
-        {
-            if(e!=nullptr)
-            {
-                const char *msg=e->msg();
-                QMessageBox m(QMessageBox::Icon::Critical,
-                              "ERROR",
-                              msg,
-                              QMessageBox::StandardButton::Ok);
-                m.exec();
-                if(msg!=nullptr)
-                    delete msg;
-                delete e;
-            }
-        }
+         IChild *client=nullptr;
+        try{
+        client=n2App->active();
+        }       
         catch(...)
         {
             QMessageBox m(QMessageBox::Icon::Critical,
@@ -462,7 +435,7 @@ void MainWindow::mouseMoveEvent( QMouseEvent *event )
     }
 }
 
-
+/*
 void MainWindow::touchEvent(QTouchEvent *ev)
 {
   switch (ev->type())
@@ -500,7 +473,7 @@ void MainWindow::tabletEvent(QTabletEvent *event)
     }
     event->accept();
 }
-
+*/
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
@@ -514,12 +487,6 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         nnPoint pos(p.x(),p.y());
         try {
             handler->handlerMouseButtonDown(bt,pos);
-        }
-        catch(n2exception *e)
-        {
-            error=e->msg();
-            delete e->msg();
-            delete e;
         }
         catch(...)
         {

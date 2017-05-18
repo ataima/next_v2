@@ -42,8 +42,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 IAppManager *IAppManager::getInstance(int v)
 {
     IAppManager *res=nullptr;
-    if(v==0)//default...
-    {
+    if(v==0) { //default...
         res= nnAppManager::getInstance();
     }
     return res;
@@ -73,38 +72,39 @@ nnAppManager::~nnAppManager()
 
 IAppManager *nnAppManager::getInstance(void)
 {
-    if(instance==nullptr)
-    {
+    if(instance==nullptr) {
         nnResource::Init();
         instance = new nnAppManager();
     }
     return instance;
 }
 
+IChild * nnAppManager::create(STRING & conf_file_name)
+{
+    STRING res="resource/";
+    return createObjects(conf_file_name,res);
+}
+
+
 IChild * nnAppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 {
     bool res = false;
     IChild * child = new nnChildApp(UID);
     MEMCHK(IChild, child);
-    try
-    {
+    try {
         res = child->createObjects(configuration,conf_file_name,path_name);
-    }
-    catch (n2exception *e)
-    {
+    } catch (n2exception *e) {
         child->clean();
         delete child;
         child = nullptr;
         throw(e);
     }
-    if(res==false)
-    {
+    if(res==false) {
         child->clean();
         delete child;
         child = nullptr;
     }
-    if (child != nullptr)
-    {
+    if (child != nullptr) {
         selected = static_cast<int>(UID);
         childs[UID] = child;
         UID++;
@@ -118,12 +118,10 @@ IChild * nnAppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 void nnAppManager::setPrinter(IPrinter * printer)
 {
     ILogger *current_logger = ILogger::getInstance();
-    if (current_logger == nullptr)
-    {
+    if (current_logger == nullptr) {
         current_logger = new nnLogger();
     }
-    if (current_logger)
-    {
+    if (current_logger) {
         current_logger->setOutput(printer);
     }
 }
@@ -132,11 +130,9 @@ void nnAppManager::setPrinter(IPrinter * printer)
 
 bool nnAppManager::closeAll(void)
 {
-    if (childs.size() > 0)
-    {
+    if (childs.size() > 0) {
 #if _LOGGER_
-        if (nnLogger::getInstance())
-        {
+        if (nnLogger::getInstance()) {
             nnLogger::getInstance()->reset();
             delete nnLogger::getInstance();
         }
@@ -151,11 +147,9 @@ bool nnAppManager::closeAll(void)
 IChild *nnAppManager::activate(int v)
 {
     IChild * res = nullptr;
-    if (!childs.empty())
-    {
+    if (!childs.empty()) {
         listChild::iterator it = childs.find(v);
-        if (it != childs.end())
-        {
+        if (it != childs.end()) {
             res = it->second;
             selected = v;
             res->getView()->updateDraw();
@@ -168,11 +162,9 @@ IChild *nnAppManager::activate(int v)
 IChild *nnAppManager::active(void)
 {
     IChild * res = nullptr;
-    if (!childs.empty() && selected>0)
-    {
+    if (!childs.empty() && selected>0) {
         listChild::iterator it = childs.find(selected);
-        if (it != childs.end())
-        {
+        if (it != childs.end()) {
             res = it->second;
         }
     }
@@ -188,8 +180,7 @@ IChild *nnAppManager::active(void)
 
 bool nnAppManager::clean(void)
 {
-    for (auto i : childs)
-    {
+    for (auto i : childs) {
         i.second->clean();
         delete i.second;
     }

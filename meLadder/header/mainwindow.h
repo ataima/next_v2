@@ -96,8 +96,7 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *) override;
     void keyPressEvent(QKeyEvent *event) override;
-    void tabletEvent(QTabletEvent *event) override;
-    void touchEvent(QTouchEvent *ev);
+
 
 
 };

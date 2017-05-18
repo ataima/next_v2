@@ -41,14 +41,11 @@ bool nnMoreInfo::handlerMouseButtonDown(nnPoint &logPoint, int _color, IExtHandl
     bool  res = false;
     lastPos = logPoint;
     color = _color;
-    if (parent)
-    {
+    if (parent) {
         IManager *manager = parent->getManager();
-        if (manager)
-        {
+        if (manager) {
             InnObj *obj = manager->getObj(lastPos.x, lastPos.y);
-            if (obj != nullptr)
-            {
+            if (obj != nullptr) {
                 std::string  str = obj->toString();
                 info.clear();
                 info.push_back(str);
@@ -56,9 +53,7 @@ bool nnMoreInfo::handlerMouseButtonDown(nnPoint &logPoint, int _color, IExtHandl
                 if (hook)
                     hook->doHandler(action_redraw);
                 res = true;
-            }
-            else
-            {
+            } else {
                 lastPos.set(-1, -1);
                 hide();
             }
@@ -69,10 +64,8 @@ bool nnMoreInfo::handlerMouseButtonDown(nnPoint &logPoint, int _color, IExtHandl
 
 void nnMoreInfo::draw(bmpImage & image, IViewGlue * glue)
 {
-    if (visible)
-    {
-        if (glue)
-        {           
+    if (visible) {
+        if (glue) {
             nnUtils::drawBottomRightTips(image, *glue->getCurrentFont(), info.front());
         }
     }

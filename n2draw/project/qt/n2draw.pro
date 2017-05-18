@@ -45,7 +45,8 @@ SOURCES += \
 ../../source/n2utils.cpp                 \
 ../../source/n2moreinfo.cpp              \
 ../../source/n2capturepos.cpp \
-    ../../source/n2resource.cpp
+    ../../source/n2resource.cpp \
+    ../../source/n2iface.cpp
 
 
 
@@ -74,8 +75,10 @@ HEADERS += \
 ../../header/n2caption.h               \
 ../../header/n2logger.h                \
 ../../header/n2utils.h                 \
-../../header/n2capturepos.h \
-    ../../header/n2resource.h
+../../header/n2capturepos.h            \
+../../header/n2resource.h              \
+../../header/n2iface \
+    ../../header/n2iface.h
 
 
 DESTDIR =../../../../dist

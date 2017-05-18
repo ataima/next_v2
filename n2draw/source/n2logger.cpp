@@ -41,7 +41,7 @@ ILogger * ILogger::instance = nullptr;
 nnLogger::nnLogger() :
     notify(false),
     done(false),
-    th(nullptr), 
+    th(nullptr),
     current_printer(nullptr)
 {
     if (instance == nullptr)
@@ -51,8 +51,7 @@ nnLogger::nnLogger() :
 
 nnLogger::~nnLogger()
 {
-    if (th != nullptr)
-    {
+    if (th != nullptr) {
         done = true;
         cond_var.notify_one();
         while (done) {
@@ -62,13 +61,11 @@ nnLogger::~nnLogger()
         delete th;
         th = nullptr;
     }
-    if (current_printer != nullptr)
-    {
+    if (current_printer != nullptr) {
         delete current_printer;
         current_printer = nullptr;
     }
-    while (!io.empty())
-    {
+    while (!io.empty()) {
         delete io.front();
         io.pop();
     }
@@ -79,33 +76,28 @@ nnLogger::~nnLogger()
 void nnLogger::log(IDebug * param)
 {
     //producer...
-    if (!done)
-    {
-    if (!th)
-        {
-            if (current_printer != nullptr)
-            {
+    if (!done) {
+        if (!th) {
+            if (current_printer != nullptr) {
                 //only first time
                 th = new std::thread(nnLogger::entry, this);
             }
         }
-    std::unique_lock<std::mutex> lock(mtx);
-    io.push(param);
-    notify = true;
-    cond_var.notify_one();
+        std::unique_lock<std::mutex> lock(mtx);
+        io.push(param);
+        notify = true;
+        cond_var.notify_one();
     }
 }
 
 
 void nnLogger::print(IDebug *p)
 {
-    if (current_printer )
-    {
-        if (p)
-        {
+    if (current_printer ) {
+        if (p) {
             std::string msg;
-            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();            
-            std::stringstream ts;           
+            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+            std::stringstream ts;
             ts << "[" << (end - t_start).count() << "ns ]";
             t_start = end;
             msg = ts.str();
@@ -118,10 +110,9 @@ void nnLogger::print(IDebug *p)
 
 IDebug * nnLogger::remove(void)
 {
-    IDebug *param = nullptr;   
+    IDebug *param = nullptr;
     std::unique_lock<std::mutex> lock(mtx);
-    if (!notify)
-    {
+    if (!notify) {
         //cond_var.wait_for(lock, std::chrono::milliseconds(100));
         cond_var.wait(lock);
     }
@@ -136,20 +127,17 @@ IDebug * nnLogger::remove(void)
 
 void nnLogger::enqueue(void)
 {
-    
-    while(!done)
-    {
+
+    while(!done) {
         IDebug *param = remove();
         if(!done)
             print(param);
         if(param)
             delete param;
     }
-    if (done)
-    {
+    if (done) {
         std::unique_lock<std::mutex> lock(mtx);
-        while (!io.empty())
-        {
+        while (!io.empty()) {
             delete io.front();
             io.pop();
         }
@@ -159,8 +147,7 @@ void nnLogger::enqueue(void)
 
 void nnLogger::entry(ILogger *current)
 {
-    if (current)
-    {
+    if (current) {
         nnLogger *log = dynamic_cast<nnLogger*>(current);
         if(log)
             log->enqueue();
@@ -176,14 +163,12 @@ void nnLogger::reset()
     cond_var.notify_one();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     cond_var.wait(lock);
-    if (th != nullptr)
-    {
+    if (th != nullptr) {
         th->join();
         delete th;
         th = nullptr;
     }
-    if (current_printer != nullptr)
-    {
+    if (current_printer != nullptr) {
         delete current_printer;
         current_printer = nullptr;
     }

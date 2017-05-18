@@ -39,8 +39,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 void  nnChildApp::defaultCommandRequest(void * dest, size_t type_param, IParam *user_param)
 {
-    if (dest)
-    {
+    if (dest) {
         IChild *rel = reinterpret_cast<IChild*>(dest);
         if (rel)
             rel->defaultProcess(type_param, user_param);
@@ -69,33 +68,27 @@ nnChildApp::~nnChildApp()
 
 void nnChildApp::clean(void)
 {
-    if (object_manager)
-    {
+    if (object_manager) {
         delete object_manager;
         object_manager = nullptr;
     }
-    if (imageManager)
-    {
+    if (imageManager) {
         delete imageManager;
         imageManager = nullptr;
     }
-    if (fonts)
-    {
+    if (fonts) {
         delete fonts;
         fonts = nullptr;
     }
-    if (view)
-    {
+    if (view) {
         delete view;
         view = nullptr;
     }
-    if (externalHandler)
-    {
+    if (externalHandler) {
         delete externalHandler;
         externalHandler = nullptr;
     }
-    if (defaultHandler)
-    {
+    if (defaultHandler) {
         delete defaultHandler;
         defaultHandler = nullptr;
     }
@@ -108,73 +101,55 @@ void nnChildApp::clean(void)
 bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, STRING & confPath)
 {
     bool res = false;
-    if (configuration != nullptr)
-    {
+    if (configuration != nullptr) {
         STRING conf=confPath+conf_file_name;
         res = configuration->readConfiguration(conf.c_str());
-        if (res == true)
-        {
+        if (res == true) {
             IXmlNode * root = configuration->getRoot();
-            if (root != nullptr)
-            {
+            if (root != nullptr) {
                 IXmlNode *conf_manager = root->find(X("APP"));
-                if (conf_manager != nullptr)
-                {
+                if (conf_manager != nullptr) {
                     IXmlNode *size_default = conf_manager->find(X("DEFAULT_WIDTH"));
-                    if (size_default != nullptr)
-                    {
+                    if (size_default != nullptr) {
                         int default_w = size_default->getLong();
                         size_default = conf_manager->find(X("DEFAULT_HEIGHT"));
-                        if (size_default != nullptr)
-                        {
+                        if (size_default != nullptr) {
                             int default_h = size_default->getLong();
                             object_manager = new nnObjManager(default_w, default_h);
                             IManager *obj = object_manager;
                             MEMCHK(IManager , obj);
                             conf_manager = root->find(X("MANAGER"));
-                            if (conf_manager)
-                            {
+                            if (conf_manager) {
                                 res = object_manager->readConfiguration(conf_manager);
-                                if (res)
-                                {
+                                if (res) {
                                     imageManager = new nnImageManager(confPath);
                                     IImageManager *img = imageManager;
                                     MEMCHK(IImageManager, img);
                                     conf_manager = root->find(X("IMAGES"));
-                                    if (conf_manager)
-                                    {
+                                    if (conf_manager) {
                                         res = imageManager->readConfiguration(conf_manager);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("IMAGES"));
                                         throw(e);
                                     }
-                                    if (res)
-                                    {
+                                    if (res) {
                                         conf_manager = root->find(X("FONTS"));
-                                        if (conf_manager)
-                                        {
-                                            fonts = new nnFontList();       
+                                        if (conf_manager) {
+                                            fonts = new nnFontList();
                                             IFontList *flist = fonts;
                                             MEMCHK(IFontList, flist);
                                             res = flist->readConfiguration(conf_manager,confPath);
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("FONTS"));
                                             throw(e);
                                         }
-                                        if (res)
-                                        {
+                                        if (res) {
                                             conf_manager = root->find(X("PHY_MAP"));
-                                            if (conf_manager)
-                                            {
-                                                view = new nnViewGlue(this);                                                MEMCHK(IViewGlue, view);
+                                            if (conf_manager) {
+                                                view = new nnViewGlue(this);
+                                                MEMCHK(IViewGlue, view);
                                                 res = view->readConfiguration(conf_manager);
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("PHY_MAP"));
                                                 throw(e);
                                             }
@@ -182,50 +157,36 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
                                         }
                                     }
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("MANAGER"));
                                 throw(e);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("DEFAULT_HEIGHT"));
                             throw(e);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("DEFAULT_WIDTH"));
                         throw(e);
                     }
-                }
-                else
-                {
+                } else {
                     xmlConfigurationNodeException  *e = new xmlConfigurationNodeException(X("MANAGER"));
                     throw(e);
                 }
-            }
-            else
-            {
+            } else {
                 appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf);
                 throw(e);
             }
-        }
-        else
-        {
+        } else {
             appManagerConfigureParseXmlFileException  *e = new appManagerConfigureParseXmlFileException(conf);
             throw(e);
         }
     }
     //TODO have to add exception Management .....
-    if (res)
-    {
+    if (res) {
         res = loadImages();
     }
-    if (res)
-    {
+    if (res) {
         res = view->createDraw();
     }
     return res;
@@ -235,27 +196,21 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
 bool nnChildApp::loadImages(void)
 {
     bool res = false;
-    if (imageManager)
-    {
+    if (imageManager) {
         res = imageManager->loadImages();
-        if (!res)
-        {
+        if (!res) {
             appManagerConfigureLoadImageException *e = new appManagerConfigureLoadImageException();
             throw(e);
         }
-        if (view)
-        {
+        if (view) {
             res = view->loadImages(imageManager->getDefaulPath());
-            if (!res)
-            {
+            if (!res) {
                 appManagerConfigureLoadImageException *e = new appManagerConfigureLoadImageException();
                 throw(e);
             }
-            if (fonts)
-            {
+            if (fonts) {
                 res = fonts->loadImages();
-                if (!res)
-                {
+                if (!res) {
                     appManagerConfigureLoadImageException *e = new appManagerConfigureLoadImageException();
                     throw(e);
                 }
@@ -269,8 +224,7 @@ bool nnChildApp::setExtHandler( extHandler _hook, void *unkObj)
 {
     bool res = false;
     nnExtHandler  *nh = new nnExtHandler( _hook, unkObj,false);
-    if (nh)
-    {
+    if (nh) {
         externalHandler = nh;
     }
     return res;
@@ -280,8 +234,7 @@ bool nnChildApp::setExtHandler( extHandler _hook, void *unkObj)
 bool nnChildApp::Capture(int command,unsigned int image)
 {
     bool res = false;
-    if (view)
-    {
+    if (view) {
         res = view->Capture(command,image);
     }
     return res;
@@ -292,18 +245,13 @@ bool nnChildApp::Capture(int command,unsigned int image)
 bool nnChildApp::addContact(nnPoint & pos, nnObjContact * contact)
 {
     bool res = false;
-    if (object_manager && contact)
-    {
+    if (object_manager && contact) {
         InnObj *obj = object_manager->getObj(pos.x, pos.y);
-        if (obj == nullptr)
-        {
+        if (obj == nullptr) {
             res = object_manager->addContact(pos.x, pos.y, contact);
             view->updateDraw();
-        }
-        else
-        {
-            if (!obj->isComponent())
-            {
+        } else {
+            if (!obj->isComponent()) {
                 //iswire
                 res = object_manager->replaceObj(pos.x, pos.y, contact);
                 view->updateDraw();
@@ -316,8 +264,7 @@ bool nnChildApp::addContact(nnPoint & pos, nnObjContact * contact)
 bool nnChildApp::addCoil(nnPoint & pos, nnObjCoil * coil)
 {
     bool res = false;
-    if (object_manager && coil)
-    {
+    if (object_manager && coil) {
         res = object_manager->addCoil(pos.x, coil);
         view->updateDraw();
     }
@@ -327,8 +274,7 @@ bool nnChildApp::addCoil(nnPoint & pos, nnObjCoil * coil)
 bool nnChildApp::connect(nnPoint & start, nnPoint & end)
 {
     bool res = false;
-    if (object_manager )
-    {
+    if (object_manager ) {
         res = nnConnection::connectComponent(object_manager, start, end);
         view->updateDraw();
     }
@@ -337,45 +283,41 @@ bool nnChildApp::connect(nnPoint & start, nnPoint & end)
 
 bool nnChildApp::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
-    struct pulse_caller
-    {
+    struct pulse_caller {
         static void hook(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint   phyPoint)
         {
-        view->handlerMouseMove(buttons, phyPoint);
+            view->handlerMouseMove(buttons, phyPoint);
         }
         pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint   phyPoint )
         {
-                std::thread th( pulse_caller::hook, view, buttons, phyPoint);
-                th.detach();
+            std::thread th( pulse_caller::hook, view, buttons, phyPoint);
+            th.detach();
         }
     };
     bool res = false;
-    if (view)
-        {
-            nnPoint p=phyPoint;
-            pulse_caller(view, buttons, p);
-            res = true;
-        }
+    if (view) {
+        nnPoint p=phyPoint;
+        pulse_caller(view, buttons, p);
+        res = true;
+    }
     return res;
 }
 
 bool nnChildApp::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
-    struct pulse_caller
-    {
+    struct pulse_caller {
         static void hook(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint  phyPoint)
         {
-        view->handlerMouseButtonDown(buttons, phyPoint);
+            view->handlerMouseButtonDown(buttons, phyPoint);
         }
         pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint  phyPoint )
         {
-                std::thread th( pulse_caller::hook, view, buttons, phyPoint);
-                th.detach();
+            std::thread th( pulse_caller::hook, view, buttons, phyPoint);
+            th.detach();
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         nnPoint p=phyPoint;
         pulse_caller(view, buttons, p);
         res = true;
@@ -390,22 +332,20 @@ bool nnChildApp::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoi
     //    res = view->handlerMouseButtonUp(buttons, phyPoint);
     //return res;
 
-    struct pulse_caller
-    {
+    struct pulse_caller {
         static void hook(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint  phyPoint)
         {
-        view->handlerMouseButtonUp(buttons, phyPoint);
+            view->handlerMouseButtonUp(buttons, phyPoint);
         }
         pulse_caller(IViewGlue *  view, nn_mouse_buttons  buttons, nnPoint  phyPoint )
         {
-                std::thread th( pulse_caller::hook, view, buttons, phyPoint);
-                th.detach();
+            std::thread th( pulse_caller::hook, view, buttons, phyPoint);
+            th.detach();
         }
     };
 
     bool res = false;
-    if (view)
-    {
+    if (view) {
         nnPoint p=phyPoint;
         pulse_caller(view, buttons, p);
         res = true;
@@ -415,21 +355,19 @@ bool nnChildApp::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoi
 
 bool nnChildApp::handlerScrollHorz(int pos)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, int pos)
         {
             view->handlerScrollHorz(pos);
         }
-        pulse_caller(IViewGlue *  view, int pos)           
+        pulse_caller(IViewGlue *  view, int pos)
         {
             std::thread th( pulse_caller::hook, view,pos);
             th.detach();
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view,pos);
         res = true;
     }
@@ -438,8 +376,7 @@ bool nnChildApp::handlerScrollHorz(int pos)
 
 bool nnChildApp::handlerScrollVert(int pos)
 {
-    struct  pulse_caller        
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, int pos)
         {
             view->handlerScrollVert(pos);
@@ -451,8 +388,7 @@ bool nnChildApp::handlerScrollVert(int pos)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, pos);
         res = true;
     }
@@ -461,8 +397,7 @@ bool nnChildApp::handlerScrollVert(int pos)
 
 bool nnChildApp::handlerEscapeButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller        
-    {        
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerEscapeButton(shift,ctrl,alt);
@@ -474,8 +409,7 @@ bool nnChildApp::handlerEscapeButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -484,8 +418,7 @@ bool nnChildApp::handlerEscapeButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerHomeButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerHomeButton(shift, ctrl, alt);
@@ -497,8 +430,7 @@ bool nnChildApp::handlerHomeButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -507,8 +439,7 @@ bool nnChildApp::handlerHomeButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerEndButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerEndButton(shift, ctrl, alt);
@@ -520,8 +451,7 @@ bool nnChildApp::handlerEndButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -530,8 +460,7 @@ bool nnChildApp::handlerEndButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerPageUpButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerPageUpButton(shift, ctrl, alt);
@@ -543,8 +472,7 @@ bool nnChildApp::handlerPageUpButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -557,8 +485,7 @@ bool nnChildApp::handlerPageDownButton(bool shift, bool ctrl, bool alt)
     //if (view)
     //    res = view->handlerPageDownButton(shift, ctrl, alt);
     //return res;
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerPageDownButton(shift, ctrl, alt);
@@ -570,8 +497,7 @@ bool nnChildApp::handlerPageDownButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -580,8 +506,7 @@ bool nnChildApp::handlerPageDownButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerPageRightButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerPageRightButton(shift, ctrl, alt);
@@ -593,8 +518,7 @@ bool nnChildApp::handlerPageRightButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -604,8 +528,7 @@ bool nnChildApp::handlerPageRightButton(bool shift, bool ctrl, bool alt)
 bool nnChildApp::handlerPageLeftButton(bool shift, bool ctrl, bool alt)
 {
 
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerPageLeftButton(shift, ctrl, alt);
@@ -617,8 +540,7 @@ bool nnChildApp::handlerPageLeftButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -627,8 +549,7 @@ bool nnChildApp::handlerPageLeftButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerLeftButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerLeftButton(shift, ctrl, alt);
@@ -640,8 +561,7 @@ bool nnChildApp::handlerLeftButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -650,8 +570,7 @@ bool nnChildApp::handlerLeftButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerRightButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerRightButton(shift, ctrl, alt);
@@ -663,8 +582,7 @@ bool nnChildApp::handlerRightButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -677,8 +595,7 @@ bool nnChildApp::handlerUpButton(bool shift, bool ctrl, bool alt)
     //if (view)
     //    res = view->handlerUpButton(shift, ctrl, alt);
     //return res;
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerUpButton(shift, ctrl, alt);
@@ -690,8 +607,7 @@ bool nnChildApp::handlerUpButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -700,8 +616,7 @@ bool nnChildApp::handlerUpButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerDownButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerDownButton(shift, ctrl, alt);
@@ -713,8 +628,7 @@ bool nnChildApp::handlerDownButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -723,8 +637,7 @@ bool nnChildApp::handlerDownButton(bool shift, bool ctrl, bool alt)
 
 bool nnChildApp::handlerCancelButton(bool shift, bool ctrl, bool alt)
 {
-    struct  pulse_caller
-    {
+    struct  pulse_caller {
         static void hook(IViewGlue *  view, bool shift, bool ctrl, bool alt)
         {
             view->handlerCancelButton(shift, ctrl, alt);
@@ -736,8 +649,7 @@ bool nnChildApp::handlerCancelButton(bool shift, bool ctrl, bool alt)
         }
     };
     bool res = false;
-    if (view)
-    {
+    if (view) {
         pulse_caller(view, shift, ctrl, alt);
         res = true;
     }
@@ -750,19 +662,15 @@ bool nnChildApp::handlerCancelButton(bool shift, bool ctrl, bool alt)
 void  nnChildApp::defaultProcess(size_t type_param, IParam *user_param)
 {
 
-    switch (type_param)
-    {
-    case action_host_command:
-        {
+    switch (type_param) {
+    case action_host_command: {
         nnAbstractParam<int> *t = static_cast<nnAbstractParam<int>*>(user_param);
-        if (t)
-        {
+        if (t) {
             // from conf...xml toolbars
             int v = t->value();
             nnLOG1(int, v);
-            switch (v)
-            {
-            case 2000:// PLACE NO 
+            switch (v) {
+            case 2000:// PLACE NO
                 Capture(2000, contactGenericAnd);
                 break;
             case 2001://PLACE NC
@@ -786,10 +694,8 @@ void  nnChildApp::defaultProcess(size_t type_param, IParam *user_param)
 
     }
     break;
-    case action_select_position:
-    {
-        if (user_param)
-        {
+    case action_select_position: {
+        if (user_param) {
             nnAbstractParamList *list = static_cast<nnAbstractParamList *>(user_param);
             nnAbstractParam<nnPoint> *p1 = static_cast<nnAbstractParam<nnPoint> *>(list->at(0));
             nnAbstractParam<nnPoint> *p2 = static_cast<nnAbstractParam<nnPoint> *>(list->at(1));
@@ -799,8 +705,7 @@ void  nnChildApp::defaultProcess(size_t type_param, IParam *user_param)
             int command = p3->value();
             nnLOG2(nnPoint, start,end);
             nnLOG1(int, command);
-            switch (command)
-            {
+            switch (command) {
             case 2000:
                 addContact(end, new nnContactNO());
                 break;
@@ -833,7 +738,7 @@ void  nnChildApp::defaultProcess(size_t type_param, IParam *user_param)
     case action_medialize_windows:
         if (externalHandler)
             externalHandler->doHandler(type_param, user_param);
-    break;
+        break;
     }
     if (user_param)
         delete user_param;

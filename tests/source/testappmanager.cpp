@@ -112,8 +112,7 @@ void test_app_manager::test1(void)
 #else
     STRING name(X("conf_utf8.xml"));
 #endif
-    STRING path("./");
-    IChild *childs = app.createObjects(name,path);
+    IChild *childs = app.create(name);
     CA_ASSERT(childs != nullptr);
     bool res;
     nnPoint p=childs->getView()->getConstPhy();
@@ -168,8 +167,7 @@ void test_app_manager::test2(void)
 #else
     STRING name(X("conf_ut8.xml"));
 #endif
-    STRING path("./");
-    IChild *childs = app.createObjects(name,path);
+    IChild *childs = app.create(name);
     CA_ASSERT(childs != nullptr);
     bool res;
 
