@@ -508,8 +508,13 @@ typedef struct nn_tag_command_item
     unsigned char maskR;
     unsigned char maskG;
     unsigned char maskB;
-    STRING   file;
-    STRING   info;
+    std::string   file;
+    std::string   info;
+    nn_tag_command_item(){
+      maskR=maskG=maskB;
+      file=info="";
+      command=0;
+    }
 } commandItem;
 
 typedef std::vector<commandItem> listCommandItem;

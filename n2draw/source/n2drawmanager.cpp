@@ -304,9 +304,10 @@ bool nnObjManager::save(const STRING & name)
     {
 #ifdef __ANDROID__
         STRING newname="data:/"+name;
-        name=newname;
+#else
+        STRING newname=name;
 #endif
-        UtoA toA(name);      
+        UtoA toA(newname);
         FILE *out = fopen(toA.utf8(), "w+");
         if (out != NULL)
         {

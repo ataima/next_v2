@@ -576,92 +576,94 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
     if (parent)
     {
             IExtHandler *hook = parent->getHandler();
-            if (buttons == nn_m_button_left && show_cmd == show_none)
+            if (buttons == nn_m_button_left )
             {
-                if (selector){
-                    nnPoint nn=getCoordLog(phyPoint);
-                    res = selector->handlerMouseButtonDown(nn, show_cmd);
-                }
-            }
-            else if (buttons == nn_m_button_left && show_cmd == show_toolbar_main)
-            {
-                if (maintool)
-                    res = maintool->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-            }
-            else if (buttons == nn_m_button_left && show_cmd == show_toolbar_compo)
-            {
-                if (compotool)
-                    res = compotool->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-            }
-            else if (buttons == nn_m_button_right && show_cmd == show_none)
-            {
-                if (selector)
+                if (show_cmd == show_none)
                 {
-                    if (selector->isSelectedComponent())
-                    {
-                        show_cmd = show_toolbar_compo;
-                        compotool->show(phyPoint);
-                    }
-                    else
-                    {
-                        show_cmd = show_toolbar_main;
-                        maintool->show(phyPoint);
-                    }
-                    res = true;
-                    if (hook)
-                    {
-                        if (hook)hook->doHandler(action_redraw);
+                    if (selector){
+                        nnPoint nn=getCoordLog(phyPoint);
+                        res = selector->handlerMouseButtonDown(nn, show_cmd);
                     }
                 }
-            }
-            else if (buttons == nn_m_button_right && show_cmd == show_toolbar_main)
-            {
-                    res = maintool->hide();
-                    unselect();
-                    if (hook)
-                    {
-                        if (hook)hook->doHandler(action_redraw);
-                    }
-            }
-            else if (buttons == nn_m_button_right && show_cmd == show_toolbar_compo)
-            {
-                res = compotool->hide();
-                unselect();
-                if (hook)
+                else
+                if ( show_cmd == show_toolbar_main)
                 {
-                    if (hook)hook->doHandler(action_redraw);
+                    if (maintool)
+                        res = maintool->handlerMouseButtonDown(phyPoint, show_cmd, hook);
                 }
-            }
-            else
-                if (buttons == nn_m_button_left && show_cmd == show_scroller_horz)
+                else
+                if ( show_cmd == show_toolbar_compo)
+                {
+                    if (compotool)
+                        res = compotool->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+                }
+                else
+                if (show_cmd == show_scroller_horz)
                 {
                     if (hscroller)
                         res = hscroller->handlerMouseButtonDown(phyPoint, show_cmd, hook);
                 }
                 else
-                    if (buttons == nn_m_button_left && show_cmd == show_scroller_vert)
+                if (show_cmd == show_scroller_vert)
+                {
+                    if (vscroller)
+                        res = vscroller->handlerMouseButtonDown(phyPoint,  show_cmd, hook);
+                }
+                else
+                if ( show_cmd == show_caption)
+                {
+                    if (caption)
+                        res = caption->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+                }
+                else
+                if ( show_cmd == show_capture)
+                {
+                    if (capture)
+                        res = capture->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+                    if (selector){
+                        nnPoint nn=getCoordLog(phyPoint);
+                        res = selector->handlerMouseButtonDown(nn, show_cmd);
+                        }
+                }
+            }
+            else
+            if (buttons == nn_m_button_right)
+            {
+                if ( show_cmd == show_none)
+                {
+                    if (selector)
                     {
-                        if (vscroller)
-                            res = vscroller->handlerMouseButtonDown(phyPoint,  show_cmd, hook);
-                    }
-                    else
-                        if (buttons == nn_m_button_left && show_cmd == show_caption)
+                        if (selector->isSelectedComponent())
                         {
-                            if (caption)
-                                res = caption->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+                            show_cmd = show_toolbar_compo;
+                            compotool->show(phyPoint);
                         }
                         else
-                            if (buttons == nn_m_button_left && show_cmd == show_capture)
-                            {
-                                if (capture)
-                                    res = capture->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-                                if (selector){
-                                    nnPoint nn=getCoordLog(phyPoint);
-                                    res = selector->handlerMouseButtonDown(nn, show_cmd);
-                                    }
-                            }
-
-
+                        {
+                            show_cmd = show_toolbar_main;
+                            maintool->show(phyPoint);
+                        }
+                        res = true;
+                    }
+                }
+                else
+                if (show_cmd == show_toolbar_main)
+                {
+                        res = maintool->hide();
+                        unselect();
+                }
+                else
+                if (show_cmd == show_toolbar_compo)
+                {
+                        res = compotool->hide();
+                        unselect();
+                }
+                //
+                if (hook)
+                {
+                    if (hook)hook->doHandler(action_redraw);
+                }
+            }
     }
     return res;
 }
