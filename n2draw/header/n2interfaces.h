@@ -761,19 +761,30 @@ public:
 };
 //////////////////////////////////////////////////////
 
+
+
+class IComponent
+{
+public:
+    virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
+    virtual bool handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook) = 0;
+    virtual bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook) = 0;
+    virtual void addImage(int pos, bmpImage *image) = 0;
+    virtual void hide(void) = 0;
+    virtual void show(void) = 0;
+    virtual ~IComponent() {}
+};
+
 class IToolView
+        : public IComponent
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
-    virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
-    virtual bool handlerMouseMove(nnPoint & pos, IExtHandler *hook) = 0;
-    virtual bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook) = 0;
     virtual ICommander *getActiveCommander(void)=0;
     virtual bool loadImages(STRING & path)=0;
     virtual bool checkIntCommand(int command)=0;
     virtual void show(nnPoint & pos)=0;
-    virtual bool hide(void) = 0;
-    virtual void setFont(IFontManager *_font) = 0;
+    virtual void setFont(IFontManager *_font) = 0;    
     virtual ~IToolView() {}
 };
 
@@ -857,17 +868,7 @@ mode_scroller_horz= 100,
 mode_scroller_vert = 200
 }scrollerMode;
 
-class IComponent
-{
-public:
-    virtual bool draw(bmpImage & bkg, IViewGlue * glue) = 0;
-    virtual bool handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook) = 0;
-    virtual bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook) = 0;
-    virtual void addImage(int pos, bmpImage *image) = 0;
-    virtual void hide(void) = 0;
-    virtual void show(void) = 0;
-    virtual ~IComponent() {}
-};
+
 
 class IScroller
     :public IComponent

@@ -149,7 +149,7 @@ bool nnToolView::loadImages(STRING &path)
 }
 
 
-bool nnToolView::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
+bool nnToolView::handlerMouseMove( nnPoint & pos,show_status &  /*status*/,IExtHandler *hook)
 {
     bool res=false;
     if(active) {
@@ -158,9 +158,9 @@ bool nnToolView::handlerMouseMove( nnPoint & pos,IExtHandler *hook)
     return res;
 }
 
-bool nnToolView::hide(void)
+void nnToolView::hide(void)
 {
-    return  checkIntCommand(0);
+    checkIntCommand(0);
 }
 
 

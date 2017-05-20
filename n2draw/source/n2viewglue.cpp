@@ -71,6 +71,7 @@ bool nnViewGlue::unselect()
         hscroller->hide();
     if (caption)
         caption->hide();
+    focus=nullptr;
     return true;
 }
 
@@ -104,6 +105,7 @@ nnViewGlue::~nnViewGlue()
         delete capture;
         capture = nullptr;
     }
+    focus=nullptr;
 }
 
 
@@ -353,25 +355,9 @@ bmpImage & nnViewGlue::getDraw(void)
 {
     bmpImage & image = view->getMainBitmap();
     if (image.isValid()) {
-        if (show_cmd == show_caption) {
-            if (caption)
-                caption->draw(image, this);
-        } else if (show_cmd == show_scroller_horz) {
-            if (hscroller)
-                hscroller->draw(image, this);
-        } else if (show_cmd == show_scroller_vert) {
-            if (vscroller)
-                vscroller->draw(image, this);
-        } else if (show_cmd == show_toolbar_main) {
-            if (maintool)
-                maintool->draw(image, this);
-        } else if (show_cmd == show_toolbar_compo) {
-            if (compotool)
-                compotool->draw(image, this);
-        } else if (show_cmd == show_capture) {
-            if (capture)
-                capture->draw(image, this);
-        } else if (show_cmd == show_none) {
+        if(focus!=nullptr)
+            focus->draw(image, this);
+        else // to port code to draw selector and set focus to selector
             if (selector) {
                 if (selector->isSelectedValid()) {
                     selector->show();
@@ -379,7 +365,6 @@ bmpImage & nnViewGlue::getDraw(void)
                 } else
                     selector->hide();
             }
-        }
     }
     return image;
 }
@@ -403,12 +388,13 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
         IExtHandler *hook = parent->getHandler();
         if (show_cmd == show_none) {
             if (buttons == nn_m_button_left) {
-
                 if (selector) {
                     nnPoint nn=getCoordLog(phyPoint);
                     selector->handlerMouseMove(nn);
                 }
-            } else if (buttons == nn_m_button_unknow) {
+            }
+        else
+           if (buttons == nn_m_button_unknow) {
                 if(caption)
                     res=caption->handlerMouseMove(phyPoint, show_cmd, hook);
                 if (!res) {
@@ -420,26 +406,8 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
                     }
                 }
             }
-        } else if (show_cmd == show_toolbar_main) {
-            if (maintool) {
-                res = maintool->handlerMouseMove(phyPoint, hook);
-            }
-        } else if (show_cmd == show_toolbar_compo) {
-            if (compotool) {
-                res = compotool->handlerMouseMove(phyPoint, hook);
-            }
-        } else if (show_cmd == show_scroller_horz) {
-            if (hscroller)
-                res = hscroller->handlerMouseMove(phyPoint, show_cmd, hook);
-        } else if (show_cmd == show_scroller_vert) {
-            if (vscroller)
-                res = vscroller->handlerMouseMove(phyPoint, show_cmd, hook);
-        } else if (show_cmd == show_caption) {
-            if (caption)
-                res = caption->handlerMouseMove(phyPoint, show_cmd, hook);
-        } else if (show_cmd == show_capture) {
-            if(capture)
-                res=capture->handlerMouseMove(phyPoint, show_cmd, hook);
+           }else if(focus != nullptr){
+            res = focus->handlerMouseMove(phyPoint, show_cmd, hook);
         }
     }
     //nnLOG(show_status, "handlerMouseMove out : ", show_cmd);
@@ -450,6 +418,7 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
 bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
     bool res = false;
+    nnLOG(show_status, "handlerMouseButtonDown in : ", show_cmd);
     if (parent) {
         IExtHandler *hook = parent->getHandler();
         if (buttons == nn_m_button_left ) {
@@ -458,25 +427,9 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
                     nnPoint nn=getCoordLog(phyPoint);
                     res = selector->handlerMouseButtonDown(nn, show_cmd);
                 }
-            } else if ( show_cmd == show_toolbar_main) {
-                if (maintool)
-                    res = maintool->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-            } else if ( show_cmd == show_toolbar_compo) {
-                if (compotool)
-                    res = compotool->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-            } else if (show_cmd == show_scroller_horz) {
-                if (hscroller)
-                    res = hscroller->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-            } else if (show_cmd == show_scroller_vert) {
-                if (vscroller)
-                    res = vscroller->handlerMouseButtonDown(phyPoint,  show_cmd, hook);
-            } else if ( show_cmd == show_caption) {
-                if (caption)
-                    res = caption->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-            } else if ( show_cmd == show_capture) {
-                if (capture)
-                    res = capture->handlerMouseButtonDown(phyPoint, show_cmd, hook);
-                if (selector) {
+            } else if (focus !=nullptr ){
+                res = focus->handlerMouseButtonDown(phyPoint, show_cmd, hook);
+                if ( show_cmd == show_capture  && selector!=nullptr ) {
                     nnPoint nn=getCoordLog(phyPoint);
                     res = selector->handlerMouseButtonDown(nn, show_cmd);
                 }
@@ -487,17 +440,16 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
                     if (selector->isSelectedComponent()) {
                         show_cmd = show_toolbar_compo;
                         compotool->show(phyPoint);
+                        focus=compotool;
                     } else {
                         show_cmd = show_toolbar_main;
                         maintool->show(phyPoint);
+                        focus=maintool;
                     }
                     res = true;
                 }
-            } else if (show_cmd == show_toolbar_main) {
-                res = maintool->hide();
-                unselect();
-            } else if (show_cmd == show_toolbar_compo) {
-                res = compotool->hide();
+            } else if ( focus !=nullptr ){
+                focus->hide();
                 unselect();
             }
             //
@@ -506,18 +458,21 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
             }
         }
     }
+    nnLOG(show_status, "handlerMouseButtonDown out : ", show_cmd);
     return res;
 }
 
 bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
     bool res = true;
+    nnLOG(show_status, "handlerMouseButtonUp in : ", show_cmd);
     if (selector) {
         if (show_cmd == show_none) {
             nnPoint nn=getCoordLog(phyPoint);
             res = selector->handlerMouseButtonUp(buttons, nn);
         }
     }
+    nnLOG(show_status, "handlerMouseButtonUp out : ", show_cmd);
     return res;
 }
 

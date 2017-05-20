@@ -53,6 +53,7 @@ class nnViewGlue
     ICaption *caption;
     ICapture *capture;
     IFontManager *curFont;
+    IComponent* focus;
     show_status show_cmd;
 public:
     nnViewGlue(IChild *_parent);
@@ -94,7 +95,7 @@ public:
     bool loadImages(STRING &_path);
     inline  bool createDraw(void) { return view->createMainBitmap(phy_Size); }
     bool Capture(int command,unsigned int image);
-    inline IFontManager *getCurrentFont(void) { return curFont; };
+    inline IFontManager *getCurrentFont(void) { return curFont; }
 private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);

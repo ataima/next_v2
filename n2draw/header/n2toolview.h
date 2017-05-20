@@ -23,14 +23,16 @@ public:
     bool readConfiguration(IXmlNode *node);
     bool draw(bmpImage & bkg, IViewGlue * glue);
     bool handlerRequestCommand( nnPoint & pos,int & command);
-    bool handlerMouseMove( nnPoint & pos,IExtHandler *hook);
+    bool handlerMouseMove( nnPoint & pos,show_status & status,IExtHandler *hook);
     bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook);
     inline ICommander *getActiveCommander(void){return active;}
     bool loadImages(STRING  &path);
     bool checkIntCommand(int command);
     inline void setFont(IFontManager *_font) { font = _font; }
     inline void show(nnPoint & p){ phyPos=p;}
-    bool hide(void);
+    inline void show(void){}
+    inline void addImage(int , bmpImage * ){}
+    void hide(void);
 
 };
 

@@ -77,8 +77,7 @@ HEADERS += \
 ../../header/n2utils.h                 \
 ../../header/n2capturepos.h            \
 ../../header/n2resource.h              \
-../../header/n2iface \
-    ../../header/n2iface.h
+../../header/n2iface.h
 
 
 DESTDIR =../../../../dist
