@@ -4,7 +4,7 @@ project (meLa)
 
 add_subdirectory (./bmpImage)
 add_subdirectory (./n2draw)
-
+add_subdirectory (./tests)
 
 
 

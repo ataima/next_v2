@@ -6,17 +6,24 @@ cmake_minimum_required (VERSION 2.8.11)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_PROJECT_NAME} )
 
-project (ca_bmp_image)
+project (ca_test_next)
 
 include_directories(./header)
- 
+include_directories(../bmpImage/header) 
+include_directories(../n2draw/header )
+
+
  
 #However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "./source/*.cpp")
 
+ADD_EXECUTABLE(ca_test_next ${SOURCES})
 
-add_library (ca_bmp_image SHARED ${SOURCES} )
-
-install ( TARGETS ca_bmp_image DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
+install ( TARGETS ca_test_next DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
 
 set(CMAKE_CXX_FLAGS "--std=c++11 ${CMAKE_CXX_FLAGS}")
+
+
+target_link_libraries (ca_test_next ca_bmp_image )
+target_link_libraries (ca_test_next ca_n2draw )
+target_link_libraries (ca_test_next pthread )

@@ -19,4 +19,5 @@ file(GLOB SOURCES "./source/*.cpp")
 add_library (ca_n2draw SHARED ${SOURCES} )
 
 install ( TARGETS ca_n2draw DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
