@@ -1191,7 +1191,19 @@ public:
 	virtual void endDocument(const char *info) = 0;
 	/// interface merber for add result of test at runtime
 	virtual void addResult(const char *info, int f = 0, int timeU = 0) = 0;
-	/// interface merber for retrieve the type of document in use
+	/// interface member for add line and file to exception
+	virtual void addFailPos(const char *filename,const int line) =0;
+	/// interface member for add report of class test
+        virtual void addReport(const int success, const int failed, const int skipped) =0;
+	/// interface member for add start class info
+	virtual void addTestStart(const char *class_name)=0;
+	/// interface member for add a test to tests manager
+	virtual void addInsertTest(const int num,const char * name)=0;
+        /// interface member for add a test to tests manager
+        virtual void addRegisterTests(const int num,const char * name)=0;
+	/// interface member for add start class info
+        virtual void addTestStop(const char *class_name)=0;
+	/// interface merber for retrieve the type of document in use	
 	virtual DOCTYPE getType(void) = 0;
 	/// interface merber for retrieve the FILE linked to obj
 	virtual FILE  *getFile(void) = 0;
@@ -1258,6 +1270,24 @@ public:
 class docText
 	:public docFile
 {
+private:
+#define WHITE "\e[1;37m"
+#define GRAY_LIGHT "\e[0;37m"
+#define GRAY_DARK "\e[1;30m"
+#define BLUE "\e[0;34m"
+#define BLUE_LIGHT "\e[1;34m"
+#define GREEN "\e[0;32m"
+#define GREEN_LIGHT "\e[1;32m"
+#define CYAN "\e[0;36m"
+#define CYAN_LIGHT "\e[1;36m"
+#define RED "\e[0;31m"
+#define RED_LIGHT "\e[1;31m"
+#define PURPLE "\e[0;35m"
+#define PURPLE_LIGHT "\e[1;35m"
+#define BROWN "\e[0;33m"
+#define YELLOW "\e[1;33m"
+#define BLACK "\e[0;30m"
+#define REPLACE "\e[0m"
 public:
 	/// default ctor
 	docText(const char *name)
@@ -1273,32 +1303,115 @@ public:
 	/// implementation of ...
 	virtual  void addInfo(const char *info)
 	{
-		fprintf(file, "%s\n", info);
+		fprintf(file, YELLOW "%s\n" REPLACE, info);
 		fflush(file);
 	}
 	/// implementation of ...
 	virtual void startDocument(const char *info)
 	{
 		docFile::startDocument(info);
-		fprintf(file, "%s:\n", info);
+		fprintf(file, WHITE "%s:\n" REPLACE, info);
 		fflush(file);
 	}
 	/// implementation of ...
 	virtual void endDocument(const char *info)
 	{
 		docFile::endDocument(info);
-		fprintf(file, "%s:\n", info);
+		fprintf(file, WHITE "%s:\n" REPLACE, info);
 		fflush(file);
 	}
 	/// implementation of ...
-    virtual void addResult(const char *info, int /*f = 0*/, int timeU = 0)
+        virtual void addResult(const char *info, int f = 0 , int timeU = 0)
 	{
-		if (timeU != -1)
-			fprintf(file, "%s:%d ms\n", info, timeU);
+	   if (f==1 /* OK */)
+	     fprintf(file, WHITE "%s" GREEN " OK " WHITE" :: " CYAN "% 5d " GRAY_DARK "ms\n" REPLACE, info, timeU);
 		else
-			fprintf(file, "%s\n", info);
+	   if( f==0 /* FAILED */ )
+		fprintf(file, WHITE "%s" RED " FAILED " PURPLE "!!\n" REPLACE, info);
+	   else
+	   if( f==2 /* SETUP EXCEPTION FAILED */ ){
+                fprintf(file, WHITE "%s" RED " FAILED " PURPLE "!!\n" REPLACE, info);
+		fprintf(file,YELLOW "  [ " RED_LIGHT "SETUP EXCEPTION !!" YELLOW " ]\n" REPLACE);
+		}
+           else
+           if( f==3 /* SETUP UNHANDLED EXCEPTION FAILED */ ){
+                fprintf(file, WHITE "%s" RED " FAILED " PURPLE "!!\n" REPLACE, info);
+                fprintf(file,YELLOW "  [ " RED_LIGHT "SETUP UNHANDLED EXCEPTION !!" YELLOW " ]\n" REPLACE);
+
+		}
+else
+           if( f==5 /* TEARDOWN EXCEPTION FAILED */ ){
+                fprintf(file, WHITE "%s" RED " FAILED " PURPLE "!!\n" REPLACE, info);
+		fprintf(file,YELLOW "  [ " RED_LIGHT "TEARDOWN EXCEPTION !!" YELLOW " ]\n" REPLACE);
+		}
+           else
+           if( f==6 /* TEARDOWN UNHANDLED EXCEPTION FAILED */ ){
+                fprintf(file, WHITE "%s" RED " FAILED " PURPLE "!!\n" REPLACE, info);
+		fprintf(file,YELLOW "  [ " RED_LIGHT "TEARDOWN UNHANDLED EXCEPTION !!" YELLOW " ]\n" REPLACE);
+		}
+	   else
+	   if( f==4 /*  UNHANDLED EXCEPTION FAILED */ ){
+                fprintf(file, WHITE "%s" RED " FAILED " PURPLE "!!\n" REPLACE, info);
+		fprintf(file,YELLOW "  [ " RED_LIGHT "UNHANDLED EXCEPTION !!" YELLOW " ]\n" REPLACE);
+		}
+	   else
+		fprintf(file, WHITE "%s" RED " FAILED " WHITE "\n" REPLACE, info);
 		fflush(file);
 	}
+	virtual  void addFailPos(const char *filename, const int line)
+        {
+	fprintf(file,YELLOW "  [ " WHITE "%s" PURPLE " ::" CYAN "% 5d" YELLOW " ]\n" REPLACE, filename, line);
+         fflush(file);
+	}
+	virtual void addReport(const int success, const int failed, const int skipped)    {
+	fprintf(file,  	GREEN "Success "
+			WHITE "["
+			GREEN_LIGHT "% 4d" 
+			WHITE "]    -    "
+			RED "Failed " 
+			WHITE "["
+			RED_LIGHT "% 4d" 
+			WHITE "]    -    "
+			GRAY_DARK "Disabled " 
+			WHITE "["
+			PURPLE "% 4d" 
+			WHITE "]\n"
+			REPLACE, success, failed, skipped);
+	 fflush(file);
+	}
+	void addTestStart(const char *class_name){
+	fprintf(file,	WHITE "START >> " 
+			YELLOW "[ " 
+			PURPLE_LIGHT "%s"
+			YELLOW " ]\n"
+			REPLACE, class_name);
+	fflush(file);
+	}
+        void addTestStop(const char * /* class_name */){
+        fprintf(file,   WHITE "<< STOP  \n"
+                        REPLACE);
+        fflush(file);
+        }
+	void addInsertTest(const int num,const char * name){
+	fprintf(file,   WHITE "% 4d"
+                        YELLOW ")  "
+                        GREEN_LIGHT "Insert "
+                        YELLOW " > "
+			WHITE "%s\n"
+                        REPLACE,num, name);
+        fflush(file);
+	}
+	void addRegisterTests(const int num,const char * name){
+        fprintf(file,   WHITE "% 4d"
+                        YELLOW ")  "
+                        GREEN_LIGHT "Register class  "
+                        YELLOW " > "
+                        PURPLE_LIGHT "%s\n"
+                        REPLACE,num, name);
+        fflush(file);
+        }
+
+
 };
 
 
@@ -1350,6 +1463,26 @@ public:
 	{
 		/*fprintf(file,"<!--%s %d,%d-->",info,f,timeU);*/
 	}
+    void addFailPos(const char * /*filename*/, const int /*line*/)
+        {
+                /*fprintf(file,"<!--%s %d-->",file,line);*/
+        }
+    void addReport(const int /*success*/, const int /*failed*/, const int /*skipped*/)    {
+		/*fprintf(file,"<!--%d %d %d-->",success,failed,skipped);*/
+	}
+    void addTestStart(const char * /*class_name*/){
+		/*fprintf(file,"<!-- %s -->",class_name);*/
+	}
+    void addTestStop(const char * /*class_name*/){
+                /*fprintf(file,"<!-- %s -->",class_name);*/
+        }
+    void addInsertTest(const int /*num*/,const char * /*name*/){
+	/*fprintf(file,"<!-- %s %d-->",name,num);*/
+	}
+    void addRegisterTests(const int /*num*/,const char * /*name*/){
+        /*fprintf(file,"<!-- %s %d-->",name,num);*/
+        }
+
 };
 
 
@@ -1381,10 +1514,29 @@ public:
 	{
 		/*fprintf(file,"<!--%s %d,%d-->",info,f,timeU);*/
 	}
+    void addFailPos(const char * /*filename*/, const int /*line*/)
+        {
+                /*fprintf(file,"<!--%s %d-->",file,line);*/
+        }
+    void addReport(const int /*success*/, const int /*failed*/, const int /*skipped*/)    {
+                /*fprintf(file,"<!--%d %d %d-->",success,failed,skipped);*/
+        }
+    void addTestStart(const char * /*class_name*/){
+                /*fprintf(file,"<!-- %s -->",class_name);*/
+        }
+    void addTestStop(const char * /*class_name*/){
+                /*fprintf(file,"<!-- %s -->",class_name);*/
+        }
+    void addInsertTest(const int /*num*/,const char * /*name*/){
+        /*fprintf(file,"<!-- %s %d-->",name,num);*/
+        }
+    void addRegisterTests(const int /*num*/,const char * /*name*/){
+        /*fprintf(file,"<!-- %s %d-->",name,num);*/
+        }
+
 };
 
-
-/// manager of documents . simple container for reply a message to all documents
+// manager of documents . simple container for reply a message to all documents
 class docManager
 {
 	small_doc ** files;		/// array of small_doc* objects
@@ -1452,6 +1604,50 @@ public:
 			files[i]->addResult(buff, f, timeUsed);
 		}
 	}
+        /// add a fail pos info to all documents
+        void addFailPos(const char *filename ,const int line)
+        {
+                for (int i = 0; i < numFile; i++)
+                {
+                        files[i]->addFailPos(filename,line);
+                }
+        }
+        /// add a fail pos info to all documents
+        void addReport(const int success, const int failed, const int skipped)
+        {
+                for (int i = 0; i < numFile; i++)
+                {
+                        files[i]->addReport(success,failed,skipped);
+                }
+        }
+        void addTestStart(const char *classinfo)
+        {
+                for (int i = 0; i < numFile; i++)
+                {
+                        files[i]->addTestStart(classinfo);
+                }
+        }
+        void addTestStop(const char *classinfo)
+        {
+                for (int i = 0; i < numFile; i++)
+                {
+                        files[i]->addTestStop(classinfo);
+                }
+        }
+	void addInsertTest(const int num,const char * name)
+	{
+                for (int i = 0; i < numFile; i++)
+                {
+                        files[i]->addInsertTest(num,name);
+                }
+        }
+        void addRegisterTests(const int num,const char * name)
+        {
+                for (int i = 0; i < numFile; i++)
+                {
+                        files[i]->addRegisterTests(num,name);
+                }
+        }
 	/// start  all documents
 	void startDocument(const char *info)
 	{
@@ -1680,7 +1876,7 @@ public:
 		{
 			if (testReq >= 0)
 			{
-				docs->addInfo("ALL TEST START");
+				docs->addInfo("TESTS START");
 				for (i = 0; i < numTest; i++)
 				{
 					if (allTest[i] == NULL)continue;
@@ -1794,7 +1990,7 @@ private :\
 	allTest[numTest]=test;\
 	result[numTest]=new infodoc(name,brief,(*Total+numTest+1));\
 	printFlg=1;\
-	docs->addInfo("   %d) - insert test %s",(*Total+numTest+1),/*toString(),*/name);\
+	docs->addInsertTest((*Total+numTest+1),name);\
 	if((*numTestReq)>1)\
 {\
 	offsetSingleTest++;\
@@ -1814,7 +2010,7 @@ private :\
 	int failed =0;\
 	int skipped=0;\
 	clock_t start,stop;\
-	if(printFlg!=0)docs->addInfo("%s TEST START ",toString());\
+	if(printFlg!=0)docs->addTestStart(toString());\
 	for(currentTest=0;currentTest<numTest;currentTest++)\
 {\
 	if(allTest[currentTest]==NULL)\
@@ -1829,14 +2025,14 @@ private :\
 }\
 	catch(EXC_FAIL f)\
 {\
-	docs->addResult(0,-1,"    - %s - setUp FAIL :%s",testName,f.msg);\
+	docs->addResult(2,-1,"  - % 4d:%-40s (% 4d) : %s",currentTest,testName,result[currentTest]->id,f.msg);\
 	result[currentTest]->Fail(f.msg,f.file,f.line);\
 	failed++;\
 	continue;\
 }\
 	catch(...)\
 {\
-	docs->addResult(0,-1,"    - %s - ERROR :setUp() Unespected Exception!",testName);\
+	docs->addResult(3,-1,"  - % 4d:%-40s (% 4d)",currentTest,testName,result[currentTest]->id);\
 	result[currentTest]->Fail("setup :Unespected Exception",NULL,-1);\
 	failed++;\
 	continue;\
@@ -1847,18 +2043,19 @@ private :\
 	start=clock();\
 	(this->*test)();\
 	stop=clock();\
-	docs->addResult(1,(int)(stop-start),"    - %d:%s (%d)- OK :",currentTest,testName,result[currentTest]->id);\
+	docs->addResult(1,(int)(stop-start),"  - % 4d:%-40s (% 4d) ",currentTest,testName,result[currentTest]->id);\
 	result[currentTest]->Ok(stop,start);\
 }\
 	catch(EXC_FAIL f)\
 {\
 	result[currentTest]->Fail(f.msg,f.file,f.line);\
-	docs->addResult(0,-1,"    - %s (%d)- FAILED : %d-:%s",testName,result[currentTest]->id,f.line,f.file);\
+	docs->addResult(0,-1,"  - % 4d:%-40s (% 4d) ",currentTest,testName,result[currentTest]->id);\
+	docs->addFailPos(f.file,f.line);\
 	failed++;\
 }\
 	catch(...)\
 {\
-	docs->addResult(0,-1,"    - %s (%d)- ERROR :Unespected Exception!",testName,result[currentTest]->id);\
+	docs->addResult(4,-1,"  - % 4d:%-40s (% 4d) ",currentTest,testName,result[currentTest]->id);\
 	result[currentTest]->Fail("Unespected Exception",NULL,-1);\
 	failed++;\
 }\
@@ -1869,19 +2066,19 @@ private :\
 	catch(EXC_FAIL f)\
 {\
 	result[currentTest]->Fail(f.msg,f.file,f.line);\
-	docs->addResult(0,-1,"    - %s - tearDown FAIL :%s",testName,f.msg);\
+	docs->addResult(5,-1,"  - % 4d:%-40s (% 4d) : %s",currentTest,testName,result[currentTest]->id,f.msg);\
 	failed++;\
 }\
 	catch(...)\
 {\
-	docs->addResult(0,-1,"%s - ERROR :tearDown() Unespected Exception!",testName);\
+	docs->addResult(6,-1,"  - % 4d:%-40s (% 4d)",currentTest,testName,result[currentTest]->id);\
 	result[currentTest]->Fail("Unespected Exception",NULL,-1);\
 	failed++;\
 }\
 }\
 	if(printFlg!=0){\
-	docs->addInfo("%s TEST END ",toString());\
-	docs->addInfo("SUCCESS %d  -  FAIL %d  -  SKIPPED %d",numTest-failed-skipped,failed,skipped);\
+	docs->addTestStop(toString());\
+	docs->addReport(numTest-failed-skipped,failed,skipped);\
 	}\
 	*skip+=skipped;\
 	return failed;\
@@ -1900,7 +2097,7 @@ private :\
 	result[numTest]=NULL;\
 }\
 	numTest=0;printFlg=0;offsetSingleTest=0;\
-	docs->addInfo("Register tests for class %s: ID = %d",toString(),family);
+	docs->addRegisterTests(family,toString());
 
 
 // any test class was register in the suite, necessary on source file

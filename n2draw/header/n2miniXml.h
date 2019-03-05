@@ -97,6 +97,7 @@ class miniXmlParse
     size_t max_size;
     KXCHAR *p_index;
     KXCHAR *p_end;
+    bool tofree;
 public:
     miniXmlParse(const XCHAR *filename, miniXmlNode * _root);
     ~miniXmlParse();
