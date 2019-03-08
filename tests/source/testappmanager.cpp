@@ -128,15 +128,19 @@ void test_app_manager::test1(void)
     nnGenericCoil *u = new nnGenericCoil();
     res = mn->addCoil(10, u);
     CA_ASSERT(res == true);
-    CA_ASSERT((int)mn->size() == (int)20);
+    ssize_t size=mn->size();
+    int height = mn->getHeight();
+    CA_ASSERT((int)size == height);
     nnContactNC *v1 = new nnContactNC();
     res = mn->addContact(12, 0, v1);
     CA_ASSERT(res == true);
     nnPoint p1(12, 0);
     nnPoint p2(10, 0);
-    nnConnection::connectComponent(childs->getManager(), p1, p2);
+    nnConnection::connectComponent(childs->getManager(), p2, p1);
     res = childs->getView()->updateDraw();
     CA_ASSERT(res == true);
+    size=mn->size();
+    CA_ASSERT((int)size == height+3);
     unsigned int i,a;
     bmpImage &bdraw = childs->getView()->getDraw();
     for( i=0;i<bdraw.getWidth();i+=100)
@@ -148,8 +152,8 @@ void test_app_manager::test1(void)
     bdraw.frameRect(10,10,300,300,128,128,64,0xfefefefe);
     bdraw.frameRect(50,50,250,250,128,128,64,0xfefefefe);
     draw(&bdraw);
-    MKDIR(".\\bmp",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    bdraw.copyToFile(X(".\\bmp\\test1_app.bmp"));
+    MKDIR("./bmp",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    bdraw.copyToFile(X("./bmp/test1_app.bmp"));
 }
 
 
@@ -165,7 +169,7 @@ void test_app_manager::test2(void)
 #ifdef _UNICODE
     STRING name(X("conf_utf16.xml"));
 #else
-    STRING name(X("conf_ut8.xml"));
+    STRING name(X("conf_utf8.xml"));
 #endif
     IChild *childs = app.create(name);
     CA_ASSERT(childs != nullptr);
@@ -181,7 +185,9 @@ void test_app_manager::test2(void)
     nnGenericCoil *u = new nnGenericCoil();
     res = mn->addCoil(10, u);
     CA_ASSERT(res == true);
-    CA_ASSERT((int)mn->size() == (int)20);
+     ssize_t size=mn->size();
+    int height = mn->getHeight();
+    CA_ASSERT((int)size == height);
     nnContactNC *v1 = new nnContactNC();
     res = mn->addContact(12, 0, v1);
     CA_ASSERT(res == true);
@@ -190,16 +196,22 @@ void test_app_manager::test2(void)
     nnConnection::connectComponent(childs->getManager(), p2, p1);
     res = childs->getView()->updateDraw();
     CA_ASSERT(res == true);
-    bmpImage &bdraw = childs->getView()->getDraw();
+    MKDIR("./bmp",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    bmpImage bdraw = childs->getView()->getDraw();
+    bdraw.copyToFile(X("./bmp/test2_1app.bmp"));
     draw(&bdraw);
+    bdraw.detach();
     childs->getView()->handlerScrollHorz(2);
     res = childs->getView()->updateDraw();
-    //CA_ASSERT(res == true);
     bdraw = childs->getView()->getDraw();
+    bdraw.copyToFile(X("./bmp/test2_2app.bmp"));
+    CA_ASSERT(res == true);   
     draw(&bdraw);
+    bdraw.detach();
     childs->getView()->handlerScrollVert(2);
     res = childs->getView()->updateDraw();
-    CA_ASSERT(res == true);
     bdraw = childs->getView()->getDraw();
+    bdraw.copyToFile(X("./bmp/test2_3app.bmp"));
+    CA_ASSERT(res == true);    
     draw(&bdraw);
 }

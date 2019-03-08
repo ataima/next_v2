@@ -6,20 +6,17 @@ cmake_minimum_required (VERSION 2.8.11)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_PROJECT_NAME} )
 
-project (ca_bmp_image)
+project (ca_sys_log)
 
 include_directories(./header)
-include_directories(../syslog/header) 
+ 
  
 #However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "./source/*.cpp")
 
 
-add_library (ca_bmp_image SHARED ${SOURCES} )
+add_library (ca_sys_log SHARED ${SOURCES} )
 
-install ( TARGETS ca_bmp_image DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
+install ( TARGETS ca_sys_log DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
 
 set(CMAKE_CXX_FLAGS "--std=c++11 ${CMAKE_CXX_FLAGS}")
-
-
-target_link_libraries (ca_bmp_image ca_sys_log)

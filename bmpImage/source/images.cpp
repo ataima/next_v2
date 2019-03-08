@@ -5,6 +5,8 @@
 #endif
 #include "images.h"
 
+
+
 #ifdef _MSC_VER
 #include <codecvt>
 #endif
@@ -191,7 +193,9 @@ AssignPixel(unsigned char * dst, const unsigned char * src, unsigned int bytespe
 
 
 
-
+#if LOGSYSLOG
+    logger*  bmpImage::instance=new logger("bmp_image.log");
+#endif
 
 
 
@@ -199,6 +203,7 @@ AssignPixel(unsigned char * dst, const unsigned char * src, unsigned int bytespe
 bmpImage::bmpImage()
 {
     m_hBitmap = nullptr;
+    
 }
 
 
@@ -754,8 +759,8 @@ LPBITMAPFILEHEADER  bmpImage::allocateBitmap(  unsigned int width,  unsigned int
 
     if (dib_size > 0)
     {
-
-        res = (LPBITMAPFILEHEADER)calloc(dib_size,1);
+        auto p=new char[dib_size+64];
+        res = (LPBITMAPFILEHEADER)p;
         res->bfSize = (unsigned long)(dib_size & 0xffffffff);
         res->bfType = 0x4d42;
         res->bfOffBits = res->bfReserved1 = res->bfReserved2 = 0;
@@ -786,7 +791,7 @@ void bmpImage::freeBitmap(LPBITMAPFILEHEADER bI)
 {
     if (bI)
     {
-        free(bI);
+        delete [](bI);
     }
 }
 
@@ -1867,12 +1872,15 @@ bool bmpImage::copyToFile(const XCHAR *name)
 LPBITMAPFILEHEADER bmpImage::cloneImage(LPBITMAPFILEHEADER pI)
 {
     LPBITMAPFILEHEADER copy = nullptr;
+    LogF();
+    LogI("%s:SRC:(%p)\n", __func__,pI);
     if (pI != nullptr  && pI->bfType == 0x4d42)
     {
         copy = allocateBitmap(getWidth(pI), getHeight(pI),getBitsPerPixel(pI),0);
         if (copy != nullptr  && copy->bfSize == pI->bfSize)
         {
             memcpy(copy, pI, pI->bfSize);
+            LogI("%s:NEW(%p)\n", __func__,copy);
         }
     }
     return copy;
@@ -2749,6 +2757,11 @@ bool bmpImage::translateColor(LPBITMAPFILEHEADER dest, unsigned char oriRed, uns
 
 
 
+#if LOGSYSLOG
+    void bmpImage::dump(void){
+        LogI("I(%p) > W=%d : H=%d : B=%d\n",m_hBitmap,getWidth(),getHeight(),getBitsPerPixel());
+    }
+#endif
 
 
 #ifdef _MSC_VER
@@ -2867,6 +2880,5 @@ bool bmpSprite::toSprite(LPBITMAPFILEHEADER dest, LPBITMAPFILEHEADER image, LPBI
     catch (...) {}
     return res;
 }
-
 
 

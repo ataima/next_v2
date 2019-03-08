@@ -442,6 +442,7 @@ bool swapNode(miniXmlNode *src, miniXmlNode* dst) {
 /////////////////////////file_out///////////////////////////////////////////////////////
 
 miniXmlParse::miniXmlParse(const XCHAR *_in, miniXmlNode * _root) {
+    tofree=false;
     if (_in != nullptr && _root != nullptr) {
         root = _root;
         STRING filename_in(_in);

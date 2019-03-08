@@ -11,6 +11,7 @@ project (ca_n2draw)
  
 include_directories(./header)
 include_directories(../bmpImage/header)
+include_directories(../syslog/header)
  
 #However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "./source/*.cpp")

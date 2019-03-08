@@ -9,6 +9,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_PROJECT_NAME} )
 project (ca_test_next)
 
 include_directories(./header)
+include_directories(../syslog/header)
 include_directories(../bmpImage/header) 
 include_directories(../n2draw/header )
 

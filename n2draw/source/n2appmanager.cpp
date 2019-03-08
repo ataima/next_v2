@@ -57,6 +57,7 @@ IAppManager *nnAppManager::instance=nullptr;
 nnAppManager::nnAppManager():selected(-1)
 {
     configuration = new xmlConfig();
+    nnResource::Init();
     if(instance==nullptr)
         instance=this;
 }
@@ -72,17 +73,13 @@ nnAppManager::~nnAppManager()
 
 IAppManager *nnAppManager::getInstance(void)
 {
-    if(instance==nullptr) {
-        nnResource::Init();
-        instance = new nnAppManager();
-    }
     return instance;
 }
 
 IChild * nnAppManager::create(STRING & conf_file_name)
 {
-    STRING res="resource/";
-    return createObjects(conf_file_name,res);
+        STRING res="resource/";
+        return createObjects(conf_file_name,res);
 }
 
 
