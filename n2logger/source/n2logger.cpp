@@ -1,6 +1,7 @@
 #include "n2logger.h"
 #include <chrono>
 #include <thread>
+#include <stdarg.h>
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
 
@@ -73,9 +74,13 @@ nnLogger::~nnLogger()
         instance = nullptr;
 }
 
-void nnLogger::log(IDebug * param)
+void nnLogger::log(int level,const char *fmt, ... )
 {
+    char dest[0x3fff];
+    va_list argptr;
     //producer...
+    ILogParam *param= new ILogParam;
+    param->time = std::chrono::steady_clock::now();
     if (!done) {
         if (!th) {
             if (current_printer != nullptr) {
@@ -84,6 +89,12 @@ void nnLogger::log(IDebug * param)
             }
         }
         std::unique_lock<std::mutex> lock(mtx);
+        va_start(argptr, fmt);
+        vsnprintf(dest,sizeof(dest), fmt, argptr);
+        va_end(argptr);
+        ILogParam *param= new ILogParam;
+        param->level=level;
+        param->msg=dest;
         io.push(param);
         notify = true;
         cond_var.notify_one();
@@ -91,26 +102,24 @@ void nnLogger::log(IDebug * param)
 }
 
 
-void nnLogger::print(IDebug *p)
+void nnLogger::print(ILogParam *p)
 {
     if (current_printer ) {
         if (p) {
             std::string msg;
-            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
             std::stringstream ts;
-            ts << "[" << (end - t_start).count() << "ns ]";
-            t_start = end;
+            ts << "[" << (p->time - t_start).count() << "ns ]";
+            t_start = p->time;
             msg = ts.str();
-            p->utf8(msg);
-            current_printer->out(msg);
+            current_printer->out(p->level,msg);
             msg.clear();
         }
     }
 }
 
-IDebug * nnLogger::remove(void)
+ILogParam * nnLogger::remove(void)
 {
-    IDebug *param = nullptr;
+    ILogParam *param = nullptr;
     std::unique_lock<std::mutex> lock(mtx);
     if (!notify) {
         //cond_var.wait_for(lock, std::chrono::milliseconds(100));
@@ -129,7 +138,7 @@ void nnLogger::enqueue(void)
 {
 
     while(!done) {
-        IDebug *param = remove();
+        ILogParam *param = remove();
         if(!done)
             print(param);
         if(param)
@@ -173,6 +182,39 @@ void nnLogger::reset()
         current_printer = nullptr;
     }
 }
+
+
+#define WHITE "\e[1;37m"
+#define GRAY_LIGHT "\e[0;37m"
+#define GRAY_DARK "\e[1;30m"
+#define BLUE "\e[0;34m"
+#define BLUE_LIGHT "\e[1;34m"
+#define GREEN "\e[0;32m"
+#define GREEN_LIGHT "\e[1;32m"
+#define CYAN "\e[0;36m"
+#define CYAN_LIGHT "\e[1;36m"
+#define RED "\e[0;31m"
+#define RED_LIGHT "\e[1;31m"
+#define PURPLE "\e[0;35m"
+#define PURPLE_LIGHT "\e[1;35m"
+#define BROWN "\e[0;33m"
+#define YELLOW "\e[1;33m"
+#define BLACK "\e[0;30m"
+#define REPLACE "\e[0m"
+
+#include <iostream>
+
+void nnDefaultPrinter::out( int level, std::string & msg){
+
+    const char * colors[]={
+            RED_LIGHT,BLUE_LIGHT,PURPLE_LIGHT,
+            RED,GREEN,WHITE,GRAY_DARK,BROWN,nullptr
+    };
+    if(level>LOG_DEBUG)level=LOG_DEBUG+1;
+    std::cout<<colors[level]<<msg<<REPLACE<<std::endl;
+}
+
+
 
 
 #endif

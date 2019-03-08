@@ -31,6 +31,10 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
+
+
+
+
 nnCommander::nnCommander()
     :curItem(nullptr),
      bmpHeight(0),
@@ -50,6 +54,9 @@ nnCommander::~nnCommander()
     bmpHeight = 0;
     bmpWidth = 0;
     space.set(0, 0);
+    for (auto i : items){
+        delete i;
+    }
 }
 
 
@@ -85,11 +92,11 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
             while(numItem>0) {
                 t=conf->find(X("ITEM_"),i);
                 if(t) {
-                    commandItem item;
+                    commandItem *item = new commandItem();
                     IXmlNode *v = t->find(X("POS_X"));
                     if(v) {
                         int u;
-                        item.pos.x=u=v->getLong();
+                        item->pos.x=u=v->getLong();
                         if (u < 0)
                             u = -u;
                         if (u > maxExt.x)
@@ -101,7 +108,7 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                     v = t->find(X("POS_Y"));
                     if(v) {
                         int u;
-                        item.pos.y=u=v->getLong();
+                        item->pos.y=u=v->getLong();
                         if (u < 0)
                             u = -u;
                         if (u > maxExt.y)
@@ -112,7 +119,7 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                     }
                     v = t->find(X("COMMAND"));
                     if(v) {
-                        item.command=v->getLong();
+                        item->command=v->getLong();
                     } else {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("COMMAND"));
                         throw (pe);
@@ -121,21 +128,21 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                     if(v) {
                         IXmlNode *u = v->find(X("RED"));
                         if(u) {
-                            item.maskR=u->getLong()&0xff;
+                            item->maskR=u->getLong()&0xff;
                         } else {
                             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("RED"));
                             throw (pe);
                         }
                         u = v->find(X("GREEN"));
                         if(u) {
-                            item.maskG=u->getLong()&0xff;
+                            item->maskG=u->getLong()&0xff;
                         } else {
                             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("GREEN"));
                             throw (pe);
                         }
                         u = v->find(X("BLUE"));
                         if(u) {
-                            item.maskB=u->getLong()&0xff;
+                            item->maskB=u->getLong()&0xff;
                         } else {
                             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("BLUE"));
                             throw (pe);
@@ -146,14 +153,14 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
                     }
                     v = t->find(X("FILE"));
                     if(v) {
-                        item.file=v->getValue();
+                        item->file=v->getValue();
                     } else {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("FILE"));
                         throw (pe);
                     }
                     v = t->find(X("INFO"));
                     if(v) {
-                        item.info=v->getValue();
+                        item->info=v->getValue();
                     } else {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("FILE"));
                         throw (pe);
@@ -184,8 +191,8 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
         listCommandItem::iterator it=items.begin();
         listCommandItem::iterator end=items.end();
         while(it!=end) {
-            if(it->rect.into(pos)) {
-                curItem=&(*it);
+            if((*it)->rect.into(pos)) {
+                curItem=(*it);
                 if (hook) {
                     STRING info =curItem->info;
                     auto *t= new nnAbstractParam<STRING>(info);
@@ -219,11 +226,11 @@ bool nnCommander::checkRequestCommand( nnPoint & pos,int & command)
     bool res=false;
     listCommandItem::iterator it=items.begin();
     listCommandItem::iterator end=items.end();
-    nnLOG(nnPoint, "current click mouse position :", pos);
+    //nnLOG(nnPoint, "current click mouse position :", pos);
     while(it!=end) {
-        if(it->btRect.into(pos)) {
-            command=it->command;
-            nnLOG(int, "ITEM :", it->command);
+        if((*it)->btRect.into(pos)) {
+            command=(*it)->command;
+            //nnLOG(int, "ITEM :", (*it)->command);
             res=true;
             break;
         }
@@ -240,7 +247,8 @@ bool nnCommander::loadImages(STRING  &path)
     bool res=false;
     if(images) {
         if(images->setPath(path)) {
-            res=images->loadImages(&items);
+            listCommandItem *co=&items;
+            res=images->loadImages(co);
         }
     }
     return res;
@@ -252,7 +260,7 @@ bool nnCommander::loadImages(STRING  &path)
 bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 {
     bool res = false;
-    nnLOG1(nnPoint, pos);
+    //nnLOG1(nnPoint, pos);
     listCommandItem::iterator it = items.begin();
     listCommandItem::iterator _end = items.end();
     bmpHeight  = bkg.getHeight();
@@ -260,17 +268,18 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
     nnPoint quadrant;
     getQuadrant(pos, quadrant);
     while (it != _end) {
+        commandItem *cur=*it;
         int spX = (images->getMaxWidth() + space.x);
         int spY = (images->getMaxHeight() + space.y);
-        bmpImage & icon = *images->getImage(it->command);
-        unsigned int x = pos.x + it->pos.x*spX +quadrant.x*spX-spX/2;
-        unsigned int y1 = pos.y + it->pos.y*spY+quadrant.y*spY+spY/2;
+        bmpImage & icon = *images->getImage(cur->command);
+        unsigned int x = pos.x + cur->pos.x*spX +quadrant.x*spX-spX/2;
+        unsigned int y1 = pos.y + cur->pos.y*spY+quadrant.y*spY+spY/2;
         unsigned int y = bmpHeight - y1;
         unsigned int icon_width = icon.getWidth();
         unsigned int icon_height = icon.getHeight();
-        res = bkg.drawMaskSprite(icon, x, y, it->maskR, it->maskG, it->maskB);
-        it->rect.set(x, y, x + icon_width, y + icon_height);
-        it->btRect.set(x, y1- icon_height, x + icon_width, y1 );
+        res = bkg.drawMaskSprite(icon, x, y, cur->maskR, cur->maskG, cur->maskB);
+        cur->rect.set(x, y, x + icon_width, y + icon_height);
+        cur->btRect.set(x, y1- icon_height, x + icon_width, y1 );
         if (!res)
             break;
 #if 0
@@ -279,7 +288,7 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 #endif
         it++;
     }
-    nnLOG1(commandItem *, curItem);
+    //nnLOG1(commandItem *, curItem);
     if (curItem != nullptr) {
         drawTips(bkg, pos, glue);
     }
@@ -308,7 +317,7 @@ void nnCommander::getQuadrant(nnPoint & pos, nnPoint & res)
     int pX = pos.x / divX;
     int pY = pos.y / divY;
     res.set(0, 0);
-    nnLOG2(int, pX, pY);
+    //nnLOG2(int, pX, pY);
     if (pX == 0)
         res.x = maxExt.x;
     if (pX == 4)
@@ -317,5 +326,5 @@ void nnCommander::getQuadrant(nnPoint & pos, nnPoint & res)
         res.y = maxExt.y;
     if (pY == 4)
         res.y = -maxExt.y;
-    nnLOG1(nnPoint, res);
+    //nnLOG1(nnPoint, res);
 }

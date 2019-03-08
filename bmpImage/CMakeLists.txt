@@ -9,17 +9,18 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_PROJECT_NAME} )
 project (ca_bmp_image)
 
 include_directories(./header)
-include_directories(../syslog/header) 
+
  
 #However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "./source/*.cpp")
+include_directories(../n2logger/header)
 
 
 add_library (ca_bmp_image SHARED ${SOURCES} )
 
 install ( TARGETS ca_bmp_image DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
 
-set(CMAKE_CXX_FLAGS "--std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS}")
 
 
-target_link_libraries (ca_bmp_image ca_sys_log)
+

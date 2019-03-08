@@ -153,8 +153,8 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                 if (hook)
                     hook->doHandler(action_redraw);
                 phyArea.stop.y=hI;
-                nnLOG(status_caption,"CURRENT STATUS:",getStatus());
-                nnLOG(show_status,"VIEW SHOW STATUS:",status);
+                //nnLOG(status_caption,"CURRENT STATUS:",getStatus());
+                //nnLOG(show_status,"VIEW SHOW STATUS:",status);
             } else {
                 if (t != curItem) {
                     curItem = t;
@@ -170,15 +170,15 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                     hook->doHandler(action_redraw);
                 status = show_none;
                 phyArea.stop.y = hI/3;
-                nnLOG(status_caption,"CURRENT STATUS:",getStatus());
-                nnLOG(show_status,"VIEW SHOW STATUS:",status);
+                //nnLOG(status_caption,"CURRENT STATUS:",getStatus());
+                //nnLOG(show_status,"VIEW SHOW STATUS:",status);
                 res = true;
             }
         }
     } else if (getStatus() == status_caption_move) {
         if (hook) {
             nnPoint diff =  phyPoint - lastPoint ;
-            nnLOG1(nnPoint, diff);
+            //nnLOG1(nnPoint, diff);
             if (diff != 0) {
                 auto *t = new nnAbstractParam<nnPoint>(diff);
                 hook->doHandler(action_move_window, t);

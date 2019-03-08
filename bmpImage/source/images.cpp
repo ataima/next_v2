@@ -193,10 +193,6 @@ AssignPixel(unsigned char * dst, const unsigned char * src, unsigned int bytespe
 
 
 
-#if LOGSYSLOG
-    logger*  bmpImage::instance=new logger("bmp_image.log");
-#endif
-
 
 
 
@@ -1872,15 +1868,12 @@ bool bmpImage::copyToFile(const XCHAR *name)
 LPBITMAPFILEHEADER bmpImage::cloneImage(LPBITMAPFILEHEADER pI)
 {
     LPBITMAPFILEHEADER copy = nullptr;
-    LogF();
-    LogI("%s:SRC:(%p)\n", __func__,pI);
     if (pI != nullptr  && pI->bfType == 0x4d42)
     {
         copy = allocateBitmap(getWidth(pI), getHeight(pI),getBitsPerPixel(pI),0);
         if (copy != nullptr  && copy->bfSize == pI->bfSize)
         {
             memcpy(copy, pI, pI->bfSize);
-            LogI("%s:NEW(%p)\n", __func__,copy);
         }
     }
     return copy;
@@ -2757,11 +2750,6 @@ bool bmpImage::translateColor(LPBITMAPFILEHEADER dest, unsigned char oriRed, uns
 
 
 
-#if LOGSYSLOG
-    void bmpImage::dump(void){
-        LogI("I(%p) > W=%d : H=%d : B=%d\n",m_hBitmap,getWidth(),getHeight(),getBitsPerPixel());
-    }
-#endif
 
 
 #ifdef _MSC_VER

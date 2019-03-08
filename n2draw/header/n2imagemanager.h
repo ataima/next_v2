@@ -50,7 +50,7 @@ public:
     inline STRING  & getDefaulPath(void) const { return *const_cast<STRING*>(&path); }
     bool readConfiguration(IXmlNode *node);
     bool loadImages(void);
-    bool loadImages(listCommandItem *items);
+    bool loadImages(const listCommandItem *items);
     bmpImage * getImage(int id);
     bmpImage * getImage(const XCHAR * name);
     inline  const objImageList * getAvailObj(void) { return &availObj; }

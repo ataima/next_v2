@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 2.8.11)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_PROJECT_NAME} )
 
-project (ca_sys_log)
+project (ca_n2_logger)
 
 include_directories(./header)
  
@@ -15,8 +15,8 @@ include_directories(./header)
 file(GLOB SOURCES "./source/*.cpp")
 
 
-add_library (ca_sys_log SHARED ${SOURCES} )
+add_library (ca_n2_logger SHARED ${SOURCES} )
 
-install ( TARGETS ca_sys_log DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
+install ( TARGETS ca_n2_logger DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
 
-set(CMAKE_CXX_FLAGS "--std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS}")

@@ -37,7 +37,7 @@ nnExtHandler::nnExtHandler(extHandler & _hook, void *unkObj, bool _pulse)
 
 void nnExtHandler::send(extHandler hook, void *unknow, size_t Tparam, IParam *in )
 {
-    nnLOG1(size_t, Tparam);
+    //nnLOG1(size_t, Tparam);
     if(hook && unknow ) {
         try {
             hook(unknow,Tparam,in);

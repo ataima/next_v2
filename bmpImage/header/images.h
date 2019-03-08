@@ -11,7 +11,6 @@
 #pragma pack(1)
 #endif
 
-#include "logger.h"
 
 
 #ifndef tagBITMAPFILEHEADER
@@ -82,9 +81,6 @@ typedef BITMAPINFO *LPBITMAPINFO;
 class  bmpImage
 {
    //static const size_t bitPerPlane = 24;
-#if LOGSYSLOG
-    static logger  *instance;
-#endif
 public:
     bmpImage();
     bmpImage(bmpImage & b);
@@ -145,9 +141,6 @@ public:
     bool line( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned int mask=0xffffffff);
     bool frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue,unsigned int mask);
     bool border(unsigned char red, unsigned char green, unsigned char blue, unsigned int mask);
-#if LOGSYSLOG
-    void dump(void);
-#endif
 #ifdef _MSC_VER
     void show(int x, int y);
 #endif

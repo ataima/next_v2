@@ -668,7 +668,7 @@ void  nnChildApp::defaultProcess(size_t type_param, IParam *user_param)
         if (t) {
             // from conf...xml toolbars
             int v = t->value();
-            nnLOG1(int, v);
+            //nnLOG1(int, v);
             switch (v) {
             case 2000:// PLACE NO
                 Capture(2000, contactGenericAnd);
@@ -703,8 +703,8 @@ void  nnChildApp::defaultProcess(size_t type_param, IParam *user_param)
             nnPoint start = p1->value();
             nnPoint end = p2->value();
             int command = p3->value();
-            nnLOG2(nnPoint, start,end);
-            nnLOG1(int, command);
+            //nnLOG2(nnPoint, start,end);
+            //nnLOG1(int, command);
             switch (command) {
             case 2000:
                 addContact(end, new nnContactNO());

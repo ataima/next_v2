@@ -418,7 +418,7 @@ bool nnViewGlue::handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint)
 bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
     bool res = false;
-    nnLOG(show_status, "handlerMouseButtonDown in : ", show_cmd);
+    //nnLOG(show_status, "handlerMouseButtonDown in : ", show_cmd);
     if (parent) {
         IExtHandler *hook = parent->getHandler();
         if (buttons == nn_m_button_left ) {
@@ -458,21 +458,21 @@ bool nnViewGlue::handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyP
             }
         }
     }
-    nnLOG(show_status, "handlerMouseButtonDown out : ", show_cmd);
+    //nnLOG(show_status, "handlerMouseButtonDown out : ", show_cmd);
     return res;
 }
 
 bool nnViewGlue::handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & phyPoint)
 {
     bool res = true;
-    nnLOG(show_status, "handlerMouseButtonUp in : ", show_cmd);
+    //nnLOG(show_status, "handlerMouseButtonUp in : ", show_cmd);
     if (selector) {
         if (show_cmd == show_none) {
             nnPoint nn=getCoordLog(phyPoint);
             res = selector->handlerMouseButtonUp(buttons, nn);
         }
     }
-    nnLOG(show_status, "handlerMouseButtonUp out : ", show_cmd);
+    //nnLOG(show_status, "handlerMouseButtonUp out : ", show_cmd);
     return res;
 }
 

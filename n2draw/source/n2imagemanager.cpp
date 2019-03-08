@@ -272,7 +272,7 @@ bool nnImageManager::loadImages(void)
     return res;
 }
 
-bool nnImageManager::loadImages(listCommandItem * items)
+bool nnImageManager::loadImages(const listCommandItem * items)
 {
     bool res = false;
     if(items!=nullptr ) {
@@ -280,8 +280,8 @@ bool nnImageManager::loadImages(listCommandItem * items)
         size_t i,s=items->size();
         if(s) {
             for(i=0; i<s; i++) {
-                commandItem & it= items->at(i);
-                availObj[it.command]=it.file;
+                commandItem * it= items->at(i);
+                availObj[it->command]=it->file;
             }
         }
     }

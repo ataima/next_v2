@@ -27,43 +27,61 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-#include "n2interfaces.h"
+#include "n2logiface.h"
 
 #if _LOGGER_
+
 #include <queue>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 
+typedef struct tag_log_param {
+    std::string msg;
+    std::chrono::steady_clock::time_point time;
+    int level;
+} ILogParam;
+
 
 class nnLogger
-    : public ILogger
-{
-
-     std::chrono::steady_clock::time_point t_start;
-     std::mutex mtx;
-     std::condition_variable cond_var;
-     std::queue<IDebug *> io;
-     bool notify;
-     bool done;
-     std::thread *th;
-     IPrinter * current_printer;
+        : public ILogger {
+    std::chrono::steady_clock::time_point t_start;
+    std::mutex mtx;
+    std::condition_variable cond_var;
+    std::queue<ILogParam *> io;
+    bool notify;
+    bool done;
+    std::thread *th;
+    IPrinter *current_printer;
 private:
-    void print(IDebug *p);
-    IDebug * remove(void);
+    void print(ILogParam *p);
+
+    ILogParam *remove(void);
+
 public:
     nnLogger();
+
     ~nnLogger();
-    void log(IDebug *param);
+
+    void log(int level, const char *__fmt, ...);
+
     static void entry(ILogger *current);
+
     void enqueue(void);
-    inline  void setOutput(IPrinter *printer) { current_printer = printer; }
+
+    inline void setOutput(IPrinter *printer) { current_printer = printer; }
+
     inline IPrinter *output(void) { return current_printer; }
+
     void reset();
 
 };
 
-
+class nnDefaultPrinter
+        : public IPrinter {
+public:
+    void out(int level, std::string &msg);
+};
 
 #endif
 #endif

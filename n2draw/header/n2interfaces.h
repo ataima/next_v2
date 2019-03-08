@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <list>
 #include <map>
 #include "n2point.h"
+#include "n2logiface.h"
 
 
 #ifndef _MSC_VER
@@ -40,7 +41,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 //////////////////////////////////////////////////////
 
 #define  BUFFLENGTH  512
-#define  _LOGGER_    1
+
 #ifdef _DOUBLE_UNICODE
 typedef std::basic_stringstream<char32_t> 	u32stringstream;
 #define  XCHAR    char32_t
@@ -153,225 +154,7 @@ public:
     }
 };
 
-#if _LOGGER_
 
-
-
-
-
-
-class IDebug
-{
-public:
-    virtual ~IDebug() {}
-    virtual void utf8(std::string & out) = 0;
-    virtual void getInfo(std::string & out) = 0;
-    virtual void getValue(std::string & out) = 0;
-    virtual void getFunction(std::string & out) = 0;
-    virtual int getLine(void) = 0;
-};
-
-template < class T> class nnDebug 
-    :public IDebug
-{
-    T _value;
-    const char * info;
-    const char *fname;
-    int line;
-public:
-    nnDebug(const char *_fname,int _line,const char * _info,T & _v) 
-        :_value(_v),info(_info),fname(_fname),line(_line)
-    {}
-    void utf8(std::string & out)
-        { 
-        std::stringstream ss; 
-        ss <<"["<<fname<<":"<<line<<"]"<< info << " = " << _value; 
-#ifdef _MSC_VER
-        ss << "\r" << std::endl;
-#else
-        ss << std::endl;
-#endif
-        out+=ss.str(); 
-        }
-    void getInfo(std::string & out) 
-        { std::stringstream ss; ss << info; out = ss.str(); }
-    void getValue(std::string & out) 
-        { std::stringstream ss; ss << _value; out = ss.str(); }
-    void getFunction(std::string & out) 
-        { std::stringstream ss; ss <<fname ; out = ss.str(); }
-    int getLine(void) 
-        { return line; }
-    virtual ~nnDebug()
-    {}
-};
-
-class nnDebugList  
-    : public IDebug    
-{    
-    std::list<IDebug * >items;
-public:
-    nnDebugList()
-    {}
-    void utf8(std::string & out)
-    {
-        std::stringstream ss;
-        std::list<IDebug * >::iterator it = items.begin();
-        std::list<IDebug * >::iterator _end = items.end();
-        if (it != _end)
-        {            
-            std::string t;
-            (*it)->getFunction(t);
-            ss << "[" <<t << ":" << (*it)->getLine() << "]";
-            while (it != _end)
-            {
-                IDebug *p = *it;
-                p->getInfo(t);
-                ss << ":" << t << " = ";
-                p->getValue(t);
-                ss << t;
-                it++;
-            }
-        }
-#ifdef _MSC_VER
-        ss << "\r"<<std::endl;
-#else
-        ss << std::endl;
-#endif
-        out += ss.str();
-    }
-    inline void add(IDebug *p) { items.push_back(p); }
-    inline void getInfo(std::string & out)
-    {
-        if (items.size() > 0)
-            items.front()->getInfo(out);
-    }
-    inline void getValue(std::string & out)
-    {
-        if (items.size() > 0)
-            items.front()->getValue(out);
-    }
-    inline void getFunction(std::string & out)
-    {
-        if (items.size() > 0)
-            items.front()->getFunction(out);
-    }
-    inline int getLine(void)
-    {
-        if (items.size() > 0)
-            return items.front()->getLine();
-        return -1;
-    }
-
-    virtual ~nnDebugList()
-    {
-        for (auto & i : items)
-        {
-            delete i;
-        }
-        items.clear();
-    }
-};
-
-class IPrinter
-{
-public :
-    virtual void out(std::string & msg) = 0;
-    virtual ~IPrinter(){}
-};
-
-
-class ILogger
-{
-protected:
-    static ILogger *instance;
-public:
-    virtual void log(IDebug *param) = 0;
-    static  ILogger * getInstance(void) { return instance; }
-    virtual void setOutput(IPrinter *printer) = 0;
-    virtual IPrinter *output(void) = 0;
-    virtual void reset()=0;
-    virtual ~ILogger(){}
-};
-
-
-#define  nnLOG(type,info,value) \
-{\
-    nnDebug<type> *par= new nnDebug<type>(__FUNCTION__,__LINE__,info,value);\
-    ILogger *logger=ILogger::getInstance();\
-    if(logger)\
-        logger->log(par);\
-}\
-
-
-#define  nnLOG1(type,value) \
-{\
-    nnDebug<type> *par= new nnDebug<type>(__FUNCTION__,__LINE__,#value,value);\
-    ILogger *logger=ILogger::getInstance();\
-    if(logger)\
-        logger->log(par);\
-}\
-
-#define  nnLOG2(type,value1,value2) \
-{\
-    nnDebug<type> *par1= new nnDebug<type>(__FUNCTION__,__LINE__,#value1,value1);\
-    nnDebug<type> *par2= new nnDebug<type>(__FUNCTION__,__LINE__,#value2,value2);\
-    nnDebugList   *params = new nnDebugList();\
-    params->add(par1);\
-    params->add(par2);\
-    ILogger *logger=ILogger::getInstance();\
-    if(logger)\
-        logger->log(params);\
-}\
-
-#define  nnLOG22(type1,type2,value1,value2) \
-{\
-    nnDebug<type1> *par1= new nnDebug<type1>(__FUNCTION__,__LINE__,#value1,value1);\
-    nnDebug<type2> *par2= new nnDebug<type2>(__FUNCTION__,__LINE__,#value2,value2);\
-    nnDebugList   *params = new nnDebugList();\
-    params->add(par1);\
-    params->add(par2);\
-    ILogger *logger=ILogger::getInstance();\
-    if(logger)\
-        logger->log(params);\
-}\
-
-#define  nnLOG3(type,value1,value2,value3) \
-{\
-    nnDebug<type> *par1= new nnDebug<type>(__FUNCTION__,__LINE__,#value1,value1);\
-    nnDebug<type> *par2= new nnDebug<type>(__FUNCTION__,__LINE__,#value2,value2);\
-    nnDebug<type> *par3= new nnDebug<type>(__FUNCTION__,__LINE__,#value3,value3);\
-    nnDebugList   *params = new nnDebugList();\
-    params->add(par1);\
-    params->add(par2);\
-    params->add(par3);\
-    ILogger *logger=ILogger::getInstance();\
-    if(logger)\
-        logger->log(params);\
-}\
-
-#define  nnLOG4(type,value1,value2,value3,value4) \
-{\
-    nnDebug<type> *par1= new nnDebug<type>(__FUNCTION__,__LINE__,#value1,value1);\
-    nnDebug<type> *par2= new nnDebug<type>(__FUNCTION__,__LINE__,#value2,value2);\
-    nnDebug<type> *par3= new nnDebug<type>(__FUNCTION__,__LINE__,#value3,value3);\
-    nnDebug<type> *par4= new nnDebug<type>(__FUNCTION__,__LINE__,#value4,value4);\
-    nnDebugList   *params = new nnDebugList();\
-    params->add(par1);\
-    params->add(par2);\
-    params->add(par3);\
-    params->add(par4);\
-    ILogger *logger=ILogger::getInstance();\
-    if(logger)\
-        logger->log(params);\
-}\
-
-#else
-#define  nnLOG(type,info,value1) 
-#define  nnLOG1(type,value1) 
-#define  nnLOG2(type,value1,value2) 
-#define  nnLOG3(type,value1,valu2,value3)
-#define  nnLOG4(type,value1,value2,value3,value4)  
-#endif
 
 
 typedef void  (*extHandler)(void *,size_t ,IParam *);
@@ -515,9 +298,12 @@ typedef struct nn_tag_command_item
       file=info="";
       command=0;
     }
+
+
+
 } commandItem;
 
-typedef std::vector<commandItem> listCommandItem;
+typedef std::vector<commandItem *> listCommandItem;
 class IFontManager;
 class IViewGlue;
 
@@ -720,7 +506,7 @@ public:
     virtual STRING  & getDefaulPath(void) const = 0;
     virtual bool readConfiguration(IXmlNode *node) = 0;
     virtual bool loadImages(void) = 0;
-    virtual  bool loadImages(listCommandItem * items) = 0;
+    virtual  bool loadImages(const listCommandItem * items) = 0;
     virtual bmpImage * getImage(int id) = 0;
     virtual bmpImage * getImage(const XCHAR * name) = 0;
     virtual const  objImageList * getAvailObj(void) = 0;
