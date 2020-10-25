@@ -32,7 +32,8 @@
 
 #define TRACE
 
-typedef enum tag_free_color_type {
+typedef enum tag_free_color_type
+{
     FIC_MINISWHITE = 0,		//! min value is white
     FIC_MINISBLACK = 1,		//! min value is black
     FIC_RGB = 2,		//! RGB color model
@@ -42,12 +43,14 @@ typedef enum tag_free_color_type {
 } FREE_IMAGE_COLOR_TYPE;
 
 /// Max function
-template <class T> T tMAX(const T &a, const T &b) {
+template <class T> T tMAX(const T &a, const T &b)
+{
     return (a > b) ? a : b;
 }
 
 /// Min function
-template <class T> T tMIN(const T &a, const T &b) {
+template <class T> T tMIN(const T &a, const T &b)
+{
     return (a < b) ? a : b;
 }
 
@@ -66,37 +69,44 @@ template <class T> T tMIN(const T &a, const T &b) {
                                         }
 
 static inline  unsigned char
-HINIBBLE(unsigned char byte) {
+HINIBBLE(unsigned char byte)
+{
     return byte & 0xF0;
 }
 
 static inline  unsigned char
-LOWNIBBLE(unsigned char byte) {
+LOWNIBBLE(unsigned char byte)
+{
     return byte & 0x0F;
 }
 
 static inline  unsigned char *
-CalculateScanLine(unsigned char *bits, unsigned int pitch, int scanline) {
+CalculateScanLine(unsigned char *bits, unsigned int pitch, int scanline)
+{
     return bits ? (bits + ((size_t)pitch * scanline)) : nullptr;
 }
 
 
 
 static inline  unsigned
-CalculateLine(unsigned int width, unsigned int bitdepth) {
+CalculateLine(unsigned int width, unsigned int bitdepth)
+{
     return (unsigned int )(((unsigned long long)(width * bitdepth) + 7) / 8);
 }
 
 static inline  unsigned int
-CalculatePitch(unsigned int line) {
+CalculatePitch(unsigned int line)
+{
     unsigned int v = (line + 3) & (~3);
     return v;
 }
 
 
 static inline  void
-convertLine1To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette) {
-    for (int cols = 0; cols < width_in_pixels; cols++) {
+convertLine1To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette)
+{
+    for (int cols = 0; cols < width_in_pixels; cols++)
+    {
         unsigned char  index = (source[cols >> 3] & (0x80 >> (cols & 0x07))) != 0 ? 1 : 0;
 
         target[ID_RGBA_BLUE] = palette[index].rgbBlue;
@@ -108,19 +118,23 @@ convertLine1To24(unsigned char  *target, unsigned char  *source, int width_in_pi
 }
 
 static inline   void
-convertLine4To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette) {
+convertLine4To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette)
+{
     bool low_nibble = false;
     int x = 0;
 
-    for (int cols = 0; cols < width_in_pixels; ++cols) {
-        if (low_nibble) {
+    for (int cols = 0; cols < width_in_pixels; ++cols)
+    {
+        if (low_nibble)
+        {
             target[ID_RGBA_BLUE] = palette[LOWNIBBLE(source[x])].rgbBlue;
             target[ID_RGBA_GREEN] = palette[LOWNIBBLE(source[x])].rgbGreen;
             target[ID_RGBA_RED] = palette[LOWNIBBLE(source[x])].rgbRed;
 
             x++;
         }
-        else {
+        else
+        {
             target[ID_RGBA_BLUE] = palette[HINIBBLE(source[x]) >> 4].rgbBlue;
             target[ID_RGBA_GREEN] = palette[HINIBBLE(source[x]) >> 4].rgbGreen;
             target[ID_RGBA_RED] = palette[HINIBBLE(source[x]) >> 4].rgbRed;
@@ -133,8 +147,10 @@ convertLine4To24(unsigned char  *target, unsigned char  *source, int width_in_pi
 }
 
 static inline   void
-convertLine8To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette) {
-    for (int cols = 0; cols < width_in_pixels; cols++) {
+convertLine8To24(unsigned char  *target, unsigned char  *source, int width_in_pixels, RGBQUAD *palette)
+{
+    for (int cols = 0; cols < width_in_pixels; cols++)
+    {
         target[ID_RGBA_BLUE] = palette[source[cols]].rgbBlue;
         target[ID_RGBA_GREEN] = palette[source[cols]].rgbGreen;
         target[ID_RGBA_RED] = palette[source[cols]].rgbRed;
@@ -146,8 +162,10 @@ convertLine8To24(unsigned char  *target, unsigned char  *source, int width_in_pi
 
 
 static inline   void
-convertLine32To24(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    for (int cols = 0; cols < width_in_pixels; cols++) {
+convertLine32To24(unsigned char  *target, unsigned char  *source, int width_in_pixels)
+{
+    for (int cols = 0; cols < width_in_pixels; cols++)
+    {
         target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE];
         target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN];
         target[ID_RGBA_RED] = source[ID_RGBA_RED];
@@ -158,8 +176,10 @@ convertLine32To24(unsigned char  *target, unsigned char  *source, int width_in_p
 }
 
 static inline   void
-convertLine24To32(unsigned char  *target, unsigned char  *source, int width_in_pixels) {
-    for (int cols = 0; cols < width_in_pixels; cols++) {
+convertLine24To32(unsigned char  *target, unsigned char  *source, int width_in_pixels)
+{
+    for (int cols = 0; cols < width_in_pixels; cols++)
+    {
         target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE];
         target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN];
         target[ID_RGBA_RED] = source[ID_RGBA_RED];
@@ -174,8 +194,10 @@ convertLine24To32(unsigned char  *target, unsigned char  *source, int width_in_p
 
 
 static inline  void
-AssignPixel(unsigned char * dst, const unsigned char * src, unsigned int bytesperpixel) {
-    switch (bytesperpixel) {
+AssignPixel(unsigned char * dst, const unsigned char * src, unsigned int bytesperpixel)
+{
+    switch (bytesperpixel)
+    {
     case 1:
         *dst = *src;
         break;
@@ -199,7 +221,7 @@ AssignPixel(unsigned char * dst, const unsigned char * src, unsigned int bytespe
 bmpImage::bmpImage()
 {
     m_hBitmap = nullptr;
-    
+
 }
 
 
@@ -282,13 +304,15 @@ bool bmpImage::attach(LPBITMAPFILEHEADER p)
 }
 
 
-bool bmpImage::clone(LPBITMAPFILEHEADER p){
-    if (m_hBitmap){
-          freeBitmap(m_hBitmap);
-          m_hBitmap=nullptr;
-          }
+bool bmpImage::clone(LPBITMAPFILEHEADER p)
+{
+    if (m_hBitmap)
+    {
+        freeBitmap(m_hBitmap);
+        m_hBitmap=nullptr;
+    }
     if(p)
-         m_hBitmap=cloneImage(p);
+        m_hBitmap=cloneImage(p);
     return m_hBitmap!=nullptr;
 }
 
@@ -367,7 +391,8 @@ LPBITMAPINFO bmpImage::getInfo() const
 }
 
 
-void bmpImage::setHorizontalResolution(double value) {
+void bmpImage::setHorizontalResolution(double value)
+{
     if (m_hBitmap)
     {
         LPBITMAPINFOHEADER bm = getInfoHeader();
@@ -378,7 +403,8 @@ void bmpImage::setHorizontalResolution(double value) {
     }
 }
 
-void bmpImage::setVerticalResolution(double value) {
+void bmpImage::setVerticalResolution(double value)
+{
     if (m_hBitmap)
     {
         LPBITMAPINFOHEADER bm = getInfoHeader();
@@ -442,7 +468,8 @@ unsigned int bmpImage::getColorsUsed(void) const
 }
 
 
-bool bmpImage::replace(LPBITMAPFILEHEADER new_dib) {
+bool bmpImage::replace(LPBITMAPFILEHEADER new_dib)
+{
     if (new_dib == nullptr)
         return false;
     if (new_dib != m_hBitmap)
@@ -503,7 +530,8 @@ unsigned char * bmpImage::getScanLine(LPBITMAPFILEHEADER bI, unsigned scanline)
 {
     if (bI)
     {
-        if (scanline < getHeight(bI)) {
+        if (scanline < getHeight(bI))
+        {
             return CalculateScanLine(getBits(bI), getPitch(bI), scanline);
         }
     }
@@ -589,23 +617,28 @@ unsigned int bmpImage::getColorType(LPBITMAPFILEHEADER bI)
     // standard image type
     if (bI)
     {
-        switch (getBitsPerPixel(bI)) {
+        switch (getBitsPerPixel(bI))
+        {
         case 1:
         {
             rgb = getPalette(bI);
 
-            if ((rgb->rgbRed == 0) && (rgb->rgbGreen == 0) && (rgb->rgbBlue == 0)) {
+            if ((rgb->rgbRed == 0) && (rgb->rgbGreen == 0) && (rgb->rgbBlue == 0))
+            {
                 rgb++;
 
-                if ((rgb->rgbRed == 255) && (rgb->rgbGreen == 255) && (rgb->rgbBlue == 255)) {
+                if ((rgb->rgbRed == 255) && (rgb->rgbGreen == 255) && (rgb->rgbBlue == 255))
+                {
                     return FIC_MINISBLACK;
                 }
             }
 
-            if ((rgb->rgbRed == 255) && (rgb->rgbGreen == 255) && (rgb->rgbBlue == 255)) {
+            if ((rgb->rgbRed == 255) && (rgb->rgbGreen == 255) && (rgb->rgbBlue == 255))
+            {
                 rgb++;
 
-                if ((rgb->rgbRed == 0) && (rgb->rgbGreen == 0) && (rgb->rgbBlue == 0)) {
+                if ((rgb->rgbRed == 0) && (rgb->rgbGreen == 0) && (rgb->rgbBlue == 0))
+                {
                     return FIC_MINISWHITE;
                 }
             }
@@ -620,18 +653,23 @@ unsigned int bmpImage::getColorType(LPBITMAPFILEHEADER bI)
             int minisblack = 1;
             rgb = getPalette(bI);
 
-            for (int i = 0; i < ncolors; i++) {
-                if ((rgb->rgbRed != rgb->rgbGreen) || (rgb->rgbRed != rgb->rgbBlue)) {
+            for (int i = 0; i < ncolors; i++)
+            {
+                if ((rgb->rgbRed != rgb->rgbGreen) || (rgb->rgbRed != rgb->rgbBlue))
+                {
                     return FIC_PALETTE;
                 }
 
                 // The DIB has a color palette if the greyscale isn't a linear ramp
                 // Take care of reversed grey images
-                if (rgb->rgbRed != i) {
-                    if ((ncolors - i - 1) != rgb->rgbRed) {
+                if (rgb->rgbRed != i)
+                {
+                    if ((ncolors - i - 1) != rgb->rgbRed)
+                    {
                         return FIC_PALETTE;
                     }
-                    else {
+                    else
+                    {
                         minisblack = 0;
                     }
                 }
@@ -681,24 +719,30 @@ bool bmpImage::invert(void)
     {
         unsigned int i, x, y, k;
         const unsigned int bpp = getBitsPerPixel();
-        switch (bpp) {
+        switch (bpp)
+        {
         case 1:
         case 4:
         case 8:
         {
-            if (getColorType() == FIC_PALETTE) {
+            if (getColorType() == FIC_PALETTE)
+            {
                 RGBQUAD *pal = getPalette();
 
-                for (i = 0; i < getColorsUsed(); i++) {
+                for (i = 0; i < getColorsUsed(); i++)
+                {
                     pal[i].rgbRed = 255 - pal[i].rgbRed;
                     pal[i].rgbGreen = 255 - pal[i].rgbGreen;
                     pal[i].rgbBlue = 255 - pal[i].rgbBlue;
                 }
             }
-            else {
-                for (y = 0; y < height; y++) {
+            else
+            {
+                for (y = 0; y < height; y++)
+                {
                     unsigned char  *bits = getScanLine(y);
-                    for (x = 0; x < getLine(); x++) {
+                    for (x = 0; x < getLine(); x++)
+                    {
                         bits[x] = ~bits[x];
                     }
                 }
@@ -712,10 +756,13 @@ bool bmpImage::invert(void)
             // Calculate the number of bytes per pixel (3 for 24-bit or 4 for 32-bit)
             const unsigned int bytespp = getLine() / width;
 
-            for (y = 0; y < height; y++) {
+            for (y = 0; y < height; y++)
+            {
                 unsigned char  *bits = getScanLine(y);
-                for (x = 0; x < width; x++) {
-                    for (k = 0; k < bytespp; k++) {
+                for (x = 0; x < width; x++)
+                {
+                    for (k = 0; k < bytespp; k++)
+                    {
                         bits[k] = ~bits[k];
                     }
                     bits += bytespp;
@@ -731,7 +778,7 @@ bool bmpImage::invert(void)
 
 
 size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height,unsigned int deep)
-{    
+{
     size_t dib_size = sizeof(BITMAPFILEHEADER);
     dib_size += sizeof(BITMAPINFOHEADER);
     // palette is aligned on a 16 bytes boundary
@@ -740,7 +787,8 @@ size_t bmpImage::getInternalImageSize(unsigned int width, unsigned int height,un
     dib_size += (size_t)CalculatePitch(CalculateLine(width, deep)) * (size_t)(height /*+1*/);
     const double dPitch = floor(((double)deep * width + 31.0) / 32.0) * 4.0;
     const double dImageSize = (double)header_size + dPitch * (height /*+1*/);
-    if (dImageSize != (double)dib_size) {
+    if (dImageSize != (double)dib_size)
+    {
         // here, we are sure to encounter a malloc overflow: try to avoid it ...
         return 0;
     }
@@ -809,10 +857,12 @@ bool bmpImage::convertTo24Bits(void)
             if (new_dib != nullptr)
             {
 
-                switch (bpp) {
+                switch (bpp)
+                {
                 case 1:
                 {
-                    for (unsigned int rows = 0; rows < height; rows++) {
+                    for (unsigned int rows = 0; rows < height; rows++)
+                    {
                         convertLine1To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -822,7 +872,8 @@ bool bmpImage::convertTo24Bits(void)
                 break;
                 case 4:
                 {
-                    for (unsigned int rows = 0; rows < height; rows++) {
+                    for (unsigned int rows = 0; rows < height; rows++)
+                    {
                         convertLine4To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -833,7 +884,8 @@ bool bmpImage::convertTo24Bits(void)
 
                 case 8:
                 {
-                    for (unsigned int rows = 0; rows < height; rows++) {
+                    for (unsigned int rows = 0; rows < height; rows++)
+                    {
                         convertLine8To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -845,7 +897,8 @@ bool bmpImage::convertTo24Bits(void)
 
                 case 32:
                 {
-                    for (unsigned int rows = 0; rows < height; rows++) {
+                    for (unsigned int rows = 0; rows < height; rows++)
+                    {
                         convertLine32To24(getScanLine(new_dib, rows), getScanLine(rows), width);
                     }
                     freeBitmap(m_hBitmap);
@@ -881,10 +934,12 @@ bool bmpImage::convertTo32Bits(void)
             if (new_dib != nullptr)
             {
 
-                switch (bpp) {
+                switch (bpp)
+                {
                 case 1:
                 {
-                    for (int rows = 0; rows < height; rows++) {
+                    for (int rows = 0; rows < height; rows++)
+                    {
                         convertLine1To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -894,7 +949,8 @@ bool bmpImage::convertTo32Bits(void)
                 break;
                 case 4:
                 {
-                    for (int rows = 0; rows < height; rows++) {
+                    for (int rows = 0; rows < height; rows++)
+                    {
                         convertLine4To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -905,7 +961,8 @@ bool bmpImage::convertTo32Bits(void)
 
                 case 8:
                 {
-                    for (int rows = 0; rows < height; rows++) {
+                    for (int rows = 0; rows < height; rows++)
+                    {
                         convertLine8To24(getScanLine(new_dib, rows), getScanLine(rows), width, getPalette());
                     }
                     freeBitmap(m_hBitmap);
@@ -917,7 +974,8 @@ bool bmpImage::convertTo32Bits(void)
 
                 case 24:
                 {
-                    for (int rows = 0; rows < height; rows++) {
+                    for (int rows = 0; rows < height; rows++)
+                    {
                         convertLine24To32(getScanLine(new_dib, rows), getScanLine(rows), width);
                     }
                     freeBitmap(m_hBitmap);
@@ -950,8 +1008,8 @@ bool bmpImage::rotate(double angle)
         const unsigned int height = getHeight();
         if (width*height)
         {
-        LPBITMAPFILEHEADER rotated = rotateInt(m_hBitmap, angle);
-        res = replace(rotated);
+            LPBITMAPFILEHEADER rotated = rotateInt(m_hBitmap, angle);
+            res = replace(rotated);
         }
     }
     return res;
@@ -977,7 +1035,8 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
         const unsigned int src_pitch = getPitch(src);
         const unsigned int dst_pitch = getPitch(dst);
 
-        if (bpp == 1) {
+        if (bpp == 1)
+        {
             // speedy rotate for BW images
 
             unsigned char  *bsrc = getBits(src);
@@ -985,18 +1044,21 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
 
             unsigned char  *dbitsmax = bdest + dst_height * dst_pitch - 1;
 
-            for (unsigned int y = 0; y < src_height; y++) {
+            for (unsigned int y = 0; y < src_height; y++)
+            {
                 // figure out the column we are going to be copying to
                 const div_t div_r = div(y, 8);
                 // set bit pos of src column byte
                 const unsigned char  bitpos = (unsigned char)(128 >> div_r.rem);
                 unsigned char  *srcdisp = bsrc + y * src_pitch;
-                for (unsigned int x = 0; x < src_pitch; x++) {
+                for (unsigned int x = 0; x < src_pitch; x++)
+                {
                     // get source bits
                     unsigned char  *sbits = srcdisp + x;
                     // get destination column
                     unsigned char  *nrow = bdest + (dst_height - 1 - (x * 8)) * dst_pitch + div_r.quot;
-                    for (int z = 0; z < 8; z++) {
+                    for (int z = 0; z < 8; z++)
+                    {
                         // get destination byte
                         unsigned char  *dbits = nrow - z * dst_pitch;
                         if ((dbits < bdest) || (dbits > dbitsmax)) break;
@@ -1006,7 +1068,8 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
             }
             res = dst;
         }
-        else if ((bpp == 8) || (bpp == 24) || (bpp == 32)) {
+        else if ((bpp == 8) || (bpp == 24) || (bpp == 32))
+        {
             // anything other than BW :
             // This optimized version of rotation rotates image by smaller blocks. It is quite
             // a bit faster than obvious algorithm, because it produces much less CPU cache misses.
@@ -1024,16 +1087,20 @@ LPBITMAPFILEHEADER bmpImage::Rotate90(LPBITMAPFILEHEADER src)
             // for all image blocks of RBLOCK*RBLOCK pixels
 
             // x-segment
-            for (unsigned int xs = 0; xs < dst_width; xs += RBLOCK) {
+            for (unsigned int xs = 0; xs < dst_width; xs += RBLOCK)
+            {
                 // y-segment
-                for (unsigned int ys = 0; ys < dst_height; ys += RBLOCK) {
-                    for (unsigned int y = ys; y < tMIN(dst_height, ys + RBLOCK); y++) {    // do rotation
+                for (unsigned int ys = 0; ys < dst_height; ys += RBLOCK)
+                {
+                    for (unsigned int y = ys; y < tMIN(dst_height, ys + RBLOCK); y++)      // do rotation
+                    {
                         const unsigned int y2 = dst_height - y - 1;
                         // point to src pixel at (y2, xs)
                         unsigned char  *src_bits = bsrc + (xs * src_pitch) + (y2 * bytespp);
                         // point to dst pixel at (xs, y)
                         unsigned char  *dst_bits = bdest + (y * dst_pitch) + (xs * bytespp);
-                        for (unsigned int x = xs; x < tMIN(dst_width, xs + RBLOCK); x++) {
+                        for (unsigned int x = xs; x < tMIN(dst_width, xs + RBLOCK); x++)
+                        {
                             // dst.SetPixel(x, y, src.GetPixel(y2, x));
                             AssignPixel(dst_bits, src_bits, bytespp);
                             dst_bits += bytespp;
@@ -1067,10 +1134,12 @@ LPBITMAPFILEHEADER bmpImage::Rotate180(LPBITMAPFILEHEADER src)
     {
         if (bpp == 1)
         {
-            for (y = 0; y < src_height; y++) {
+            for (y = 0; y < src_height; y++)
+            {
                 unsigned char  *src_bits = getScanLine(src, y);
                 unsigned char  *dst_bits = getScanLine(dst, dst_height - y - 1);
-                for (x = 0; x < src_width; x++) {
+                for (x = 0; x < src_width; x++)
+                {
                     // get bit at (x, y)
                     k = (src_bits[x >> 3] & (0x80 >> (x & 0x07))) != 0;
                     // set bit at (dst_width - x - 1, dst_height - y - 1)
@@ -1084,10 +1153,12 @@ LPBITMAPFILEHEADER bmpImage::Rotate180(LPBITMAPFILEHEADER src)
             // Calculate the number of bytes per pixel
             const int bytespp = getLine(src) / getWidth(src);
 
-            for (y = 0; y < src_height; y++) {
+            for (y = 0; y < src_height; y++)
+            {
                 unsigned char  *src_bits = getScanLine(src, y);
                 unsigned char  *dst_bits = getScanLine(dst, dst_height - y - 1) + (dst_width - 1) * bytespp;
-                for (x = 0; x < src_width; x++) {
+                for (x = 0; x < src_width; x++)
+                {
                     // get pixel at (x, y)
                     // set pixel at (dst_width - x - 1, dst_height - y - 1)
                     AssignPixel(dst_bits, src_bits, bytespp);
@@ -1123,7 +1194,8 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
         const unsigned int src_pitch = getPitch(src);
         const unsigned int dst_pitch = getPitch(dst);
 
-        if (bpp == 1) {
+        if (bpp == 1)
+        {
             // speedy rotate for BW images
 
             unsigned char  *bsrc = getBits(src);
@@ -1131,18 +1203,21 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
             unsigned char  *dbitsmax = bdest + dst_height * dst_pitch - 1;
             dlineup = 8 * dst_pitch - dst_width;
 
-            for (unsigned int y = 0; y < src_height; y++) {
+            for (unsigned int y = 0; y < src_height; y++)
+            {
                 // figure out the column we are going to be copying to
                 const div_t div_r = div(y + dlineup, 8);
                 // set bit pos of src column byte
                 const unsigned char  bitpos = (unsigned char)(1 << div_r.rem);
                 const unsigned char  *srcdisp = bsrc + y * src_pitch;
-                for (unsigned x = 0; x < src_pitch; x++) {
+                for (unsigned x = 0; x < src_pitch; x++)
+                {
                     // get source bits
                     const unsigned char  *sbits = srcdisp + x;
                     // get destination column
                     unsigned char  *nrow = bdest + (x * 8) * dst_pitch + dst_pitch - 1 - div_r.quot;
-                    for (unsigned int z = 0; z < 8; z++) {
+                    for (unsigned int z = 0; z < 8; z++)
+                    {
                         // get destination byte
                         unsigned char  *dbits = nrow + z * dst_pitch;
                         if ((dbits < bdest) || (dbits > dbitsmax)) break;
@@ -1151,7 +1226,8 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
                 }
             }
         }
-        else if ((bpp == 8) || (bpp == 24) || (bpp == 32)) {
+        else if ((bpp == 8) || (bpp == 24) || (bpp == 32))
+        {
             // anything other than BW :
             // This optimized version of rotation rotates image by smaller blocks. It is quite
             // a bit faster than obvious algorithm, because it produces much less CPU cache misses.
@@ -1169,16 +1245,20 @@ LPBITMAPFILEHEADER bmpImage::Rotate270(LPBITMAPFILEHEADER src)
             // for all image blocks of RBLOCK*RBLOCK pixels
 
             // x-segment
-            for (unsigned int xs = 0; xs < dst_width; xs += RBLOCK) {
+            for (unsigned int xs = 0; xs < dst_width; xs += RBLOCK)
+            {
                 // y-segment
-                for (unsigned int ys = 0; ys < dst_height; ys += RBLOCK) {
-                    for (unsigned int x = xs; x < tMIN(dst_width, xs + RBLOCK); x++) {    // do rotation
+                for (unsigned int ys = 0; ys < dst_height; ys += RBLOCK)
+                {
+                    for (unsigned int x = xs; x < tMIN(dst_width, xs + RBLOCK); x++)      // do rotation
+                    {
                         x2 = dst_width - x - 1;
                         // point to src pixel at (ys, x2)
                         unsigned char  *src_bits = bsrc + (x2 * src_pitch) + (ys * bytespp);
                         // point to dst pixel at (x, ys)
                         unsigned char  *dst_bits = bdest + (ys * dst_pitch) + (x * bytespp);
-                        for (unsigned int y = ys; y < tMIN(dst_height, ys + RBLOCK); y++) {
+                        for (unsigned int y = ys; y < tMIN(dst_height, ys + RBLOCK); y++)
+                        {
                             // dst.SetPixel(x, y, src.GetPixel(y, x2));
                             AssignPixel(dst_bits, src_bits, bytespp);
                             src_bits += bytespp;
@@ -1211,7 +1291,8 @@ bool bmpImage::flipHorizontal(void)
         if (new_bits)
         {
             // mirror the buffer
-            for (unsigned int y = 0; y < height; y++) {
+            for (unsigned int y = 0; y < height; y++)
+            {
                 unsigned char  *bits = getScanLine(y);
                 memcpy(new_bits, bits, line);
 
@@ -1219,7 +1300,8 @@ bool bmpImage::flipHorizontal(void)
                 {
                 case 1:
                 {
-                    for (unsigned int x = 0; x < width; x++) {
+                    for (unsigned int x = 0; x < width; x++)
+                    {
                         // get pixel at (x, y)
                         bool value = (new_bits[x >> 3] & (0x80 >> (x & 0x07))) != 0;
                         // set pixel at (new_x, y)
@@ -1232,7 +1314,8 @@ bool bmpImage::flipHorizontal(void)
 
                 case 4:
                 {
-                    for (unsigned int c = 0; c < line; c++) {
+                    for (unsigned int c = 0; c < line; c++)
+                    {
                         bits[c] = new_bits[line - c - 1];
 
                         unsigned char  nibble = (bits[c] & 0xF0) >> 4;
@@ -1248,7 +1331,8 @@ bool bmpImage::flipHorizontal(void)
                 {
                     unsigned char  *dst_data = (unsigned char *)bits;
                     unsigned char  *src_data = (unsigned char *)(new_bits + line - bytespp);
-                    for (unsigned int c = 0; c < width; c++) {
+                    for (unsigned int c = 0; c < width; c++)
+                    {
                         *dst_data++ = *src_data--;
                     }
                 }
@@ -1261,8 +1345,10 @@ bool bmpImage::flipHorizontal(void)
                 {
                     unsigned char  *dst_data = (unsigned char *)bits;
                     unsigned char  *src_data = (unsigned char *)(new_bits + line - bytespp);
-                    for (unsigned int c = 0; c < width; c++) {
-                        for (unsigned int k = 0; k < bytespp; k++) {
+                    for (unsigned int c = 0; c < width; c++)
+                    {
+                        for (unsigned int k = 0; k < bytespp; k++)
+                        {
                             *dst_data++ = src_data[k];
                         }
                         src_data -= bytespp;
@@ -1285,7 +1371,7 @@ bool bmpImage::flipVertical(void)
     const unsigned int width = getWidth();
     const unsigned int height = getHeight();
     if (width*height)
-  {
+    {
         unsigned char  *From, *Mid;
         unsigned int pitch = getPitch();
         // copy between aligned memories
@@ -1298,7 +1384,8 @@ bool bmpImage::flipVertical(void)
             unsigned int line_s = 0;
             unsigned int line_t = (height - 1) * pitch;
 
-            for (unsigned int y = 0; y < height / 2; y++) {
+            for (unsigned int y = 0; y < height / 2; y++)
+            {
 
                 memcpy(Mid, From + line_s, pitch);
                 memcpy(From + line_s, From + line_t, pitch);
@@ -1318,18 +1405,22 @@ bool bmpImage::flipVertical(void)
 LPBITMAPFILEHEADER bmpImage::RotateAny(LPBITMAPFILEHEADER src, double dAngle)
 {
     LPBITMAPFILEHEADER res = nullptr;
-    if (src) {
+    if (src)
+    {
         LPBITMAPFILEHEADER image = src;
 
-        while (dAngle >= 360) {
+        while (dAngle >= 360)
+        {
             // Bring angle to range of (-INF .. 360)
             dAngle -= 360;
         }
-        while (dAngle < 0) {
+        while (dAngle < 0)
+        {
             // Bring angle to range of [0 .. 360)
             dAngle += 360;
         }
-        if ((dAngle > 45) && (dAngle <= 135)) {
+        if ((dAngle > 45) && (dAngle <= 135))
+        {
             // Angle in (45 .. 135]
             // Rotate image by 90 degrees into temporary image,
             // so it requires only an extra rotation angle
@@ -1337,7 +1428,8 @@ LPBITMAPFILEHEADER bmpImage::RotateAny(LPBITMAPFILEHEADER src, double dAngle)
             image = Rotate90(src);
             dAngle -= 90;
         }
-        else if ((dAngle > 135) && (dAngle <= 225)) {
+        else if ((dAngle > 135) && (dAngle <= 225))
+        {
             // Angle in (135 .. 225]
             // Rotate image by 180 degrees into temporary image,
             // so it requires only an extra rotation angle
@@ -1345,7 +1437,8 @@ LPBITMAPFILEHEADER bmpImage::RotateAny(LPBITMAPFILEHEADER src, double dAngle)
             image = Rotate180(src);
             dAngle -= 180;
         }
-        else if ((dAngle > 225) && (dAngle <= 315)) {
+        else if ((dAngle > 225) && (dAngle <= 315))
+        {
             // Angle in (225 .. 315]
             // Rotate image by 270 degrees into temporary image,
             // so it requires only an extra rotation angle
@@ -1373,7 +1466,8 @@ LPBITMAPFILEHEADER bmpImage::rotateInt(LPBITMAPFILEHEADER bI, double angle)
     {
         //angle *= -1;
         const unsigned int bpp = getBitsPerPixel(bI);
-        if (bpp == 1) {
+        if (bpp == 1)
+        {
             // only rotate for integer multiples of 90 degree
             if (fmod(angle, 90) == 0)
             {
@@ -1386,11 +1480,13 @@ LPBITMAPFILEHEADER bmpImage::rotateInt(LPBITMAPFILEHEADER bI, double angle)
                     RGBQUAD *dst_pal = getPalette(dst);
                     if (dst_pal)
                     {
-                        if (getColorType(bI) == FIC_MINISBLACK) {
+                        if (getColorType(bI) == FIC_MINISBLACK)
+                        {
                             dst_pal[0].rgbRed = dst_pal[0].rgbGreen = dst_pal[0].rgbBlue = 0;
                             dst_pal[1].rgbRed = dst_pal[1].rgbGreen = dst_pal[1].rgbBlue = 255;
                         }
-                        else {
+                        else
+                        {
                             dst_pal[0].rgbRed = dst_pal[0].rgbGreen = dst_pal[0].rgbBlue = 255;
                             dst_pal[1].rgbRed = dst_pal[1].rgbGreen = dst_pal[1].rgbBlue = 0;
                         }
@@ -1399,11 +1495,13 @@ LPBITMAPFILEHEADER bmpImage::rotateInt(LPBITMAPFILEHEADER bI, double angle)
                 }
             }
         }
-        else if ((bpp == 8) || (bpp == 24) || (bpp == 32)) {
+        else if ((bpp == 8) || (bpp == 24) || (bpp == 32))
+        {
             LPBITMAPFILEHEADER dst = RotateAny(bI, angle);
             if (dst != nullptr)
             {
-                if (bpp == 8) {
+                if (bpp == 8)
+                {
                     // copy original palette to rotated bitmap
                     RGBQUAD *src_pal = getPalette(bI);
                     RGBQUAD *dst_pal = getPalette(dst);
@@ -1431,12 +1529,12 @@ bool bmpImage::pasteSubImage(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER src, int
 }
 
 bool bmpImage::translateColor(unsigned char oriRed, unsigned char oriGreen,
-    unsigned char oriBlue, unsigned char newRed,
-    unsigned char newGreen, unsigned char newBlue)
+                              unsigned char oriBlue, unsigned char newRed,
+                              unsigned char newGreen, unsigned char newBlue)
 {
     return translateColor(m_hBitmap, oriRed, oriGreen,
-        oriBlue, newRed,
-         newGreen,newBlue);
+                          oriBlue, newRed,
+                          newGreen,newBlue);
 }
 
 
@@ -1459,13 +1557,13 @@ bool bmpImage::drawMaskSprite( bmpImage & sprite, unsigned int  left, unsigned i
 }
 
 bool bmpImage::drawSpriteTranslateColor(bmpImage & sprite,
-    unsigned int left, unsigned int top,
-    unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
-    unsigned char newRed, unsigned char newGreen, unsigned char newBlue)
+                                        unsigned int left, unsigned int top,
+                                        unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
+                                        unsigned char newRed, unsigned char newGreen, unsigned char newBlue)
 {
 
     return  drawSpriteTranslateColor(m_hBitmap, sprite, left, top,
-        oriRed, oriGreen, oriBlue,newRed, newGreen, newBlue);
+                                     oriRed, oriGreen, oriBlue,newRed, newGreen, newBlue);
 }
 
 
@@ -1492,7 +1590,8 @@ bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, un
         if (dst_info != nullptr  && src_info != nullptr  && dst_info->biBitCount == src_info->biBitCount)
         {
             unsigned int height, width;
-            if (( left < dst_width) && ( top < dst_height)) {
+            if (( left < dst_width) && ( top < dst_height))
+            {
                 unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
                 unsigned char  *src_bits = getBits(sprite);
                 // combine images
@@ -1506,7 +1605,8 @@ bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, un
                 else
                     width = src_width;
                 unsigned int sizeR= width*depth;
-                for (unsigned int rows = 0; rows < height; rows++) {
+                for (unsigned int rows = 0; rows < height; rows++)
+                {
                     memcpy(dst_bits, src_bits, sizeR);
                     dst_bits += dst_pitch;
                     src_bits += src_pitch;
@@ -1524,17 +1624,17 @@ bool bmpImage::drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, un
 
 static inline   void
 copyMaskLine(unsigned int depth,unsigned char  *target, unsigned char  *source,
-               unsigned char Rmask,unsigned char Gmask,
-               unsigned char Bmask,unsigned int width_in_pixels)
+             unsigned char Rmask,unsigned char Gmask,
+             unsigned char Bmask,unsigned int width_in_pixels)
 {
     unsigned int cols;
     if(depth==3)
     {
-        for (cols = 0; cols < width_in_pixels; cols++) 
+        for (cols = 0; cols < width_in_pixels; cols++)
         {
             if (!(source[ID_RGBA_BLUE] == Bmask &&
-                source[ID_RGBA_GREEN] == Gmask &&
-                source[ID_RGBA_RED] == Rmask))
+                    source[ID_RGBA_GREEN] == Gmask &&
+                    source[ID_RGBA_RED] == Rmask))
             {
                 target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE];
                 target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN];
@@ -1544,8 +1644,7 @@ copyMaskLine(unsigned int depth,unsigned char  *target, unsigned char  *source,
             source += 3;
         }
     }
-    else
-    if (depth == 4)
+    else if (depth == 4)
     {
         unsigned int mask = (Rmask << 16) | (Gmask << 8) | Bmask;
         unsigned int *dest_t = reinterpret_cast<unsigned int *>(target);
@@ -1562,9 +1661,9 @@ copyMaskLine(unsigned int depth,unsigned char  *target, unsigned char  *source,
     }
 }
 
-bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, 
-    unsigned int  left, unsigned int  top, unsigned char Rmask,
-    unsigned char Gmask,unsigned char Bmask)
+bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite,
+                              unsigned int  left, unsigned int  top, unsigned char Rmask,
+                              unsigned char Gmask,unsigned char Bmask)
 {
     bool bResult = false;
     if (sprite != nullptr  && dst != nullptr)
@@ -1587,7 +1686,8 @@ bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite,
         if (dst_info != nullptr  && src_info != nullptr  && dst_info->biBitCount == src_info->biBitCount)
         {
             unsigned int height, width;
-            if (( left < dst_width) && ( top < dst_height)) {
+            if (( left < dst_width) && ( top < dst_height))
+            {
                 unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
                 unsigned char  *src_bits = getBits(sprite);
 
@@ -1615,10 +1715,10 @@ bool bmpImage::drawMaskSprite(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite,
 }
 
 
-bool bmpImage::drawSpriteTranslateColor(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite, 
-    unsigned int left, unsigned int top,
-    unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
-    unsigned char newRed, unsigned char newGreen, unsigned char newBlue)
+bool bmpImage::drawSpriteTranslateColor(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite,
+                                        unsigned int left, unsigned int top,
+                                        unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
+                                        unsigned char newRed, unsigned char newGreen, unsigned char newBlue)
 {
     bool bResult = false;
     if (sprite != nullptr  && dst != nullptr)
@@ -1641,7 +1741,8 @@ bool bmpImage::drawSpriteTranslateColor(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEAD
         if (dst_info != nullptr  && src_info != nullptr  && dst_info->biBitCount == src_info->biBitCount)
         {
             unsigned int height, width;
-            if ((left < dst_width) && (top < dst_height)) {
+            if ((left < dst_width) && (top < dst_height))
+            {
                 unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
                 unsigned char  *src_bits = getBits(sprite);
                 // combine images
@@ -1662,10 +1763,12 @@ bool bmpImage::drawSpriteTranslateColor(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEAD
                     // USE ONLY ON 32bpp
                     if(depth==4)
                     {
-                        for ( rows = 0; rows < height; rows++) {
+                        for ( rows = 0; rows < height; rows++)
+                        {
                             unsigned int *src_int = reinterpret_cast<unsigned int *>(src_bits);
                             unsigned int *dst_int = reinterpret_cast<unsigned int *>(dst_bits);
-                            for ( cols = 0; cols < width; cols++) {
+                            for ( cols = 0; cols < width; cols++)
+                            {
                                 if ((*src_int & 0xffffff) == oldCol)
                                     *dst_int = newCol;
                                 else
@@ -1673,42 +1776,44 @@ bool bmpImage::drawSpriteTranslateColor(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEAD
                                 src_int++;
                                 dst_int++;
                             }
-                        dst_bits += dst_pitch;
-                        src_bits += src_pitch;
-                        }
-                    }
-                    else
-                        if (depth == 3)
-                        {
-                            unsigned char  *dst_c = dst_bits;
-                            unsigned char  *src_c = src_bits;
-                            for (rows = 0; rows < height; rows++) {
-                                for (cols = 0; cols < sizeR; cols++) {
-                                    if (src_c[ID_RGBA_BLUE] == oriBlue &&
-                                        src_c[ID_RGBA_GREEN] == oriGreen &&
-                                        src_c[ID_RGBA_RED] == oriRed)
-                                    {
-                                        dst_c[ID_RGBA_BLUE] = newBlue;
-                                        dst_c[ID_RGBA_GREEN] = newGreen;
-                                        dst_c[ID_RGBA_RED] = newRed;
-                                    }
-                                    else
-                                    {
-                                        dst_c[ID_RGBA_BLUE] = src_c[ID_RGBA_BLUE];
-                                        dst_c[ID_RGBA_GREEN] = src_c[ID_RGBA_GREEN];
-                                        dst_c[ID_RGBA_RED] = src_c[ID_RGBA_RED];
-                                    }
-                                    dst_c += depth;
-                                    src_c += depth;
-                                }
                             dst_bits += dst_pitch;
                             src_bits += src_pitch;
-                            }
                         }
+                    }
+                    else if (depth == 3)
+                    {
+                        unsigned char  *dst_c = dst_bits;
+                        unsigned char  *src_c = src_bits;
+                        for (rows = 0; rows < height; rows++)
+                        {
+                            for (cols = 0; cols < sizeR; cols++)
+                            {
+                                if (src_c[ID_RGBA_BLUE] == oriBlue &&
+                                        src_c[ID_RGBA_GREEN] == oriGreen &&
+                                        src_c[ID_RGBA_RED] == oriRed)
+                                {
+                                    dst_c[ID_RGBA_BLUE] = newBlue;
+                                    dst_c[ID_RGBA_GREEN] = newGreen;
+                                    dst_c[ID_RGBA_RED] = newRed;
+                                }
+                                else
+                                {
+                                    dst_c[ID_RGBA_BLUE] = src_c[ID_RGBA_BLUE];
+                                    dst_c[ID_RGBA_GREEN] = src_c[ID_RGBA_GREEN];
+                                    dst_c[ID_RGBA_RED] = src_c[ID_RGBA_RED];
+                                }
+                                dst_c += depth;
+                                src_c += depth;
+                            }
+                            dst_bits += dst_pitch;
+                            src_bits += src_pitch;
+                        }
+                    }
                 }
                 else
                 {
-                    for ( rows = 0; rows < height; rows++) {
+                    for ( rows = 0; rows < height; rows++)
+                    {
                         memcpy(dst_bits, src_bits, sizeR);
                         dst_bits += dst_pitch;
                         src_bits += src_pitch;
@@ -1745,7 +1850,8 @@ bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t l
         // check the size of src image
         if (dst_info != nullptr  && src_info != nullptr  && dst_info->biBitCount == src_info->biBitCount)
         {
-            if ((left < src_width && left < dst_width) && (top < src_height && top < dst_height)) {
+            if ((left < src_width && left < dst_width) && (top < src_height && top < dst_height))
+            {
                 unsigned char  *dst_bits = getBits(dst) + (top * dst_pitch) + (left * depth);
                 unsigned char  *src_bits = getBits(src) + (top * src_pitch) + (left * depth);
                 // combine images
@@ -1757,7 +1863,8 @@ bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t l
                     width = src_width - left;
                 if (left + width>dst_width)
                     width = dst_width - left;
-                for (unsigned int rows = 0; rows < height; rows++) {
+                for (unsigned int rows = 0; rows < height; rows++)
+                {
                     memcpy(dst_bits, src_bits, width*depth);
                     dst_bits += dst_pitch;
                     src_bits += src_pitch;
@@ -1773,7 +1880,8 @@ bool bmpImage::copyBits(LPBITMAPFILEHEADER src, LPBITMAPFILEHEADER dst, size_t l
 bool bmpImage::copyFromFile(const XCHAR *name)
 {
     bool res = false;
-    try {
+    try
+    {
         FILE *file = nullptr;
         std::string sname;
 #ifdef _UNICODE
@@ -1787,42 +1895,44 @@ bool bmpImage::copyFromFile(const XCHAR *name)
         {
             short mask = 0;
             int err=0;
-            err = (int)fread(&mask, 1, sizeof(short), file);            
+            err = (int)fread(&mask, 1, sizeof(short), file);
             if (err == sizeof(short) && mask == 0x4d42)
             {
                 fseek(file,0L,SEEK_END);
                 long fsize=ftell(file);
                 fseek(file,0L,SEEK_SET);
-                    if (fsize > 0 && fsize < (1024 * 1024 * 32)) //32Mbit max
-                    {
+                if (fsize > 0 && fsize < (1024 * 1024 * 32)) //32Mbit max
+                {
 
-                        if (isValid())clear();
-                        m_hBitmap = (LPBITMAPFILEHEADER)malloc((size_t)fsize);
-                        if (m_hBitmap)
+                    if (isValid())clear();
+                    m_hBitmap = (LPBITMAPFILEHEADER)malloc((size_t)fsize);
+                    if (m_hBitmap)
+                    {
+                        unsigned char  *p = (unsigned char  *)m_hBitmap;
+                        size_t temp = (size_t)fsize;
+                        size_t start = 0;
+                        do
                         {
-                            unsigned char  *p = (unsigned char  *)m_hBitmap;
-                            size_t temp = (size_t)fsize;
-                            size_t start = 0;
-                            do {
-                                size_t vread=256;
-                                if(temp<vread)
-                                    vread=temp;
-                                err = (int)fread(&p[start], 1, vread, file);
-                                if (!err)
-                                {
-                                    break;
-                                }
-                                start += err;
-                                temp -= err;
-                            } while (temp > 0);
-                            if (temp > 0)
+                            size_t vread=256;
+                            if(temp<vread)
+                                vread=temp;
+                            err = (int)fread(&p[start], 1, vread, file);
+                            if (!err)
                             {
-                                clear();
+                                break;
                             }
+                            start += err;
+                            temp -= err;
+                        }
+                        while (temp > 0);
+                        if (temp > 0)
+                        {
+                            clear();
                         }
                     }
-                    fflush(file);
-                    fclose(file);
+                }
+                fflush(file);
+                fclose(file);
             }
         }
     }
@@ -1838,7 +1948,8 @@ bool bmpImage::copyToFile(const XCHAR *name)
     bool res = false;
     if (isValid())
     {
-        try {
+        try
+        {
             FILE *file = nullptr;
             std::string sname;
 #ifdef _UNICODE
@@ -1850,8 +1961,8 @@ bool bmpImage::copyToFile(const XCHAR *name)
             file = FOPEN(sname.c_str(), "wb");
             if ( file != nullptr)
             {
-                size_t err = fwrite(m_hBitmap, sizeof(unsigned char ), 
-                    m_hBitmap->bfSize, file);
+                size_t err = fwrite(m_hBitmap, sizeof(unsigned char ),
+                                    m_hBitmap->bfSize, file);
                 fflush(file);
                 fclose(file);
                 res = (err == m_hBitmap->bfSize);
@@ -1965,7 +2076,8 @@ bool bmpImage::swapto(LPBITMAPFILEHEADER pI, int iSorg, int iDest)
             const unsigned int size = getWidth(pI)*getHeight(pI)*bytespp;
             unsigned int xs;
             unsigned char * ptr = getBits(pI);
-            for (xs = 0; xs < size; xs += bytespp) {
+            for (xs = 0; xs < size; xs += bytespp)
+            {
                 unsigned char r = ptr[xs + iSorg];
                 ptr[xs + iSorg] = ptr[xs + iDest];
                 ptr[xs + iDest] = r;
@@ -2032,30 +2144,29 @@ bool bmpImage::getPixel(LPBITMAPFILEHEADER dest,unsigned int x,unsigned int y,un
 }
 
 bool bmpImage::line( int x1, int y1, int x2, int y2,
-                    unsigned char red,unsigned char green,
+                     unsigned char red,unsigned char green,
                      unsigned char blue,unsigned int mask)
 {
     int depth = getBitsPerPixel();
     if (depth == 24)
-        {
-            if(mask==0xffffffff)
-                return line24(m_hBitmap, x1, y1, x2, y2, red, green, blue);
-            else
-                return line24mask(m_hBitmap, x1, y1, x2, y2, red, green, blue, mask);
-        }
-    else
-        if (depth == 32)
-        {
-            if (mask == 0xffffffff)
-                return line32(m_hBitmap, x1, y1, x2, y2, red, green, blue);
-            else
-                return line32mask(m_hBitmap, x1, y1, x2, y2, red, green, blue, mask);
-        }
+    {
+        if(mask==0xffffffff)
+            return line24(m_hBitmap, x1, y1, x2, y2, red, green, blue);
+        else
+            return line24mask(m_hBitmap, x1, y1, x2, y2, red, green, blue, mask);
+    }
+    else if (depth == 32)
+    {
+        if (mask == 0xffffffff)
+            return line32(m_hBitmap, x1, y1, x2, y2, red, green, blue);
+        else
+            return line32mask(m_hBitmap, x1, y1, x2, y2, red, green, blue, mask);
+    }
     return false;
 }
 
 bool bmpImage::line24(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
-                    unsigned char red, unsigned char green, unsigned char blue)
+                      unsigned char red, unsigned char green, unsigned char blue)
 {
     bool res=false;
     int width,height;
@@ -2119,13 +2230,15 @@ bool bmpImage::line24(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y
     {
         if (y >= 0 && y < height && end>0)
         {
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 pos[ID_RGBA_BLUE] = blue;
                 pos[ID_RGBA_GREEN] = green;
                 pos[ID_RGBA_RED] = red;
                 x++;
-            } while (x <= end);
+            }
+            while (x <= end);
             res = true;
         }
     }
@@ -2133,13 +2246,15 @@ bool bmpImage::line24(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y
     {
         if (x >= 0 && x < width && end>0)
         {
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 pos[ID_RGBA_BLUE] = blue;
                 pos[ID_RGBA_GREEN] = green;
                 pos[ID_RGBA_RED] = red;
                 y++;
-            } while (y <= end);
+            }
+            while (y <= end);
             res = true;
         }
     }
@@ -2148,7 +2263,8 @@ bool bmpImage::line24(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y
         if(dx>dy && end > 0)
         {
             p = 2 * dy - dx;
-            do {
+            do
+            {
                 unsigned char  *pos=bits_start+(y * pitch) + (x * depth);
                 pos[ID_RGBA_BLUE]=blue;
                 pos[ID_RGBA_GREEN]=green;
@@ -2163,14 +2279,15 @@ bool bmpImage::line24(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y
                     y++;
                     p = p + 2 * (dy - dx);
                 }
-            } while(x<=end);
+            }
+            while(x<=end);
             res=true;
         }
-        else
-            if (dy>dx && end > 0)
+        else if (dy>dx && end > 0)
         {
             p = 2 * dx - dy;
-            do {
+            do
+            {
                 unsigned char  *pos=bits_start+(y * pitch) + (x * depth);
                 pos[ID_RGBA_BLUE]=blue;
                 pos[ID_RGBA_GREEN]=green;
@@ -2185,7 +2302,8 @@ bool bmpImage::line24(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y
                     x++;
                     p = p + 2 * (dx - dy);
                 }
-            } while(y<=end);
+            }
+            while(y<=end);
             res=true;
         }
     }
@@ -2195,7 +2313,7 @@ bool bmpImage::line24(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y
 
 
 bool bmpImage::line24mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
-    unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot)
+                          unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot)
 {
     bool res = false;
     if (maskDot == 0)return true;
@@ -2261,7 +2379,8 @@ bool bmpImage::line24mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
     {
         if (y >= 0 && y < height && end>0)
         {
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 if ( mb&maskDot )
                 {
@@ -2272,7 +2391,8 @@ bool bmpImage::line24mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
                 x++;
                 mb <<= 1;
                 if (!mb)mb = 1;
-            } while (x <= end);
+            }
+            while (x <= end);
             res = true;
         }
     }
@@ -2280,7 +2400,8 @@ bool bmpImage::line24mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
     {
         if (x >= 0 && x < width && end>0)
         {
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 if (mb&maskDot)
                 {
@@ -2291,7 +2412,8 @@ bool bmpImage::line24mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
                 y++;
                 mb <<= 1;
                 if (!mb)mb = 1;
-            } while (y <= end);
+            }
+            while (y <= end);
             res = true;
         }
     }
@@ -2300,7 +2422,8 @@ bool bmpImage::line24mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
         if (dx>dy && end > 0)
         {
             p = 2 * dy - dx;
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 if (mb&maskDot)
                 {
@@ -2320,43 +2443,45 @@ bool bmpImage::line24mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
                     y++;
                     p = p + 2 * (dy - dx);
                 }
-            } while (x <= end);
+            }
+            while (x <= end);
             res = true;
         }
-        else
-            if (dy>dx && end > 0)
+        else if (dy>dx && end > 0)
+        {
+            p = 2 * dx - dy;
+            do
             {
-                p = 2 * dx - dy;
-                do {
-                    unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
-                    if (mb&maskDot)
-                    {
-                        pos[ID_RGBA_BLUE] = blue;
-                        pos[ID_RGBA_GREEN] = green;
-                        pos[ID_RGBA_RED] = red;
-                    }
-                    y++;
-                    mb <<= 1;
-                    if (!mb)mb = 1;
-                    if (p < 0)
-                    {
-                        p = p + 2 * dx;
-                    }
-                    else
-                    {
-                        x++;
-                        p = p + 2 * (dx - dy);
-                    }
-                } while (y <= end);
-                res = true;
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (mb&maskDot)
+                {
+                    pos[ID_RGBA_BLUE] = blue;
+                    pos[ID_RGBA_GREEN] = green;
+                    pos[ID_RGBA_RED] = red;
+                }
+                y++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+                if (p < 0)
+                {
+                    p = p + 2 * dx;
+                }
+                else
+                {
+                    x++;
+                    p = p + 2 * (dx - dy);
+                }
             }
+            while (y <= end);
+            res = true;
+        }
     }
     res = true;
     return res;
 }
 
 bool bmpImage::line32(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
-    unsigned char red, unsigned char green, unsigned char blue)
+                      unsigned char red, unsigned char green, unsigned char blue)
 {
     bool res = false;
     int width, height;
@@ -2416,16 +2541,18 @@ bool bmpImage::line32(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
             }
         }
     }
-    unsigned int newCol = (red << 16) | (green << 8) | blue;    
+    unsigned int newCol = (red << 16) | (green << 8) | blue;
     if (dy == 0)
     {
         if (y >= 0 && y < height && end>0)
         {
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 *reinterpret_cast<unsigned int *>(pos) = newCol;
                 x++;
-            } while (x <= end);
+            }
+            while (x <= end);
             res = true;
         }
     }
@@ -2433,11 +2560,13 @@ bool bmpImage::line32(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
     {
         if (x >= 0 && x < width && end>0)
         {
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 *reinterpret_cast<unsigned int *>(pos) = newCol;
                 y++;
-            } while (y <= end);
+            }
+            while (y <= end);
             res = true;
         }
     }
@@ -2446,7 +2575,8 @@ bool bmpImage::line32(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
         if (dx>dy && end > 0)
         {
             p = 2 * dy - dx;
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 *reinterpret_cast<unsigned int *>(pos) = newCol;
                 x++;
@@ -2459,36 +2589,38 @@ bool bmpImage::line32(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
                     y++;
                     p = p + 2 * (dy - dx);
                 }
-            } while (x <= end);
+            }
+            while (x <= end);
             res = true;
         }
-        else
-            if (dy>dx && end > 0)
+        else if (dy>dx && end > 0)
+        {
+            p = 2 * dx - dy;
+            do
             {
-                p = 2 * dx - dy;
-                do {
-                    unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
-                    *reinterpret_cast<unsigned int *>(pos) = newCol;
-                    y++;
-                    if (p < 0)
-                    {
-                        p = p + 2 * dx;
-                    }
-                    else
-                    {
-                        x++;
-                        p = p + 2 * (dx - dy);
-                    }
-                } while (y <= end);
-                res = true;
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                *reinterpret_cast<unsigned int *>(pos) = newCol;
+                y++;
+                if (p < 0)
+                {
+                    p = p + 2 * dx;
+                }
+                else
+                {
+                    x++;
+                    p = p + 2 * (dx - dy);
+                }
             }
+            while (y <= end);
+            res = true;
+        }
     }
     res = true;
     return res;
 }
 
 bool bmpImage::line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
-    unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot)
+                          unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot)
 {
     bool res = false;
     if (maskDot == 0)return true;
@@ -2555,7 +2687,8 @@ bool bmpImage::line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
     {
         if (y >= 0 && y < height && end>0)
         {
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 if (mb&maskDot)
                 {
@@ -2564,7 +2697,8 @@ bool bmpImage::line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
                 x++;
                 mb <<= 1;
                 if (!mb)mb = 1;
-            } while (x <= end);
+            }
+            while (x <= end);
             res = true;
         }
     }
@@ -2572,7 +2706,8 @@ bool bmpImage::line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
     {
         if (x >= 0 && x < width && end>0)
         {
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 if (mb&maskDot)
                 {
@@ -2581,7 +2716,8 @@ bool bmpImage::line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
                 y++;
                 mb <<= 1;
                 if (!mb)mb = 1;
-            } while (y <= end);
+            }
+            while (y <= end);
             res = true;
         }
     }
@@ -2590,7 +2726,8 @@ bool bmpImage::line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
         if (dx>dy && end > 0)
         {
             p = 2 * dy - dx;
-            do {
+            do
+            {
                 unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
                 if (mb&maskDot)
                 {
@@ -2608,34 +2745,36 @@ bool bmpImage::line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y
                     y++;
                     p = p + 2 * (dy - dx);
                 }
-            } while (x <= end);
+            }
+            while (x <= end);
             res = true;
         }
-        else
-            if (dy>dx && end > 0)
+        else if (dy>dx && end > 0)
+        {
+            p = 2 * dx - dy;
+            do
             {
-                p = 2 * dx - dy;
-                do {
-                    unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
-                    if (mb&maskDot)
-                    {
-                        *reinterpret_cast<unsigned int *>(pos) = newCol;
-                    }
-                    y++;
-                    mb <<= 1;
-                    if (!mb)mb = 1;
-                    if (p < 0)
-                    {
-                        p = p + 2 * dx;
-                    }
-                    else
-                    {
-                        x++;
-                        p = p + 2 * (dx - dy);
-                    }
-                } while (y <= end);
-                res = true;
+                unsigned char  *pos = bits_start + (y * pitch) + (x * depth);
+                if (mb&maskDot)
+                {
+                    *reinterpret_cast<unsigned int *>(pos) = newCol;
+                }
+                y++;
+                mb <<= 1;
+                if (!mb)mb = 1;
+                if (p < 0)
+                {
+                    p = p + 2 * dx;
+                }
+                else
+                {
+                    x++;
+                    p = p + 2 * (dx - dy);
+                }
             }
+            while (y <= end);
+            res = true;
+        }
     }
     res = true;
     return res;
@@ -2680,16 +2819,17 @@ bool bmpImage::frameRect( int x1,  int y1,  int x2,  int y2, unsigned char red, 
 
 static inline   void
 translateLine( unsigned int depth,unsigned char  *target, unsigned int width_in_pixels,
-    unsigned char Rmask, unsigned char Gmask, unsigned char Bmask,
-    unsigned char newR, unsigned char newG, unsigned char newB )
+               unsigned char Rmask, unsigned char Gmask, unsigned char Bmask,
+               unsigned char newR, unsigned char newG, unsigned char newB )
 {
     unsigned int cols;
     if (depth == 3)
     {
-        for (cols = 0; cols < width_in_pixels; cols++) {
+        for (cols = 0; cols < width_in_pixels; cols++)
+        {
             if (target[ID_RGBA_BLUE] == Bmask &&
-                target[ID_RGBA_GREEN] == Gmask &&
-                target[ID_RGBA_RED] == Rmask)
+                    target[ID_RGBA_GREEN] == Gmask &&
+                    target[ID_RGBA_RED] == Rmask)
             {
                 target[ID_RGBA_BLUE] = newB;
                 target[ID_RGBA_GREEN] = newG;
@@ -2698,13 +2838,13 @@ translateLine( unsigned int depth,unsigned char  *target, unsigned int width_in_
             target += depth;
         }
     }
-    else
-    if (depth == 4)
+    else if (depth == 4)
     {
         unsigned int oldCol = (Rmask << 16) | (Gmask << 8) | Bmask;
         unsigned int newCol = (newR << 16) | (newG << 8) | newB;
         unsigned int *ptr = reinterpret_cast<unsigned int *>(target);
-        for (cols = 0; cols < width_in_pixels; cols++) {
+        for (cols = 0; cols < width_in_pixels; cols++)
+        {
             if ((*ptr & 0xffffff) == oldCol)
                 *ptr = newCol;
             ptr++;
@@ -2715,8 +2855,8 @@ translateLine( unsigned int depth,unsigned char  *target, unsigned int width_in_
 
 
 bool bmpImage::translateColor(LPBITMAPFILEHEADER dest, unsigned char oriRed, unsigned char oriGreen,
-    unsigned char oriBlue, unsigned char newRed,
-    unsigned char newGreen , unsigned char  newBlue)
+                              unsigned char oriBlue, unsigned char newRed,
+                              unsigned char newGreen , unsigned char  newBlue)
 {
     bool bResult = false;
     if ( dest != nullptr)
@@ -2755,23 +2895,23 @@ bool bmpImage::translateColor(LPBITMAPFILEHEADER dest, unsigned char oriRed, uns
 extern"C" void *__stdcall GetDC(void * hWnd);
 extern "C" int __stdcall  ReleaseDC(void * hWnd, void *DC);
 extern "C" int __stdcall StretchDIBits(void * hdc, int xDest, int yDest, int DestWidth, int DestHeight, int xSrc, int ySrc, int SrcWidth, int SrcHeight,
-    const void  * lpBits, LPBITMAPINFO lpbmi, unsigned int  iUsage, unsigned long  rop);
+                                       const void  * lpBits, LPBITMAPINFO lpbmi, unsigned int  iUsage, unsigned long  rop);
 
 void bmpImage::show(int x, int y)
 {
     void * dc = ::GetDC(nullptr);
     if (dc != 0)
-        {
-            LPBITMAPINFO info = getInfo();
-            void *bits = getBits();
-            unsigned int size_x = getWidth();
-            unsigned int size_y = getHeight();
-            ::StretchDIBits(dc, x, y,
-                size_x, size_y,
-                0, 0, size_x, size_y,
-                bits, info, 0, 0x00CC0020);
-            ReleaseDC(nullptr, dc);
-        }
+    {
+        LPBITMAPINFO info = getInfo();
+        void *bits = getBits();
+        unsigned int size_x = getWidth();
+        unsigned int size_y = getHeight();
+        ::StretchDIBits(dc, x, y,
+                        size_x, size_y,
+                        0, 0, size_x, size_y,
+                        bits, info, 0, 0x00CC0020);
+        ReleaseDC(nullptr, dc);
+    }
 }
 #endif
 ///////////////////////////////////////////////////////////////// IMAGE LIST
@@ -2838,8 +2978,10 @@ bool bmpSprite::fromImages(bmpImage & obj, bmpImage & mask)
 
 
 static inline   void
-maskLine24(unsigned char  *target, unsigned char  *source, unsigned char  *mask, int width_in_pixels) {
-    for (int cols = 0; cols < width_in_pixels; cols++) {
+maskLine24(unsigned char  *target, unsigned char  *source, unsigned char  *mask, int width_in_pixels)
+{
+    for (int cols = 0; cols < width_in_pixels; cols++)
+    {
         target[ID_RGBA_BLUE] = source[ID_RGBA_BLUE] & mask[ID_RGBA_BLUE];
         target[ID_RGBA_GREEN] = source[ID_RGBA_GREEN] & mask[ID_RGBA_GREEN];
         target[ID_RGBA_RED] = source[ID_RGBA_RED] & mask[ID_RGBA_RED];

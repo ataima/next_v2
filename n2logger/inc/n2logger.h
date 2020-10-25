@@ -38,7 +38,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-typedef struct tag_log_param {
+typedef struct tag_log_param
+{
     std::string msg;
     std::chrono::steady_clock::time_point time;
     int level;
@@ -46,7 +47,8 @@ typedef struct tag_log_param {
 
 
 class nnLogger
-        : public ILogger {
+    : public ILogger
+{
     std::chrono::steady_clock::time_point t_start;
     std::mutex mtx;
     std::condition_variable cond_var;
@@ -71,16 +73,23 @@ public:
 
     void enqueue(void);
 
-    inline void setOutput(IPrinter *printer) { current_printer = printer; }
+    inline void setOutput(IPrinter *printer)
+    {
+        current_printer = printer;
+    }
 
-    inline IPrinter *output(void) { return current_printer; }
+    inline IPrinter *output(void)
+    {
+        return current_printer;
+    }
 
     void reset();
 
 };
 
 class nnDefaultPrinter
-        : public IPrinter {
+    : public IPrinter
+{
 public:
     void out(int level, std::string &msg);
 };

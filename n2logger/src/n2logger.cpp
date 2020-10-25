@@ -52,21 +52,25 @@ nnLogger::nnLogger() :
 
 nnLogger::~nnLogger()
 {
-    if (th != nullptr) {
+    if (th != nullptr)
+    {
         done = true;
         cond_var.notify_one();
-        while (done) {
+        while (done)
+        {
             if (th->joinable())
                 th->join();
         }
         delete th;
         th = nullptr;
     }
-    if (current_printer != nullptr) {
+    if (current_printer != nullptr)
+    {
         delete current_printer;
         current_printer = nullptr;
     }
-    while (!io.empty()) {
+    while (!io.empty())
+    {
         delete io.front();
         io.pop();
     }
@@ -81,9 +85,12 @@ void nnLogger::log(int level,const char *fmt, ... )
     //producer...
     ILogParam *param= new ILogParam;
     param->time = std::chrono::steady_clock::now();
-    if (!done) {
-        if (!th) {
-            if (current_printer != nullptr) {
+    if (!done)
+    {
+        if (!th)
+        {
+            if (current_printer != nullptr)
+            {
                 //only first time
                 th = new std::thread(nnLogger::entry, this);
             }
@@ -103,8 +110,10 @@ void nnLogger::log(int level,const char *fmt, ... )
 
 void nnLogger::print(ILogParam *p)
 {
-    if (current_printer ) {
-        if (p) {
+    if (current_printer )
+    {
+        if (p)
+        {
             std::string msg;
             std::stringstream ts;
             ts << "<"<<p->level<<"> "<<"[" << (p->time - t_start).count() << "ns ] "<<p->msg;
@@ -120,11 +129,13 @@ ILogParam * nnLogger::remove(void)
 {
     ILogParam *param = nullptr;
     std::unique_lock<std::mutex> lock(mtx);
-    if (!notify) {
+    if (!notify)
+    {
         //cond_var.wait_for(lock, std::chrono::milliseconds(100));
         cond_var.wait(lock);
     }
-    if (!io.empty()) {
+    if (!io.empty())
+    {
         param = io.front();
         io.pop();
     }
@@ -136,16 +147,20 @@ ILogParam * nnLogger::remove(void)
 void nnLogger::enqueue(void)
 {
 
-    while(!done) {
+    while(!done)
+    {
         ILogParam *param = remove();
-        if(param){
+        if(param)
+        {
             print(param);
             delete param;
         }
     }
-    if (done) {
+    if (done)
+    {
         std::unique_lock<std::mutex> lock(mtx);
-        while (!io.empty()) {
+        while (!io.empty())
+        {
             delete io.front();
             io.pop();
         }
@@ -155,7 +170,8 @@ void nnLogger::enqueue(void)
 
 void nnLogger::entry(ILogger *current)
 {
-    if (current) {
+    if (current)
+    {
         nnLogger *log = dynamic_cast<nnLogger*>(current);
         if(log)
             log->enqueue();
@@ -171,12 +187,14 @@ void nnLogger::reset()
     cond_var.notify_one();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     cond_var.wait(lock);
-    if (th != nullptr) {
+    if (th != nullptr)
+    {
         th->join();
         delete th;
         th = nullptr;
     }
-    if (current_printer != nullptr) {
+    if (current_printer != nullptr)
+    {
         delete current_printer;
         current_printer = nullptr;
     }
@@ -203,11 +221,13 @@ void nnLogger::reset()
 
 #include <iostream>
 
-void nnDefaultPrinter::out( int level, std::string & msg){
+void nnDefaultPrinter::out( int level, std::string & msg)
+{
 
-    const char * colors[]={
-            RED_LIGHT,BLUE_LIGHT,PURPLE_LIGHT,
-            RED,GREEN,WHITE,GRAY_DARK,BROWN,nullptr
+    const char * colors[]=
+    {
+        RED_LIGHT,BLUE_LIGHT,PURPLE_LIGHT,
+        RED,GREEN,WHITE,GRAY_DARK,BROWN,nullptr
     };
     if(level<0)level=0;
     if(level>LOG_DEBUG)level=LOG_DEBUG+1;

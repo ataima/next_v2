@@ -14,7 +14,8 @@
 
 
 #ifndef tagBITMAPFILEHEADER
-typedef struct tagBITMAPFILEHEADER {
+typedef struct tagBITMAPFILEHEADER
+{
     short			bfType;
     unsigned int    bfSize;
     short			bfReserved1;
@@ -28,7 +29,8 @@ typedef struct tagBITMAPFILEHEADER {
 
 typedef BITMAPFILEHEADER *LPBITMAPFILEHEADER;
 
-typedef struct tagBITMAPINFOHEADER {
+typedef struct tagBITMAPINFOHEADER
+{
     unsigned int      biSize;
     int			      biWidth;
     int			      biHeight;
@@ -45,7 +47,8 @@ typedef struct tagBITMAPINFOHEADER {
 typedef  BITMAPINFOHEADER *LPBITMAPINFOHEADER;
 
 
-typedef struct tagRGBQUAD {
+typedef struct tagRGBQUAD
+{
     unsigned char    rgbBlue;
     unsigned char    rgbGreen;
     unsigned char    rgbRed;
@@ -54,7 +57,8 @@ typedef struct tagRGBQUAD {
 
 typedef RGBQUAD * LPRGBQUAD;
 
-typedef struct tagBITMAPINFO {
+typedef struct tagBITMAPINFO
+{
     BITMAPINFOHEADER    bmiHeader;
     RGBQUAD             bmiColors[1];
 } BITMAPINFO;
@@ -80,7 +84,7 @@ typedef BITMAPINFO *LPBITMAPINFO;
 
 class  bmpImage
 {
-   //static const size_t bitPerPlane = 24;
+    //static const size_t bitPerPlane = 24;
 public:
     bmpImage();
     bmpImage(bmpImage & b);
@@ -120,22 +124,25 @@ public:
     bool flipHorizontal(void);
     bool flipVertical(void);
     bool pasteSubImage(LPBITMAPFILEHEADER src, int left, int top);
-    inline operator LPBITMAPFILEHEADER() { return m_hBitmap; }
+    inline operator LPBITMAPFILEHEADER()
+    {
+        return m_hBitmap;
+    }
     void operator =(bmpImage & b);
     bool swaptoBGR(void);
     bool swaptoRBG(void);
     bool swaptoGRB(void);
     bool translateColor(unsigned char oriRed, unsigned char oriGreen,
-        unsigned char oriBlue, unsigned char newRed,
-        unsigned char newGreen, unsigned char newBlue);
+                        unsigned char oriBlue, unsigned char newRed,
+                        unsigned char newGreen, unsigned char newBlue);
     bool copyBits(bmpImage & dst, size_t left,size_t top,size_t right,size_t bottom);
     bool drawSprite( bmpImage & sprite, unsigned int  left, unsigned int  top);
     bool drawMaskSprite( bmpImage & sprite, unsigned int  left, unsigned int  top,
-                unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
+                         unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
     bool drawSpriteTranslateColor(bmpImage & sprite,
-        unsigned int left, unsigned int top,
-        unsigned char oriRed, unsigned char oriGreen,unsigned char oriBlue, 
-        unsigned char newRed,unsigned char newGreen, unsigned char newBlue);
+                                  unsigned int left, unsigned int top,
+                                  unsigned char oriRed, unsigned char oriGreen,unsigned char oriBlue,
+                                  unsigned char newRed,unsigned char newGreen, unsigned char newBlue);
     bool setPixel(unsigned int _x,unsigned int _y,unsigned char red,unsigned char green,unsigned char blue);
     bool getPixel(unsigned int _x,unsigned int _y,unsigned char  & red,unsigned char & green,unsigned char & blue);
     bool line( int x1,  int y1,  int x2,  int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned int mask=0xffffffff);
@@ -173,26 +180,26 @@ protected:
     static bool swapto(LPBITMAPFILEHEADER pI, int iSorg, int iDest);
     static bool drawSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, unsigned int  left, unsigned int  top);
     static bool drawMaskSprite(LPBITMAPFILEHEADER dst,  LPBITMAPFILEHEADER sprite, unsigned int  left, unsigned int  top,
-                      unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
+                               unsigned char Rmask, unsigned char Gmask, unsigned char Bmask);
     //
     static bool drawSpriteTranslateColor(LPBITMAPFILEHEADER dst, LPBITMAPFILEHEADER sprite,
-        unsigned int left, unsigned int top,
-        unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
-        unsigned char newRed, unsigned char newGreen, unsigned char newBlue);
+                                         unsigned int left, unsigned int top,
+                                         unsigned char oriRed, unsigned char oriGreen, unsigned char oriBlue,
+                                         unsigned char newRed, unsigned char newGreen, unsigned char newBlue);
 
     static bool setPixel(LPBITMAPFILEHEADER dest,unsigned int x,unsigned int y,unsigned char red,unsigned char green,unsigned char blue);
     static bool getPixel(LPBITMAPFILEHEADER dest, unsigned int x, unsigned int y, unsigned char  & red, unsigned char & green, unsigned char & blue);
     static bool line24mask(LPBITMAPFILEHEADER dest,  int x1,  int y1,  int x2,  int y2,
-                        unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot);
+                           unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot);
     static bool line32mask(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
-        unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot);
+                           unsigned char red, unsigned char green, unsigned char blue, unsigned int maskDot);
     static bool line24(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
-        unsigned char red, unsigned char green, unsigned char blue);
+                       unsigned char red, unsigned char green, unsigned char blue);
     static bool line32(LPBITMAPFILEHEADER dest, int x1, int y1, int x2, int y2,
-        unsigned char red, unsigned char green, unsigned char blue);
+                       unsigned char red, unsigned char green, unsigned char blue);
     static bool translateColor(LPBITMAPFILEHEADER dest,unsigned char oriRed, unsigned char oriGreen,
-        unsigned char oriBlue, unsigned char newRed,
-        unsigned char newGreen, unsigned char  newBlue);
+                               unsigned char oriBlue, unsigned char newRed,
+                               unsigned char newGreen, unsigned char  newBlue);
 
 protected:
     BITMAPFILEHEADER * m_hBitmap;
@@ -217,8 +224,14 @@ public:
     listImage();
     ~listImage();
     bool Add(int index, bmpImage & b );
-    inline int getMaxWidth(void) { return bmpMaxWidth; }
-    inline int getMaxHeight(void) { return bmpMaxWidth; }
+    inline int getMaxWidth(void)
+    {
+        return bmpMaxWidth;
+    }
+    inline int getMaxHeight(void)
+    {
+        return bmpMaxWidth;
+    }
 };
 
 
@@ -226,7 +239,7 @@ class bmpSprite
     : public bmpImage
 {
 public:
-    bmpSprite() :bmpImage(){};
+    bmpSprite() :bmpImage() {};
     bool fromImages(bmpImage & obj, bmpImage & mask);
 protected:
     bool toSprite(LPBITMAPFILEHEADER dest, LPBITMAPFILEHEADER image, LPBITMAPFILEHEADER mask);

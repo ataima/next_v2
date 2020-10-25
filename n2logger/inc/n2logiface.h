@@ -51,7 +51,7 @@ class IPrinter
 {
 public :
     virtual void out( int level, std::string & msg) = 0;
-    virtual ~IPrinter(){}
+    virtual ~IPrinter() {}
 };
 
 
@@ -61,11 +61,14 @@ protected:
     static ILogger *instance;
 public:
     virtual void log(int level,const char *__fmt, ... ) = 0;
-    static  ILogger * getInstance(void) { return instance; }
+    static  ILogger * getInstance(void)
+    {
+        return instance;
+    }
     virtual void setOutput(IPrinter *printer) = 0;
     virtual IPrinter *output(void) = 0;
     virtual void reset()=0;
-    virtual ~ILogger(){}
+    virtual ~ILogger() {}
 };
 
 
