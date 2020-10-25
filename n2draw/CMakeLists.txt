@@ -4,7 +4,6 @@
 cmake_minimum_required (VERSION 2.8.11)
 
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_PROJECT_NAME} )
 
 project (ca_n2draw)
 
@@ -20,6 +19,14 @@ file(GLOB SOURCES "./source/*.cpp")
 
 add_library (ca_n2draw SHARED ${SOURCES} )
 
-install ( TARGETS ca_n2draw DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
 set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
+
+install ( TARGETS ${CMAKE_PROJECT_NAME}  DESTINATION ${CMAKE_INSTALL_PREFIX} )
+
+
+add_custom_command (
+    TARGET ca_logger
+    PRE_BUILD
+    COMMAND  ${CMAKE_SOURCE_DIR}/scripts/beauty.sh  ./n2draw/CMakeLists.txt
+)
 

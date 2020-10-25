@@ -1,0 +1,1 @@
+./do_distclean.sh && ./do_debug.sh 64 linux  

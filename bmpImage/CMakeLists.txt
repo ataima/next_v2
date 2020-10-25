@@ -3,9 +3,6 @@
 # to the root binary directory of the project as ${HELLO_BINARY_DIR}.
 cmake_minimum_required (VERSION 2.8.11)
 
-
-set(CMAKE_INSTALL_PREFIX ${CMAKE_PROJECT_NAME} )
-
 project (ca_bmp_image)
 
 include_directories(./header)
@@ -18,9 +15,16 @@ include_directories(../n2logger/header)
 
 add_library (ca_bmp_image SHARED ${SOURCES} )
 
-install ( TARGETS ca_bmp_image DESTINATION ${CMAKE_INSTALL_PREFIX}/dist )
 
 set(CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS}")
 
 
+install ( TARGETS ${CMAKE_PROJECT_NAME}  DESTINATION ${CMAKE_INSTALL_PREFIX} )
+
+
+add_custom_command (
+    TARGET ca_logger
+    PRE_BUILD
+    COMMAND  ${CMAKE_SOURCE_DIR}/scripts/beauty.sh ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
