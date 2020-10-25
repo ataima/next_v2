@@ -69,32 +69,25 @@ public:
 };
 
 
-#define	LOG_EMERG	0
-#define	LOG_ALERT	1
-#define	LOG_CRIT	2
-#define	LOG_ERR		3
-#define	LOG_WARNING	4
-#define	LOG_NOTICE	5
-#define	LOG_INFO	6
-#define	LOG_DEBUG	7
 
-#define LogE(...)   ILogger::getInstance()->log(LOG_EMERG,__VA_ARGS__)
-#define LogA(...)   ILogger::getInstance()->log(LOG_ALERT,__VA_ARGS__)
-#define LogC(...)   ILogger::getInstance()->log(LOG_CRIT,__VA_ARGS__)
-#define LogW(...)   ILogger::getInstance()->log(LOG_ERR,__VA_ARGS__)
-#define LogN(...)   ILogger::getInstance()->log(LOG_NOTICE,__VA_ARGS__)
-#define LogI(...)   ILogger::getInstance()->log(LOG_INFO,__VA_ARGS__)
-#define LogD(...)   ILogger::getInstance()->log(LOG_DEBUG,__VA_ARGS__)
+#define Log0(...)   ILogger::getInstance()->log(0,__VA_ARGS__)
+#define Log1(...)   ILogger::getInstance()->log(1,__VA_ARGS__)
+#define Log2(...)   ILogger::getInstance()->log(2,__VA_ARGS__)
+#define Log3(...)   ILogger::getInstance()->log(3,__VA_ARGS__)
+#define Log4(...)   ILogger::getInstance()->log(4,__VA_ARGS__)
+#define Log5(...)   ILogger::getInstance()->log(5,__VA_ARGS__)
+#define Log6(...)   ILogger::getInstance()->log(6,__VA_ARGS__)
+
 
 #else
 
-#define LogE(...)
-#define LogA(...)
-#define LogC(...)
-#define LogW(...)
-#define LogN(...)
-#define LogI(...)
-#define LogD(...)
+#define Log0(...)
+#define Log1(...)
+#define Log2(...)
+#define Log3(...)
+#define Log4(...)
+#define Log5(...)
+#define Log6(...)
 
 #endif
 

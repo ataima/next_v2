@@ -92,7 +92,6 @@ void nnLogger::log(int level,const char *fmt, ... )
         va_start(argptr, fmt);
         vsnprintf(dest,sizeof(dest), fmt, argptr);
         va_end(argptr);
-        ILogParam *param= new ILogParam;
         param->level=level;
         param->msg=dest;
         io.push(param);
@@ -108,7 +107,7 @@ void nnLogger::print(ILogParam *p)
         if (p) {
             std::string msg;
             std::stringstream ts;
-            ts << "[" << (p->time - t_start).count() << "ns ]";
+            ts << "<"<<p->level<<"> "<<"[" << (p->time - t_start).count() << "ns ] "<<p->msg;
             t_start = p->time;
             msg = ts.str();
             current_printer->out(p->level,msg);
@@ -139,10 +138,10 @@ void nnLogger::enqueue(void)
 
     while(!done) {
         ILogParam *param = remove();
-        if(!done)
+        if(param){
             print(param);
-        if(param)
             delete param;
+        }
     }
     if (done) {
         std::unique_lock<std::mutex> lock(mtx);
@@ -210,8 +209,9 @@ void nnDefaultPrinter::out( int level, std::string & msg){
             RED_LIGHT,BLUE_LIGHT,PURPLE_LIGHT,
             RED,GREEN,WHITE,GRAY_DARK,BROWN,nullptr
     };
+    if(level<0)level=0;
     if(level>LOG_DEBUG)level=LOG_DEBUG+1;
-    std::cout<<colors[level]<<msg<<REPLACE<<std::endl;
+    fprintf(stdout,"%s%s%s\n",colors[level],msg.c_str(),REPLACE);
 }
 
 

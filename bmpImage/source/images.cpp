@@ -1887,10 +1887,9 @@ LPBITMAPFILEHEADER bmpImage::cloneImage(LPBITMAPFILEHEADER pI)
 
 void bmpImage::operator =(bmpImage & b)
 {
-    clear(); //reset this;
     if (b.isValid())
     {
-        if (b.m_hBitmap->bfSize < m_hBitmap->bfSize)
+        if (m_hBitmap!=nullptr && b.m_hBitmap->bfSize < m_hBitmap->bfSize)
             memcpy(m_hBitmap, b.m_hBitmap, b.m_hBitmap->bfSize);
         else
         {

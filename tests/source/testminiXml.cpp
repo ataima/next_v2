@@ -208,7 +208,7 @@ void test_miniXml_class::test6(void)
     root.print(f);
     fclose(f);
     miniXmlNode root1;
-    root1.load(X("./tests/test6.xml"), &root1);
+    miniXmlNode::load(X("./tests/test6.xml"), &root1);
     root1.print(stdout);
     remove("./tests/test6.xml");
     CA_ASSERT(STRCMP(root1.getValue(),X("1000"),4) ==0);

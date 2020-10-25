@@ -36,6 +36,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <mutex>
 #include <condition_variable>
 
+
+
 typedef struct tag_log_param {
     std::string msg;
     std::chrono::steady_clock::time_point time;
@@ -82,6 +84,9 @@ class nnDefaultPrinter
 public:
     void out(int level, std::string &msg);
 };
+
+
+
 
 #endif
 #endif
