@@ -34,7 +34,7 @@ typedef enum tag_status_caption
 {
     status_caption_none,
     status_caption_move,
-}status_caption;
+} status_caption;
 
 
 class nnCaption final
@@ -63,7 +63,10 @@ public:
     bool handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook);
     bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook);
     void setArea(nnPoint & phy);
-    inline void setFont(IFontManager *_font) { font = _font; }
+    inline void setFont(IFontManager *_font)
+    {
+        font = _font;
+    }
     inline void hide(void)
     {
         visible = false;
@@ -75,8 +78,14 @@ public:
 private :
     int itemFromPoint(nnPoint phyPoint);
     bool drawTips(bmpImage & bkg);
-    inline void setStatus(status_caption  st) { status = st; }
-    inline status_caption & getStatus(void) { return status; }
+    inline void setStatus(status_caption  st)
+    {
+        status = st;
+    }
+    inline status_caption & getStatus(void)
+    {
+        return status;
+    }
 };
 
 

@@ -25,17 +25,23 @@ public:
             u8 = converter.to_bytes(v);
             if(u8.size())
             {
-            _good=true;
+                _good=true;
             }
         }
         else
         {
-           _good=true;
-           u8.clear();
+            _good=true;
+            u8.clear();
         }
     }
-    inline const char *utf8(){return u8.c_str();}
-    inline bool good(){return _good;}
+    inline const char *utf8()
+    {
+        return u8.c_str();
+    }
+    inline bool good()
+    {
+        return _good;
+    }
 private:
     std::string u8;
     bool _good;
@@ -52,8 +58,14 @@ public:
     {
         u8=v;
     }
-    inline const char *utf8(){return u8;}
-    inline bool good(){return true;}
+    inline const char *utf8()
+    {
+        return u8;
+    }
+    inline bool good()
+    {
+        return true;
+    }
 private:
     const char *u8;
 };
@@ -71,7 +83,7 @@ public:
             u16 = converter.from_bytes(v);
             if(u16.size())
             {
-            _good=true;
+                _good=true;
             }
         }
         else
@@ -80,8 +92,14 @@ public:
             u16.clear();
         }
     }
-    inline const char16_t *utf16(){return u16.c_str();}
-    inline bool good(){return _good;}
+    inline const char16_t *utf16()
+    {
+        return u16.c_str();
+    }
+    inline bool good()
+    {
+        return _good;
+    }
 private:
     std::u16string u16;
     bool _good;
@@ -99,8 +117,14 @@ public:
     {
         u16=v;
     }
-    inline const char *utf16(){return u16;}
-    inline bool good(){return true;}
+    inline const char *utf16()
+    {
+        return u16;
+    }
+    inline bool good()
+    {
+        return true;
+    }
 private:
     const char *u16;
 };

@@ -39,7 +39,7 @@ class test_viewglue
     : public caTester
 {
     CA_TEST_SUITE(test_viewglue)
-        CA_TEST(test_viewglue::test1, "verifica ctor");
+    CA_TEST(test_viewglue::test1, "verifica ctor");
     CA_TEST(test_viewglue::test2, "verifica read configuration");
     CA_TEST(test_viewglue::test3, "verifica select");
     CA_TEST(test_viewglue::test4, "verifica mouse event");
@@ -92,8 +92,9 @@ void test_viewglue::test2(void)
     node.add(X("HEIGHT"), 800);
     node.add(X("WIDTH"), 1200);
     nnViewGlue gphy(nullptr);
-    bool res = false; 
-    try {
+    bool res = false;
+    try
+    {
         res = gphy.readConfiguration(&node);
     }
     catch (...) {}

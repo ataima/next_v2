@@ -109,24 +109,32 @@ public:
 };
 
 template < class T> class nnAbstractParam
- :public IParam
+    :public IParam
 {
-  T _value;
+    T _value;
 public:
-  nnAbstractParam(T & v):_value(v){}
-  inline T value(void){return _value;}
-  inline void utf8(std::string & out) { std::stringstream s; s << _value; out = s.str();}
-  virtual ~nnAbstractParam() {}
+    nnAbstractParam(T & v):_value(v) {}
+    inline T value(void)
+    {
+        return _value;
+    }
+    inline void utf8(std::string & out)
+    {
+        std::stringstream s;
+        s << _value;
+        out = s.str();
+    }
+    virtual ~nnAbstractParam() {}
 };
 
 
 class nnAbstractParamList
-    :public IParam   
-    ,public std::vector<IParam *> 
-{    
-    
+    :public IParam
+    ,public std::vector<IParam *>
+{
+
 public:
-    nnAbstractParamList(){}
+    nnAbstractParamList() {}
     void add(IParam * p)
     {
         if (p)
@@ -134,7 +142,7 @@ public:
     }
     void utf8(std::string & out)
     {
-        std::stringstream s; 
+        std::stringstream s;
         for (auto & i : *this)
         {
             std::string o;
@@ -190,7 +198,7 @@ typedef enum tag_show_status
     show_scroller_vert,
     show_caption,
     show_capture,
-}show_status;
+} show_status;
 
 
 
@@ -293,10 +301,11 @@ typedef struct nn_tag_command_item
     unsigned char maskB;
     std::string   file;
     std::string   info;
-    nn_tag_command_item(){
-      maskR=maskG=maskB;
-      file=info="";
-      command=0;
+    nn_tag_command_item()
+    {
+        maskR=maskG=maskB;
+        file=info="";
+        command=0;
     }
 
 
@@ -562,7 +571,7 @@ public:
 };
 
 class IToolView
-        : public IComponent
+    : public IComponent
 {
 public:
     virtual bool readConfiguration(IXmlNode *node) = 0;
@@ -570,7 +579,7 @@ public:
     virtual bool loadImages(STRING & path)=0;
     virtual bool checkIntCommand(int command)=0;
     virtual void show(nnPoint & pos)=0;
-    virtual void setFont(IFontManager *_font) = 0;    
+    virtual void setFont(IFontManager *_font) = 0;
     virtual ~IToolView() {}
 };
 
@@ -583,7 +592,7 @@ public:
     virtual void draw(bmpImage & image,IViewGlue * glue)=0;
     virtual bool handlerMouseMove(nnPoint & logPoint) = 0;
     virtual bool handlerMouseButtonDown(nnPoint &logPoint,
-                           show_status & status) = 0;
+                                        show_status & status) = 0;
     virtual bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint & logPoint)=0;
     virtual void hide(void)=0;
     virtual void show(void)=0;
@@ -611,11 +620,11 @@ public:
     virtual void setCommand(int c, unsigned int image,nnPoint & pos) = 0;
     virtual void draw(bmpImage & image, IViewGlue * glue) = 0;
     virtual bool handlerMouseMove(nnPoint &phyPoint,
-        show_status & status, IExtHandler *hook) = 0;
+                                  show_status & status, IExtHandler *hook) = 0;
     virtual bool handlerMouseButtonDown(nnPoint &phyPoint,
-        show_status & status,IExtHandler *hook) = 0;
+                                        show_status & status,IExtHandler *hook) = 0;
     virtual void setFont(IFontManager *font) = 0;
-    virtual ~ICapture(){};
+    virtual ~ICapture() {};
 };
 
 
@@ -627,7 +636,7 @@ public:
     virtual void draw(bmpImage & image, IViewGlue * glue)=0;
     virtual void hide(void) = 0;
     virtual void show(void) = 0;
-    virtual ~IMoreInfo(){}
+    virtual ~IMoreInfo() {}
 
 };
 
@@ -649,10 +658,10 @@ public:
 
 typedef enum tag_scroller_mode
 {
-mode_scroller_unknow,
-mode_scroller_horz= 100,
-mode_scroller_vert = 200
-}scrollerMode;
+    mode_scroller_unknow,
+    mode_scroller_horz= 100,
+    mode_scroller_vert = 200
+} scrollerMode;
 
 
 
@@ -674,7 +683,7 @@ class ICaption
 {
 public:
     virtual void setTitle(XCHAR *_name)=0;
-    virtual void setArea(nnPoint & phy) = 0; 
+    virtual void setArea(nnPoint & phy) = 0;
     virtual void setFont(IFontManager *_font) = 0;
     virtual ~ICaption() {}
 };
@@ -732,7 +741,7 @@ public:
     virtual IManager * getManager(void) = 0;
     virtual IFontList * getFont(void) = 0;
     virtual IViewGlue * getView(void) = 0;
-    virtual IImageManager * getImage(void) = 0;    
+    virtual IImageManager * getImage(void) = 0;
     virtual IExtHandler * getHandler(void) = 0;
     virtual void clean(void) = 0;
     virtual bool createObjects(IConfig *configuration,STRING & conf_file_name,STRING & path_name) = 0;

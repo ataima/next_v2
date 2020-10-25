@@ -32,11 +32,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 struct lessHashKey : public std::binary_function<hashkey ,hashkey  , bool>
-  {
+{
     bool
     operator()(const hashkey & a, const hashkey & b) const
-    { return a.v12 < b.v12; }
-  };
+    {
+        return a.v12 < b.v12;
+    }
+};
 
 typedef std::map<hashkey, InnObj *,lessHashKey> hashObjTable;
 
@@ -47,7 +49,7 @@ typedef enum tag_action_type
     addObjAction = 1,
     removeObjAction,
     outObjAction,
-}eAction;
+} eAction;
 
 
 typedef struct tag_action
@@ -76,8 +78,14 @@ public:
     bool setHost(IManager *_manager);
     bool undo(void);
     bool redo(void);
-    inline vectorUR & getUndoObjs(void) { return undoObjs; }
-    inline vectorUR & getRedoObjs(void) { return redoObjs; }
+    inline vectorUR & getUndoObjs(void)
+    {
+        return undoObjs;
+    }
+    inline vectorUR & getRedoObjs(void)
+    {
+        return redoObjs;
+    }
     void record(undo_redo_unit u);
 private:
     void clearUndoObjs(void);
@@ -111,12 +119,20 @@ public:
     bool removeAll(void);
     bool moveObj(nnPoint from, nnPoint to);
     bool swapObj(nnPoint from, nnPoint to);
-    inline int getWidth(void) { return v_width; }
-    inline int getHeight(void) { return v_height; }
+    inline int getWidth(void)
+    {
+        return v_width;
+    }
+    inline int getHeight(void)
+    {
+        return v_height;
+    }
     nnPoint getStartPoint(void);
     nnPoint getStopPoint(void);
     inline nnPoint getSchema(void) // 4:4 -> 0..3:0..3
-            { return nnPoint(v_width, v_height); }
+    {
+        return nnPoint(v_width, v_height);
+    }
     bool save(const STRING & name);
     bool load(const STRING & name);
     bool undo(void);
@@ -126,13 +142,21 @@ public:
     bool removeRow(int y_pos);
     bool removeCol(int x_pos);
     bool removeEmptyCol(void);
-    inline vectorUR & getUndoObjs(void) { return managerUR.getUndoObjs(); }
-    inline vectorUR & geRedoObjs(void) { return managerUR.getRedoObjs(); }
+    inline vectorUR & getUndoObjs(void)
+    {
+        return managerUR.getUndoObjs();
+    }
+    inline vectorUR & geRedoObjs(void)
+    {
+        return managerUR.getRedoObjs();
+    }
     bool ResizeHeight(int h);
     bool ResizeWidth(int w);
     bool Resize(int w, int h);
     inline bool revIndexes(hashkey & key, int & x, int & y)
-                { return revHashKey(key, x, y); }
+    {
+        return revHashKey(key, x, y);
+    }
     bool readConfiguration(IXmlNode *node);
 protected:
     bool genHashKey(int x, int y, hashkey & key);

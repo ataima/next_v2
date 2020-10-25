@@ -56,28 +56,36 @@ bool nnView::draw(void)
     bool res = false;
     int x, y;
     //nnPoint map = {0};
-    if (parent) {
+    if (parent)
+    {
         IManager *manager = parent->getManager();
         IViewGlue * glue = parent->getView();
-        if (glue != nullptr) {
+        if (glue != nullptr)
+        {
             //nnObjManager & mn = *dynamic_cast<nnObjManager*>(manager);
             nnPoint off = glue->getOffsetView();
             nnPoint map = glue->getMap();
             InnObj *obj;
             res = true;
             map += off;
-            for (y = off.y; y < map.y; y++) {
-                for (x = off.x; x < map.x; x++) {
+            for (y = off.y; y < map.y; y++)
+            {
+                for (x = off.x; x < map.x; x++)
+                {
                     obj = manager->getObj(x, y);
-                    if (obj) {
+                    if (obj)
+                    {
                         res &= drawObj(obj, x, y, glue);
-                    } else {
+                    }
+                    else
+                    {
                         res &= drawBkg(x, y, glue);
                     }
                 }
             }
         }
-        if (res) {
+        if (res)
+        {
             drawPower(glue);
         }
     }
@@ -88,16 +96,21 @@ bool nnView::readConfiguration(IXmlNode *node)
 {
     bool res = false;
     IXmlNode *t = node->find(X("THREADS"));
-    if (t) {
+    if (t)
+    {
         n_thread = t->getLong();
-        if (n_thread > 8) {
+        if (n_thread > 8)
+        {
             n_thread = 8;
         }
-        if (n_thread < 1) {
+        if (n_thread < 1)
+        {
             n_thread = 1;
         }
         res=true;
-    } else {
+    }
+    else
+    {
         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("PARALLELISM"));
         throw (pe);
     }
@@ -125,20 +138,26 @@ bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
     bool res = false;
     unsigned int nImage;
     ObjContext context = obj->getContext();
-    if (context == objWire) {
+    if (context == objWire)
+    {
         InnWire *wire = dynamic_cast<InnWire *>(obj);
         nImage = (unsigned int)wire->getWire();
-    } else {
+    }
+    else
+    {
         nnObjComponent * comp = dynamic_cast<nnObjComponent *>(obj);
 
         nImage = (unsigned int)comp->getCustomization();
     }
-    if (parent) {
+    if (parent)
+    {
         IImageManager * images = parent->getImage();
-        if (images) {
+        if (images)
+        {
             nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(), x, y);
             bmpImage *sprite = images->getImage(nImage);
-            if (sprite) {
+            if (sprite)
+            {
                 res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
             }
 
@@ -150,15 +169,18 @@ bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
 bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
 {
     bool res = false;
-    if (parent) {
+    if (parent)
+    {
         IImageManager * images = parent->getImage();
-        if (images != nullptr) {
+        if (images != nullptr)
+        {
             nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(),x, y);
             bmpImage *sprite=images->getImage(0);
 #if 0
             sprite->show(10, 10);
 #endif
-            if(sprite) {
+            if(sprite)
+            {
                 res = page.drawSprite(*sprite, (int)pos.x, (int)pos.y);
             }
 #if 0
@@ -176,16 +198,20 @@ bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
 
 void nnView::drawPower(IViewGlue * glue)
 {
-    if(glue) {
+    if(glue)
+    {
         nnPoint const_p = glue->getConstPhy();
         nnPoint map = glue->getMap();
         nnPoint offset = glue->getOffsetView();
         int W = map.x*const_p.x;
         int H = map.y * const_p.y;
-        if (H >= Height) {
+        if (H >= Height)
+        {
             page.frameRect(1, Height - 2, W - 1, Height - 1, 255, 0, 0, 0xffffffff);
             page.frameRect(1, Height - H, W - 1, Height - H - 1, 0, 0, 255, 0xffffffff);
-        } else {
+        }
+        else
+        {
             if(offset.y==0)
                 page.frameRect(1, Height - 2, W - 1, Height - 1, 255, 0, 0, 0xffffffff);
             if (map.y - offset.y <= Height / const_p.y)

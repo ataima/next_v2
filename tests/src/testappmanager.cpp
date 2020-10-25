@@ -58,7 +58,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define SRCERASE            (unsigned long)0x00440328 /* dest = source AND (NOT dest )   */
 #define NOTSRCCOPY          (unsigned long)0x00330008 /* dest = (NOT source)             */
 extern "C" int __stdcall StretchDIBits(void * hdc, int xDest, int yDest, int DestWidth, int DestHeight, int xSrc, int ySrc, int SrcWidth, int SrcHeight,
-    const void  * lpBits, LPBITMAPINFO lpbmi, unsigned int  iUsage, unsigned long  rop);
+                                       const void  * lpBits, LPBITMAPINFO lpbmi, unsigned int  iUsage, unsigned long  rop);
 extern"C" void *__stdcall  GetDC(void * hWnd);
 extern "C" int __stdcall  ReleaseDC(void * hWnd, void *DC);
 #endif
@@ -68,10 +68,10 @@ class test_app_manager
     : public caTester
 {
     CA_TEST_SUITE(test_app_manager)
-        CA_TEST(test_app_manager::test1, "verifica loadbitmap");
-       CA_TEST(test_app_manager::test2, "verifica scroll");
+    CA_TEST(test_app_manager::test1, "verifica loadbitmap");
+    CA_TEST(test_app_manager::test2, "verifica scroll");
     CA_TEST_SUITE_END()
-        void setUp(void) {}
+    void setUp(void) {}
     void tearDown(void) {}
     void draw(bmpImage * bmp);
     void test1(void);
@@ -87,9 +87,9 @@ void test_app_manager::draw(bmpImage * bmp)
 {
     void* dc = ::GetDC(NULL);
     ::StretchDIBits(dc, 0, 0,
-        bmp->getWidth(), bmp->getHeight(),
-        0, 0, bmp->getWidth(), bmp->getHeight(),
-        bmp->getBits(), bmp->getInfo(), 0, SRCCOPY);
+                    bmp->getWidth(), bmp->getHeight(),
+                    0, 0, bmp->getWidth(), bmp->getHeight(),
+                    bmp->getBits(), bmp->getInfo(), 0, SRCCOPY);
     ReleaseDC(NULL, dc);
 #else
 void test_app_manager::draw(bmpImage *)
@@ -143,9 +143,9 @@ void test_app_manager::test1(void)
     CA_ASSERT((int)size == height+3);
     unsigned int i,a;
     bmpImage &bdraw = childs->getView()->getDraw();
-    for( i=0;i<bdraw.getWidth();i+=100)
+    for( i=0; i<bdraw.getWidth(); i+=100)
         bdraw.line(i,0,i,bdraw.getHeight(),255,0,0,0xfefefefe);
-    for( a=0;a<bdraw.getHeight();a+=100)
+    for( a=0; a<bdraw.getHeight(); a+=100)
         bdraw.line(0,a,bdraw.getWidth(),a,0,0,255,0xfefefefe);
     bdraw.line(0,0,bdraw.getWidth(),bdraw.getHeight(),0,255,0,0xfefefefe);
     bdraw.line(0,0,200,bdraw.getHeight(),0,255,255,0xfefefefe);
@@ -185,7 +185,7 @@ void test_app_manager::test2(void)
     nnGenericCoil *u = new nnGenericCoil();
     res = mn->addCoil(10, u);
     CA_ASSERT(res == true);
-     ssize_t size=mn->size();
+    ssize_t size=mn->size();
     int height = mn->getHeight();
     CA_ASSERT((int)size == height);
     nnContactNC *v1 = new nnContactNC();
@@ -205,13 +205,13 @@ void test_app_manager::test2(void)
     res = childs->getView()->updateDraw();
     bdraw = childs->getView()->getDraw();
     bdraw.copyToFile(X("./bmp/test2_2app.bmp"));
-    CA_ASSERT(res == true);   
+    CA_ASSERT(res == true);
     draw(&bdraw);
     bdraw.detach();
     childs->getView()->handlerScrollVert(2);
     res = childs->getView()->updateDraw();
     bdraw = childs->getView()->getDraw();
     bdraw.copyToFile(X("./bmp/test2_3app.bmp"));
-    CA_ASSERT(res == true);    
+    CA_ASSERT(res == true);
     draw(&bdraw);
 }

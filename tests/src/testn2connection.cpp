@@ -36,19 +36,19 @@ class test_nnConnection
     : public caTester
 {
     CA_TEST_SUITE(test_nnConnection)
-        CA_TEST(test_nnConnection::test1, "verify vertical connection from component");
-        CA_TEST(test_nnConnection::test2, "verify vertical connection from component");
-        CA_TEST(test_nnConnection::test3, "verify vertical connection from component");
-        CA_TEST(test_nnConnection::test4, "verify vertical connection from component");
-        CA_TEST(test_nnConnection::test5, "verify vertical connection from component");
-        CA_TEST(test_nnConnection::test6, "verify vertical connection from component");
-        CA_TEST(test_nnConnection::test7, "verify horiz connection from component");
-        CA_TEST(test_nnConnection::test8, "verify horiz connection from component");
-        CA_TEST(test_nnConnection::test9, "verify horiz connection from component");
-        CA_TEST(test_nnConnection::test10, "verify horiz connection from component");
-        CA_TEST(test_nnConnection::test11, "verify horiz connection from component");
-        CA_TEST_SUITE_END()
-        void setUp(void) {}
+    CA_TEST(test_nnConnection::test1, "verify vertical connection from component");
+    CA_TEST(test_nnConnection::test2, "verify vertical connection from component");
+    CA_TEST(test_nnConnection::test3, "verify vertical connection from component");
+    CA_TEST(test_nnConnection::test4, "verify vertical connection from component");
+    CA_TEST(test_nnConnection::test5, "verify vertical connection from component");
+    CA_TEST(test_nnConnection::test6, "verify vertical connection from component");
+    CA_TEST(test_nnConnection::test7, "verify horiz connection from component");
+    CA_TEST(test_nnConnection::test8, "verify horiz connection from component");
+    CA_TEST(test_nnConnection::test9, "verify horiz connection from component");
+    CA_TEST(test_nnConnection::test10, "verify horiz connection from component");
+    CA_TEST(test_nnConnection::test11, "verify horiz connection from component");
+    CA_TEST_SUITE_END()
+    void setUp(void) {}
     void tearDown(void) {}
     void test1(void);
     void test2(void);
@@ -132,7 +132,7 @@ void test_nnConnection::test2(void)
     nnObjContact * contact = new nnObjContact();
     mn.addObj(5, 2, contact);
     mn.addObj(5, 10, coil);
-        nnPoint p1(5, 10),p2(5, 2);
+    nnPoint p1(5, 10),p2(5, 2);
     bool res = nnConnection::connectComponent(&mn,p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
@@ -189,7 +189,7 @@ void test_nnConnection::test3(void)
     mn.addObj(5, 10, coil);
     nnObjWire *wire = new nnObjWire(eWire::wireAngleUpLeft);
     mn.addObj(5, 3, wire);
-        nnPoint p1(5, 2),p2(5, 10);
+    nnPoint p1(5, 2),p2(5, 10);
     bool res = nnConnection::connectComponent(&mn, p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
@@ -247,7 +247,7 @@ void test_nnConnection::test4(void)
     mn.addObj(5, 10, coil);
     nnObjWire *wire = new nnObjWire(eWire::wireAngleUpRight);
     mn.addObj(5, 3, wire);
-        nnPoint p1(5, 2),p2(5, 10);
+    nnPoint p1(5, 2),p2(5, 10);
     bool res = nnConnection::connectComponent(&mn, p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
@@ -305,7 +305,7 @@ void test_nnConnection::test5(void)
     mn.addObj(5, 10, coil);
     nnObjWire *wire = new nnObjWire(eWire::wireTHorizUp);
     mn.addObj(5, 3, wire);
-        nnPoint p1(5, 2),p2(5, 10);
+    nnPoint p1(5, 2),p2(5, 10);
     bool res = nnConnection::connectComponent(&mn, p1,p2);
     CA_ASSERT(res == true);
     InnObj *w = mn.getObj(5, 3);
@@ -363,8 +363,9 @@ void test_nnConnection::test6(void)
     mn.addObj(5, 10, coil);
     nnObjWire *wire = new nnObjWire(eWire::wireAngleDownLeft);
     mn.addObj(5, 9, wire);
-        nnPoint p1(5, 2),p2(5, 10);
-    try {
+    nnPoint p1(5, 2),p2(5, 10);
+    try
+    {
 
         res = nnConnection::connectComponent(&mn, p1,p2);
         CA_ASSERT(res == false);
@@ -485,7 +486,7 @@ void test_nnConnection::test7(void)
     CA_ASSERT(dynamic_cast<nnObjWire*>(w)->getConnections().front() == 3);
 
     //std::wcout << w->toString() << std::endl;
-    
+
     w = mn.getObj(5, 6);
     CA_ASSERT(w != nullptr);
     CA_ASSERT(w->isComponent() == false);

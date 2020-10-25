@@ -11,7 +11,7 @@
 typedef std::map<int ,ICommander *> commanderList ;
 
 class nnToolView
-        :public IToolView
+    :public IToolView
 {
     nnPoint phyPos;
     commanderList commands;
@@ -25,13 +25,22 @@ public:
     bool handlerRequestCommand( nnPoint & pos,int & command);
     bool handlerMouseMove( nnPoint & pos,show_status & status,IExtHandler *hook);
     bool handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook);
-    inline ICommander *getActiveCommander(void){return active;}
+    inline ICommander *getActiveCommander(void)
+    {
+        return active;
+    }
     bool loadImages(STRING  &path);
     bool checkIntCommand(int command);
-    inline void setFont(IFontManager *_font) { font = _font; }
-    inline void show(nnPoint & p){ phyPos=p;}
-    inline void show(void){}
-    inline void addImage(int , bmpImage * ){}
+    inline void setFont(IFontManager *_font)
+    {
+        font = _font;
+    }
+    inline void show(nnPoint & p)
+    {
+        phyPos=p;
+    }
+    inline void show(void) {}
+    inline void addImage(int , bmpImage * ) {}
     void hide(void);
 
 };

@@ -183,7 +183,7 @@ class wireConnetComponentException
 {
 public:
     explicit wireConnetComponentException() throw()
-        :n2exception("wireConnetComponentException"){}
+        :n2exception("wireConnetComponentException") {}
 
 };
 
@@ -203,7 +203,8 @@ public:
     char fun[256];
     int line;
     explicit failMemoryException(const char *funct, int _line) throw()
-        :n2exception("failMemoryException"), line(_line) {
+        :n2exception("failMemoryException"), line(_line)
+    {
         size_t l = strlen(funct);
         size_t t = l < 255 ? l : 255;
         memcpy(fun, funct, t);
@@ -293,7 +294,7 @@ public:
 
 
 class xmlBadFormatException
-        :public n2exception
+    :public n2exception
 {
 public:
     explicit xmlBadFormatException(void) throw()

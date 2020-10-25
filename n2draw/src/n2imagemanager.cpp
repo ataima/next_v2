@@ -89,145 +89,197 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
     long offset;
     STRING filename;
     IXmlNode *conf = node->find(X("IMAGES"));
-    if (conf) {
+    if (conf)
+    {
         IXmlNode *xpath = conf->find(X("PATH"));
-        if (xpath) {
+        if (xpath)
+        {
             STRING v= xpath->getValue();
             path+=v;
             path+=X("/");
         }
         //////////////////
         IXmlNode *internal = conf->find(X("INTERNAL"));
-        if (internal) {
+        if (internal)
+        {
             IXmlNode *t = internal->find(X("OBJ"));
-            if (t) {
-                do {
+            if (t)
+            {
+                do
+                {
                     filename.clear();
                     offset = -1;
                     IXmlNode *e = t->find(X("VALUE"));
-                    if (e) {
+                    if (e)
+                    {
                         offset = internalStringToValue(e->getValue());
                     }
                     e = t->find(X("FILE"));
-                    if (e) {
+                    if (e)
+                    {
                         filename = e->getValue();
                     }
-                    if (offset >= 0 && !filename.empty()) {
+                    if (offset >= 0 && !filename.empty())
+                    {
                         if (availObj.find(offset) == availObj.end())
                             availObj[offset] = filename;
-                        else {
+                        else
+                        {
                             imagesConfigurationAlreadyLoadException *pe = new imagesConfigurationAlreadyLoadException(offset);
                             throw (pe);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         imagesConfigurationBadFormatException *pe = new imagesConfigurationBadFormatException();
                         throw (pe);
                     }
-                } while ((t = t->getNext()) != nullptr);
+                }
+                while ((t = t->getNext()) != nullptr);
             }
-        } else {
+        }
+        else
+        {
             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("INTERNAL"));
             throw (pe);
         }
 
         //////////////////
         IXmlNode *wire = conf->find(X("WIRE"));
-        if (wire) {
+        if (wire)
+        {
             IXmlNode *t = wire->find(X("OBJ"));
-            if (t) {
-                do {
+            if (t)
+            {
+                do
+                {
                     filename.clear();
                     offset = -1;
                     IXmlNode *e = t->find(X("VALUE"));
-                    if (e) {
+                    if (e)
+                    {
                         offset = nnObjWire::wireStringToEnum(e->getValue());
                     }
                     e = t->find(X("FILE"));
-                    if (e) {
+                    if (e)
+                    {
                         filename = e->getValue();
                     }
-                    if (offset >= 0 && !filename.empty()) {
+                    if (offset >= 0 && !filename.empty())
+                    {
                         if (availObj.find(offset)== availObj.end())
                             availObj[offset] = filename;
-                        else {
+                        else
+                        {
                             imagesConfigurationAlreadyLoadException *pe = new imagesConfigurationAlreadyLoadException(offset);
                             throw (pe);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         imagesConfigurationBadFormatException *pe=new imagesConfigurationBadFormatException();
                         throw (pe);
                     }
-                } while ((t = t->getNext()) != nullptr);
+                }
+                while ((t = t->getNext()) != nullptr);
             }
-        } else {
+        }
+        else
+        {
             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("WIRE"));
             throw (pe);
         }
         IXmlNode *contact = conf->find(X("CONTACT"));
-        if (contact) {
+        if (contact)
+        {
             IXmlNode *t = contact->find(X("OBJ"));
-            if (t) {
-                do {
+            if (t)
+            {
+                do
+                {
                     filename.clear();
                     offset = -1;
                     IXmlNode *e = t->find(X("VALUE"));
-                    if (e) {
+                    if (e)
+                    {
                         offset = nnObjComponent::getCustomizationFromName(e->getValue());
                     }
                     e = t->find(X("FILE"));
-                    if (e) {
+                    if (e)
+                    {
                         filename = e->getValue();
                     }
-                    if (offset >0 && !filename.empty()) {
+                    if (offset >0 && !filename.empty())
+                    {
                         if (availObj.find(offset) == availObj.end())
                             availObj[offset] = filename;
-                        else {
+                        else
+                        {
                             imagesConfigurationAlreadyLoadException *pe = new imagesConfigurationAlreadyLoadException(offset);
                             throw (pe);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         imagesConfigurationBadFormatException *pe = new imagesConfigurationBadFormatException();
                         throw (pe);
                     }
-                } while ((t = t->getNext()) != nullptr);
+                }
+                while ((t = t->getNext()) != nullptr);
             }
-        } else {
+        }
+        else
+        {
             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("CONTACT"));
             throw (pe);
         }
         IXmlNode *coil = conf->find(X("COIL"));
-        if (coil) {
+        if (coil)
+        {
             IXmlNode *t = coil->find(X("OBJ"));
-            if (t) {
-                do {
+            if (t)
+            {
+                do
+                {
                     filename.clear();
                     offset = -1;
                     IXmlNode *e = t->find(X("VALUE"));
-                    if (e) {
+                    if (e)
+                    {
                         offset = nnObjComponent::getCustomizationFromName(e->getValue());
                     }
                     e = t->find(X("FILE"));
-                    if (e) {
+                    if (e)
+                    {
                         filename = e->getValue();
                     }
-                    if (offset > 0 && !filename.empty()) {
+                    if (offset > 0 && !filename.empty())
+                    {
                         if (availObj.find(offset) == availObj.end())
                             availObj[offset] = filename;
-                        else {
+                        else
+                        {
                             imagesConfigurationAlreadyLoadException *pe = new imagesConfigurationAlreadyLoadException(offset);
                             throw (pe);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         imagesConfigurationBadFormatException *pe = new imagesConfigurationBadFormatException();
                         throw (pe);
                     }
-                } while ((t = t->getNext()) != nullptr);
+                }
+                while ((t = t->getNext()) != nullptr);
             }
-        } else {
+        }
+        else
+        {
             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("COIL"));
             throw (pe);
         }
-    } else {
+    }
+    else
+    {
         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("IMAGES"));
         throw (pe);
     }
@@ -238,18 +290,21 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
 bool nnImageManager::loadImages(void)
 {
     bool res = false;
-    if (availObj.size() > 0) {
+    if (availObj.size() > 0)
+    {
         STRING filenameabs;
         objImageList::iterator it = availObj.begin();
         objImageList::iterator _end = availObj.end();
-        while (it != _end) {
+        while (it != _end)
+        {
             const unsigned char *lpbmp=nullptr;
             size_t sizebmp=0;
             bmpImage image;
             filenameabs = path;
             filenameabs += it->second;
             res=nnResource::Get(filenameabs.c_str(),&lpbmp,&sizebmp);
-            if(res==false) {
+            if(res==false)
+            {
                 image.clone((LPBITMAPFILEHEADER)(lpbmp));
                 if (image.getBitsPerPixel() < 32)
                     image.convertTo32Bits();
@@ -258,14 +313,18 @@ bool nnImageManager::loadImages(void)
 #endif
                 //TO DO STRECT TO FIT
                 allImages.Add(it->first,image);
-            } else {
+            }
+            else
+            {
                 imagesConfigurationUnknowFileException *pe=new imagesConfigurationUnknowFileException(filenameabs);
                 throw (pe);
             }
             it++;
         }
         res = true;
-    } else {
+    }
+    else
+    {
         imagesConfigurationListEmptyException *pe= new imagesConfigurationListEmptyException();
         throw (pe);
     }
@@ -275,11 +334,14 @@ bool nnImageManager::loadImages(void)
 bool nnImageManager::loadImages(const listCommandItem * items)
 {
     bool res = false;
-    if(items!=nullptr ) {
+    if(items!=nullptr )
+    {
         availObj.clear();
         size_t i,s=items->size();
-        if(s) {
-            for(i=0; i<s; i++) {
+        if(s)
+        {
+            for(i=0; i<s; i++)
+            {
                 commandItem * it= items->at(i);
                 availObj[it->command]=it->file;
             }
@@ -299,9 +361,11 @@ bmpImage * nnImageManager::getImage(const XCHAR * name)
 bmpImage * nnImageManager:: getImage(int id)
 {
     bmpImage *res=nullptr;
-    if (allImages.size()>0) {
+    if (allImages.size()>0)
+    {
         listImage::const_iterator it = allImages.find(id);
-        if (it != allImages.end()) {
+        if (it != allImages.end())
+        {
             res = it->second;
         }
     }

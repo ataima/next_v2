@@ -39,13 +39,16 @@ class  nnObj
 protected:
     ObjContext v_context;
 public:
-    nnObj(ObjContext c) {
+    nnObj(ObjContext c)
+    {
         v_context = c;
     }
-    inline ObjContext getContext(void) {
+    inline ObjContext getContext(void)
+    {
         return v_context;
     }
-    inline void setContext(ObjContext & c) {
+    inline void setContext(ObjContext & c)
+    {
         v_context = c;
     }
     const STRING toString(void) const;
@@ -62,19 +65,24 @@ protected:
     int v_Ypos;
 public:
     nnObjPos(ObjContext c) :nnObj(c), v_Xpos(0), v_Ypos(0) { }
-    inline  int getXpos(void) {
+    inline  int getXpos(void)
+    {
         return v_Xpos;
     }
-    inline  int getYpos(void) {
+    inline  int getYpos(void)
+    {
         return v_Ypos;
     }
-    inline  void setXpos(int pX) {
+    inline  void setXpos(int pX)
+    {
         v_Xpos = pX;
     }
-    inline  void setYpos(int pY) {
+    inline  void setYpos(int pY)
+    {
         v_Ypos = pY;
     }
-    inline  void setPos(int pX, int pY) {
+    inline  void setPos(int pX, int pY)
+    {
         v_Xpos = pX;
         v_Ypos = pY;
     }
@@ -133,23 +141,31 @@ protected:
     static int uid_num;
 
 public:
-    nnObjConn(ObjContext c) :nnObjPos(c) {v_num.push_back(0);}
-    inline eConnections & getConnections(void) {
+    nnObjConn(ObjContext c) :nnObjPos(c)
+    {
+        v_num.push_back(0);
+    }
+    inline eConnections & getConnections(void)
+    {
         return v_num;
     }
-    virtual inline void setConnections(int n) {
+    virtual inline void setConnections(int n)
+    {
         v_num.push_back(n);
     }
     const  STRING toString(void) const;
     virtual void save(IXmlNode *root);
     virtual void load(IXmlNode *root);
-    static void resetUI(void) {
+    static void resetUI(void)
+    {
         uid_num = 2;
     }
-    static int getUI(void) {
+    static int getUI(void)
+    {
         return ++uid_num;
     }
-    static void setUI(long u) {
+    static void setUI(long u)
+    {
         uid_num = u;
     }
     bool powerConnect(int num);
@@ -168,16 +184,19 @@ protected:
 public:
     nnObjWire(eWire c) :nnObjConn(ObjContext::objWire)
         , v_wire(c) {}
-    inline eWire getWire(void) {
+    inline eWire getWire(void)
+    {
         return v_wire;
     }
-    inline virtual void setWire(eWire c) {
+    inline virtual void setWire(eWire c)
+    {
         v_wire = c;
     }
     const  STRING toString(void) const;
     virtual void save(IXmlNode *root);
     virtual void load(IXmlNode *root);
-    inline bool isComponent(void) {
+    inline bool isComponent(void)
+    {
         return false;
     }
     bool connect(InnObj * b);
@@ -207,14 +226,16 @@ protected:
     custom_obj v_spec;
 public:
     nnObjComponent(ObjContext c) : nnObjConn(c) {}
-    inline bool isComponent(void) {
+    inline bool isComponent(void)
+    {
         return true;
     }
     bool connect(InnObj *b);
     bool disconnect(InnObj *b);
     bool connectFromUp(int b);
     bool connectFromDown(int b);
-    inline custom_obj getCustomization(void) {
+    inline custom_obj getCustomization(void)
+    {
         return v_spec;
     }
     static custom_obj getCustomizationFromName(const XCHAR * s);
@@ -230,23 +251,28 @@ class nnObjVCPU
     pMerlinoVCPU v_vcpu;
     eVCPUregister v_reg;
 public:
-    nnObjVCPU() :v_vcpu(nullptr) {
+    nnObjVCPU() :v_vcpu(nullptr)
+    {
         v_reg.clear();
     }
-    inline eVCPUregister &getVCPUregister(void) {
+    inline eVCPUregister &getVCPUregister(void)
+    {
         return  v_reg;
     }
-    inline void setVCPUregister(eVCPUregister & r) {
+    inline void setVCPUregister(eVCPUregister & r)
+    {
         v_reg.clear();
         v_reg = r;
     }
     const STRING toString(void) const;
     void save(IXmlNode *root);
     void load(IXmlNode *root);
-    virtual void setBaseVCPU(pMerlinoVCPU _vcpu) {
+    virtual void setBaseVCPU(pMerlinoVCPU _vcpu)
+    {
         v_vcpu = _vcpu;
     };
-    virtual pMerlinoVCPU getBaseVCPU(void) {
+    virtual pMerlinoVCPU getBaseVCPU(void)
+    {
         return v_vcpu;
     }
 };
@@ -261,7 +287,8 @@ class  nnObjContact
 
 public:
     nnObjContact(custom_obj _v = custom_obj::contact_generic_unknow) :
-        nnObjComponent(ObjContext::objContact) {
+        nnObjComponent(ObjContext::objContact)
+    {
         v_spec = _v;
     }
     const  STRING toString(void) const;
@@ -294,7 +321,8 @@ class  nnObjCoil
 
 public:
     nnObjCoil(custom_obj _v = custom_obj::coil_generic_unknow) :
-        nnObjComponent(ObjContext::objCoil) {
+        nnObjComponent(ObjContext::objCoil)
+    {
         v_spec = _v;
     }
     const  STRING toString(void) const;

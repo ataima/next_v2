@@ -29,11 +29,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "n2interfaces.h"
 
-///simple xml for key<.key.....> - value pair 
+///simple xml for key<.key.....> - value pair
 /// warning : no replace symbols as standard xml ex < -> &lt
 /// warning : unsupport attrib key value
 class miniXmlNode
-        :public IXmlNode
+    :public IXmlNode
 {
     miniXmlNode * parent;	/// the father of this node
     miniXmlNode * child;	/// the child of this node
@@ -65,9 +65,9 @@ public:
     miniXmlNode * lastchild(void);
     /// this function return a node with name as requested
     miniXmlNode * findNextChild(const XCHAR *_name);
-    /// this function return a next node 
+    /// this function return a next node
     miniXmlNode * findNext(const XCHAR *_name);
-    /// this function return a specified node 
+    /// this function return a specified node
     miniXmlNode * find(const XCHAR *name, int idx);
     miniXmlNode * find(const XCHAR *_name);
     /// generate a XML file
@@ -81,10 +81,22 @@ public:
     /// assigne a requested value
     void setValue(XCHAR *_value);
     /// in line return parent
-    inline IXmlNode * getParent(void) { return parent; }
-    inline IXmlNode * getChild(void) { return child; }
-    inline IXmlNode * getNext(void) { return next; }
-    inline const XCHAR  * getName(void) { return name; }
+    inline IXmlNode * getParent(void)
+    {
+        return parent;
+    }
+    inline IXmlNode * getChild(void)
+    {
+        return child;
+    }
+    inline IXmlNode * getNext(void)
+    {
+        return next;
+    }
+    inline const XCHAR  * getName(void)
+    {
+        return name;
+    }
     friend bool swapNode(miniXmlNode *src, miniXmlNode* dst);
 private:
 };
@@ -108,7 +120,10 @@ protected:
     bool captureToken(STRING & token);
     bool captureValue(STRING & token);
     bool skipSpaces(void);
-    inline bool isEnd(void){ return ((size_t)(p_index) < (size_t)(p_end));}
+    inline bool isEnd(void)
+    {
+        return ((size_t)(p_index) < (size_t)(p_end));
+    }
 };
 
 
@@ -121,7 +136,10 @@ class xmlConfig
 public:
     bool readConfiguration(const XCHAR *name);
     bool writeConfiguration(const XCHAR *name);
-    inline  IXmlNode * getRoot(void) { return &conf; }
+    inline  IXmlNode * getRoot(void)
+    {
+        return &conf;
+    }
 };
 
 

@@ -38,7 +38,7 @@ private:
     IImageManager *images;
     commandItem * curItem;
     IFontManager *font;
-    unsigned int bmpHeight;  
+    unsigned int bmpHeight;
     unsigned int bmpWidth;
     nnPoint space;
     nnPoint maxExt;
@@ -50,7 +50,10 @@ public:
     bool handlerMouseMove( nnPoint & pos,IExtHandler *hook);
     bool loadImages(STRING & path);
     bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue);
-    inline void setFont(IFontManager *_font) { font = _font; }
+    inline void setFont(IFontManager *_font)
+    {
+        font = _font;
+    }
 private :
     bool drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue * glue);
     void getQuadrant(nnPoint & pos,nnPoint & res);

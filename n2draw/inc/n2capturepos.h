@@ -43,15 +43,18 @@ class nnCapturePos
     IFontManager * font;
 public:
     nnCapturePos(IChild *_parent, unsigned char _Rmask,
-        unsigned char _Gmask, unsigned char _Bmask);
+                 unsigned char _Gmask, unsigned char _Bmask);
     ~nnCapturePos();
     void setCommand(int c, unsigned int image, nnPoint & _startLogPos);
     void draw(bmpImage & image, IViewGlue * glue);
-    virtual bool handlerMouseMove(nnPoint &phyPoint, 
-                    show_status & status, IExtHandler *hook);
+    virtual bool handlerMouseMove(nnPoint &phyPoint,
+                                  show_status & status, IExtHandler *hook);
     virtual bool handlerMouseButtonDown(nnPoint &phyPoint,
-                    show_status & status, IExtHandler *hook);
-    inline void setFont(IFontManager *_font) { font = _font; }
+                                        show_status & status, IExtHandler *hook);
+    inline void setFont(IFontManager *_font)
+    {
+        font = _font;
+    }
 private:
     bool drawTips(bmpImage & bkg);
 };

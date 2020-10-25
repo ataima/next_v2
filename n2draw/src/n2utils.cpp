@@ -35,11 +35,13 @@ bool nnUtils::drawBottomRightTips(bmpImage & bkg, IFontManager & font, std::stri
     const int offsetY = 4;
     bmpImage rectbkg;
     res = rectbkg.create(bkg.getWidth(), sizeStr.y + 2 * offsetY, 32, 255);
-    if (res) {
+    if (res)
+    {
         bmpImage * strImage = font.getImage(info.c_str(), 0, 0, 255);
         res = rectbkg.drawMaskSprite(*strImage, offsetX, offsetY, 0, 0, 0);
         delete strImage;
-        if (res) {
+        if (res)
+        {
             rectbkg.frameRect(0, 0, rectbkg.getWidth() - 1, rectbkg.getHeight() - 1, 0, 0, 0, 0xffffffff);
             res = bkg.drawSprite(rectbkg, 0, 0);
         }
@@ -58,11 +60,13 @@ bool nnUtils::drawBottomLeftTips(bmpImage & bkg, IFontManager & font, std::strin
     bmpImage rectbkg;
     int t_width = bkg.getWidth();
     res = rectbkg.create(t_width, sizeStr.y + 2 * offsetY, 32, 255);
-    if (res) {
+    if (res)
+    {
         bmpImage * strImage = font.getImage(info.c_str(), 0, 0, 255);
         res = rectbkg.drawMaskSprite(*strImage, t_width-2*offsetX- sizeStr.x, offsetY, 0, 0, 0);
         delete strImage;
-        if (res) {
+        if (res)
+        {
             rectbkg.frameRect(0, 0, rectbkg.getWidth() - 1, rectbkg.getHeight() - 1, 0, 0, 0, 0xffffffff);
             res = bkg.drawSprite(rectbkg, 0, 0);
         }

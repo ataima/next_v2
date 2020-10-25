@@ -37,7 +37,7 @@ class nnAppManager final
     :public IAppManager
 {
 
-typedef std::map<int, IChild *> listChild;
+    typedef std::map<int, IChild *> listChild;
 
     listChild childs;
     IConfig *configuration;
@@ -46,7 +46,7 @@ typedef std::map<int, IChild *> listChild;
     static IAppManager *instance;
 public:
     nnAppManager();
-    ~nnAppManager();        
+    ~nnAppManager();
     bool closeAll(void);
     IChild *create(STRING & conf_file_name);
     IChild *activate(int v);

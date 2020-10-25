@@ -55,7 +55,8 @@ void nnCapturePos::setCommand(int c, unsigned int image,nnPoint & _startLogPos)
     command = c;
     off_image = image;
     startLogPos = _startLogPos;
-    if (parent) {
+    if (parent)
+    {
         IImageManager *images = parent->getImage();
         curImage = images->getImage(off_image);
     }
@@ -63,7 +64,8 @@ void nnCapturePos::setCommand(int c, unsigned int image,nnPoint & _startLogPos)
 
 void nnCapturePos::draw(bmpImage & image, IViewGlue * glue)
 {
-    if (glue) {
+    if (glue)
+    {
         nnPoint phy = glue->getCoordPhy(endLogPos);
         image.drawMaskSprite(*curImage, phy.x, image.getHeight()-curImage->getHeight() - phy.y,
                              Rmask,Gmask,Bmask
@@ -75,10 +77,12 @@ void nnCapturePos::draw(bmpImage & image, IViewGlue * glue)
 bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & /*status*/, IExtHandler *hook)
 {
     bool res = false;
-    if (parent) {
+    if (parent)
+    {
         IViewGlue *view = parent->getView();
         nnPoint current_pos = view->getCoordLog(phyPoint);
-        if (endLogPos != current_pos) {
+        if (endLogPos != current_pos)
+        {
             endLogPos = current_pos;
             if (hook)
                 hook->doHandler(action_redraw);
@@ -91,15 +95,19 @@ bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & /*status*/,
 bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
     bool res = false;
-    if (parent) {
+    if (parent)
+    {
         IViewGlue *view = parent->getView();
         nnPoint current_pos = view->getCoordLog(phyPoint);
-        if (endLogPos != current_pos) {
+        if (endLogPos != current_pos)
+        {
             endLogPos = current_pos;
         }
-        if (endLogPos.isValid()) {
+        if (endLogPos.isValid())
+        {
             status = show_none;
-            if (hook) {
+            if (hook)
+            {
                 auto *par1 = new nnAbstractParam<nnPoint>(startLogPos);
                 auto *par2 = new nnAbstractParam<nnPoint>(endLogPos);
                 auto *par3 = new nnAbstractParam<int>(command);
@@ -123,7 +131,8 @@ bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & statu
 bool nnCapturePos::drawTips(bmpImage & bkg)
 {
     bool res = false;
-    if (endLogPos.isValid() &&  font != nullptr) {
+    if (endLogPos.isValid() &&  font != nullptr)
+    {
         std::stringstream s;
         s << "ROW:" << endLogPos.x << "   -   COL:" << endLogPos.y;
         std::string l= s.str();

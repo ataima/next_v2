@@ -30,7 +30,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
 
-const char *nnCaption::msg[nnCaption::num_item] = {
+const char *nnCaption::msg[nnCaption::num_item] =
+{
     "Iconize current window",
     "Medialize current window",
     "Maximize current window",
@@ -61,7 +62,8 @@ nnCaption::~nnCaption()
 
 void nnCaption::setTitle(XCHAR *_name)
 {
-    if (_name) {
+    if (_name)
+    {
         UtoA m(_name);
         title = m.utf8();
     }
@@ -72,8 +74,10 @@ void nnCaption::setArea(nnPoint & phy)
 {
     hI = 0;
     wI = 0;
-    for (int i = 0; i < num_item; i++) {
-        if (image[i]) {
+    for (int i = 0; i < num_item; i++)
+    {
+        if (image[i])
+        {
             int h=image[i]->getHeight();
             if (h > hI)
                 hI = h;
@@ -89,25 +93,30 @@ void nnCaption::setArea(nnPoint & phy)
 bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
 {
     bool res = false;
-    if(visible) {
+    if(visible)
+    {
         bmpImage caption;
         int start = phyArea.width() - ((wI*num_item) * 3) / 2;
         int end = start - wI;
         //nnLOG2(int ,start,end);
-        if (end > 0) {
+        if (end > 0)
+        {
             std::string f,file = "meLa : ";
             if (parent)
                 parent->getCurrentFile(f);
             file += f;
             bmpImage *strImage = font->getImage(file.c_str(), 32, 32, 32);
-            if(strImage) {
+            if(strImage)
+            {
                 int offX,offY = 2;
                 int height1 = strImage->getHeight()+2*offY;
-                if (caption.create(end, height1, 32, 255)) {
+                if (caption.create(end, height1, 32, 255))
+                {
                     caption.drawMaskSprite(*strImage,height1, offY, 0, 0, 0);
                     delete strImage;
                     caption.border(0,0,0,0xffffffff);
-                    if(image[0]) {
+                    if(image[0])
+                    {
                         offY=(image[0]->getHeight()-height1)/2;
                         offX=2*offY;
                     }
@@ -117,7 +126,8 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
                 }
             }
         }
-        for (int i = 0; i < num_item-1; i++) {
+        for (int i = 0; i < num_item-1; i++)
+        {
             bkg.drawMaskSprite(*image[i], start, bkg.getHeight()-hI,255,255,255);
             btRect[i].set(start, 0, start + image[i]->getWidth(), image[i]->getHeight());
 #if 0
@@ -126,7 +136,8 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
 #endif
             start += ((wI * 3) / 2);
         }
-        if (curItem != -1) {
+        if (curItem != -1)
+        {
             drawTips(bkg);
         }
     }
@@ -135,7 +146,8 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
 
 void nnCaption::addImage(int pos, bmpImage * _image)
 {
-    if (pos < num_item && pos>=0) {
+    if (pos < num_item && pos>=0)
+    {
         image[pos] = _image;
     }
 }
@@ -143,10 +155,13 @@ void nnCaption::addImage(int pos, bmpImage * _image)
 bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
     bool res = false;
-    if(getStatus()==status_caption_none) {
-        if (phyArea.into(phyPoint)) {
+    if(getStatus()==status_caption_none)
+    {
+        if (phyArea.into(phyPoint))
+        {
             int t = itemFromPoint(phyPoint);
-            if (status == show_none) {
+            if (status == show_none)
+            {
                 curItem = t;
                 show();
                 status = show_caption;
@@ -155,16 +170,22 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                 phyArea.stop.y=hI;
                 //nnLOG(status_caption,"CURRENT STATUS:",getStatus());
                 //nnLOG(show_status,"VIEW SHOW STATUS:",status);
-            } else {
-                if (t != curItem) {
+            }
+            else
+            {
+                if (t != curItem)
+                {
                     curItem = t;
                     if (hook)
                         hook->doHandler(action_redraw);
                 }
             }
             res = true;
-        } else {
-            if (status == show_caption ) {
+        }
+        else
+        {
+            if (status == show_caption )
+            {
                 hide();
                 if (hook)
                     hook->doHandler(action_redraw);
@@ -175,11 +196,15 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                 res = true;
             }
         }
-    } else if (getStatus() == status_caption_move) {
-        if (hook) {
+    }
+    else if (getStatus() == status_caption_move)
+    {
+        if (hook)
+        {
             nnPoint diff =  phyPoint - lastPoint ;
             //nnLOG1(nnPoint, diff);
-            if (diff != 0) {
+            if (diff != 0)
+            {
                 auto *t = new nnAbstractParam<nnPoint>(diff);
                 hook->doHandler(action_move_window, t);
                 lastPoint = phyPoint-diff;
@@ -193,8 +218,10 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
 int  nnCaption::itemFromPoint(nnPoint phyPoint)
 {
     int i;
-    for (i = 0; i < num_item; i++) {
-        if (btRect[i].into(phyPoint)) {
+    for (i = 0; i < num_item; i++)
+    {
+        if (btRect[i].into(phyPoint))
+        {
             return i;
         }
     }
@@ -204,10 +231,13 @@ int  nnCaption::itemFromPoint(nnPoint phyPoint)
 bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status*/, IExtHandler * hook)
 {
     bool res = false;
-    if (getStatus() == status_caption_none) {
-        if (hook) {
+    if (getStatus() == status_caption_none)
+    {
+        if (hook)
+        {
             curItem = itemFromPoint(phyPoint);
-            switch (curItem) {
+            switch (curItem)
+            {
             case 4:
                 lastPoint = phyPoint;
                 setStatus(status_caption_move);
@@ -227,7 +257,9 @@ bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status
             }
             res = true;
         }
-    } else {
+    }
+    else
+    {
         setStatus(status_caption_none);
     }
     return res;
@@ -238,7 +270,8 @@ bool nnCaption::drawTips(bmpImage & bkg)
 {
 
     bool res = false;
-    if (curItem != -1 && font != nullptr) {
+    if (curItem != -1 && font != nullptr)
+    {
         std::string m(msg[curItem]);
         res = nnUtils::drawBottomLeftTips(bkg, *font, m);
     }

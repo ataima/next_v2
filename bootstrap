@@ -1,1 +1,1 @@
-rm -rf Debug* && ./do_debug.sh 64 linux  
+rm -rf Debug* && rm -rf dist  && ./debug.sh 64 linux  

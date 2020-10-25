@@ -43,8 +43,10 @@ nnToolView::nnToolView()
 
 nnToolView::~nnToolView()
 {
-    if(commands.size()) {
-        for(auto v: commands) {
+    if(commands.size())
+    {
+        for(auto v: commands)
+        {
             delete v.second;
         }
         commands.clear();
@@ -58,41 +60,56 @@ bool nnToolView::readConfiguration(IXmlNode *node)
     int numBars;
     bool res = false;
     IXmlNode *v,*t = node->find(X("TOOLBARS"));
-    if (t) {
+    if (t)
+    {
         numBars=t->getLong();
-    } else {
+    }
+    else
+    {
         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("TOOLBARS"));
         throw (pe);
     }
-    if(numBars>0) {
+    if(numBars>0)
+    {
         int i;
-        for(i=0; i<numBars; i++) {
+        for(i=0; i<numBars; i++)
+        {
             v=t->find(X("TOOLBARS_"),i);
-            if(v) {
+            if(v)
+            {
                 int id=0;
                 IXmlNode *h=v->find(X("ID"));
-                if (h) {
+                if (h)
+                {
                     id=h->getLong();
-                } else {
+                }
+                else
+                {
                     xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("ID"));
                     throw (pe);
                 }
                 h=v->find(X("COMMANDER"));
-                if(h) {
+                if(h)
+                {
                     nnCommander *command= new nnCommander();
                     MEMCHK(nnCommander,command);
-                    if(command) {
+                    if(command)
+                    {
                         res=command->readConfiguration(h);
                         if(!res)break;
                     }
                     commands[id]=command;
-                } else {
+                }
+                else
+                {
                     SSTREAM ssInfo;
                     ssInfo<<X("COMMANDER");
                     xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(ssInfo.str().c_str());
                     throw (pe);
                 }
-            } else {
+            }
+            else
+            {
                 SSTREAM ss;
                 ss<<X("TOOLBARS_")<<i;
                 xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(ss.str().c_str());
@@ -100,12 +117,16 @@ bool nnToolView::readConfiguration(IXmlNode *node)
             }
         }
     }
-    if(res==true) {
+    if(res==true)
+    {
         commanderList::iterator it=commands.find(0);
-        if(it!=commands.end()) {
+        if(it!=commands.end())
+        {
             active=it->second;
             active->setFont(font);
-        } else {
+        }
+        else
+        {
             active=nullptr;
         }
     }
@@ -115,7 +136,8 @@ bool nnToolView::readConfiguration(IXmlNode *node)
 bool nnToolView::draw(bmpImage & bkg, IViewGlue * glue)
 {
     bool res=false;
-    if(active) {
+    if(active)
+    {
         return active->draw(bkg, phyPos,glue);
     }
     return res;
@@ -124,7 +146,8 @@ bool nnToolView::draw(bmpImage & bkg, IViewGlue * glue)
 bool nnToolView::handlerRequestCommand( nnPoint & pos,int & command)
 {
     bool res=false;
-    if(active) {
+    if(active)
+    {
         res = active->checkRequestCommand(pos, command);
     }
     return res;
@@ -136,10 +159,12 @@ bool nnToolView::loadImages(STRING &path)
     bool res=false;
     commanderList::iterator it= commands.begin();
     commanderList::iterator _end= commands.end();
-    while(it!=_end) {
+    while(it!=_end)
+    {
         ICommander *temp=it->second;
         res=temp->loadImages(path);
-        if(!res) {
+        if(!res)
+        {
             break;
         }
         it++;
@@ -152,7 +177,8 @@ bool nnToolView::loadImages(STRING &path)
 bool nnToolView::handlerMouseMove( nnPoint & pos,show_status &  /*status*/,IExtHandler *hook)
 {
     bool res=false;
-    if(active) {
+    if(active)
+    {
         res = active->handlerMouseMove(pos, hook);
     }
     return res;
@@ -168,10 +194,13 @@ bool nnToolView::checkIntCommand(int command)
 {
     bool res=false;
     commanderList::iterator it=commands.find(command);
-    if(it!=commands.end()) {
+    if(it!=commands.end())
+    {
         active=it->second;
         active->setFont(font);
-    } else {
+    }
+    else
+    {
         active=nullptr;
     }
     res=(active!=nullptr);
@@ -184,23 +213,32 @@ bool nnToolView::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status,
     bool res = false;
     int command = 0;
     res = handlerRequestCommand(phyPoint, command);
-    if (res) {
-        if (checkIntCommand(command)) {
+    if (res)
+    {
+        if (checkIntCommand(command))
+        {
             //status = show_toolbar;
             show(phyPoint);
-            if (hook) {
+            if (hook)
+            {
                 hook->doHandler(action_redraw);
             }
             res = true;
-        } else {
+        }
+        else
+        {
             res = checkIntCommand(0);
-            if (hook) {
+            if (hook)
+            {
                 status = show_none;
-                if (command > action_host_command) {
+                if (command > action_host_command)
+                {
                     auto *t = new nnAbstractParam<int>(command);
                     hook->doHandler(action_host_command, t);
                     hook->doHandler(action_redraw);
-                } else {
+                }
+                else
+                {
                     hook->doHandler(command);
                 }
             }

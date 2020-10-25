@@ -38,7 +38,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 class nnViewGlue
     :public IViewGlue
 {
-   
+
     nnPoint const_Size;
     nnPoint phy_Size;
     nnPoint offset_Pos;
@@ -62,7 +62,10 @@ public:
     nnPoint getCoordPhy(const nnPoint & logPoint);
     nnPoint getMirrorCoordPhy(int height, int x, int y);
     nnPoint getCoordLog(const nnPoint & phyPoint);
-    inline  nnPoint getConstPhy(void) { return const_Size; }
+    inline  nnPoint getConstPhy(void)
+    {
+        return const_Size;
+    }
     bool readConfiguration(IXmlNode * node);
     bool getSelectAreaPhy(int & width, int & height);
     bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint);
@@ -87,15 +90,30 @@ public:
     bool unselect();
     bmpImage & getDraw(void);
     bool updateDraw(void);
-    inline nnPoint getOffsetView(void) { return offset_Pos; }
+    inline nnPoint getOffsetView(void)
+    {
+        return offset_Pos;
+    }
     nnPoint getMap(void);
     bool resize(int w, int h);
-    inline int getPageWidth(void) { return phy_Size.x / const_Size.x;  }
-    inline int getPageHeight(void){ return phy_Size.y / const_Size.y; }
+    inline int getPageWidth(void)
+    {
+        return phy_Size.x / const_Size.x;
+    }
+    inline int getPageHeight(void)
+    {
+        return phy_Size.y / const_Size.y;
+    }
     bool loadImages(STRING &_path);
-    inline  bool createDraw(void) { return view->createMainBitmap(phy_Size); }
+    inline  bool createDraw(void)
+    {
+        return view->createMainBitmap(phy_Size);
+    }
     bool Capture(int command,unsigned int image);
-    inline IFontManager *getCurrentFont(void) { return curFont; }
+    inline IFontManager *getCurrentFont(void)
+    {
+        return curFont;
+    }
 private:
     bool getVisibleArea(nnRect & area);
     bool moveSelectArea(const int vx, const int vy, bool &needScroll);
@@ -104,7 +122,7 @@ private:
     int  getScrollableHorzSize(void);
     int  getScrollableVertSize(void);
     IFontManager * getFontFromName(const char *fname);
- };
+};
 
 
 #endif

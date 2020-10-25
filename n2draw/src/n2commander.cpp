@@ -47,14 +47,16 @@ nnCommander::nnCommander()
 nnCommander::~nnCommander()
 {
     curItem=nullptr;
-    if(images!=nullptr) {
+    if(images!=nullptr)
+    {
         delete images;
         images=nullptr;
     }
     bmpHeight = 0;
     bmpWidth = 0;
     space.set(0, 0);
-    for (auto i : items){
+    for (auto i : items)
+    {
         delete i;
     }
 }
@@ -63,110 +65,152 @@ nnCommander::~nnCommander()
 bool nnCommander::readConfiguration(IXmlNode *conf)
 {
     bool res = false;
-    if(conf) {
+    if(conf)
+    {
         int numItem;
         maxExt.set(0, 0);
         IXmlNode *t=conf->find(X("SPACE_X"));
-        if(t) {
+        if(t)
+        {
             space.x=t->getLong();
-        } else {
+        }
+        else
+        {
             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("SPACE_X"));
             throw (pe);
         }
         t = conf->find(X("SPACE_Y"));
-        if (t) {
+        if (t)
+        {
             space.y = t->getLong();
-        } else {
+        }
+        else
+        {
             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("SPACE_Y"));
             throw (pe);
         }
         t = conf->find(X("ITEM_NUM"));
-        if (t) {
+        if (t)
+        {
             numItem = t->getLong();
-        } else {
+        }
+        else
+        {
             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("ITEM_NUM"));
             throw (pe);
         }
-        if(numItem>0) {
+        if(numItem>0)
+        {
             int i=0;
-            while(numItem>0) {
+            while(numItem>0)
+            {
                 t=conf->find(X("ITEM_"),i);
-                if(t) {
+                if(t)
+                {
                     commandItem *item = new commandItem();
                     IXmlNode *v = t->find(X("POS_X"));
-                    if(v) {
+                    if(v)
+                    {
                         int u;
                         item->pos.x=u=v->getLong();
                         if (u < 0)
                             u = -u;
                         if (u > maxExt.x)
                             maxExt.x = u;
-                    } else {
+                    }
+                    else
+                    {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("POS_X"));
                         throw (pe);
                     }
                     v = t->find(X("POS_Y"));
-                    if(v) {
+                    if(v)
+                    {
                         int u;
                         item->pos.y=u=v->getLong();
                         if (u < 0)
                             u = -u;
                         if (u > maxExt.y)
                             maxExt.y = u;
-                    } else {
+                    }
+                    else
+                    {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("POS_Y"));
                         throw (pe);
                     }
                     v = t->find(X("COMMAND"));
-                    if(v) {
+                    if(v)
+                    {
                         item->command=v->getLong();
-                    } else {
+                    }
+                    else
+                    {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("COMMAND"));
                         throw (pe);
                     }
                     v = t->find(X("MASK"));
-                    if(v) {
+                    if(v)
+                    {
                         IXmlNode *u = v->find(X("RED"));
-                        if(u) {
+                        if(u)
+                        {
                             item->maskR=u->getLong()&0xff;
-                        } else {
+                        }
+                        else
+                        {
                             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("RED"));
                             throw (pe);
                         }
                         u = v->find(X("GREEN"));
-                        if(u) {
+                        if(u)
+                        {
                             item->maskG=u->getLong()&0xff;
-                        } else {
+                        }
+                        else
+                        {
                             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("GREEN"));
                             throw (pe);
                         }
                         u = v->find(X("BLUE"));
-                        if(u) {
+                        if(u)
+                        {
                             item->maskB=u->getLong()&0xff;
-                        } else {
+                        }
+                        else
+                        {
                             xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("BLUE"));
                             throw (pe);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("MASK"));
                         throw (pe);
                     }
                     v = t->find(X("FILE"));
-                    if(v) {
+                    if(v)
+                    {
                         item->file=v->getValue();
-                    } else {
+                    }
+                    else
+                    {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("FILE"));
                         throw (pe);
                     }
                     v = t->find(X("INFO"));
-                    if(v) {
+                    if(v)
+                    {
                         item->info=v->getValue();
-                    } else {
+                    }
+                    else
+                    {
                         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("FILE"));
                         throw (pe);
                     }
                     items.push_back(item);
-                } else {
+                }
+                else
+                {
                     SSTREAM ss;
                     ss<<X("ITEM_")<<i;
                     xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(ss.str().c_str());
@@ -187,13 +231,17 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
     bool res=false;
     nnPoint pos = phyPoint;
     pos.y = bmpHeight - pos.y;
-    if(curItem==nullptr) {
+    if(curItem==nullptr)
+    {
         listCommandItem::iterator it=items.begin();
         listCommandItem::iterator end=items.end();
-        while(it!=end) {
-            if((*it)->rect.into(pos)) {
+        while(it!=end)
+        {
+            if((*it)->rect.into(pos))
+            {
                 curItem=(*it);
-                if (hook) {
+                if (hook)
+                {
                     STRING info =curItem->info;
                     auto *t= new nnAbstractParam<STRING>(info);
                     hook->doHandler(action_update_statusbars_info, t);
@@ -204,10 +252,14 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
             }
             it++;
         }
-    } else {
-        if(curItem->rect.into(pos)==false) {
+    }
+    else
+    {
+        if(curItem->rect.into(pos)==false)
+        {
             curItem=nullptr;
-            if (hook) {
+            if (hook)
+            {
                 std::string sm("...");
                 auto *t= new nnAbstractParam<std::string>(sm);
                 hook->doHandler(action_update_statusbars_info, t);
@@ -227,8 +279,10 @@ bool nnCommander::checkRequestCommand( nnPoint & pos,int & command)
     listCommandItem::iterator it=items.begin();
     listCommandItem::iterator end=items.end();
     //nnLOG(nnPoint, "current click mouse position :", pos);
-    while(it!=end) {
-        if((*it)->btRect.into(pos)) {
+    while(it!=end)
+    {
+        if((*it)->btRect.into(pos))
+        {
             command=(*it)->command;
             //nnLOG(int, "ITEM :", (*it)->command);
             res=true;
@@ -245,8 +299,10 @@ bool nnCommander::checkRequestCommand( nnPoint & pos,int & command)
 bool nnCommander::loadImages(STRING  &path)
 {
     bool res=false;
-    if(images) {
-        if(images->setPath(path)) {
+    if(images)
+    {
+        if(images->setPath(path))
+        {
             listCommandItem *co=&items;
             res=images->loadImages(co);
         }
@@ -267,7 +323,8 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
     bmpWidth = bkg.getWidth();
     nnPoint quadrant;
     getQuadrant(pos, quadrant);
-    while (it != _end) {
+    while (it != _end)
+    {
         commandItem *cur=*it;
         int spX = (images->getMaxWidth() + space.x);
         int spY = (images->getMaxHeight() + space.y);
@@ -289,7 +346,8 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
         it++;
     }
     //nnLOG1(commandItem *, curItem);
-    if (curItem != nullptr) {
+    if (curItem != nullptr)
+    {
         drawTips(bkg, pos, glue);
     }
     res = (it == _end);
@@ -301,7 +359,8 @@ bool nnCommander::drawTips(bmpImage & bkg, nnPoint & , IViewGlue *)
 {
 
     bool res = false;
-    if (curItem != nullptr && font != nullptr) {
+    if (curItem != nullptr && font != nullptr)
+    {
         UtoA toA(curItem->info);
         std::string s = toA.utf8();
         res = nnUtils::drawBottomLeftTips(bkg, *font, s );

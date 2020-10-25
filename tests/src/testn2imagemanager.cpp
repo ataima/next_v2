@@ -39,7 +39,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define SRCERASE            (unsigned long)0x00440328 /* dest = source AND (NOT dest )   */
 #define NOTSRCCOPY          (unsigned long)0x00330008 /* dest = (NOT source)             */
 extern "C" int __stdcall StretchDIBits(void * hdc, int xDest, int yDest, int DestWidth, int DestHeight, int xSrc, int ySrc, int SrcWidth, int SrcHeight,
-    const void  * lpBits, LPBITMAPINFO lpbmi, unsigned int  iUsage, unsigned long  rop);
+                                       const void  * lpBits, LPBITMAPINFO lpbmi, unsigned int  iUsage, unsigned long  rop);
 extern"C" void *__stdcall  GetDC(void * hWnd);
 extern "C" int __stdcall  ReleaseDC(void * hWnd, void *DC);
 #endif
@@ -51,7 +51,7 @@ class test_image_manager
     CA_TEST_SUITE(test_image_manager)
     CA_TEST(test_image_manager::test1, "verifica loadbitmap");
     CA_TEST_SUITE_END()
-        void setUp(void) {}
+    void setUp(void) {}
     void tearDown(void) {}
     void draw(bmpImage * bmp);
     void test1(void);
@@ -65,12 +65,13 @@ void test_image_manager::draw(bmpImage * bmp)
 {
     void* dc = ::GetDC(NULL);
     ::StretchDIBits(dc, 0, 0,
-        bmp->getWidth(), bmp->getHeight(),
-        0, 0, bmp->getWidth(), bmp->getHeight(),
-        bmp->getBits(), bmp->getInfo(), 0, SRCCOPY);
+                    bmp->getWidth(), bmp->getHeight(),
+                    0, 0, bmp->getWidth(), bmp->getHeight(),
+                    bmp->getBits(), bmp->getInfo(), 0, SRCCOPY);
     ReleaseDC(NULL, dc);
 #else
-void test_image_manager::draw(bmpImage * ){
+void test_image_manager::draw(bmpImage * )
+{
 #endif
 }
 

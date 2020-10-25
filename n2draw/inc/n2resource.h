@@ -29,10 +29,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 
 //return an array pointer of ptr of size size from filename dist/xxx/yyy
-class nnResource {
+class nnResource
+{
 public:
-static  int Get(const char *file,const unsigned char ** ptr,size_t *size);
-static  void Init(void);
+    static  int Get(const char *file,const unsigned char ** ptr,size_t *size);
+    static  void Init(void);
 };
 
 

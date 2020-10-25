@@ -19,7 +19,6 @@ file(GLOB SOURCES "./src/*.cpp")
 
 ADD_EXECUTABLE( ${CURRENT_PROJECT_NAME}  ${SOURCES})
 
-
 set(CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS}")
 
 

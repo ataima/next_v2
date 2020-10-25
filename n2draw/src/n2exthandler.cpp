@@ -38,10 +38,14 @@ nnExtHandler::nnExtHandler(extHandler & _hook, void *unkObj, bool _pulse)
 void nnExtHandler::send(extHandler hook, void *unknow, size_t Tparam, IParam *in )
 {
     //nnLOG1(size_t, Tparam);
-    if(hook && unknow ) {
-        try {
+    if(hook && unknow )
+    {
+        try
+        {
             hook(unknow,Tparam,in);
-        } catch(...) {
+        }
+        catch(...)
+        {
             extHandlerException *e = new extHandlerException();
             throw(e);
         }
@@ -53,14 +57,21 @@ void nnExtHandler::send(extHandler hook, void *unknow, size_t Tparam, IParam *in
 
 void nnExtHandler::doHandler(size_t Tparam, IParam *in)
 {
-    if (hook && unknow) {
-        if (pulse) {
+    if (hook && unknow)
+    {
+        if (pulse)
+        {
             std::thread th(&nnExtHandler::send, hook, unknow, Tparam, in);
             th.detach();
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 hook(unknow, Tparam, in);
-            } catch (...) {
+            }
+            catch (...)
+            {
                 extHandlerException *e = new extHandlerException();
                 throw(e);
             }

@@ -38,7 +38,7 @@ class test_n2ObjManager
     : public caTester
 {
     CA_TEST_SUITE(test_n2ObjManager)
-        CA_TEST(test_n2ObjManager::test1, "verifica set/get pos");
+    CA_TEST(test_n2ObjManager::test1, "verifica set/get pos");
     CA_TEST(test_n2ObjManager::test2, "verifica tostring");
     CA_TEST(test_n2ObjManager::test4, "verifica tostring");
     CA_TEST(test_n2ObjManager::test5, "verifica get direction1");
@@ -56,7 +56,7 @@ class test_n2ObjManager
     CA_TEST(test_n2ObjManager::test17, "verifica insert add Coil");
     CA_TEST(test_n2ObjManager::test18, "verifica insert add Coil");
     CA_TEST_SUITE_END()
-        void setUp(void) {}
+    void setUp(void) {}
     void tearDown(void) {}
     void test1(void);
     void test2(void);
@@ -461,7 +461,7 @@ void test_n2ObjManager::test15(void)
     CA_ASSERT(res == true);
     CA_ASSERT(mn.getHeight()==23);
     CA_ASSERT(mn.size()==1);
-    CA_ASSERT(mn.getObj(10, 15) == c);	
+    CA_ASSERT(mn.getObj(10, 15) == c);
     nnObjManager::iterator it = mn.begin();
     tag_check css;
     int x, y;

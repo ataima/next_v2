@@ -221,7 +221,7 @@ local ALL_FILES
 	ALL_FILES=$(recurs_dir "$1") 
 	create_c_function "$ALL_FILES" "$2"
 	RES=$?	
-        chmod -w "$2"
+       # chmod -w "$2"
 	exit $RES	
 }
 

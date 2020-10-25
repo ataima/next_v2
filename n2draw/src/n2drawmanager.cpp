@@ -51,14 +51,16 @@ bool nnObjManager::computeMask(void)
     nnObjWire::resetUI();
     int i = v_width & 0x0fffffff;
     mask_width = 1;
-    while (i > 0) {
+    while (i > 0)
+    {
         i >>= 1;
         mask_width <<= 1;
         mask_width |= 1;
     }
     i = v_height & 0x0fffffff;
     mask_height = 1;
-    while (i > 0) {
+    while (i > 0)
+    {
         i >>= 1;
         mask_height <<= 1;
         mask_height |= 1;
@@ -73,9 +75,11 @@ InnObj * nnObjManager::getObj(int x, int y)
     nnObj * res = nullptr;
     hashkey hkey;
     if (range(x, y))
-        if (genHashKey(x, y, hkey)) {
+        if (genHashKey(x, y, hkey))
+        {
             hashObjTable::iterator it = find(hkey);
-            if (it != end()) {
+            if (it != end())
+            {
                 res = dynamic_cast<nnObj *> (it->second);
             }
         }
@@ -87,9 +91,11 @@ bool nnObjManager::addObj(int x, int y, InnObj * obj)
     bool res = false;
     hashkey hkey;
     if (range(x, y) && obj != nullptr)
-        if (genHashKey(x, y, hkey)) {
+        if (genHashKey(x, y, hkey))
+        {
             hashObjTable::iterator it = find(hkey);
-            if (it == end()) {
+            if (it == end())
+            {
                 std::pair<hashkey, InnObj *> p(hkey, obj);
                 insert(p);
                 obj->setXpos(x);
@@ -107,11 +113,14 @@ bool nnObjManager::removeObj(int x, int y)
     bool res = false;
     hashkey hkey;
     if (range(x, y))
-        if (genHashKey(x, y, hkey)) {
+        if (genHashKey(x, y, hkey))
+        {
             hashObjTable::iterator it = find(hkey);
-            if (it != end()) {
+            if (it != end())
+            {
                 InnObj * obj = it->second;
-                if (obj != nullptr) {
+                if (obj != nullptr)
+                {
                     erase(it); // remove first break recursion
                     unlinkObj(x, y, obj);
                     undo_redo_unit u(eAction::addObjAction, x, y, obj);
@@ -129,11 +138,14 @@ InnObj * nnObjManager::outObj(int x, int y)
     InnObj * obj = nullptr;
     hashkey hkey;
     if (range(x, y))
-        if (genHashKey(x, y, hkey)) {
+        if (genHashKey(x, y, hkey))
+        {
             hashObjTable::iterator it = find(hkey);
-            if (it != end()) {
+            if (it != end())
+            {
                 obj = it->second;
-                if (obj != nullptr) {
+                if (obj != nullptr)
+                {
                     erase(it); // remove first break recursion
                     unlinkObj(x, y, obj);
                     undo_redo_unit u(eAction::outObjAction, x, y, obj);
@@ -147,30 +159,39 @@ InnObj * nnObjManager::outObj(int x, int y)
 bool nnObjManager::addCoil(int x, nnObjCoil *obj)
 {
     bool res = false;
-    if(obj!=nullptr) {
-        if (obj->getContext() == objCoil) {
-            if (getObj(x, v_height-1) == nullptr) {
+    if(obj!=nullptr)
+    {
+        if (obj->getContext() == objCoil)
+        {
+            if (getObj(x, v_height-1) == nullptr)
+            {
                 int i,fp;
                 // y pos is relative :
                 // coil pos = y-1, for first empty position to y-1 wire to connect
                 // find first empty cell
-                for (i = 0; i < v_height-1; i++) {
+                for (i = 0; i < v_height-1; i++)
+                {
                     InnObj *obj=getObj(x, i);
                     if (obj == nullptr)break;
                 }
-                for (; i < v_height-1; i++) {
+                for (; i < v_height-1; i++)
+                {
                     nnObjWire *wire = new nnObjWire(eWire::wireVertical);
                     res = addWire(x, i, wire);
                     if (!res)break;
                 }
-                if (res) {
+                if (res)
+                {
 
                     fp = v_height - 1;
                     hashkey hkey;
-                    if (range(x,fp) && obj != nullptr) {
-                        if (genHashKey(x, fp, hkey)) {
+                    if (range(x,fp) && obj != nullptr)
+                    {
+                        if (genHashKey(x, fp, hkey))
+                        {
                             hashObjTable::iterator it = find(hkey);
-                            if (it == end()) {
+                            if (it == end())
+                            {
                                 std::pair<hashkey, InnObj *> p(hkey, obj);
                                 insert(p);
                                 obj->setXpos(x);
@@ -191,12 +212,16 @@ bool nnObjManager::addCoil(int x, nnObjCoil *obj)
 bool nnObjManager::addWire(int x, int y, InnObj * obj)
 {
     bool res = false;
-    if (obj->getContext() == objWire) {
+    if (obj->getContext() == objWire)
+    {
         hashkey hkey;
-        if (rangeContact(x, y) && obj != nullptr) {
-            if (genHashKey(x, y, hkey)) {
+        if (rangeContact(x, y) && obj != nullptr)
+        {
+            if (genHashKey(x, y, hkey))
+            {
                 hashObjTable::iterator it = find(hkey);
-                if (it == end()) {
+                if (it == end())
+                {
                     std::pair<hashkey, InnObj *> p(hkey, obj);
                     insert(p);
                     obj->setXpos(x);
@@ -214,13 +239,18 @@ bool nnObjManager::addWire(int x, int y, InnObj * obj)
 bool nnObjManager::addContact(int x, int y, nnObjContact *obj)
 {
     bool res = false;
-    if(obj!=nullptr) {
-        if (obj->getContext() == objContact) {
+    if(obj!=nullptr)
+    {
+        if (obj->getContext() == objContact)
+        {
             hashkey hkey;
-            if (rangeContact(x, y) && obj != nullptr) {
-                if (genHashKey(x, y, hkey)) {
+            if (rangeContact(x, y) && obj != nullptr)
+            {
+                if (genHashKey(x, y, hkey))
+                {
                     hashObjTable::iterator it = find(hkey);
-                    if (it == end()) {
+                    if (it == end())
+                    {
                         std::pair<hashkey, InnObj *> p(hkey, obj);
                         insert(p);
                         obj->setXpos(x);
@@ -242,15 +272,18 @@ bool nnObjManager::replaceObj(int x, int y, InnObj * obj)
     bool res = false;
     hashkey hkey;
     if (range(x, y) && obj != nullptr)
-        if (genHashKey(x, y, hkey)) {
+        if (genHashKey(x, y, hkey))
+        {
             hashObjTable::iterator it = find(hkey);
-            if (it != end()) {
+            if (it != end())
+            {
                 undo_redo_unit u(eAction::addObjAction, x, y, it->second);
                 managerUR.record(u);
                 it->second = obj;
                 obj->setXpos(x);
                 obj->setYpos(y);
-                if (it->second->isComponent()) {
+                if (it->second->isComponent())
+                {
                     linkObj(x, y, obj);
                     undo_redo_unit v(eAction::removeObjAction, x, y, nullptr);
                     managerUR.record(v);
@@ -264,8 +297,10 @@ bool nnObjManager::replaceObj(int x, int y, InnObj * obj)
 bool nnObjManager::removeAll(void)
 {
     bool res = false;
-    if (size() > 0) {
-        for (auto n : *this) {
+    if (size() > 0)
+    {
+        for (auto n : *this)
+        {
             delete n.second;
         }
         res = true;
@@ -284,7 +319,8 @@ bool nnObjManager::save(const STRING & name)
 {
     bool res=false;
     int num_obj = 0;
-    if (!name.empty()) {
+    if (!name.empty())
+    {
 #ifdef __ANDROID__
         STRING newname="data:/"+name;
 #else
@@ -292,7 +328,8 @@ bool nnObjManager::save(const STRING & name)
 #endif
         UtoA toA(newname);
         FILE *out = fopen(toA.utf8(), "w+");
-        if (out != NULL) {
+        if (out != NULL)
+        {
             miniXmlNode root(X("next_v2"), (XCHAR *)X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"));
             root.add(X("Wire_UID"), nnObjConn::getUI());
             root.add(X("Width"), v_width);
@@ -300,7 +337,8 @@ bool nnObjManager::save(const STRING & name)
             root.add(X("Size"), (int)(size()) + 1);
             hashObjTable::iterator it = begin();
             hashObjTable::iterator _end = end();
-            while (it != _end) {
+            while (it != _end)
+            {
                 num_obj++;
                 IXmlNode *child = root.add(X("Obj_UID_"), num_obj, num_obj);
                 it->second->save(child);
@@ -319,39 +357,51 @@ bool nnObjManager::save(const STRING & name)
 bool nnObjManager::load(const STRING & name)
 {
     bool res=false;
-    if (!name.empty()) {
+    if (!name.empty())
+    {
         removeAll();
         miniXmlNode root;
         root.load(name.c_str(), &root);
         STRING name = root.getName();
         STRING value = root.getValue();
-        if (name == X("next_v2") && value == X("1.0.0.0 Copyright(c) 2015 Angelo Coppi")) {
+        if (name == X("next_v2") && value == X("1.0.0.0 Copyright(c) 2015 Angelo Coppi"))
+        {
             IXmlNode *t = root.find(X("Wire_UID"));
-            if (t != nullptr) {
+            if (t != nullptr)
+            {
                 nnObjConn::setUI(t->getLong());
             }
             t = root.find(X("Width"));
-            if (t != nullptr) {
+            if (t != nullptr)
+            {
                 v_width = t->getLong();
             }
             t = root.find(X("Height"));
-            if (t != nullptr) {
+            if (t != nullptr)
+            {
                 v_height = t->getLong();
             }
             computeMask();
             IXmlNode *size = root.find(X("Size"));
-            if (size != nullptr) {
+            if (size != nullptr)
+            {
                 int i, numObj = size->getLong();
-                for (i = 1; i < numObj; i++) {
+                for (i = 1; i < numObj; i++)
+                {
                     IXmlNode *child = root.find(X("Obj_UID_"), i);
-                    if (child != nullptr) {
-                        if (i == child->getLong()) {
+                    if (child != nullptr)
+                    {
+                        if (i == child->getLong())
+                        {
                             IXmlNode *spec = child->find(X("Custom"));
-                            if (spec != nullptr) {
+                            if (spec != nullptr)
+                            {
                                 IXmlNode *context = child->find(X("Context"));
-                                if (context != nullptr) {
+                                if (context != nullptr)
+                                {
                                     InnObj *obj = nnObjConn::getObjFromIds((custom_obj)spec->getLong(), (ObjContext)context->getLong());
-                                    if (obj != nullptr) {
+                                    if (obj != nullptr)
+                                    {
                                         obj->load(child);
                                         addObj(obj->getXpos(), obj->getYpos(), obj);
                                     }
@@ -401,80 +451,117 @@ bool nnObjManager::rangeContact(int x, int y)
 bool nnObjManager::linkObj(int x, int y, InnObj *obj)
 {
     bool res = false;
-    if (obj != nullptr) {
+    if (obj != nullptr)
+    {
         InnObj *neighbourUp = nullptr;
         InnObj *neighbourDw = nullptr;
-        if (y > 0) {
+        if (y > 0)
+        {
             neighbourUp = getObj(x, y - 1);
-        } else {
+        }
+        else
+        {
             obj->powerConnect(1);
         }
-        if (y + 1 < v_height) {
+        if (y + 1 < v_height)
+        {
             neighbourDw = getObj(x, y + 1);
-        } else {
+        }
+        else
+        {
             obj->powerConnect(2);
         }
 
         // VERT
-        if (obj->isComponent()) {
-            if (neighbourUp == nullptr && neighbourDw == nullptr) {
+        if (obj->isComponent())
+        {
+            if (neighbourUp == nullptr && neighbourDw == nullptr)
+            {
                 obj->setConnections(0);
-            } else {
-                if (neighbourUp != nullptr) {
+            }
+            else
+            {
+                if (neighbourUp != nullptr)
+                {
                     obj->connect(neighbourUp);
                     if(neighbourUp->isComponent()==false)
                         neighbourUp->connect(obj);
-                } else
+                }
+                else
                     obj->setConnections(0);
-                if (neighbourDw != nullptr) {
+                if (neighbourDw != nullptr)
+                {
                     obj->connect(neighbourDw);
                     if (neighbourDw->isComponent() == false)
                         neighbourDw->connect(obj);
-                } else
+                }
+                else
                     obj->setConnections(0);
             }
             res = true;
-        } else {
-            if (neighbourUp != nullptr && neighbourDw != nullptr) {
-                if (neighbourUp->isComponent() && !neighbourDw->isComponent()) {
+        }
+        else
+        {
+            if (neighbourUp != nullptr && neighbourDw != nullptr)
+            {
+                if (neighbourUp->isComponent() && !neighbourDw->isComponent())
+                {
                     res = obj->connect(neighbourDw);
                     if (res)
                         res = neighbourUp->connect(obj);
-                } else if (!neighbourUp->isComponent() && neighbourDw->isComponent()) {
+                }
+                else if (!neighbourUp->isComponent() && neighbourDw->isComponent())
+                {
                     res = obj->connect(neighbourUp);
                     if (res)
                         res = neighbourDw->connect(obj);
-                } else if (neighbourUp->isComponent() && neighbourDw->isComponent()) {
+                }
+                else if (neighbourUp->isComponent() && neighbourDw->isComponent())
+                {
                     obj->setConnections(nnObjConn::getUI());
                     res = neighbourUp->connect(obj);
                     if (res)
                         res = neighbourDw->connect(obj);
-                } else {
+                }
+                else
+                {
                     InnObj *w1 = dynamic_cast<InnObj *>(neighbourUp);
                     InnObj *w2 = dynamic_cast<InnObj *>(neighbourDw);
                     wireConnectionException *pe= new wireConnectionException(w1->getConnections(), w2->getConnections());
                     throw (pe);
                 }
-            } else if (neighbourUp != nullptr) {
-                if (neighbourUp->isComponent()) {
-                    if (obj->getConnections().empty()) {
+            }
+            else if (neighbourUp != nullptr)
+            {
+                if (neighbourUp->isComponent())
+                {
+                    if (obj->getConnections().empty())
+                    {
                         obj->setConnections(nnObjConn::getUI());
                     }
                     res = neighbourUp->connect(obj);
                     if (res)
                         res = obj->connect(neighbourUp);
-                } else {
+                }
+                else
+                {
                     obj->connect(neighbourUp);
                 }
-            } else if (neighbourDw != nullptr) {
-                if (neighbourDw->isComponent()) {
-                    if (obj->getConnections().empty()) {
+            }
+            else if (neighbourDw != nullptr)
+            {
+                if (neighbourDw->isComponent())
+                {
+                    if (obj->getConnections().empty())
+                    {
                         obj->setConnections(nnObjConn::getUI());
                     }
                     res = neighbourDw->connect(obj);
                     if (res)
                         res = obj->connect(neighbourDw);
-                } else {
+                }
+                else
+                {
                     obj->connect(neighbourDw);
                 }
             }
@@ -484,10 +571,12 @@ bool nnObjManager::linkObj(int x, int y, InnObj *obj)
             // check for horizzontal connection on wire
             InnObj *neighbourLeft = nullptr;
             InnObj *neighbourRight = nullptr;
-            if (x > 0) {
+            if (x > 0)
+            {
                 neighbourLeft = getObj(x - 1, y);
             }
-            if (x + 1 < v_width) {
+            if (x + 1 < v_width)
+            {
                 neighbourRight = getObj(x + 1, y);
             }
             if (neighbourLeft != nullptr && !neighbourLeft->isComponent())
@@ -506,39 +595,56 @@ bool nnObjManager::unlinkObj(int x, int y, InnObj *obj)
 {
     bool res = false;
     InnObj *neighbour = nullptr;
-    if (y > 0) {
+    if (y > 0)
+    {
         neighbour = getObj(x, y - 1);
-        if (neighbour != nullptr) {
-            if (neighbour->isComponent()) {
+        if (neighbour != nullptr)
+        {
+            if (neighbour->isComponent())
+            {
                 res=neighbour->disconnect(obj);
-            } else {
+            }
+            else
+            {
                 res=removeObj(x, y - 1);
             }
         }
     }
-    if (y + 1 < v_height) {
+    if (y + 1 < v_height)
+    {
         neighbour = getObj(x, y + 1);
-        if (neighbour != nullptr) {
-            if (neighbour->isComponent()) {
+        if (neighbour != nullptr)
+        {
+            if (neighbour->isComponent())
+            {
                 res=neighbour->disconnect(obj);
-            } else {
+            }
+            else
+            {
                 res=removeObj(x, y + 1);
             }
         }
     }
-    if (!obj->isComponent()) {
-        if (x > 0) {
+    if (!obj->isComponent())
+    {
+        if (x > 0)
+        {
             neighbour = getObj(x - 1, y);
-            if (neighbour != nullptr) {
-                if (!neighbour->isComponent()) {
+            if (neighbour != nullptr)
+            {
+                if (!neighbour->isComponent())
+                {
                     res=removeObj(x - 1, y);
                 }
             }
         }
-        if (x + 1 < v_width) {
+        if (x + 1 < v_width)
+        {
             neighbour = getObj(x + 1, y);
-            if (neighbour != nullptr) {
-                if (!neighbour->isComponent()) {
+            if (neighbour != nullptr)
+            {
+                if (!neighbour->isComponent())
+                {
                     res=removeObj(x + 1, y);
                 }
             }
@@ -555,7 +661,8 @@ bool nnObjManager::moveObj(nnPoint from, nnPoint to)
     bool res = false;
     InnObj *fromObj = getObj(from.x, from.y);
     InnObj *toObj = getObj(to.x, to.y);
-    if (toObj == nullptr && fromObj != nullptr && fromObj->isComponent()) {
+    if (toObj == nullptr && fromObj != nullptr && fromObj->isComponent())
+    {
         fromObj = outObj(from.x, from.y);
         res = addObj(to.x, to.y, fromObj);
     }
@@ -567,7 +674,8 @@ bool nnObjManager::swapObj(nnPoint from, nnPoint to)
     bool res = false;
     InnObj *fromObj = getObj(from.x, from.y);
     InnObj *toObj = getObj(to.x, to.y);
-    if (toObj != nullptr && fromObj != nullptr && toObj->isComponent() && fromObj->isComponent()) {
+    if (toObj != nullptr && fromObj != nullptr && toObj->isComponent() && fromObj->isComponent())
+    {
         fromObj = outObj(from.x, from.y);
         toObj = outObj(to.x, to.y);
         res = addObj(to.x, to.y, fromObj);
@@ -628,11 +736,13 @@ bool nnObjManager::insertRow(int y_pos)
     bool res = false;
     iterator it = begin();
     iterator _end = end();
-    while (it != _end) {
+    while (it != _end)
+    {
         int x, y;
         hashkey *key = (hashkey *)&it->first;
         revHashKey(*key, x, y);
-        if (y >= y_pos) {
+        if (y >= y_pos)
+        {
             y++;
             res = genHashKey(x, y, *key);
             if (!res)
@@ -640,7 +750,8 @@ bool nnObjManager::insertRow(int y_pos)
         }
         it++;
     }
-    if (res) {
+    if (res)
+    {
         v_height++;
     }
     return res;
@@ -651,11 +762,13 @@ bool nnObjManager::insertCol(int x_pos)
     bool res = false;
     iterator it = begin();
     iterator _end = end();
-    while (it != _end) {
+    while (it != _end)
+    {
         int x, y;
         hashkey *key = (hashkey *)&it->first;
         revHashKey(*key, x, y);
-        if (x >= x_pos) {
+        if (x >= x_pos)
+        {
             x++;
             res = genHashKey(x, y, *key);
             if (!res)
@@ -663,7 +776,8 @@ bool nnObjManager::insertCol(int x_pos)
         }
         it++;
     }
-    if (res) {
+    if (res)
+    {
         v_width++;
     }
     return res;
@@ -674,10 +788,13 @@ bool nnObjManager::removeRow(int y_pos)
 {
     bool res = false;
     int x;
-    for (x = 0; x < v_width; x++) {
+    for (x = 0; x < v_width; x++)
+    {
         InnObj *obj = getObj(x, y_pos);
-        if (obj != nullptr) {
-            if (obj->getContext() == objWire) {
+        if (obj != nullptr)
+        {
+            if (obj->getContext() == objWire)
+            {
                 InnWire *wire = dynamic_cast<InnWire *>(obj);
                 if (wire->getWire() == eWire::wireVertical)
                     continue;
@@ -685,24 +802,30 @@ bool nnObjManager::removeRow(int y_pos)
             break;
         }
     }
-    if (x == v_width) {
-        for (x = 0; x < v_width; x++) {
+    if (x == v_width)
+    {
+        for (x = 0; x < v_width; x++)
+        {
             InnObj *obj = getObj(x, y_pos);
-            if (obj != nullptr) {
+            if (obj != nullptr)
+            {
                 res = removeObj(x, y_pos);
                 if (!res)
                     break;
             }
         }
     }
-    if (x == v_width) {
+    if (x == v_width)
+    {
         iterator it = begin();
         iterator _end = end();
-        while (it != _end) {
+        while (it != _end)
+        {
             int x, y;
             hashkey *key = (hashkey *)&it->first;
             revHashKey(*key, x, y);
-            if (y <= y_pos) {
+            if (y <= y_pos)
+            {
                 y--;
                 res = genHashKey(x, y, *key);
                 if (!res)
@@ -718,10 +841,13 @@ bool nnObjManager::checkRemovableCol(int x_pos)
 {
     bool res = false;
     int y;
-    for (y = 0; y < v_height; y++) {
+    for (y = 0; y < v_height; y++)
+    {
         InnObj *obj = getObj(x_pos, y);
-        if (obj != nullptr) {
-            if (obj->getContext() == objWire) {
+        if (obj != nullptr)
+        {
+            if (obj->getContext() == objWire)
+            {
                 InnWire *wire = dynamic_cast<InnWire *>(obj);
                 if (wire->getWire() == eWire::wireHorizzontal)
                     continue;
@@ -736,11 +862,14 @@ bool nnObjManager::checkRemovableCol(int x_pos)
 bool nnObjManager::removeCol(int x_pos)
 {
     bool res = checkRemovableCol(x_pos);
-    if (res) {
+    if (res)
+    {
         int y;
-        for (y = 0; y < v_height; y++) {
+        for (y = 0; y < v_height; y++)
+        {
             InnObj *obj = getObj(x_pos, y);
-            if (obj != nullptr) {
+            if (obj != nullptr)
+            {
                 res = removeObj(x_pos, y);
                 if (!res)
                     break;
@@ -748,14 +877,17 @@ bool nnObjManager::removeCol(int x_pos)
         }
         res = y == v_height;
     }
-    if (res) {
+    if (res)
+    {
         iterator it = begin();
         iterator _end = end();
-        while (it != _end) {
+        while (it != _end)
+        {
             int x, y;
             hashkey *key = (hashkey *)&it->first;
             revHashKey(*key, x, y);
-            if (x >= x_pos) {
+            if (x >= x_pos)
+            {
                 x--;
                 res = genHashKey(x, y, *key);
                 if (!res)
@@ -771,13 +903,17 @@ bool nnObjManager::removeEmptyCol(void)
 {
     bool res = false;
     int vx;
-    for (vx = v_width - 1; vx > 0; vx--) {
+    for (vx = v_width - 1; vx > 0; vx--)
+    {
         res = checkRemovableCol(vx);
-        if (res) {
+        if (res)
+        {
             int y;
-            for (y = 0; y < v_height; y++) {
+            for (y = 0; y < v_height; y++)
+            {
                 InnObj *obj = getObj(vx, y);
-                if (obj != nullptr) {
+                if (obj != nullptr)
+                {
                     res = removeObj(vx, y);
                     if (!res)
                         break;
@@ -785,14 +921,17 @@ bool nnObjManager::removeEmptyCol(void)
             }
             res = y == v_height;
         }
-        if (res) {
+        if (res)
+        {
             iterator it = begin();
             iterator _end = end();
-            while (it != _end) {
+            while (it != _end)
+            {
                 int x, y;
                 hashkey *key = (hashkey *)&it->first;
                 revHashKey(*key, x, y);
-                if (x >= vx) {
+                if (x >= vx)
+                {
                     x--;
                     res = genHashKey(x, y, *key);
                     if (!res)
@@ -809,16 +948,22 @@ bool nnObjManager::removeEmptyCol(void)
 bool nnObjManager::ResizeHeight(int h)
 {
     bool res = false;
-    if (v_height != h) {
-        if (v_height < h) {
-            while (v_height < h) {
+    if (v_height != h)
+    {
+        if (v_height < h)
+        {
+            while (v_height < h)
+            {
                 res = insertRow(v_height - 1);
                 if (!res)
                     break;
                 v_height++;
             }
-        } else {
-            while (h < v_height) {
+        }
+        else
+        {
+            while (h < v_height)
+            {
                 res = removeRow(v_height - 1);
                 if (!res)
                     break;
@@ -833,28 +978,37 @@ bool nnObjManager::ResizeHeight(int h)
 bool nnObjManager::ResizeWidth(int w)
 {
     bool res = false;
-    if (v_width != w) {
-        if (v_width < w) {
+    if (v_width != w)
+    {
+        if (v_width < w)
+        {
             v_width = w;
             res = true;
 
-        } else {
-            while (w < v_width) {
+        }
+        else
+        {
+            while (w < v_width)
+            {
                 res = removeCol(v_width - 1);
                 if (!res)
                     break;
                 v_width--;
             }
-            if (!res && w < v_width) {
-                while (w < v_width) {
+            if (!res && w < v_width)
+            {
+                while (w < v_width)
+                {
                     res = removeCol(0);
                     if (!res)
                         break;
                     v_width--;
                 }
             }
-            if (!res && w < v_width) {
-                while (w < v_width) {
+            if (!res && w < v_width)
+            {
+                while (w < v_width)
+                {
                     res = removeEmptyCol();
                     if (!res)
                         break;
@@ -895,10 +1049,12 @@ nnObjUndoRedo::~nnObjUndoRedo()
 bool nnObjUndoRedo::undo(void)
 {
     bool res = false;
-    if (manager!=nullptr && undoObjs.size() > 0) {
+    if (manager!=nullptr && undoObjs.size() > 0)
+    {
         undo_redo_unit f = undoObjs.back();
         undoObjs.pop_back();
-        switch (f.action) {
+        switch (f.action)
+        {
         case addObjAction:
             undoredoMode = true;
             res= manager->addObj(f.x_pos, f.y_pos, f.obj);
@@ -922,10 +1078,12 @@ bool nnObjUndoRedo::undo(void)
 bool nnObjUndoRedo::redo(void)
 {
     bool res = false;
-    if (manager != nullptr && redoObjs.size() > 0) {
+    if (manager != nullptr && redoObjs.size() > 0)
+    {
         undo_redo_unit f = redoObjs.back();
         redoObjs.pop_back();
-        switch (f.action) {
+        switch (f.action)
+        {
         case addObjAction:
             undoredoMode = false;
             res = manager->addObj(f.x_pos, f.y_pos, f.obj);
@@ -952,16 +1110,21 @@ bool nnObjUndoRedo::setHost(IManager *_manager)
 
 void nnObjUndoRedo::record(undo_redo_unit u)
 {
-    if (undoredoMode == false) {
-        if (undoObjs.size() >= 100) {
+    if (undoredoMode == false)
+    {
+        if (undoObjs.size() >= 100)
+        {
             undo_redo_unit old = undoObjs.front();
             undoObjs.pop_front();
             if (old.obj != nullptr)
                 delete old.obj;
         }
         undoObjs.push_back(u);
-    } else {
-        if (redoObjs.size() >= 100) {
+    }
+    else
+    {
+        if (redoObjs.size() >= 100)
+        {
             undo_redo_unit old = redoObjs.front();
             redoObjs.pop_front();
             if (old.obj != nullptr)
@@ -973,8 +1136,10 @@ void nnObjUndoRedo::record(undo_redo_unit u)
 
 void nnObjUndoRedo::clearUndoObjs(void)
 {
-    if (undoObjs.size() > 0) {
-        for (auto n : undoObjs) {
+    if (undoObjs.size() > 0)
+    {
+        for (auto n : undoObjs)
+        {
             if (n.action == eAction::addObjAction && n.obj != nullptr)
                 delete n.obj;
         }
@@ -984,8 +1149,10 @@ void nnObjUndoRedo::clearUndoObjs(void)
 
 void nnObjUndoRedo::clearRedoObjs(void)
 {
-    if (redoObjs.size() > 0) {
-        for (auto n : redoObjs) {
+    if (redoObjs.size() > 0)
+    {
+        for (auto n : redoObjs)
+        {
             if (n.action == eAction::addObjAction && n.obj != nullptr)
                 delete n.obj;
         }

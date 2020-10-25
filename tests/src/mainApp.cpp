@@ -29,12 +29,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 // macro for create test suite in static mode an set any variable requested
 
-     caTester* caContainerTest::allTest[MAXNUMCLASSTEST];
-     int caContainerTest::numTest=0;
-     int caContainerTest::maxTest=0;
-     caContainerTest *caContainerTest::instance=NULL;
-     int docFile::numfile=0;
-     int caContainerTest::totalAssert=0;
+caTester* caContainerTest::allTest[MAXNUMCLASSTEST];
+int caContainerTest::numTest=0;
+int caContainerTest::maxTest=0;
+caContainerTest *caContainerTest::instance=NULL;
+int docFile::numfile=0;
+int caContainerTest::totalAssert=0;
 
 
 
@@ -161,7 +161,7 @@ int configure(int argc, const char* argv[],int *format,char *namefile,char *name
                         if (*numFamily==-1)return 0;
                         i+=n;
                         break;
-                        //-  t  nn
+                    //-  t  nn
                     case 't':
                         res=selectTest(ptr,i<argc?argv[i]:NULL,&n);
                         if (res==-1)return 0;

@@ -51,9 +51,11 @@ nnFontList::~nnFontList()
 
 void nnFontList::clear(void)
 {
-    for (auto i : fonts) {
+    for (auto i : fonts)
+    {
         IFontManager *t = i.second;
-        if (t) {
+        if (t)
+        {
             delete t;
         }
     }
@@ -67,9 +69,11 @@ bool nnFontList::readConfiguration(IXmlNode *node,STRING & src_path)
     STRING name;
     STRING path;
     IXmlNode *conf = node->find(X("FONTS"));
-    if (conf) {
+    if (conf)
+    {
         IXmlNode *xpath = conf->find(X("PATH"));
-        if (xpath) {
+        if (xpath)
+        {
             const XCHAR *v = xpath->getValue();
             path=src_path;
             path += v;
@@ -77,66 +81,92 @@ bool nnFontList::readConfiguration(IXmlNode *node,STRING & src_path)
         }
         int numItems = 0;
         IXmlNode *items = conf->find(X("ITEMS"));
-        if (items) {
+        if (items)
+        {
             numItems = items->getLong();
-        } else {
+        }
+        else
+        {
             xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("ITEMS"));
             throw(e);
         }
-        if (numItems > 0) {
+        if (numItems > 0)
+        {
 
             int i = 0;
-            do {
+            do
+            {
                 IXmlNode *it = items->find(X("ITEM_"), i);
-                if (it) {
+                if (it)
+                {
                     IXmlNode *t = it->find(X("NAME"));
-                    if (t) {
+                    if (t)
+                    {
                         STRING current=path;
                         name = t->getValue();
                         current += name;
                         current += X("/");
                         int width, height;
                         t = it->find(X("WIDTH"));
-                        if (t) {
+                        if (t)
+                        {
                             width = t->getLong();
-                            if (width > 0) {
+                            if (width > 0)
+                            {
                                 t = it->find(X("HEIGHT"));
-                                if (t) {
+                                if (t)
+                                {
                                     height = t->getLong();
-                                    if (height > 0) {
+                                    if (height > 0)
+                                    {
                                         IFontManager *mn = new nnFontManager(current.c_str(),width,height);
                                         fonts[name] = mn;
                                         if (mn)
                                             res = mn->readConfiguration(it);
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("HEIGHT"));
                                         throw(e);
                                     }
-                                } else {
+                                }
+                                else
+                                {
                                     xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("HEIGHT"));
                                     throw(e);
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("WIDTH"));
                                 throw(e);
                             }
-                        } else {
+                        }
+                        else
+                        {
                             xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("WIDTH"));
                             throw(e);
                         }
 
-                    } else {
+                    }
+                    else
+                    {
                         xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("NAME"));
                         throw(e);
                     }
                 }
                 i++;
-            } while (i < numItems);
-        } else {
+            }
+            while (i < numItems);
+        }
+        else
+        {
             xmlConfigurationNodeValueException *e = new xmlConfigurationNodeValueException(numItems);
             throw(e);
         }
-    } else {
+    }
+    else
+    {
         xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("FONTS"));
         throw(e);
     }
@@ -146,7 +176,8 @@ bool nnFontList::readConfiguration(IXmlNode *node,STRING & src_path)
 bool nnFontList::loadImages(void)
 {
     bool res = false;
-    for (auto i : fonts) {
+    for (auto i : fonts)
+    {
         res = i.second->loadImages();
         if (!res)break;
     }
@@ -158,7 +189,8 @@ IFontManager* nnFontList::getManager(const char *name)
     IFontManager * res = nullptr;
     std::string _name(name);
     fontList::iterator it = fonts.find(name);
-    if (it != fonts.end()) {
+    if (it != fonts.end())
+    {
         res = it->second;
     }
     return res;
@@ -169,7 +201,8 @@ bool  nnFontList::add(const char *name, IFontManager* manager)
     bool res = false;
     std::string _name(name);
     fontList::iterator it = fonts.find(_name);
-    if (it != fonts.end()) {
+    if (it != fonts.end())
+    {
         fonts[_name] = manager;
         res=true;
     }
@@ -181,9 +214,11 @@ bool nnFontList::remove(const char *name)
     bool res = false;
     std::string _name(name);
     fontList::iterator it = fonts.find(_name);
-    if (it != fonts.end()) {
+    if (it != fonts.end())
+    {
         IFontManager *t = it->second;
-        if (t) {
+        if (t)
+        {
             delete t;
             fonts.erase(it);
             res = true;
@@ -195,7 +230,8 @@ bool nnFontList::remove(const char *name)
 bool nnFontList::getFontNameList(fontNameList & list)
 {
     bool res = false;
-    for (auto i: fonts) {
+    for (auto i: fonts)
+    {
         std::string name = i.first;
         list.push_back(name);
     }

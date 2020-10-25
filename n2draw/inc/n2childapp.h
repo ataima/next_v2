@@ -39,7 +39,7 @@ class nnChildApp
     IFontList               *fonts;
     IViewGlue               *view;
     IImageManager           *imageManager;
-    IExtHandler             *externalHandler;    
+    IExtHandler             *externalHandler;
     IExtHandler             *defaultHandler;
     unsigned int            id;
 public:
@@ -49,11 +49,26 @@ public:
     bool createObjects(IConfig *configuration,STRING & conf_file_name,STRING &confPath);
     bool setExtHandler( extHandler  _hook, void *unkObj);
     //IHandler * getHandler(void) { return static_cast<IHandler *>(this); }
-    inline  IManager * getManager(void)                { return object_manager; }
-    inline  IFontList * getFont(void)                  { return fonts; }
-    inline  IViewGlue * getView(void)                  { return view; }
-    inline  IImageManager * getImage(void)             { return imageManager; }
-    inline  IExtHandler * getHandler(void)             { return defaultHandler; }
+    inline  IManager * getManager(void)
+    {
+        return object_manager;
+    }
+    inline  IFontList * getFont(void)
+    {
+        return fonts;
+    }
+    inline  IViewGlue * getView(void)
+    {
+        return view;
+    }
+    inline  IImageManager * getImage(void)
+    {
+        return imageManager;
+    }
+    inline  IExtHandler * getHandler(void)
+    {
+        return defaultHandler;
+    }
     // remap handler
     bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint) ;
     bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint) ;
@@ -72,7 +87,11 @@ public:
     bool handlerUpButton(bool shitf, bool ctrl, bool alt) ;
     bool handlerDownButton(bool shitf, bool ctrl, bool alt) ;
     bool handlerCancelButton(bool shitf, bool ctrl, bool alt);
-    inline  bool getCurrentFile(std::string & filename) { filename = "prova"; return true; }
+    inline  bool getCurrentFile(std::string & filename)
+    {
+        filename = "prova";
+        return true;
+    }
     void defaultProcess( size_t type_param, IParam *user_param);
 private:
     static void  defaultCommandRequest(void * dest, size_t type_param, IParam *user_param);

@@ -47,15 +47,27 @@ public:
     nnImageManager(STRING & _path);
     ~nnImageManager();
     bool setPath(STRING &_path);
-    inline STRING  & getDefaulPath(void) const { return *const_cast<STRING*>(&path); }
+    inline STRING  & getDefaulPath(void) const
+    {
+        return *const_cast<STRING*>(&path);
+    }
     bool readConfiguration(IXmlNode *node);
     bool loadImages(void);
     bool loadImages(const listCommandItem *items);
     bmpImage * getImage(int id);
     bmpImage * getImage(const XCHAR * name);
-    inline  const objImageList * getAvailObj(void) { return &availObj; }
-    inline int getMaxWidth(void)        { return allImages.getMaxWidth(); }
-    inline int getMaxHeight(void)           { return allImages.getMaxHeight(); }
+    inline  const objImageList * getAvailObj(void)
+    {
+        return &availObj;
+    }
+    inline int getMaxWidth(void)
+    {
+        return allImages.getMaxWidth();
+    }
+    inline int getMaxHeight(void)
+    {
+        return allImages.getMaxHeight();
+    }
 private :
     int internalStringToValue(const XCHAR *ptr);
 };

@@ -31,7 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 class nnExtHandler
-        :public IExtHandler
+    :public IExtHandler
 {
     extHandler hook;
     void *unknow;
@@ -39,8 +39,8 @@ class nnExtHandler
 public :
     nnExtHandler(extHandler & _hook,void *unkObj,bool _pulse=false);
     void doHandler(size_t Tparam, IParam *in=nullptr);
-    static void send(extHandler hook, void *unknow, size_t Tparam, 
-        IParam *in = nullptr);
+    static void send(extHandler hook, void *unknow, size_t Tparam,
+                     IParam *in = nullptr);
 };
 
 

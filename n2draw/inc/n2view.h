@@ -53,7 +53,10 @@ public:
     bool createMainBitmap(nnPoint & size);
     bmpImage & getMainBitmap(void);
     bool remapMainBitmap(nnPoint & size);
-    inline void setFont(IFontManager *_font) { font = _font; }
+    inline void setFont(IFontManager *_font)
+    {
+        font = _font;
+    }
 private:
     bool drawObj(InnObj * obj, int & x, int & y, IViewGlue *glue);
     bool drawBkg( int & x, int & y,  IViewGlue *glu);

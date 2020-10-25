@@ -48,14 +48,26 @@ class nnFontManager
 public:
     nnFontManager(const XCHAR * _path,int _width,int _height);
     ~nnFontManager();
-    inline int getFontWidth(void) { return fWidth; }
-    inline int getFontHeight(void) { return fHeight; }
+    inline int getFontWidth(void)
+    {
+        return fWidth;
+    }
+    inline int getFontHeight(void)
+    {
+        return fHeight;
+    }
     bool setPath(STRING &_path);
-    inline STRING  & getDefaulPath(void) const { return *const_cast<STRING*>(&path); }
+    inline STRING  & getDefaulPath(void) const
+    {
+        return *const_cast<STRING*>(&path);
+    }
     bool readConfiguration(IXmlNode *node);
     bool loadImages(void);
     bmpImage * getImage(const char* msg, unsigned char red, unsigned char green, unsigned char blue);
-    inline  const objImageList * getAvailObj(void) { return &availObj; }
+    inline  const objImageList * getAvailObj(void)
+    {
+        return &availObj;
+    }
 };
 
 

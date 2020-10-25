@@ -42,7 +42,13 @@ public :
     nnMoreInfo(IChild *_parent);
     bool handlerMouseButtonDown(nnPoint &logPoint, int color, IExtHandler *hook);
     void draw(bmpImage & image, IViewGlue * glue);
-    inline void hide(void) { visible = false; }
-    inline void show(void) { visible = true; }
+    inline void hide(void)
+    {
+        visible = false;
+    }
+    inline void show(void)
+    {
+        visible = true;
+    }
 };
 #endif

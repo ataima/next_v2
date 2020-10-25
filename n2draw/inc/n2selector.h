@@ -36,7 +36,7 @@ typedef enum tag_status_select
     start_resize,
     stop_resize,
     selected
-}status_select;
+} status_select;
 
 inline std::ostream & operator<<(std::ostream & os, const status_select & st)
 {
@@ -80,24 +80,59 @@ public:
     nnSelector(IChild * _parent);
     ~nnSelector();
     void draw(bmpImage & image, IViewGlue * glue);
-    inline void hide(void) { visible = false; }
-    inline void show(void) { visible = true; }
-    inline bool getStatus(void) { return visible; }
-    inline void setError(bool st) { error = st; }
-    inline void setFont(IFontManager *_font) { font = _font; }
+    inline void hide(void)
+    {
+        visible = false;
+    }
+    inline void show(void)
+    {
+        visible = true;
+    }
+    inline bool getStatus(void)
+    {
+        return visible;
+    }
+    inline void setError(bool st)
+    {
+        error = st;
+    }
+    inline void setFont(IFontManager *_font)
+    {
+        font = _font;
+    }
     bool handlerMouseMove(nnPoint & logPoint);
     bool handlerMouseButtonDown(nnPoint & logPoint,show_status & status);
     bool handlerMouseButtonUp(nn_mouse_buttons buttons, nnPoint  & logPoint);
     bool unselect();
-    inline bool isSelectedValid(void) { return (isStartValid() && isStopValid() ); }
-    inline bool isStartValid(void) { return select_start != -1; }
-    inline bool isStopValid(void) { return select_stop != -1; }
-    inline nnPoint & getSelectStart(void) { return select_start; }
-    inline nnPoint & getSelectStop(void) { return select_stop; }
+    inline bool isSelectedValid(void)
+    {
+        return (isStartValid() && isStopValid() );
+    }
+    inline bool isStartValid(void)
+    {
+        return select_start != -1;
+    }
+    inline bool isStopValid(void)
+    {
+        return select_stop != -1;
+    }
+    inline nnPoint & getSelectStart(void)
+    {
+        return select_start;
+    }
+    inline nnPoint & getSelectStop(void)
+    {
+        return select_stop;
+    }
     int isSelected(void);
     bool isSelectedComponent(void);
     bool select(nnPoint pos1, nnPoint pos2);
-    inline bool getSelectArea(nnPoint &start, nnPoint &stop) { start = select_start; stop = select_stop; return true; }
+    inline bool getSelectArea(nnPoint &start, nnPoint &stop)
+    {
+        start = select_start;
+        stop = select_stop;
+        return true;
+    }
     bool resizeSelectArea(const int vx, const int vy);
 private:
     bool translateY(int p, std::string & out);
@@ -107,5 +142,5 @@ private:
 
 
 
-#endif 
+#endif
 
