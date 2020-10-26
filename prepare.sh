@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function usage(){
-echo "./prepare.sh width< 32 -64> os <Linux windows> mode < Debug release> "
+echo "./prepare.sh width< 32-64> \nos <linux windows imx6 imx8> \nmode < Debug release> "
 exit 1
 }
 
@@ -24,6 +24,15 @@ then
 	usage
 fi
 
+ENVIRON=$(echo $2 | tr '[:upper:]' '[:lower:]' )
+
+if [ "$ENVIRON" != "linux" ] && 
+	[ "$ENVIRON" != "windows" ] &&
+	[ "$ENVIRON" != "imx6" ]    &&
+	[ "$ENVIRON" != "imx8" ] 
+then 
+	usage
+fi
 
 
 if [ "$3" == "" ]
@@ -31,26 +40,44 @@ then
 	usage
 fi  
 
-
 if [ "$3" != "Debug" ] && [ "$3" != "Release" ]
 then 
 	usage
 fi
 
-ENVIRON=$(echo $2 | tr '[:upper:]' '[:lower:]' )
-echo "---> $ENVIRON"
-#$3 prefix ex arm-none-eabi-
 
 MODE=$3
 
+MACHINE=""
 
-mkdir -p $MODE$ENVIRON$1
+if [ "$ENVIRON" == "linux" ] || 
+	[ "$ENVIRON" == "window" ]
+then
+	MACHINE="i686"
+fi
 
-cd $MODE$ENVIRON$1
+if [ "$ENVIRON" == "imx6" ] 
+then
+        MACHINE="imx6"
+	ENVIRON="linux"
+fi
 
-BUILDID="../"$1"_"$ENVIRON"_i686.toolchain.cmake"
-echo "--> $BUILDID"
 
-cmake -DCMAKE_INSTALL_PREFIX=$(pwd)/../dist/$MODE -DCMAKE_BUILD_TYPE=$MODE  -DCMAKE_TOOLCHAIN_FILE=$BUILDID  ..
+if [ "$ENVIRON" == "imx8" ] 
+then
+        MACHINE="imx8"
+        ENVIRON="linux"
+fi
+
+BUILDPATH=$MODE-$ENVIRON-$1-$MACHINE
+DISTPATH=$(pwd)/dist/$BUILDPATH
+
+mkdir -p $BUILDPATH
+mkdir $DISTPATH
+
+cd $BUILDPATH
+TOOLSCHAIN="../template.cmake/"$1"_"$ENVIRON"_"$MACHINE".toolchain.cmake"
+
+cmake -DCMAKE_INSTALL_PREFIX=$DISTPATH -DCMAKE_BUILD_TYPE=$MODE  -DCMAKE_TOOLCHAIN_FILE=$TOOLSCHAIN  ..
 make -j8
 make install

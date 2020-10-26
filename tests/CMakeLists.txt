@@ -28,7 +28,7 @@ target_link_libraries (ca_test_next ca_n2_logger )
 target_link_libraries (ca_test_next pthread )
 
 
-install ( TARGETS ${CURRENT_PROJECT_NAME}  DESTINATION ${CMAKE_INSTALL_PREFIX} )
+#install ( TARGETS ${CURRENT_PROJECT_NAME}  DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 
 add_custom_command (
