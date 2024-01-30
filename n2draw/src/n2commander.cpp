@@ -355,7 +355,7 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 }
 
 
-bool nnCommander::drawTips(bmpImage & bkg, nnPoint & , IViewGlue *)
+bool nnCommander::drawTips(bmpImage & bkg, nnPoint &, IViewGlue *)
 {
 
     bool res = false;

@@ -31,7 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <list>
 
 
-struct lessHashKey : public std::binary_function<hashkey ,hashkey  , bool>
+struct lessHashKey : public std::binary_function<hashkey,hashkey, bool>
 {
     bool
     operator()(const hashkey & a, const hashkey & b) const

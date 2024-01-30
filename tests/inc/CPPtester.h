@@ -1322,7 +1322,7 @@ public:
         fflush(file);
     }
     /// implementation of ...
-    virtual void addResult(const char *info, int f = 0 , int timeU = 0)
+    virtual void addResult(const char *info, int f = 0, int timeU = 0)
     {
         if (f==1 /* OK */)
             fprintf(file, WHITE "%s" GREEN " OK " WHITE" :: " CYAN "% 5d " GRAY_DARK "ms\n" REPLACE, info, timeU);
@@ -1620,7 +1620,7 @@ public:
         }
     }
     /// add a fail pos info to all documents
-    void addFailPos(const char *filename ,const int line)
+    void addFailPos(const char *filename,const int line)
     {
         for (int i = 0; i < numFile; i++)
         {

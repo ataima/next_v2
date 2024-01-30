@@ -1,7 +1,7 @@
 #include "n2iface.h"
 #include "n2appmanager.h"
 
-static nnAppManager * current =nullptr;
+static n2AppManager * current =nullptr;
 
 
 
@@ -12,7 +12,7 @@ IAppManager *  n2draw_get_instance(void)
     {
         try
         {
-            current=static_cast<nnAppManager*>(IAppManager::getInstance(0));
+            current=static_cast<n2AppManager*>(IAppManager::getInstance(0));
             if (current)
             {
                 STRING conf("conf_utf8.xml");

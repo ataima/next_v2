@@ -33,7 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-class nnAppManager final
+class n2AppManager final
     :public IAppManager
 {
 
@@ -45,8 +45,8 @@ class nnAppManager final
     static int UID;
     static IAppManager *instance;
 public:
-    nnAppManager();
-    ~nnAppManager();
+    n2AppManager();
+    ~n2AppManager();
     bool closeAll(void);
     IChild *create(STRING & conf_file_name);
     IChild *activate(int v);

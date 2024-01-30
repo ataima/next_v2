@@ -8,7 +8,7 @@
 #include "n2commander.h"
 
 
-typedef std::map<int ,ICommander *> commanderList ;
+typedef std::map<int,ICommander *> commanderList ;
 
 class nnToolView
     :public IToolView
@@ -40,7 +40,7 @@ public:
         phyPos=p;
     }
     inline void show(void) {}
-    inline void addImage(int , bmpImage * ) {}
+    inline void addImage(int, bmpImage * ) {}
     void hide(void);
 
 };

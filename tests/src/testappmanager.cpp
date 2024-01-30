@@ -103,10 +103,10 @@ void test_app_manager::draw(bmpImage *)
 void test_app_manager::test1(void)
 {
     _START();
-    _INFO("Verify of internal class nnAppManager:load and display a draw");
+    _INFO("Verify of internal class n2AppManager:load and display a draw");
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
-    nnAppManager app;
+    n2AppManager app;
 #ifdef _UNICODE
     STRING name(X("conf_utf16.xml"));
 #else
@@ -162,10 +162,10 @@ void test_app_manager::test1(void)
 void test_app_manager::test2(void)
 {
     _START();
-    _INFO("Verify of internal class nnAppManager:load and display a draw, and scroll it");
+    _INFO("Verify of internal class n2AppManager:load and display a draw, and scroll it");
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
-    nnAppManager app;
+    n2AppManager app;
 #ifdef _UNICODE
     STRING name(X("conf_utf16.xml"));
 #else

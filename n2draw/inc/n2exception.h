@@ -249,7 +249,7 @@ class imagesConfigurationAlreadyLoadException
     int offset;
 public:
     explicit  imagesConfigurationAlreadyLoadException(int off) throw()
-        :n2exception("imagesConfigurationAlreadyLoadException") ,offset(off) {}
+        :n2exception("imagesConfigurationAlreadyLoadException"),offset(off) {}
     char const* msg()
     {
         std::stringstream ss;

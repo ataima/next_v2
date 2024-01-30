@@ -44,7 +44,7 @@ IAppManager *IAppManager::getInstance(int v)
     IAppManager *res=nullptr;
     if(v==0)   //default...
     {
-        res= nnAppManager::getInstance();
+        res= n2AppManager::getInstance();
     }
     return res;
 }
@@ -52,10 +52,10 @@ IAppManager *IAppManager::getInstance(int v)
 
 
 
-int nnAppManager::UID = 1;
-IAppManager *nnAppManager::instance=nullptr;
+int n2AppManager::UID = 1;
+IAppManager *n2AppManager::instance=nullptr;
 
-nnAppManager::nnAppManager():selected(-1)
+n2AppManager::n2AppManager():selected(-1)
 {
     configuration = new xmlConfig();
     nnResource::Init();
@@ -63,7 +63,7 @@ nnAppManager::nnAppManager():selected(-1)
         instance=this;
 }
 
-nnAppManager::~nnAppManager()
+n2AppManager::~n2AppManager()
 {
     closeAll();
     delete configuration;
@@ -72,19 +72,19 @@ nnAppManager::~nnAppManager()
 }
 
 
-IAppManager *nnAppManager::getInstance(void)
+IAppManager *n2AppManager::getInstance(void)
 {
     return instance;
 }
 
-IChild * nnAppManager::create(STRING & conf_file_name)
+IChild * n2AppManager::create(STRING & conf_file_name)
 {
     STRING res="resource/";
     return createObjects(conf_file_name,res);
 }
 
 
-IChild * nnAppManager::createObjects(STRING & conf_file_name,STRING & path_name)
+IChild * n2AppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 {
     bool res = false;
     IChild * child = new nnChildApp(UID);
@@ -118,7 +118,7 @@ IChild * nnAppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 
 
 #if _LOGGER_
-void nnAppManager::setPrinter(IPrinter * printer)
+void n2AppManager::setPrinter(IPrinter * printer)
 {
     ILogger *current_logger = ILogger::getInstance();
     if (current_logger == nullptr)
@@ -133,7 +133,7 @@ void nnAppManager::setPrinter(IPrinter * printer)
 #endif
 
 
-bool nnAppManager::closeAll(void)
+bool n2AppManager::closeAll(void)
 {
     if (childs.size() > 0)
     {
@@ -151,7 +151,7 @@ bool nnAppManager::closeAll(void)
 }
 
 
-IChild *nnAppManager::activate(int v)
+IChild *n2AppManager::activate(int v)
 {
     IChild * res = nullptr;
     if (!childs.empty())
@@ -168,7 +168,7 @@ IChild *nnAppManager::activate(int v)
 }
 
 
-IChild *nnAppManager::active(void)
+IChild *n2AppManager::active(void)
 {
     IChild * res = nullptr;
     if (!childs.empty() && selected>0)
@@ -189,7 +189,7 @@ IChild *nnAppManager::active(void)
 
 
 
-bool nnAppManager::clean(void)
+bool n2AppManager::clean(void)
 {
     for (auto i : childs)
     {

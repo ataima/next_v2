@@ -130,7 +130,7 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING & conf_file_name, 
                             int default_h = size_default->getLong();
                             object_manager = new nnObjManager(default_w, default_h);
                             IManager *obj = object_manager;
-                            MEMCHK(IManager , obj);
+                            MEMCHK(IManager, obj);
                             conf_manager = root->find(X("MANAGER"));
                             if (conf_manager)
                             {

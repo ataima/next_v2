@@ -165,7 +165,7 @@ public:
 
 
 
-typedef void  (*extHandler)(void *,size_t ,IParam *);
+typedef void  (*extHandler)(void *,size_t,IParam *);
 
 typedef std::pair<size_t, IParam *> ePair;
 

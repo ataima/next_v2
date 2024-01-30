@@ -59,7 +59,7 @@ REGISTER_CLASS(test_viewglue);
 
 void test_viewglue::test1(void)
 {
-    /* TODO
+    /*
     _START();
     _INFO("Verify of internal class nnViewGlue: method  ctor");
     _AUTHOR("Coppi Angelo n2draw library ");
@@ -68,7 +68,7 @@ void test_viewglue::test1(void)
     nnObjWire *v = new nnObjWire(eWire::wireAngleDownLeft);
     bool res = mn.addObj(10, 12, v);
     CA_ASSERT(res == true);
-    nnViewGlue gphy(&mn,nullptr,nullptr);
+    nnViewGlue gphy(&mn);
     int w, h;
     CA_ASSERT(gphy.getSelectAreaPhy(w, h) == true);
     CA_ASSERT(w == 0);

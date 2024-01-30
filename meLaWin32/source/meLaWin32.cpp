@@ -122,7 +122,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 
 
-static nnAppManager *n2app = nullptr;
+static n2AppManager *n2app = nullptr;
 //
 //  FUNZIONE: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -270,7 +270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             CREATESTRUCT * cs = (CREATESTRUCT*)lParam;
             try {
-                n2app = new nnAppManager();
+                n2app = new n2AppManager();
                 STRING s("conf_utf8.xml");
                 STRING p(".\\");
                 IChild *client = n2app->createObjects(s,p);
