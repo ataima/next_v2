@@ -15,6 +15,6 @@ add_subdirectory (./n2bmpimage)
 add_subdirectory (./n2draw)
 add_subdirectory (./tests)
 add_subdirectory (./meLaSDL)
-
+add_subdirectory (./cdump )
 
 

@@ -980,7 +980,7 @@ bool nnViewGlue::handlerPageUpButton(bool shitf, bool ctrl, bool alt)
             {
                 int p = getPageHeight();
                 if (offset_Pos.y > p)
-                    offset_Pos.y -= p;
+                    offset_Pos.y += p;
                 else
                     offset_Pos.y = 0;
                 updateDraw();
@@ -999,7 +999,7 @@ bool nnViewGlue::handlerPageUpButton(bool shitf, bool ctrl, bool alt)
             {
                 int p = getPageHeight();
                 bool scroll = false;
-                res = moveSelectArea(0, -p, scroll);
+                res = moveSelectArea(0, p, scroll);
                 if (selector && selector->getStatus())
                     selector->setError(!res);
                 updateDraw();
@@ -1032,7 +1032,7 @@ bool nnViewGlue::handlerPageDownButton(bool shitf, bool ctrl, bool alt)
             {
                 int h = getScrollableVertSize();
                 int p = getPageHeight();
-                offset_Pos.y += p;
+                offset_Pos.y -= p;
                 if (offset_Pos.y > h)
                     offset_Pos.y = h;
                 updateDraw();
@@ -1051,7 +1051,7 @@ bool nnViewGlue::handlerPageDownButton(bool shitf, bool ctrl, bool alt)
             {
                 int p = getPageHeight();
                 bool scroll = false;
-                res = moveSelectArea(0, p, scroll);
+                res = moveSelectArea(0, -p, scroll);
                 if (selector && selector->getStatus())
                     selector->setError(!res);
                 updateDraw();
@@ -1261,14 +1261,14 @@ bool nnViewGlue::handlerUpButton(bool shift, bool ctrl, bool alt)
             {
                 if (selector)
                 {
-                    selector->resizeSelectArea(0, -1);
+                    selector->resizeSelectArea(0, 11);
                     res = true;
                 }
             }
             else if (!shift && !ctrl && !alt)
             {
                 bool scroll = false;
-                res = moveSelectArea(0, -1, scroll);
+                res = moveSelectArea(0, 1, scroll);
                 if (selector && selector->getStatus())
                     selector->setError(!res);
                 if (scroll && vscroller)
@@ -1297,14 +1297,14 @@ bool nnViewGlue::handlerDownButton(bool shift, bool ctrl, bool alt)
             {
                 if (selector)
                 {
-                    selector->resizeSelectArea(0, 1);
+                    selector->resizeSelectArea(0, -1);
                     res = true;
                 }
             }
             else if (!shift && !ctrl && !alt)
             {
                 bool scroll = false;
-                res = moveSelectArea(0, 1, scroll);
+                res = moveSelectArea(0, -1, scroll);
                 if (selector && selector->getStatus())
                     selector->setError(!res);
                 if (scroll && vscroller)

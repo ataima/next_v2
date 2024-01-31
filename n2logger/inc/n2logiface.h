@@ -73,13 +73,13 @@ public:
 
 
 
-#define Log0(...)   ILogger::getInstance()->log(0,__VA_ARGS__)
-#define Log1(...)   ILogger::getInstance()->log(1,__VA_ARGS__)
-#define Log2(...)   ILogger::getInstance()->log(2,__VA_ARGS__)
-#define Log3(...)   ILogger::getInstance()->log(3,__VA_ARGS__)
-#define Log4(...)   ILogger::getInstance()->log(4,__VA_ARGS__)
-#define Log5(...)   ILogger::getInstance()->log(5,__VA_ARGS__)
-#define Log6(...)   ILogger::getInstance()->log(6,__VA_ARGS__)
+#define Log0(...)   ILogger::getInstance()->log(0,__VA_ARGS__) //PANIC
+#define Log1(...)   ILogger::getInstance()->log(1,__VA_ARGS__) //EMERG
+#define Log2(...)   ILogger::getInstance()->log(2,__VA_ARGS__) //ERROR
+#define Log3(...)   ILogger::getInstance()->log(3,__VA_ARGS__) //DEFAULT
+#define Log4(...)   ILogger::getInstance()->log(4,__VA_ARGS__) //INFO
+#define Log5(...)   ILogger::getInstance()->log(5,__VA_ARGS__) //VERBOSE
+#define Log6(...)   ILogger::getInstance()->log(6,__VA_ARGS__) //DEBUG
 
 
 #else

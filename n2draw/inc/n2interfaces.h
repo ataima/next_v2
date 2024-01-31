@@ -698,6 +698,7 @@ public:
     virtual nnPoint getMirrorCoordPhy(int height,int x, int y) = 0;
     virtual nnPoint getCoordLog(const nnPoint & phyPoint) = 0;
     virtual nnPoint getConstPhy(void)=0;
+    virtual nnPoint getPhySize(void)=0;
     virtual bool unselect() = 0;
     virtual bool readConfiguration(IXmlNode * node) = 0;
     virtual bool handlerScrollHorz(int pos) = 0;

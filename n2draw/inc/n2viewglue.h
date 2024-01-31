@@ -66,6 +66,10 @@ public:
     {
         return const_Size;
     }
+    inline nnPoint getPhySize(void)
+    {
+        return phy_Size;
+    }
     bool readConfiguration(IXmlNode * node);
     bool getSelectAreaPhy(int & width, int & height);
     bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint);
