@@ -12,7 +12,7 @@ project (meLaSDL)
 include_directories( ${CMAKE_MAIN_DIR}/meLaSDL/inc )
 include_directories( ${CMAKE_MAIN_DIR}/n2logger/inc )
 include_directories( ${CMAKE_MAIN_DIR}/n2draw/inc )
-include_directories( ${CMAKE_MAIN_DIR}/bmpImage/inc )
+include_directories( ${CMAKE_MAIN_DIR}/n2bmpimage/inc )
  
  
 #However, the file(GLOB...) allows for wildcard additions:
@@ -35,7 +35,7 @@ add_custom_command (
 )
 
 target_link_libraries (${CURRENT_PROJECT_NAME} ca_bmp_image )
-target_link_libraries (${CURRENT_PROJECT_NAME} ca_n2draw )
+target_link_libraries (${CURRENT_PROJECT_NAME} ca_n2_draw )
 target_link_libraries (${CURRENT_PROJECT_NAME} ca_n2_logger )
 target_link_libraries (${CURRENT_PROJECT_NAME} pthread )
 target_link_libraries (${CURRENT_PROJECT_NAME} SDL2 )

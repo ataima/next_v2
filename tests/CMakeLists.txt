@@ -8,7 +8,7 @@ set( CURRENT_PROJECT_NAME ca_test_next )
 project ( ${CURRENT_PROJECT_NAME} )
 
 include_directories(./inc)
-include_directories(../bmpImage/inc) 
+include_directories(../n2bmpimage/inc) 
 include_directories(../n2draw/inc)
 include_directories(../n2logger/inc)
 
@@ -23,7 +23,7 @@ set(CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS}")
 
 
 target_link_libraries (ca_test_next ca_bmp_image )
-target_link_libraries (ca_test_next ca_n2draw )
+target_link_libraries (ca_test_next ca_n2_draw )
 target_link_libraries (ca_test_next ca_n2_logger )
 target_link_libraries (ca_test_next pthread )
 

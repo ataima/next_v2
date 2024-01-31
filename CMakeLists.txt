@@ -11,7 +11,7 @@ set (CMAKE_MAIN_DIR ${CMAKE_SOURCE_DIR} )
 
 
 add_subdirectory (./n2logger)
-add_subdirectory (./bmpImage)
+add_subdirectory (./n2bmpimage)
 add_subdirectory (./n2draw)
 add_subdirectory (./tests)
 add_subdirectory (./meLaSDL)

@@ -11,8 +11,8 @@
 #include <n2appmanager.h>
 #include <n2exception.h>
 
-#define PAGE_W  800
-#define PAGE_H  480
+#define PAGE_W  1000
+#define PAGE_H  800
 
 #define DUMP_BMP_TO_FILE 1
 

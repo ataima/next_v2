@@ -3,13 +3,13 @@
 # to the root binary directory of the project as ${HELLO_BINARY_DIR}.
 cmake_minimum_required (VERSION 2.8.11)
 
-set( CURRENT_PROJECT_NAME ca_n2draw )
+set( CURRENT_PROJECT_NAME ca_n2_draw )
 
 project ( ${CURRENT_PROJECT_NAME} )
 
  
 include_directories(./inc)
-include_directories(../bmpImage/inc)
+include_directories(../n2bmpimage/inc)
 include_directories(../syslog/inc)
 include_directories(../n2logger/inc)
  

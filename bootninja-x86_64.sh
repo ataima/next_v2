@@ -12,4 +12,10 @@ cmake -DCMAKE_INSTALL_PREFIX=$STAGING_DIR     \
         -S . -B build -G Ninja 
 
 
-ninja -C build 
+ninja -C build all install
+
+if [ $? -eq 0 ]
+then
+       sync	
+	tree ./install_dir
+fi
