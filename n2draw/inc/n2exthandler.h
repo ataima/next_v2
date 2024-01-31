@@ -35,12 +35,9 @@ class nnExtHandler
 {
     extHandler hook;
     void *unknow;
-    bool pulse;
 public :
-    nnExtHandler(extHandler & _hook,void *unkObj,bool _pulse=false);
+    nnExtHandler(extHandler & _hook,void *unkObj);
     void doHandler(size_t Tparam, IParam *in=nullptr);
-    static void send(extHandler hook, void *unknow, size_t Tparam,
-                     IParam *in = nullptr);
 };
 
 

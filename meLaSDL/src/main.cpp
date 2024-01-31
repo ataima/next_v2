@@ -11,12 +11,76 @@
 #include <n2appmanager.h>
 #include <n2exception.h>
 
-#define DUMP_BMP_TO_FILE 1
+#define DUMP_BMP_TO_FILE 0
 
 static IAppManager *n2App = nullptr;
 
-static void exthandler(void *obj, size_t v, IParam *p)
+static SDL_Texture *update_n2app(SDL_Renderer *rend);
+
+static void hook(void *obj, size_t v, IParam *param)
 {
+    const char *p = nullptr;
+    switch (v)
+    {
+    case action_redraw:
+        p = "ACTION REDRAW";
+        {
+            // clears the screen
+            SDL_Renderer *rend=(SDL_Renderer *)obj;
+            SDL_RenderClear(rend);
+            SDL_Texture *tex = update_n2app(rend);
+            if (tex != nullptr)
+            {
+                SDL_RenderCopy(rend, tex, nullptr, nullptr);
+                SDL_DestroyTexture(tex);
+            }
+        }
+        break;
+    case action_update_statusbars_info:
+        p = "ACTION UPDATE STATUSBARS INFO";
+        break;
+    case action_update_selected_panes:
+        p = "ACTION UPDATE SELECTED PANES";
+        break;
+    case action_update_scroller_panes:
+        p = "ACTION UPDATE SCROLLED PANES";
+        break;
+    case action_align_windows:
+        p = "ACTION ALIGN WINDOWS";
+        break;
+    case action_iconize_windows:
+        p = "ACTION ICONIZE WINDOWS";
+        break;
+    case action_medialize_windows:
+        p = "ACTION MEDIALIZE WINDOWS";
+        break;
+    case action_maximize_windows:
+        p = "ACTION MAXIMIZE WINDOWS";
+        break;
+    case action_close_windows:
+        p = "ACTION CLOSE WINDOWS";
+        break;
+    case action_move_window:
+        p = "ACTION MOVE WINDOWS";
+        break;
+    case action_select_position:
+        p = "ACTION SELECT POSITION";
+        break;
+    case action_host_command:
+        p = "ACTION HOST COMMAND";
+        break;
+    default:
+        p = "UNKNOW ACTION";
+        break;
+    }
+    if(param)
+    {
+        Log5("hook %s : Obj:%p S:%lu P:%p",p, obj, v, param);
+    }
+    else
+    {
+        Log5("hook %s : Obj:%p S:%lu ",p, obj, v);
+    }
 }
 
 static void openlog(void)
@@ -44,7 +108,6 @@ static SDL_Point link_n2app()
         n2Client = n2App->active();
         if (n2Client != nullptr)
         {
-            n2Client->setExtHandler(exthandler, nullptr);
             nnPoint p = n2Client->getView()->getPhySize();
             sdlp.x = p.x;
             sdlp.y = p.y;
@@ -246,19 +309,19 @@ static void mouseButtonDown(SDL_Event *e)
         if (handler)
         {
             nn_mouse_buttons bt = nn_m_button_unknow;
-            switch(m->button)
+            switch (m->button)
             {
             case SDL_BUTTON_LMASK:
                 bt = nn_m_button_left;
                 break;
             case SDL_BUTTON_MIDDLE:
-                bt= nn_m_button_middle;
+                bt = nn_m_button_middle;
                 break;
             case SDL_BUTTON_RIGHT:
                 bt = nn_m_button_right;
                 break;
             }
-            if(bt!=nn_m_button_unknow)
+            if (bt != nn_m_button_unknow)
             {
                 nnPoint pos(m->x, m->y);
                 Log5("exec handlerMouseButtonDown");
@@ -267,7 +330,6 @@ static void mouseButtonDown(SDL_Event *e)
         }
     }
 }
-
 
 static void mouseButtonUp(SDL_Event *e)
 {
@@ -282,28 +344,27 @@ static void mouseButtonUp(SDL_Event *e)
         if (handler)
         {
             nn_mouse_buttons bt = nn_m_button_unknow;
-            switch(m->button)
+            switch (m->button)
             {
             case SDL_BUTTON_LMASK:
                 bt = nn_m_button_left;
                 break;
             case SDL_BUTTON_MIDDLE:
-                bt= nn_m_button_middle;
+                bt = nn_m_button_middle;
                 break;
             case SDL_BUTTON_RIGHT:
                 bt = nn_m_button_right;
                 break;
             }
-            if(bt!=nn_m_button_unknow)
+            if (bt != nn_m_button_unknow)
             {
                 nnPoint pos(m->x, m->y);
                 Log5("exec handlerMouseButtonUp");
-                handler->handlerMouseButtonUp( bt,pos);
+                handler->handlerMouseButtonUp(bt, pos);
             }
         }
     }
 }
-
 
 int main(int argc, char *argv[])
 {
@@ -335,22 +396,17 @@ int main(int argc, char *argv[])
         // creates a renderer to render our images
         SDL_Renderer *rend = SDL_CreateRenderer(win, -1, render_flags);
 
+        n2App->active()->setExtHandler(hook, rend);
         // clears main-memory
 
         // let us control our image position
         // so that we can move it with our keyboard.
-        SDL_Rect dest;
-        dest.x = 0;
-        dest.y = 0;
-        dest.w = p.x;
-        dest.h = p.y;
-
         // controls animation loop
         int close = 0;
 
         // speed of box
         int speed = 300;
-
+        hook(rend,action_redraw,nullptr);
         // animation loop
         while (!close)
         {
@@ -385,21 +441,12 @@ int main(int argc, char *argv[])
                 }
             }
 
-            // clears the screen
-            SDL_RenderClear(rend);
-            SDL_Texture *tex = update_n2app(rend);
-            if (tex != nullptr)
-            {
-                SDL_RenderCopy(rend, tex, NULL, &dest);
-                SDL_DestroyTexture(tex);
-            }
-
             // triggers the double buffers
             // for multiple rendering
             SDL_RenderPresent(rend);
 
-            // calculates to 60 fps
-            SDL_Delay(1000 / 30);
+            // calculates to 10 fps
+            SDL_Delay(1000 / 10);
         }
 
         // destroy renderer

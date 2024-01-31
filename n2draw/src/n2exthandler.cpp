@@ -30,27 +30,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-nnExtHandler::nnExtHandler(extHandler & _hook, void *unkObj, bool _pulse)
-    :hook(_hook), unknow(unkObj),pulse(_pulse)
+nnExtHandler::nnExtHandler(extHandler & _hook, void *unkObj)
+    :hook(_hook), unknow(unkObj)
 {}
 
 
-void nnExtHandler::send(extHandler hook, void *unknow, size_t Tparam, IParam *in )
-{
-    //nnLOG1(size_t, Tparam);
-    if(hook && unknow )
-    {
-        try
-        {
-            hook(unknow,Tparam,in);
-        }
-        catch(...)
-        {
-            extHandlerException *e = new extHandlerException();
-            throw(e);
-        }
-    }
-}
+
 
 
 
@@ -59,22 +44,14 @@ void nnExtHandler::doHandler(size_t Tparam, IParam *in)
 {
     if (hook && unknow)
     {
-        if (pulse)
+        try
         {
-            std::thread th(&nnExtHandler::send, hook, unknow, Tparam, in);
-            th.detach();
+            hook(unknow, Tparam, in);
         }
-        else
+        catch (...)
         {
-            try
-            {
-                hook(unknow, Tparam, in);
-            }
-            catch (...)
-            {
-                extHandlerException *e = new extHandlerException();
-                throw(e);
-            }
+            extHandlerException *e = new extHandlerException();
+            throw(e);
         }
     }
 }
