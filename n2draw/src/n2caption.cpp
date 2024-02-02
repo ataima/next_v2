@@ -1,3 +1,4 @@
+#include <sstream>
 #include "images.h"
 #include "n2draw.h"
 #include "n2exception.h"
@@ -62,6 +63,7 @@ nnCaption::~nnCaption()
 
 void nnCaption::setTitle(XCHAR *_name)
 {
+    TFUNC();
     if (_name)
     {
         UtoA m(_name);
@@ -72,6 +74,7 @@ void nnCaption::setTitle(XCHAR *_name)
 
 void nnCaption::setArea(nnPoint & phy)
 {
+    TFUNC();
     hI = 0;
     wI = 0;
     for (int i = 0; i < num_item; i++)
@@ -87,12 +90,13 @@ void nnCaption::setArea(nnPoint & phy)
         }
     }
     phyArea.set(0, 0, phy.x, hI/3);
-    //nnLOG1(nnRect, phyArea);
+    log_verbose("hI=%d - wI=%d",hI,wI);
 }
 
 bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
 {
     bool res = false;
+    TFUNC();
     if(visible)
     {
         bmpImage caption;
@@ -146,6 +150,7 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
 
 void nnCaption::addImage(int pos, bmpImage * _image)
 {
+    TFUNC();
     if (pos < num_item && pos>=0)
     {
         image[pos] = _image;
@@ -154,6 +159,7 @@ void nnCaption::addImage(int pos, bmpImage * _image)
 
 bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
+    TFUNC();
     bool res = false;
     if(getStatus()==status_caption_none)
     {
@@ -168,8 +174,7 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                 if (hook)
                     hook->doHandler(action_redraw);
                 phyArea.stop.y=hI;
-                //nnLOG(status_caption,"CURRENT STATUS:",getStatus());
-                //nnLOG(show_status,"VIEW SHOW STATUS:",status);
+                log_verbose("status=%d - %s ",status, "show_caption");
             }
             else
             {
@@ -191,9 +196,8 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
                     hook->doHandler(action_redraw);
                 status = show_none;
                 phyArea.stop.y = hI/3;
-                //nnLOG(status_caption,"CURRENT STATUS:",getStatus());
-                //nnLOG(show_status,"VIEW SHOW STATUS:",status);
                 res = true;
+                log_verbose("status=%d - %s ",status, "show_none");
             }
         }
     }
@@ -202,7 +206,6 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
         if (hook)
         {
             nnPoint diff =  phyPoint - lastPoint ;
-            //nnLOG1(nnPoint, diff);
             if (diff != 0)
             {
                 auto *t = new nnAbstractParam<nnPoint>(diff);
@@ -217,6 +220,7 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
 
 int  nnCaption::itemFromPoint(nnPoint phyPoint)
 {
+    TFUNC();
     int i;
     for (i = 0; i < num_item; i++)
     {
@@ -231,6 +235,7 @@ int  nnCaption::itemFromPoint(nnPoint phyPoint)
 bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status*/, IExtHandler * hook)
 {
     bool res = false;
+    TFUNC();
     if (getStatus() == status_caption_none)
     {
         if (hook)
@@ -241,6 +246,7 @@ bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status
             case 4:
                 lastPoint = phyPoint;
                 setStatus(status_caption_move);
+                log_verbose("status=%d - %s ",status, "status_caption_move");
                 break;
             case 0:
                 hook->doHandler(action_iconize_windows);
@@ -261,6 +267,7 @@ bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status
     else
     {
         setStatus(status_caption_none);
+        log_verbose("status=%d - %s ",status, "status_caption_none");
     }
     return res;
 }
@@ -268,7 +275,7 @@ bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status
 
 bool nnCaption::drawTips(bmpImage & bkg)
 {
-
+    TFUNC();
     bool res = false;
     if (curItem != -1 && font != nullptr)
     {
@@ -277,3 +284,5 @@ bool nnCaption::drawTips(bmpImage & bkg)
     }
     return res;
 }
+
+

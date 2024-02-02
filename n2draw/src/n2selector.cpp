@@ -97,9 +97,17 @@ void nnSelector::draw(bmpImage & image,IViewGlue * glue)
         start = glue->getCoordPhy( select_start);
         stop  = glue->getCoordPhy( select_stop);
         stop += size;
-        unsigned int height=image.getHeight();
-        start.y = height - start.y;
-        stop.y = height - stop.y;
+        nnPoint direction=glue->getOrientation();
+        if(direction.x)
+        {
+            start.x=image.getWidth()-start.x;
+            stop.x=image.getWidth()-stop.x;
+        }
+        if(direction.y)
+        {
+            start.y = image.getHeight() - start.y;
+            stop.y = image.getHeight() - stop.y;
+        }
         start-=2;
         stop += 2;
         if (error)

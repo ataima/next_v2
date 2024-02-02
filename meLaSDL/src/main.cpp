@@ -26,14 +26,8 @@ static void hook(void *obj, size_t v, IParam *param)
         p = "ACTION REDRAW";
         {
             // clears the screen
-            SDL_Renderer *rend=(SDL_Renderer *)obj;
-            SDL_RenderClear(rend);
-            SDL_Texture *tex = update_n2app(rend);
-            if (tex != nullptr)
-            {
-                SDL_RenderCopy(rend, tex, nullptr, nullptr);
-                SDL_DestroyTexture(tex);
-            }
+            SDL_Renderer *rend = (SDL_Renderer *)obj;
+            update_n2app(rend);
         }
         break;
     case action_update_statusbars_info:
@@ -73,13 +67,13 @@ static void hook(void *obj, size_t v, IParam *param)
         p = "UNKNOW ACTION";
         break;
     }
-    if(param)
+    if (param)
     {
-        Log5("hook %s : Obj:%p S:%lu P:%p",p, obj, v, param);
+        Log5("hook %s : Obj:%p S:%lu P:%p", p, obj, v, param);
     }
     else
     {
-        Log5("hook %s : Obj:%p S:%lu ",p, obj, v);
+        Log5("hook %s : Obj:%p S:%lu ", p, obj, v);
     }
 }
 
@@ -127,6 +121,7 @@ static SDL_Texture *update_n2app(SDL_Renderer *rend)
 #if DUMP_BMP_TO_FILE
         bmp.copyToFile("/tmp/image.bmp");
 #endif
+        SDL_RenderClear(rend);
         unsigned int width = bmp.getWidth();
         unsigned int height = bmp.getHeight();
         unsigned int depth = bmp.getBitsPerPixel();
@@ -136,9 +131,14 @@ static SDL_Texture *update_n2app(SDL_Renderer *rend)
                                height,
                                depth,
                                pitch,
-                               SDL_PIXELFORMAT_RGB24);
+                               SDL_PIXELFORMAT_RGBA8888 );
         tex = SDL_CreateTextureFromSurface(rend, surface);
         SDL_FreeSurface(surface);
+        if (tex != nullptr)
+        {
+            SDL_RenderCopy(rend, tex, nullptr, nullptr);
+            SDL_DestroyTexture(tex);
+        }
     }
     return tex;
 }
@@ -274,9 +274,10 @@ static void mouseMove(SDL_Event *e)
     if (e)
     {
         SDL_MouseMotionEvent *m = &e->motion;
-        Log5("MOUSE MOTION EVENT  %d W:%d S:%d w:%d X:%d Y:%d Sx=%d Sy:%d",
+        /*Log5("MOUSE MOTION EVENT  %d W:%d S:%d w:%d X:%d Y:%d Sx=%d Sy:%d",
              m->timestamp, m->windowID, m->state, m->which,
              m->x, m->y, m->xrel, m->yrel);
+             */
 
         IHandler *handler = n2App->active();
         if (handler)
@@ -284,12 +285,12 @@ static void mouseMove(SDL_Event *e)
             nnPoint pos(m->x, m->y);
             if (m->state == SDL_BUTTON_LMASK)
             {
-                Log5("exec handlerMouseMove with left button down");
+                // Log5("exec handlerMouseMove with left button down");
                 handler->handlerMouseMove(nn_m_button_left, pos);
             }
             else if (m->state == 0)
             {
-                Log5("exec handlerMouseMove");
+                // Log5("exec handlerMouseMove");
                 handler->handlerMouseMove(nn_m_button_unknow, pos);
             }
         }
@@ -406,7 +407,7 @@ int main(int argc, char *argv[])
 
         // speed of box
         int speed = 300;
-        hook(rend,action_redraw,nullptr);
+        hook(rend, action_redraw, nullptr);
         // animation loop
         while (!close)
         {
@@ -463,13 +464,13 @@ int main(int argc, char *argv[])
     }
     catch (n2exception *e)
     {
-        printf("ERROR : exception: %s\n", e->what());
+        printf("ERROR - %s\n", e->msg());
         delete e;
     }
 
     catch (bmpImageException *e)
     {
-        printf("ERROR : exception: %s\n", e->what());
+        printf("ERROR - %s\n", e->msg());
         delete e;
     }
 

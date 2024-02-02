@@ -75,6 +75,7 @@ public:
     {
         visible = true;
     }
+    TOSTRING(nnCaption);
 private :
     int itemFromPoint(nnPoint phyPoint);
     bool drawTips(bmpImage & bkg);

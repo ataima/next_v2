@@ -51,7 +51,6 @@ void nnChildApp::defaultCommandRequest(void *dest, size_t type_param, IParam *us
 
 nnChildApp::nnChildApp(unsigned int _id)
 {
-
     object_manager = nullptr;
     fonts = nullptr;
     view = nullptr;
@@ -104,6 +103,7 @@ void nnChildApp::clean(void)
 
 bool nnChildApp::createObjects(IConfig *configuration, STRING &conf_file_name, STRING &confPath)
 {
+    TFUNC();
     bool res = false;
     if (configuration != nullptr)
     {
@@ -230,6 +230,7 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING &conf_file_name, S
 
 bool nnChildApp::loadImages(void)
 {
+    TFUNC();
     bool res = false;
     if (imageManager)
     {
@@ -263,6 +264,7 @@ bool nnChildApp::loadImages(void)
 
 bool nnChildApp::setExtHandler(extHandler _hook, void *unkObj)
 {
+    TFUNC();
     bool res = false;
     nnExtHandler *nh = new nnExtHandler(_hook, unkObj);
     if (nh)
@@ -274,6 +276,7 @@ bool nnChildApp::setExtHandler(extHandler _hook, void *unkObj)
 
 bool nnChildApp::Capture(int command, unsigned int image)
 {
+    TFUNC();
     bool res = false;
     if (view)
     {
@@ -284,6 +287,7 @@ bool nnChildApp::Capture(int command, unsigned int image)
 
 bool nnChildApp::addContact(nnPoint &pos, nnObjContact *contact)
 {
+    TFUNC();
     bool res = false;
     if (object_manager && contact)
     {
@@ -308,6 +312,7 @@ bool nnChildApp::addContact(nnPoint &pos, nnObjContact *contact)
 
 bool nnChildApp::addCoil(nnPoint &pos, nnObjCoil *coil)
 {
+    TFUNC();
     bool res = false;
     if (object_manager && coil)
     {
@@ -319,6 +324,7 @@ bool nnChildApp::addCoil(nnPoint &pos, nnObjCoil *coil)
 
 bool nnChildApp::connect(nnPoint &start, nnPoint &end)
 {
+    TFUNC();
     bool res = false;
     if (object_manager)
     {
@@ -796,7 +802,6 @@ bool nnChildApp::handlerCancelButton(bool shift, bool ctrl, bool alt)
 
 void nnChildApp::defaultProcess(size_t type_param, IParam *user_param)
 {
-
     switch (type_param)
     {
     case action_host_command:

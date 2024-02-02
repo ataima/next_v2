@@ -55,6 +55,7 @@ public:
     {
         font = _font;
     }
+    TOSTRING(nnCapturePos);
 private:
     bool drawTips(bmpImage & bkg);
 };

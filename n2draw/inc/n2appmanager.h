@@ -54,7 +54,9 @@ public:
     static IAppManager *getInstance(void);
 #if _LOGGER_
     void setPrinter(IPrinter * printer);
+    TOSTRING(n2AppManager);
 #endif
+
 protected:
     bool clean(void);
     IChild * createObjects(STRING & conf_file_name,STRING & path_name);

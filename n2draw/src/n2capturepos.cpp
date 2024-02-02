@@ -52,6 +52,7 @@ nnCapturePos::~nnCapturePos()
 
 void nnCapturePos::setCommand(int c, unsigned int image,nnPoint & _startLogPos)
 {
+    TFUNC();
     command = c;
     off_image = image;
     startLogPos = _startLogPos;
@@ -64,6 +65,7 @@ void nnCapturePos::setCommand(int c, unsigned int image,nnPoint & _startLogPos)
 
 void nnCapturePos::draw(bmpImage & image, IViewGlue * glue)
 {
+    TFUNC();
     if (glue)
     {
         nnPoint phy = glue->getCoordPhy(endLogPos);
@@ -76,6 +78,7 @@ void nnCapturePos::draw(bmpImage & image, IViewGlue * glue)
 
 bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & /*status*/, IExtHandler *hook)
 {
+    TFUNC();
     bool res = false;
     if (parent)
     {
@@ -94,6 +97,7 @@ bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & /*status*/,
 
 bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
+    TFUNC();
     bool res = false;
     if (parent)
     {
@@ -130,6 +134,7 @@ bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & statu
 
 bool nnCapturePos::drawTips(bmpImage & bkg)
 {
+    TFUNC();
     bool res = false;
     if (endLogPos.isValid() &&  font != nullptr)
     {

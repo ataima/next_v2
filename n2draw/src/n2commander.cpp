@@ -278,13 +278,13 @@ bool nnCommander::checkRequestCommand( nnPoint & pos,int & command)
     bool res=false;
     listCommandItem::iterator it=items.begin();
     listCommandItem::iterator end=items.end();
-    //nnLOG(nnPoint, "current click mouse position :", pos);
+    Log5("current click mouse position : %d", pos);
     while(it!=end)
     {
         if((*it)->btRect.into(pos))
         {
             command=(*it)->command;
-            //nnLOG(int, "ITEM :", (*it)->command);
+            Log5("ITEM : %d", (*it)->command);
             res=true;
             break;
         }

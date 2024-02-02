@@ -84,6 +84,11 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 #endif
 #endif
 
+#define _EOL    std::endl
+
+#define TOSTRING(__CLASS__)  const char *tostring(void) final{ return #__CLASS__;}
+
+
 typedef enum tag_handler_Action
 {
     action_redraw=0,
@@ -625,6 +630,7 @@ public:
                                         show_status & status,IExtHandler *hook) = 0;
     virtual void setFont(IFontManager *font) = 0;
     virtual ~ICapture() {};
+    virtual const char *tostring(void)=0;
 };
 
 
@@ -685,6 +691,7 @@ public:
     virtual void setTitle(XCHAR *_name)=0;
     virtual void setArea(nnPoint & phy) = 0;
     virtual void setFont(IFontManager *_font) = 0;
+    virtual const char *tostring(void)=0;
     virtual ~ICaption() {}
 };
 
@@ -694,8 +701,10 @@ class IViewGlue
 {
 public:
     virtual bool setPhyView(int w, int h) = 0;
+    virtual bool setOrientation(int h,int v)=0;
+    virtual nnPoint getOrientation(void)=0;
     virtual nnPoint getCoordPhy(const nnPoint & logPoint) = 0;
-    virtual nnPoint getMirrorCoordPhy(int height,int x, int y) = 0;
+    virtual nnPoint getMirrorCoordPhy(nnPoint size,int x, int y) = 0;
     virtual nnPoint getCoordLog(const nnPoint & phyPoint) = 0;
     virtual nnPoint getConstPhy(void)=0;
     virtual nnPoint getPhySize(void)=0;
@@ -753,6 +762,7 @@ public:
     //virtual bool addCoil(nnPoint & pos, nnObjCoil * coil)=0;
     virtual void defaultProcess(size_t type_param, IParam *user_param)=0;
     virtual ~IChild() {}
+    virtual const char *tostring(void)=0;
 };
 
 
@@ -768,6 +778,7 @@ public:
     virtual void setPrinter(IPrinter * printer)=0;
 #endif
     virtual ~IAppManager() {}
+    virtual const char *tostring(void)=0;
 };
 
 

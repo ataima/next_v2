@@ -76,11 +76,20 @@ public:
 #define Log0(...)   ILogger::getInstance()->log(0,__VA_ARGS__) //PANIC
 #define Log1(...)   ILogger::getInstance()->log(1,__VA_ARGS__) //EMERG
 #define Log2(...)   ILogger::getInstance()->log(2,__VA_ARGS__) //ERROR
-#define Log3(...)   ILogger::getInstance()->log(3,__VA_ARGS__) //DEFAULT
+#define Log3(...)   ILogger::getInstance()->log(3,__VA_ARGS__) //WARNING
 #define Log4(...)   ILogger::getInstance()->log(4,__VA_ARGS__) //INFO
 #define Log5(...)   ILogger::getInstance()->log(5,__VA_ARGS__) //VERBOSE
 #define Log6(...)   ILogger::getInstance()->log(6,__VA_ARGS__) //DEBUG
 
+#define TFUNC()  Log6("%s::%s",tostring(),__func__)
+
+#define log_panic(...)      Log0("PANIC: %s::%s :",tostring(),__func__,__VA_ARGS__)
+#define log_emerg(...)      Log0("EMERG: %s::%s :",tostring(),__func__,__VA_ARGS__)
+#define log_error(...)      Log0("ERROR: %s::%s :",tostring(),__func__,__VA_ARGS__)
+#define log_warning(...)    Log0("WARNING: %s::%s :",tostring(),__func__,__VA_ARGS__)
+#define log_info(...)       Log4("INFO: %s::%s :",tostring(),__func__,__VA_ARGS__)
+#define log_verbose(...)    Log5("VERBOSE: %s::%s :",tostring(),__func__,__VA_ARGS__)
+#define log_debug(...)      Log5("DEBUG: %s::%s :",tostring(),__func__,__VA_ARGS__)
 
 #else
 
@@ -91,6 +100,17 @@ public:
 #define Log4(...)
 #define Log5(...)
 #define Log6(...)
+
+#define TFUNC()
+
+
+#define log_panic(...)
+#define log_emerg(...)
+#define log_error(...)
+#define log_warning(...)
+#define log_info(...)
+#define log_verbose(...)
+#define log_debug(...)
 
 #endif
 

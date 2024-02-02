@@ -154,7 +154,8 @@ bool nnView::drawObj(InnObj * obj, int & x, int & y, IViewGlue * glue)
         IImageManager * images = parent->getImage();
         if (images)
         {
-            nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(), x, y);
+            nnPoint size(page.getWidth(),page.getHeight());
+            nnPoint pos = glue->getMirrorCoordPhy(size, x, y);
             bmpImage *sprite = images->getImage(nImage);
             if (sprite)
             {
@@ -174,7 +175,8 @@ bool nnView::drawBkg(int & x, int & y, IViewGlue * glue)
         IImageManager * images = parent->getImage();
         if (images != nullptr)
         {
-            nnPoint pos = glue->getMirrorCoordPhy(page.getHeight(),x, y);
+            nnPoint size(page.getWidth(),page.getHeight());
+            nnPoint pos = glue->getMirrorCoordPhy(size,x, y);
             bmpImage *sprite=images->getImage(0);
 #if 0
             sprite->show(10, 10);

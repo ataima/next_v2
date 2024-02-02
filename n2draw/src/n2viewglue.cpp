@@ -173,11 +173,25 @@ nnPoint nnViewGlue::getCoordPhy(const nnPoint & logPoint)
     return res;
 }
 
-nnPoint nnViewGlue::getMirrorCoordPhy(int height,int x, int y)
+nnPoint nnViewGlue::getMirrorCoordPhy(nnPoint size,int x, int y)
 {
     nnPoint res(0, 0);
-    res.x = ((x-offset_Pos.x)*const_Size.x);
-    res.y = height-((y - offset_Pos.y)*const_Size.y)-const_Size.y;
+    if(orientation.x)
+    {
+        res.x = size.x-((x-offset_Pos.x)*const_Size.x)-const_Size.x;
+    }
+    else
+    {
+        res.x = ((x-offset_Pos.x)*const_Size.x);
+    }
+    if(orientation.y)
+    {
+        res.y = size.x-((y - offset_Pos.y)*const_Size.y)-const_Size.y;
+    }
+    else
+    {
+        res.y = ((y-offset_Pos.y)*const_Size.y);
+    }
     return res;
 }
 
@@ -193,7 +207,7 @@ nnPoint nnViewGlue::getCoordLog(const nnPoint & phyPoint)
 //TestviewGlue.cpp : T2
 bool nnViewGlue::readConfiguration(IXmlNode *node)
 {
-    int w=0, h=0;
+    int w=0, h=0,sx=0,sy=0;
     bool res = false;
     if (parent)
     {
@@ -269,6 +283,26 @@ bool nnViewGlue::readConfiguration(IXmlNode *node)
                     throw (pe);
                 }
                 setPhyView(w, h);
+                t = conf->find(X("SWAPX"));
+                if (t)
+                {
+                    sx = t->getLong();
+                }
+                else
+                {
+                    xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("SWAPX"));
+                    throw (pe);
+                }
+                t = conf->find(X("SWAPY"));
+                if (t)
+                {
+                    sy = t->getLong();
+                }
+                else
+                {
+                    xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("SWAPY"));
+                    throw (pe);
+                }
                 res = true;
             }
             else
@@ -713,6 +747,13 @@ bool nnViewGlue::setPhyView(int w, int h)
     return res;
 }
 
+
+bool nnViewGlue::setOrientation(int h, int v)
+{
+    orientation.x=h;
+    orientation.y=v;
+    return true;
+}
 
 bool nnViewGlue::resize(int w, int h)
 {

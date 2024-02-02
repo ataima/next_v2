@@ -87,6 +87,7 @@ IChild * n2AppManager::create(STRING & conf_file_name)
 IChild * n2AppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 {
     bool res = false;
+    TFUNC();
     IChild * child = new nnChildApp(UID);
     MEMCHK(IChild, child);
     try
@@ -120,6 +121,7 @@ IChild * n2AppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 #if _LOGGER_
 void n2AppManager::setPrinter(IPrinter * printer)
 {
+    TFUNC();
     ILogger *current_logger = ILogger::getInstance();
     if (current_logger == nullptr)
     {
@@ -135,6 +137,7 @@ void n2AppManager::setPrinter(IPrinter * printer)
 
 bool n2AppManager::closeAll(void)
 {
+    TFUNC();
     if (childs.size() > 0)
     {
 #if _LOGGER_
@@ -154,6 +157,7 @@ bool n2AppManager::closeAll(void)
 IChild *n2AppManager::activate(int v)
 {
     IChild * res = nullptr;
+    TFUNC();
     if (!childs.empty())
     {
         listChild::iterator it = childs.find(v);
@@ -171,6 +175,7 @@ IChild *n2AppManager::activate(int v)
 IChild *n2AppManager::active(void)
 {
     IChild * res = nullptr;
+    TFUNC();
     if (!childs.empty() && selected>0)
     {
         listChild::iterator it = childs.find(selected);
@@ -185,12 +190,9 @@ IChild *n2AppManager::active(void)
 
 
 
-
-
-
-
 bool n2AppManager::clean(void)
 {
+    TFUNC();
     for (auto i : childs)
     {
         i.second->clean();

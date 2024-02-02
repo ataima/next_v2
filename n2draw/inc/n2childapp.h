@@ -69,6 +69,7 @@ public:
     {
         return defaultHandler;
     }
+    TOSTRING(nnChildApp);
     // remap handler
     bool handlerMouseMove(nn_mouse_buttons buttons, nnPoint & phyPoint) ;
     bool handlerMouseButtonDown(nn_mouse_buttons buttons, nnPoint & phyPoint) ;

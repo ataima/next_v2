@@ -42,6 +42,7 @@ class nnViewGlue
     nnPoint const_Size;
     nnPoint phy_Size;
     nnPoint offset_Pos;
+    nnPoint orientation;
 
     IChild *parent;
     IView     *view;
@@ -59,8 +60,13 @@ public:
     nnViewGlue(IChild *_parent);
     ~nnViewGlue();
     bool setPhyView(int w, int h);
+    bool setOrientation(int h,int v);
+    inline nnPoint getOrientation(void)
+    {
+        return orientation;
+    };
     nnPoint getCoordPhy(const nnPoint & logPoint);
-    nnPoint getMirrorCoordPhy(int height, int x, int y);
+    nnPoint getMirrorCoordPhy(nnPoint size, int x, int y);
     nnPoint getCoordLog(const nnPoint & phyPoint);
     inline  nnPoint getConstPhy(void)
     {
