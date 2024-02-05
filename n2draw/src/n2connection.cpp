@@ -31,6 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 bool nnConnection::connectComponent(IManager * manager, nnPoint & p_src, nnPoint & p_dst)
 {
     bool res = false;
+    TFUNCI();
     if (manager != nullptr)
     {
         //InnObj *v = nullptr;
@@ -89,6 +90,7 @@ bool nnConnection::connectComponent(IManager * manager, nnPoint & p_src, nnPoint
             res=connectToPower(manager, p_src, p_dst);
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -99,6 +101,7 @@ bool nnConnection::connectToPower(IManager *manager, nnPoint &p_src, nnPoint & p
     bool res = false;
     int u;
     InnObj *v = nullptr;
+    TFUNCI();
     //vert connection
     if (p_src.y > p_dst.y)
     {
@@ -139,6 +142,7 @@ bool nnConnection::connectToPower(IManager *manager, nnPoint &p_src, nnPoint & p
             }
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -148,6 +152,7 @@ bool nnConnection::connectVertComponent(IManager *manager, nnPoint &p_src, nnPoi
     bool res = false;
     int u;
     InnObj *v = nullptr;
+    TFUNCI();
     //vert connection
     if (p_src.y > p_dst.y)
     {
@@ -187,6 +192,7 @@ bool nnConnection::connectVertComponent(IManager *manager, nnPoint &p_src, nnPoi
             }
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -197,6 +203,7 @@ bool nnConnection::connectHorzIncrUpSideComponent(IManager * manager, nnPoint & 
     InnObj *v = nullptr;
     InnObj *near_src = nullptr;
     InnObj *near_dst = nullptr;
+    TFUNCI();
     if (p_src.y > 0)
     {
         //UP SIDE
@@ -298,6 +305,7 @@ bool nnConnection::connectHorzIncrUpSideComponent(IManager * manager, nnPoint & 
     {
         res = true;
     }
+    TFUNCO();
     return res;
 }
 
@@ -308,6 +316,7 @@ bool nnConnection::connectHorzIncrDownSideComponent(IManager * manager, nnPoint 
     InnObj *v = nullptr;
     InnObj *near_src = nullptr;
     InnObj *near_dst = nullptr;
+    TFUNCI();
     if (p_src.y < manager->getHeight())
     {
         //DOWN SIDE
@@ -411,6 +420,7 @@ bool nnConnection::connectHorzIncrDownSideComponent(IManager * manager, nnPoint 
             res=true;
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -424,6 +434,7 @@ bool nnConnection::connectHorzDecrUpSideComponent(IManager * manager, nnPoint & 
     InnObj *v = nullptr;
     InnObj *near_src = nullptr;
     InnObj *near_dst = nullptr;
+    TFUNCI();
     if (p_src.y > 0)
     {
         //UP SIDE
@@ -525,6 +536,7 @@ bool nnConnection::connectHorzDecrUpSideComponent(IManager * manager, nnPoint & 
     {
         res = true;
     }
+    TFUNCO();
     return res;
 }
 
@@ -535,6 +547,7 @@ bool nnConnection::connectHorzDecrDownSideComponent(IManager * manager, nnPoint 
     InnObj *v = nullptr;
     InnObj *near_src = nullptr;
     InnObj *near_dst = nullptr;
+    TFUNCI();
     if (p_src.y < manager->getHeight())
     {
         //DOWN SIDE
@@ -636,6 +649,7 @@ bool nnConnection::connectHorzDecrDownSideComponent(IManager * manager, nnPoint 
             res=true;
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -646,6 +660,7 @@ bool nnConnection::connectVertWireComponent(IManager *manager, nnPoint &p_src, n
     int u;
     InnObj *v = nullptr;
     int num = 0;
+    TFUNCI();
     InnObj *src = manager->getObj(p_src.x, p_src.y);
     InnObj *dst = manager->getObj(p_dst.x, p_dst.y);
     if (src != nullptr && !src->isComponent())
@@ -693,6 +708,7 @@ bool nnConnection::connectVertWireComponent(IManager *manager, nnPoint &p_src, n
             }
         }
     }
+    TFUNCO();
     return res;
 }
 

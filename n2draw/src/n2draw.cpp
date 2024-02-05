@@ -31,7 +31,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-const STRING nnObj::toString(void) const
+const char * nnObj::toString(void)
 {
     SSTREAM s;
     switch (v_context)
@@ -52,7 +52,7 @@ const STRING nnObj::toString(void) const
         s << X("unknow");
         break;
     }
-    return s.str();
+    return s.str().c_str();
 }
 
 
@@ -79,12 +79,12 @@ void nnObj::load(IXmlNode *root)
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const  STRING nnObjPos::toString(void) const
+const  char * nnObjPos::toString(void)
 {
     SSTREAM s;
     s << X("X:") << v_Xpos << X(" - Y:") <<
       v_Ypos << " - " << nnObj::toString();
-    return s.str();
+    return s.str().c_str();
 }
 
 
@@ -766,14 +766,14 @@ eWire nnObjWire::wireStringToEnum(const XCHAR *name)
 int nnObjConn::uid_num = 2;
 
 
-const STRING nnObjConn::toString(void) const
+const char * nnObjConn::toString(void)
 {
     SSTREAM s;
     if (v_num.size() > 0)
         s << "N:" << v_num.front() << ":" << v_num.back() << " - " << nnObjPos::toString();
     else
         s << "N:" << "0:0" << " - " << nnObjPos::toString();
-    return s.str();
+    return s.str().c_str();
 }
 
 
@@ -827,7 +827,7 @@ void nnObjConn::load(IXmlNode *root)
     }
 }
 
-const  STRING nnObjWire::toString(void) const
+const  char * nnObjWire::toString(void)
 {
     SSTREAM s;
     s << nnObjConn::toString() << " - ";
@@ -873,7 +873,7 @@ const  STRING nnObjWire::toString(void) const
         s << X("unknow");
         break;
     }
-    return s.str();
+    return s.str().c_str();
 }
 
 
@@ -1115,27 +1115,27 @@ bool nnObjComponent::disconnectFromDown(void)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const  STRING nnObjContact::toString(void) const
+const  char * nnObjContact::toString(void)
 {
     SSTREAM s;
     s << X("CONTACT : ");
     s << nnObjComponent::toString()<< std::endl;
-    s << nnObjVCPU::toString() << std::endl;
-    return s.str();
+    //s << nnObjVCPU::toString() << std::endl;
+    return s.str().c_str();
 }
 
-const  STRING nnContactNO::toString(void) const
+const  char * nnContactNO::toString(void)
 {
     SSTREAM s;
     s << X("N.O. ") << nnObjContact::toString();
-    return s.str();
+    return s.str().c_str();
 }
 
-const  STRING nnContactNC::toString(void) const
+const  char * nnContactNC::toString(void)
 {
     SSTREAM s;
     s << X("N.C. ") << nnObjContact::toString();
-    return s.str();
+    return s.str().c_str();;
 }
 
 void nnObjContact::save(IXmlNode *root)
@@ -1144,7 +1144,7 @@ void nnObjContact::save(IXmlNode *root)
     {
         root->add(X("Custom"), v_spec);
         nnObjConn::save(root);
-        nnObjVCPU::save(root);
+        //nnObjVCPU::save(root);
     }
 }
 
@@ -1157,26 +1157,26 @@ void nnObjContact::load(IXmlNode *root)
         {
             v_spec = (custom_obj)node->getLong();
             nnObjConn::load(root);
-            nnObjVCPU::load(root);
+            //nnObjVCPU::load(root);
         }
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const  STRING nnObjCoil::toString(void) const
+const  char * nnObjCoil::toString(void)
 {
     SSTREAM s;
     s << X("COIL : ");
     s << nnObjComponent::toString() << std::endl;
-    s << nnObjVCPU::toString() << std::endl;
-    return s.str();
+    //s << nnObjVCPU::toString() << std::endl;
+    return s.str().c_str();
 }
 
-const  STRING nnGenericCoil::toString(void) const
+const  char * nnGenericCoil::toString(void)
 {
     SSTREAM s;
     s << X("GEN ") <<nnObjCoil::toString() << std::endl;
-    return s.str();
+    return s.str().c_str();
 }
 
 
@@ -1202,7 +1202,7 @@ void nnObjCoil::load(IXmlNode *root)
     }
 }
 
-const STRING nnObjVCPU::toString(void) const
+const char * nnObjVCPU::toString(void)
 {
     SSTREAM os;
     if (v_vcpu != nullptr)
@@ -1215,7 +1215,7 @@ const STRING nnObjVCPU::toString(void) const
                 os << X("Error: index = ") << i << X(" Out of bounds") << std::endl;
         }
     }
-    return os.str();
+    return os.str().c_str();
 }
 
 void nnObjVCPU::save(IXmlNode *root)

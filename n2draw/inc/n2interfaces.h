@@ -86,8 +86,9 @@ typedef std::basic_stringstream<char16_t> 	u16stringstream;
 
 #define _EOL    std::endl
 
-#define TOSTRING(__CLASS__)  const char *tostring(void) final{ return #__CLASS__;}
+#define TOSTRING(__CLASS__)  const char *toString(void) final{ return #__CLASS__;}
 
+#define TOSTRING_v(__CLASS__)  virtual const char *toString(void) { return #__CLASS__;}
 
 typedef enum tag_handler_Action
 {
@@ -331,6 +332,7 @@ public:
     virtual bool draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue) = 0;
     virtual bool checkRequestCommand(nnPoint & pos, int & command) = 0;
     virtual bool handlerMouseMove(nnPoint & pos, IExtHandler *hook) = 0;
+    virtual const char *toString(void)=0;
     virtual ~ICommander() {}
 };
 
@@ -378,7 +380,7 @@ public:
     virtual void setXpos(int pX) = 0;
     virtual void setYpos(int pY) = 0;
     virtual void setPos(int pX, int pY) = 0;
-    virtual const STRING toString(void) const = 0;
+    virtual const char* toString(void) = 0;
     virtual eWireDirection getDirection(InnObj * b) = 0;
     virtual eConnections & getConnections(void) = 0;
     virtual void setConnections(int  v) = 0;
@@ -439,13 +441,12 @@ class InnVCPU
 public:
     virtual eVCPUregister &getVCPUregister(void) = 0;
     virtual void setVCPUregister(eVCPUregister & r) = 0;
-    virtual const STRING toString(void) const = 0;
     virtual void save(IXmlNode *root) = 0;
     virtual void load(IXmlNode *root) = 0;
     virtual void setBaseVCPU(pMerlinoVCPU vcpu) = 0;
     virtual pMerlinoVCPU getBaseVCPU(void) = 0;
     virtual ~InnVCPU() {}
-
+    virtual const char * toString(void) = 0;
 };
 
 //////////////////////////////////////////////////////
@@ -630,7 +631,7 @@ public:
                                         show_status & status,IExtHandler *hook) = 0;
     virtual void setFont(IFontManager *font) = 0;
     virtual ~ICapture() {};
-    virtual const char *tostring(void)=0;
+    virtual const char *toString(void)=0;
 };
 
 
@@ -691,7 +692,7 @@ public:
     virtual void setTitle(XCHAR *_name)=0;
     virtual void setArea(nnPoint & phy) = 0;
     virtual void setFont(IFontManager *_font) = 0;
-    virtual const char *tostring(void)=0;
+    virtual const char *toString(void)=0;
     virtual ~ICaption() {}
 };
 
@@ -762,7 +763,7 @@ public:
     //virtual bool addCoil(nnPoint & pos, nnObjCoil * coil)=0;
     virtual void defaultProcess(size_t type_param, IParam *user_param)=0;
     virtual ~IChild() {}
-    virtual const char *tostring(void)=0;
+    virtual const char *toString(void)=0;
 };
 
 
@@ -778,7 +779,7 @@ public:
     virtual void setPrinter(IPrinter * printer)=0;
 #endif
     virtual ~IAppManager() {}
-    virtual const char *tostring(void)=0;
+    virtual const char *toString(void)=0;
 };
 
 

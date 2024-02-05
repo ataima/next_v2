@@ -91,7 +91,7 @@ class nnDefaultPrinter
     : public IPrinter
 {
 public:
-    void out(int level, std::string &msg);
+    void out(int level, const std::string &msg  );
 };
 
 

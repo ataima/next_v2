@@ -65,6 +65,7 @@ nnCommander::~nnCommander()
 bool nnCommander::readConfiguration(IXmlNode *conf)
 {
     bool res = false;
+    TFUNCI();
     if(conf)
     {
         int numItem;
@@ -223,12 +224,14 @@ bool nnCommander::readConfiguration(IXmlNode *conf)
             res=true;
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
 {
     bool res=false;
+    TFUNCI();
     nnPoint pos = phyPoint;
     pos.y = bmpHeight - pos.y;
     if(curItem==nullptr)
@@ -268,6 +271,7 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
             res=true;
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -276,20 +280,22 @@ bool nnCommander::handlerMouseMove( nnPoint & phyPoint,IExtHandler *hook)
 bool nnCommander::checkRequestCommand( nnPoint & pos,int & command)
 {
     bool res=false;
+    TFUNCI();
     listCommandItem::iterator it=items.begin();
     listCommandItem::iterator end=items.end();
-    Log5("current click mouse position : %d", pos);
+    log_verbose("current click mouse position : %d", pos);
     while(it!=end)
     {
         if((*it)->btRect.into(pos))
         {
             command=(*it)->command;
-            Log5("ITEM : %d", (*it)->command);
+            log_verbose("ITEM : %d", (*it)->command);
             res=true;
             break;
         }
         it++;
     }
+    TFUNCO();
     return res;
 }
 
@@ -299,6 +305,7 @@ bool nnCommander::checkRequestCommand( nnPoint & pos,int & command)
 bool nnCommander::loadImages(STRING  &path)
 {
     bool res=false;
+    TFUNCI();
     if(images)
     {
         if(images->setPath(path))
@@ -307,6 +314,7 @@ bool nnCommander::loadImages(STRING  &path)
             res=images->loadImages(co);
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -316,7 +324,8 @@ bool nnCommander::loadImages(STRING  &path)
 bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
 {
     bool res = false;
-    //nnLOG1(nnPoint, pos);
+    TFUNCI();
+    log_verbose("pos.x=%d pos.y=%d",pos.x,pos.y);
     listCommandItem::iterator it = items.begin();
     listCommandItem::iterator _end = items.end();
     bmpHeight  = bkg.getHeight();
@@ -351,20 +360,24 @@ bool nnCommander::draw(bmpImage & bkg, nnPoint & pos, IViewGlue * glue)
         drawTips(bkg, pos, glue);
     }
     res = (it == _end);
+    TFUNCO();
     return res;
 }
 
 
-bool nnCommander::drawTips(bmpImage & bkg, nnPoint &, IViewGlue *)
+bool nnCommander::drawTips(bmpImage & bkg, nnPoint &p, IViewGlue *view)
 {
 
     bool res = false;
+    TFUNCI();
+    log_verbose("pos.x=%d pos.y=%d",p.x,p.y);
     if (curItem != nullptr && font != nullptr)
     {
         UtoA toA(curItem->info);
         std::string s = toA.utf8();
         res = nnUtils::drawBottomLeftTips(bkg, *font, s );
     }
+    TFUNCO();
     return res;
 }
 
@@ -376,7 +389,8 @@ void nnCommander::getQuadrant(nnPoint & pos, nnPoint & res)
     int pX = pos.x / divX;
     int pY = pos.y / divY;
     res.set(0, 0);
-    //nnLOG2(int, pX, pY);
+    TFUNCI();
+    log_verbose("pos.x=%d pos.y=%d",pos.x,pos.y);
     if (pX == 0)
         res.x = maxExt.x;
     if (pX == 4)
@@ -385,5 +399,6 @@ void nnCommander::getQuadrant(nnPoint & pos, nnPoint & res)
         res.y = maxExt.y;
     if (pY == 4)
         res.y = -maxExt.y;
-    //nnLOG1(nnPoint, res);
+    log_verbose("res.x=%d res.y=%d",res.x,res.y);
+    TFUNCO();
 }

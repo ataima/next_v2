@@ -52,7 +52,7 @@ nnCapturePos::~nnCapturePos()
 
 void nnCapturePos::setCommand(int c, unsigned int image,nnPoint & _startLogPos)
 {
-    TFUNC();
+    TFUNCI();
     command = c;
     off_image = image;
     startLogPos = _startLogPos;
@@ -61,11 +61,12 @@ void nnCapturePos::setCommand(int c, unsigned int image,nnPoint & _startLogPos)
         IImageManager *images = parent->getImage();
         curImage = images->getImage(off_image);
     }
+    TFUNCO();
 }
 
 void nnCapturePos::draw(bmpImage & image, IViewGlue * glue)
 {
-    TFUNC();
+    TFUNCI();
     if (glue)
     {
         nnPoint phy = glue->getCoordPhy(endLogPos);
@@ -74,11 +75,12 @@ void nnCapturePos::draw(bmpImage & image, IViewGlue * glue)
                             );
     }
     drawTips(image);
+    TFUNCO();
 }
 
 bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & /*status*/, IExtHandler *hook)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (parent)
     {
@@ -92,12 +94,13 @@ bool nnCapturePos::handlerMouseMove(nnPoint &phyPoint, show_status & /*status*/,
             res = true;
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (parent)
     {
@@ -127,6 +130,7 @@ bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & statu
             curImage = nullptr;
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -134,7 +138,7 @@ bool nnCapturePos::handlerMouseButtonDown(nnPoint &phyPoint, show_status & statu
 
 bool nnCapturePos::drawTips(bmpImage & bkg)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (endLogPos.isValid() &&  font != nullptr)
     {
@@ -143,5 +147,6 @@ bool nnCapturePos::drawTips(bmpImage & bkg)
         std::string l= s.str();
         res = nnUtils::drawBottomLeftTips(bkg, *font, l );
     }
+    TFUNCO();
     return res;
 }

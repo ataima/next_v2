@@ -10,6 +10,7 @@
 #include <images.h>
 #include <n2appmanager.h>
 #include <n2exception.h>
+#include <n2statistics.h>
 
 #define DUMP_BMP_TO_FILE 0
 
@@ -79,10 +80,17 @@ static void hook(void *obj, size_t v, IParam *param)
 
 static void openlog(void)
 {
+#if _LOGGER_
     ILogger *logger = new nnLogger();
     IPrinter *printer = new nnDefaultPrinter();
     logger->setOutput(printer);
-    Log3("log Start ... ");
+    Log3("log Start ... ",nullptr);
+
+#if _STATISTICS_
+    IStatistics *stat = new nnStatistics();
+#endif
+
+#endif
 }
 
 static SDL_Point link_n2app()
@@ -199,39 +207,39 @@ static void keyCommand(SDL_Event *e)
                 switch (code)
                 {
                 case SDL_SCANCODE_ESCAPE:
-                    Log5("exec handlerEscapeButton");
+                    Log5("exec handlerEscapeButton",nullptr);
                     handler->handlerEscapeButton(shift, ctrl, alt);
                     break;
                 case SDL_SCANCODE_HOME:
-                    Log5("exec handlerHomeButton");
+                    Log5("exec handlerHomeButton",nullptr);
                     handler->handlerHomeButton(shift, ctrl, alt);
                     break;
                 case SDL_SCANCODE_END:
-                    Log5("exec handlerEndButton");
+                    Log5("exec handlerEndButton",nullptr);
                     handler->handlerEndButton(shift, ctrl, alt);
                     break;
                 case SDL_SCANCODE_PAGEUP:
-                    Log5("exec handlerPageUpButton");
+                    Log5("exec handlerPageUpButton",nullptr);
                     handler->handlerPageUpButton(shift, ctrl, alt);
                     break;
                 case SDL_SCANCODE_PAGEDOWN:
-                    Log5("exec handlerPageDownButton");
+                    Log5("exec handlerPageDownButton",nullptr);
                     handler->handlerPageDownButton(shift, ctrl, alt);
                     break;
                 case SDL_SCANCODE_LEFT:
-                    Log5("exec handlerLeftButton");
+                    Log5("exec handlerLeftButton",nullptr);
                     handler->handlerLeftButton(shift, ctrl, alt);
                     break;
                 case SDL_SCANCODE_UP:
-                    Log5("exec handlerUpButton");
+                    Log5("exec handlerUpButton",nullptr);
                     handler->handlerUpButton(shift, ctrl, alt);
                     break;
                 case SDL_SCANCODE_RIGHT:
-                    Log5("exec handlerRightButton");
+                    Log5("exec handlerRightButton",nullptr);
                     handler->handlerRightButton(shift, ctrl, alt);
                     break;
                 case SDL_SCANCODE_DOWN:
-                    Log5("exec handlerDownButton");
+                    Log5("exec handlerDownButton",nullptr);
                     handler->handlerDownButton(shift, ctrl, alt);
                     break;
                 }
@@ -325,7 +333,7 @@ static void mouseButtonDown(SDL_Event *e)
             if (bt != nn_m_button_unknow)
             {
                 nnPoint pos(m->x, m->y);
-                Log5("exec handlerMouseButtonDown");
+                Log5("exec handlerMouseButtonDown",nullptr);
                 handler->handlerMouseButtonDown(bt, pos);
             }
         }
@@ -360,7 +368,7 @@ static void mouseButtonUp(SDL_Event *e)
             if (bt != nn_m_button_unknow)
             {
                 nnPoint pos(m->x, m->y);
-                Log5("exec handlerMouseButtonUp");
+                Log5("exec handlerMouseButtonUp",nullptr);
                 handler->handlerMouseButtonUp(bt, pos);
             }
         }
@@ -458,7 +466,7 @@ int main(int argc, char *argv[])
 
         // close SDL
         SDL_Quit();
-        Log3("log Stop ... ");
+        Log3("log Stop ... ",nullptr);
         n2App->closeAll();
         ;
     }

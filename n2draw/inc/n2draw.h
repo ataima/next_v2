@@ -51,7 +51,7 @@ public:
     {
         v_context = c;
     }
-    const STRING toString(void) const;
+    virtual const char * toString(void);
     virtual void save(IXmlNode *root);
     virtual void load(IXmlNode *root);
 };
@@ -86,7 +86,7 @@ public:
         v_Xpos = pX;
         v_Ypos = pY;
     }
-    const  STRING toString(void) const;
+    virtual const char * toString(void);
     virtual void save(IXmlNode *root);
     virtual void load(IXmlNode *root);
     eWireDirection getDirection(InnObj * pb);
@@ -153,7 +153,7 @@ public:
     {
         v_num.push_back(n);
     }
-    const  STRING toString(void) const;
+    virtual const char * toString(void);
     virtual void save(IXmlNode *root);
     virtual void load(IXmlNode *root);
     static void resetUI(void)
@@ -192,7 +192,7 @@ public:
     {
         v_wire = c;
     }
-    const  STRING toString(void) const;
+    virtual const char * toString(void);
     virtual void save(IXmlNode *root);
     virtual void load(IXmlNode *root);
     inline bool isComponent(void)
@@ -234,6 +234,7 @@ public:
     bool disconnect(InnObj *b);
     bool connectFromUp(int b);
     bool connectFromDown(int b);
+    TOSTRING_v(nnObjComponent);
     inline custom_obj getCustomization(void)
     {
         return v_spec;
@@ -264,7 +265,7 @@ public:
         v_reg.clear();
         v_reg = r;
     }
-    const STRING toString(void) const;
+
     void save(IXmlNode *root);
     void load(IXmlNode *root);
     virtual void setBaseVCPU(pMerlinoVCPU _vcpu)
@@ -275,6 +276,7 @@ public:
     {
         return v_vcpu;
     }
+    const char * toString(void) final;
 };
 
 
@@ -282,7 +284,7 @@ public:
 
 class  nnObjContact
     : public nnObjComponent
-    , public nnObjVCPU
+// , public nnObjVCPU
 {
 
 public:
@@ -291,7 +293,7 @@ public:
     {
         v_spec = _v;
     }
-    const  STRING toString(void) const;
+    virtual const char * toString(void);
     virtual void save(IXmlNode *root);
     virtual void load(IXmlNode *root);
 
@@ -302,7 +304,7 @@ class nnContactNO
 {
 public:
     nnContactNO():nnObjContact(contactGenericAnd) {}
-    const  STRING toString(void) const;
+    const char * toString(void) final;
 };
 
 class nnContactNC
@@ -310,13 +312,13 @@ class nnContactNC
 {
 public:
     nnContactNC() :nnObjContact(contactGenericOr) {}
-    const  STRING toString(void) const;
+    const char * toString(void) final;
 };
 
 
 class  nnObjCoil
     : public nnObjComponent
-    , public nnObjVCPU
+//, public nnObjVCPU
 {
 
 public:
@@ -325,7 +327,7 @@ public:
     {
         v_spec = _v;
     }
-    const  STRING toString(void) const;
+    virtual const char * toString(void);
     virtual void save(IXmlNode *root);
     virtual void load(IXmlNode *root);
 };
@@ -337,7 +339,7 @@ class nnGenericCoil
 {
 public:
     nnGenericCoil() :nnObjCoil(coilGeneric) {}
-    const  STRING toString(void) const;
+    const char * toString(void) final;
 };
 
 

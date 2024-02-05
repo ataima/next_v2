@@ -103,7 +103,7 @@ void nnChildApp::clean(void)
 
 bool nnChildApp::createObjects(IConfig *configuration, STRING &conf_file_name, STRING &confPath)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (configuration != nullptr)
     {
@@ -225,12 +225,13 @@ bool nnChildApp::createObjects(IConfig *configuration, STRING &conf_file_name, S
     {
         res = view->createDraw();
     }
+    TFUNCO();
     return res;
 }
 
 bool nnChildApp::loadImages(void)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (imageManager)
     {
@@ -259,35 +260,38 @@ bool nnChildApp::loadImages(void)
             }
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnChildApp::setExtHandler(extHandler _hook, void *unkObj)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     nnExtHandler *nh = new nnExtHandler(_hook, unkObj);
     if (nh)
     {
         externalHandler = nh;
     }
+    TFUNCO();
     return res;
 }
 
 bool nnChildApp::Capture(int command, unsigned int image)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (view)
     {
         res = view->Capture(command, image);
     }
+    TFUNCO();
     return res;
 }
 
 bool nnChildApp::addContact(nnPoint &pos, nnObjContact *contact)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (object_manager && contact)
     {
@@ -307,30 +311,33 @@ bool nnChildApp::addContact(nnPoint &pos, nnObjContact *contact)
             }
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnChildApp::addCoil(nnPoint &pos, nnObjCoil *coil)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (object_manager && coil)
     {
         res = object_manager->addCoil(pos.x, coil);
         view->updateDraw();
     }
+    TFUNCO();
     return res;
 }
 
 bool nnChildApp::connect(nnPoint &start, nnPoint &end)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (object_manager)
     {
         res = nnConnection::connectComponent(object_manager, start, end);
         view->updateDraw();
     }
+    TFUNCO();
     return res;
 }
 

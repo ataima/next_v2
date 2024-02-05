@@ -221,7 +221,7 @@ void nnLogger::reset()
 
 #include <iostream>
 
-void nnDefaultPrinter::out( int level, std::string & msg)
+void nnDefaultPrinter::out( int level,const std::string & msg )
 {
 
     const char * colors[]=

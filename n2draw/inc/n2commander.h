@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "n2interfaces.h"
 
+#include "n2logiface.h"
 
 class nnCommander
     :public ICommander
@@ -54,6 +55,7 @@ public:
     {
         font = _font;
     }
+    TOSTRING(n2AppManager);
 private :
     bool drawTips(bmpImage & bkg, nnPoint & pos, IViewGlue * glue);
     void getQuadrant(nnPoint & pos,nnPoint & res);

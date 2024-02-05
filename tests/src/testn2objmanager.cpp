@@ -39,8 +39,8 @@ class test_n2ObjManager
 {
     CA_TEST_SUITE(test_n2ObjManager)
     CA_TEST(test_n2ObjManager::test1, "verifica set/get pos");
-    CA_TEST(test_n2ObjManager::test2, "verifica tostring");
-    CA_TEST(test_n2ObjManager::test4, "verifica tostring");
+    CA_TEST(test_n2ObjManager::test2, "verifica toString");
+    CA_TEST(test_n2ObjManager::test4, "verifica toString");
     CA_TEST(test_n2ObjManager::test5, "verifica get direction1");
     CA_TEST(test_n2ObjManager::test6, "verifica get direction2");
     CA_TEST(test_n2ObjManager::test7, "verifica connect/disconnect");

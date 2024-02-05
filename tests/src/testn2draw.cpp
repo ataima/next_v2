@@ -37,9 +37,9 @@ class test_n2draw_class
 {
     CA_TEST_SUITE(test_n2draw_class)
     CA_TEST(test_n2draw_class::test1, "verifica set/get pos");
-    CA_TEST(test_n2draw_class::test2, "verifica tostring");
+    CA_TEST(test_n2draw_class::test2, "verifica toString");
     CA_TEST(test_n2draw_class::test3, "verifica et wire");
-    CA_TEST(test_n2draw_class::test4, "verifica tostring");
+    CA_TEST(test_n2draw_class::test4, "verifica toString");
     CA_TEST(test_n2draw_class::test5, "verifica get direction1");
     CA_TEST(test_n2draw_class::test6, "verifica get direction2");
     CA_TEST(test_n2draw_class::test7, "verifica getConnections().front");
@@ -103,14 +103,13 @@ void test_n2draw_class::test1(void)
 void test_n2draw_class::test2(void)
 {
     _START();
-    _INFO("verifica interna alla classe: metodo tostring");
+    _INFO("verifica interna alla classe: metodo toString");
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnObjCoil  v;
     v.setXpos(10);
     v.setXpos(20);
-    size_t t = v.toString().size();
-    CA_ASSERT(t != 0);
+    CA_ASSERT(strlen(v.toString()) != 0);
 }
 
 void test_n2draw_class::test3(void)
@@ -138,15 +137,13 @@ void test_n2draw_class::test3(void)
 void test_n2draw_class::test4(void)
 {
     _START();
-    _INFO("verifica interrna alla classe : struttura tostring");
+    _INFO("verifica interrna alla classe : struttura toString");
     _AUTHOR("Coppi Angelo n2draw library ");
     _STOP();
     nnObjWire  v(eWire::wireCross);
     v.setXpos(10);
     v.setXpos(20);
-    size_t t = v.toString().size();
-    CA_ASSERT(t!=0);
-
+    CA_ASSERT(strlen(v.toString())!=0);
 }
 
 void test_n2draw_class::test5(void)

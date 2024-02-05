@@ -1,5 +1,5 @@
-#ifndef N2_CONNECTION_HEADER
-#define N2_CONNECTION_HEADER
+#ifndef N2_STATISTICS_HEADER
+#define N2_STATISTICS_HEADER
 
 
 /**************************************************************
@@ -27,27 +27,55 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************************/
 
-class IManager;
+#include "n2logiface.h"
 
-#include "n2draw.h"
+#if _STATISTICS_
 
-class nnConnection
+#include <set>
+#include <queue>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+
+
+typedef struct tag_stat_param
 {
-public:
-    static bool connectComponent(IManager *manager, nnPoint & src, nnPoint & dst);
-protected:
-    static bool connectToPower(IManager *manager, nnPoint &p_src, nnPoint & p_dst);
-    static bool connectVertComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst);
-    static bool connectHorzIncrUpSideComponent(IManager *manager, nnPoint & src, nnPoint & dst);
-    static bool connectHorzIncrDownSideComponent(IManager *manager, nnPoint & src, nnPoint & dst);
-    static bool connectHorzDecrUpSideComponent(IManager *manager, nnPoint & src, nnPoint & dst);
-    static bool connectHorzDecrDownSideComponent(IManager *manager, nnPoint & src, nnPoint & dst);
-    static bool connectVertWireComponent(IManager *manager, nnPoint &p_src, nnPoint & p_dst);
-    static const char *toString(void)
+    size_t count;
+    std::string name;
+    std::chrono::steady_clock::duration time;
+    std::chrono::steady_clock::time_point last_time;
+} IStatParam;
+
+struct IStatCompare
+{
+    bool operator() (IStatParam *a, IStatParam *b) const
     {
-        return "nnConnection";
+        return a->name<b->name;
     }
 };
 
+typedef std::set<IStatParam *,  IStatCompare > db_func;
 
+class nnStatistics
+    : public IStatistics
+{
+    static db_func db;
+
+public:
+    nnStatistics();
+    ~nnStatistics();
+
+    void addCallIn(const char *_class_,const char *func  );
+    void addCallOut(const char *_class_,const char *func  );
+
+    void dumpStatistics(void) final;
+
+};
+
+
+
+
+
+#endif
 #endif

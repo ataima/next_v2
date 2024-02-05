@@ -12,6 +12,7 @@
 #include "n2appmanager.h"
 #include "n2logger.h"
 #include "n2resource.h"
+#include "n2statistics.h"
 
 
 /**************************************************************
@@ -87,7 +88,7 @@ IChild * n2AppManager::create(STRING & conf_file_name)
 IChild * n2AppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 {
     bool res = false;
-    TFUNC();
+    TFUNCI();
     IChild * child = new nnChildApp(UID);
     MEMCHK(IChild, child);
     try
@@ -114,6 +115,7 @@ IChild * n2AppManager::createObjects(STRING & conf_file_name,STRING & path_name)
         UID++;
     }
     // OK is Valid;
+    TFUNCO();
     return child;
 }
 
@@ -121,7 +123,7 @@ IChild * n2AppManager::createObjects(STRING & conf_file_name,STRING & path_name)
 #if _LOGGER_
 void n2AppManager::setPrinter(IPrinter * printer)
 {
-    TFUNC();
+    TFUNCI();
     ILogger *current_logger = ILogger::getInstance();
     if (current_logger == nullptr)
     {
@@ -131,16 +133,23 @@ void n2AppManager::setPrinter(IPrinter * printer)
     {
         current_logger->setOutput(printer);
     }
+    TFUNCO();
 }
 #endif
 
 
 bool n2AppManager::closeAll(void)
 {
-    TFUNC();
     if (childs.size() > 0)
     {
 #if _LOGGER_
+#if _STATISTICS_
+        if(nnStatistics::getInstance())
+        {
+            nnStatistics::getInstance()->dumpStatistics();
+            delete nnStatistics::getInstance();
+        }
+#endif
         if (nnLogger::getInstance())
         {
             nnLogger::getInstance()->reset();
@@ -157,7 +166,7 @@ bool n2AppManager::closeAll(void)
 IChild *n2AppManager::activate(int v)
 {
     IChild * res = nullptr;
-    TFUNC();
+    TFUNCI();
     if (!childs.empty())
     {
         listChild::iterator it = childs.find(v);
@@ -168,6 +177,7 @@ IChild *n2AppManager::activate(int v)
             res->getView()->updateDraw();
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -175,7 +185,7 @@ IChild *n2AppManager::activate(int v)
 IChild *n2AppManager::active(void)
 {
     IChild * res = nullptr;
-    TFUNC();
+    TFUNCI();
     if (!childs.empty() && selected>0)
     {
         listChild::iterator it = childs.find(selected);
@@ -184,6 +194,7 @@ IChild *n2AppManager::active(void)
             res = it->second;
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -192,7 +203,6 @@ IChild *n2AppManager::active(void)
 
 bool n2AppManager::clean(void)
 {
-    TFUNC();
     for (auto i : childs)
     {
         i.second->clean();

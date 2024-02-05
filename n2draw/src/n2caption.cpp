@@ -63,18 +63,19 @@ nnCaption::~nnCaption()
 
 void nnCaption::setTitle(XCHAR *_name)
 {
-    TFUNC();
+    TFUNCI();
     if (_name)
     {
         UtoA m(_name);
         title = m.utf8();
     }
+    TFUNCO();
 }
 
 
 void nnCaption::setArea(nnPoint & phy)
 {
-    TFUNC();
+    TFUNCI();
     hI = 0;
     wI = 0;
     for (int i = 0; i < num_item; i++)
@@ -91,12 +92,13 @@ void nnCaption::setArea(nnPoint & phy)
     }
     phyArea.set(0, 0, phy.x, hI/3);
     log_verbose("hI=%d - wI=%d",hI,wI);
+    TFUNCO();
 }
 
 bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
 {
     bool res = false;
-    TFUNC();
+    TFUNCI();
     if(visible)
     {
         bmpImage caption;
@@ -145,21 +147,23 @@ bool nnCaption::draw(bmpImage & bkg, IViewGlue *)
             drawTips(bkg);
         }
     }
+    TFUNCO();
     return res;
 }
 
 void nnCaption::addImage(int pos, bmpImage * _image)
 {
-    TFUNC();
+    TFUNCI();
     if (pos < num_item && pos>=0)
     {
         image[pos] = _image;
     }
+    TFUNCO();
 }
 
 bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHandler *hook)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if(getStatus()==status_caption_none)
     {
@@ -215,27 +219,30 @@ bool nnCaption::handlerMouseMove(nnPoint &phyPoint, show_status & status, IExtHa
             res = true;
         }
     }
+    TFUNCO();
     return res;
 }
 
 int  nnCaption::itemFromPoint(nnPoint phyPoint)
 {
-    TFUNC();
-    int i;
+    TFUNCI();
+    int i,res=-1;
     for (i = 0; i < num_item; i++)
     {
         if (btRect[i].into(phyPoint))
         {
-            return i;
+            res=i;
+            break;
         }
     }
-    return -1;
+    TFUNCO();
+    return res;
 }
 
 bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status*/, IExtHandler * hook)
 {
     bool res = false;
-    TFUNC();
+    TFUNCI();
     if (getStatus() == status_caption_none)
     {
         if (hook)
@@ -269,19 +276,21 @@ bool nnCaption::handlerMouseButtonDown(nnPoint &phyPoint, show_status & /*status
         setStatus(status_caption_none);
         log_verbose("status=%d - %s ",status, "status_caption_none");
     }
+    TFUNCO();
     return res;
 }
 
 
 bool nnCaption::drawTips(bmpImage & bkg)
 {
-    TFUNC();
+    TFUNCI();
     bool res = false;
     if (curItem != -1 && font != nullptr)
     {
         std::string m(msg[curItem]);
         res = nnUtils::drawBottomLeftTips(bkg, *font, m);
     }
+    TFUNCO();
     return res;
 }
 
