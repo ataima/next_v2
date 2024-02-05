@@ -181,6 +181,7 @@ class IExtHandler
 public:
     virtual  void doHandler(size_t Tparam,IParam* in=nullptr)=0;
     virtual ~IExtHandler() {}
+    virtual const char * toString(void)=0;
 };
 
 
@@ -498,6 +499,7 @@ public:
     virtual bool revIndexes(hashkey & key,int & x, int & y) = 0;
     virtual bool readConfiguration(IXmlNode *node)=0;
     virtual ~IManager() {}
+    virtual const char * toString(void)=0;
 };
 
 
@@ -507,6 +509,7 @@ public :
     virtual bool undo(void) = 0;
     virtual bool redo(void) = 0;
     virtual ~IUndoRedo() {}
+    virtual const char *toString(void)=0;
 };
 
 //////////////////////////////////////////////////////
@@ -528,6 +531,7 @@ public:
     virtual int getMaxWidth(void) = 0;
     virtual int getMaxHeight(void) = 0;
     virtual ~IImageManager() {}
+    virtual const char * toString(void)=0;
 };
 
 
@@ -543,6 +547,7 @@ public:
     virtual ~IFontManager() {}
     virtual int getFontWidth(void) = 0;
     virtual int getFontHeight(void) = 0;
+    virtual const char * toString(void) =0;
 
 };
 
@@ -559,6 +564,7 @@ public:
     virtual bool remove(const char *name) = 0;
     virtual bool getFontNameList(fontNameList & list) = 0;
     virtual ~IFontList() {}
+    virtual const char *toString(void)=0;
 };
 //////////////////////////////////////////////////////
 

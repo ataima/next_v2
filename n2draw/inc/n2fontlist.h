@@ -48,6 +48,7 @@ public:
     bool getFontNameList(fontNameList & list);
 private:
     void clear(void);
+    TOSTRING(nnFontList);
 };
 #endif
 

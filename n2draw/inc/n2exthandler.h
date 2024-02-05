@@ -38,6 +38,7 @@ class nnExtHandler
 public :
     nnExtHandler(extHandler & _hook,void *unkObj);
     void doHandler(size_t Tparam, IParam *in=nullptr);
+    TOSTRING(nnExtHandler);
 };
 
 

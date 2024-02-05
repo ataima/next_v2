@@ -47,6 +47,7 @@ public:
     nnImageManager(STRING & _path);
     ~nnImageManager();
     bool setPath(STRING &_path);
+    TOSTRING(nnImageManager);
     inline STRING  & getDefaulPath(void) const
     {
         return *const_cast<STRING*>(&path);

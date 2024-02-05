@@ -45,6 +45,8 @@ class nnFontManager
     listImage allImages;
     int fWidth;  //pixel
     int fHeight; //pixel
+private:
+    TOSTRING(nnFontManager);
 public:
     nnFontManager(const XCHAR * _path,int _width,int _height);
     ~nnFontManager();

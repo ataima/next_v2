@@ -78,6 +78,7 @@ public:
     bool setHost(IManager *_manager);
     bool undo(void);
     bool redo(void);
+    TOSTRING(nnObjUndoRedo);
     inline vectorUR & getUndoObjs(void)
     {
         return undoObjs;
@@ -119,6 +120,7 @@ public:
     bool removeAll(void);
     bool moveObj(nnPoint from, nnPoint to);
     bool swapObj(nnPoint from, nnPoint to);
+    TOSTRING(nnObjManager);
     inline int getWidth(void)
     {
         return v_width;

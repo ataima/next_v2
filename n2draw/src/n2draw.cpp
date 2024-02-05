@@ -1220,6 +1220,7 @@ const char * nnObjVCPU::toString(void)
 
 void nnObjVCPU::save(IXmlNode *root)
 {
+    TFUNCI();
     if (root != nullptr)
     {
         IXmlNode *child=root->add(X("VCPU"),(XCHAR *)X(""));
@@ -1230,10 +1231,12 @@ void nnObjVCPU::save(IXmlNode *root)
         }
         child->add(X("Regs"), (XCHAR *)s.str().c_str());
     }
+    TFUNCO();
 }
 
 void nnObjVCPU::load(IXmlNode *root)
 {
+    TFUNCI();
     if (root != nullptr)
     {
 
@@ -1264,4 +1267,5 @@ void nnObjVCPU::load(IXmlNode *root)
             }
         }
     }
+    TFUNCO();
 }

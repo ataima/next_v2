@@ -4,6 +4,7 @@
 #include "n2imagemanager.h"
 #include "n2exception.h"
 #include "n2resource.h"
+#include "n2logiface.h"
 
 
 #ifndef _MSC_VER
@@ -62,6 +63,7 @@ int nnImageManager::internalStringToValue(const XCHAR *ptr)
 {
     int res = 0;
     STRING value = ptr;
+    TFUNCI();
     if (value == X("CloseWindow"))
         res = 50;
     else if (value == X("MaximizeWindow"))
@@ -78,6 +80,7 @@ int nnImageManager::internalStringToValue(const XCHAR *ptr)
         res = 102;
     else if (value == X("ScrollVertDown"))
         res = 103;
+    TFUNCO();
     return res;
 }
 
@@ -88,6 +91,7 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
     bool res = false;
     long offset;
     STRING filename;
+    TFUNCI();
     IXmlNode *conf = node->find(X("IMAGES"));
     if (conf)
     {
@@ -283,13 +287,14 @@ bool nnImageManager::readConfiguration(IXmlNode *node)
         xmlConfigurationNodeException *pe = new xmlConfigurationNodeException(X("IMAGES"));
         throw (pe);
     }
-
+    TFUNCO();
     return res= !availObj.empty();
 }
 
 bool nnImageManager::loadImages(void)
 {
     bool res = false;
+    TFUNCI();
     if (availObj.size() > 0)
     {
         STRING filenameabs;
@@ -328,12 +333,14 @@ bool nnImageManager::loadImages(void)
         imagesConfigurationListEmptyException *pe= new imagesConfigurationListEmptyException();
         throw (pe);
     }
+    TFUNCO();
     return res;
 }
 
 bool nnImageManager::loadImages(const listCommandItem * items)
 {
     bool res = false;
+    TFUNCI();
     if(items!=nullptr )
     {
         availObj.clear();
@@ -348,6 +355,7 @@ bool nnImageManager::loadImages(const listCommandItem * items)
         }
     }
     res=loadImages();
+    TFUNCO();
     return res;
 }
 
@@ -361,6 +369,7 @@ bmpImage * nnImageManager::getImage(const XCHAR * name)
 bmpImage * nnImageManager:: getImage(int id)
 {
     bmpImage *res=nullptr;
+    TFUNCI();
     if (allImages.size()>0)
     {
         listImage::const_iterator it = allImages.find(id);
@@ -369,12 +378,15 @@ bmpImage * nnImageManager:: getImage(int id)
             res = it->second;
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnImageManager::setPath(STRING &_path)
 {
+    TFUNCI();
     path.clear();
     path=_path;
+    TFUNCO();
     return true;
 }

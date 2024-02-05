@@ -2,6 +2,7 @@
 #include "n2fontlist.h"
 #include "n2fontmanager.h"
 #include "n2exception.h"
+#include "n2logiface.h"
 
 #if (_WIN32 || _WIN64)
 #define getcwd  _getcwd
@@ -51,6 +52,7 @@ nnFontList::~nnFontList()
 
 void nnFontList::clear(void)
 {
+    TFUNCI();
     for (auto i : fonts)
     {
         IFontManager *t = i.second;
@@ -60,6 +62,7 @@ void nnFontList::clear(void)
         }
     }
     fonts.clear();
+    TFUNCO();
 }
 
 
@@ -68,6 +71,7 @@ bool nnFontList::readConfiguration(IXmlNode *node,STRING & src_path)
     bool res = false;
     STRING name;
     STRING path;
+    TFUNCI();
     IXmlNode *conf = node->find(X("FONTS"));
     if (conf)
     {
@@ -170,35 +174,41 @@ bool nnFontList::readConfiguration(IXmlNode *node,STRING & src_path)
         xmlConfigurationNodeException *e = new xmlConfigurationNodeException(X("FONTS"));
         throw(e);
     }
+    TFUNCO();
     return res;
 }
 
 bool nnFontList::loadImages(void)
 {
     bool res = false;
+    TFUNCI();
     for (auto i : fonts)
     {
         res = i.second->loadImages();
         if (!res)break;
     }
+    TFUNCO();
     return res;
 }
 
 IFontManager* nnFontList::getManager(const char *name)
 {
     IFontManager * res = nullptr;
+    TFUNCI();
     std::string _name(name);
     fontList::iterator it = fonts.find(name);
     if (it != fonts.end())
     {
         res = it->second;
     }
+    TFUNCO();
     return res;
 }
 
 bool  nnFontList::add(const char *name, IFontManager* manager)
 {
     bool res = false;
+    TFUNCI();
     std::string _name(name);
     fontList::iterator it = fonts.find(_name);
     if (it != fonts.end())
@@ -206,12 +216,14 @@ bool  nnFontList::add(const char *name, IFontManager* manager)
         fonts[_name] = manager;
         res=true;
     }
+    TFUNCO();
     return res;
 }
 
 bool nnFontList::remove(const char *name)
 {
     bool res = false;
+    TFUNCI();
     std::string _name(name);
     fontList::iterator it = fonts.find(_name);
     if (it != fonts.end())
@@ -224,17 +236,20 @@ bool nnFontList::remove(const char *name)
             res = true;
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnFontList::getFontNameList(fontNameList & list)
 {
     bool res = false;
+    TFUNCI();
     for (auto i: fonts)
     {
         std::string name = i.first;
         list.push_back(name);
     }
     res = (list.size() > 0);
+    TFUNCO();
     return res;
 }

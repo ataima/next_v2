@@ -4,7 +4,7 @@
 #include "n2fontmanager.h"
 #include "n2exception.h"
 #include "n2resource.h"
-
+#include "n2logiface.h"
 
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -63,6 +63,7 @@ bool nnFontManager::readConfiguration(IXmlNode *node)
     bool res = false;
     long offset;
     STRING filename;
+    TFUNCI();
     IXmlNode *t = node->find(X("SYM"));
     if (t)
     {
@@ -98,12 +99,14 @@ bool nnFontManager::readConfiguration(IXmlNode *node)
         }
         while ((t = t->getNext()) != nullptr);
     }
+    TFUNCO();
     return res = !availObj.empty();
 }
 
 bool nnFontManager::loadImages(void)
 {
     bool res = false;
+    TFUNCI();
     if (availObj.size() > 0)
     {
         STRING filenameabs;
@@ -138,6 +141,7 @@ bool nnFontManager::loadImages(void)
         imagesConfigurationListEmptyException *pe = new imagesConfigurationListEmptyException();
         throw (pe);
     }
+    TFUNCO();
     return res;
 }
 
@@ -145,6 +149,7 @@ bool nnFontManager::loadImages(void)
 bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned char green, unsigned char blue)
 {
     bmpImage *res = nullptr;
+    TFUNCI();
     std::string msg(_msg);
     size_t len = msg.size();
     listImage::iterator it = allImages.begin();
@@ -170,6 +175,7 @@ bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned
         res->show(0, 0);
 #endif
     }
+    TFUNCO();
     return res;
 }
 
@@ -178,7 +184,9 @@ bmpImage * nnFontManager::getImage(const char *_msg, unsigned char red, unsigned
 
 bool nnFontManager::setPath(STRING  &_path)
 {
+    TFUNCI();
     path.clear();
     path = _path;
+    TFUNCO();
     return true;
 }

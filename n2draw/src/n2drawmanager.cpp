@@ -6,6 +6,7 @@
 #include "n2draw.h"
 #include "n2utoatou.h"
 #include "n2exception.h"
+#include "n2logiface.h"
 
 /**************************************************************
 Copyright(c) 2015 Angelo Coppi
@@ -49,6 +50,7 @@ nnObjManager::~nnObjManager()
 bool nnObjManager::computeMask(void)
 {
     nnObjWire::resetUI();
+    TFUNCI();
     int i = v_width & 0x0fffffff;
     mask_width = 1;
     while (i > 0)
@@ -66,6 +68,7 @@ bool nnObjManager::computeMask(void)
         mask_height |= 1;
     }
     managerUR.setHost(this);
+    TFUNCO();
     return true;
 }
 
@@ -74,6 +77,7 @@ InnObj * nnObjManager::getObj(int x, int y)
 {
     nnObj * res = nullptr;
     hashkey hkey;
+    TFUNCI();
     if (range(x, y))
         if (genHashKey(x, y, hkey))
         {
@@ -83,6 +87,7 @@ InnObj * nnObjManager::getObj(int x, int y)
                 res = dynamic_cast<nnObj *> (it->second);
             }
         }
+    TFUNCO();
     return res;
 }
 
@@ -90,6 +95,7 @@ bool nnObjManager::addObj(int x, int y, InnObj * obj)
 {
     bool res = false;
     hashkey hkey;
+    TFUNCI();
     if (range(x, y) && obj != nullptr)
         if (genHashKey(x, y, hkey))
         {
@@ -105,6 +111,7 @@ bool nnObjManager::addObj(int x, int y, InnObj * obj)
                 managerUR.record(u);
             }
         }
+    TFUNCO();
     return res;
 }
 
@@ -112,6 +119,7 @@ bool nnObjManager::removeObj(int x, int y)
 {
     bool res = false;
     hashkey hkey;
+    TFUNCI();
     if (range(x, y))
         if (genHashKey(x, y, hkey))
         {
@@ -129,6 +137,7 @@ bool nnObjManager::removeObj(int x, int y)
                 }
             }
         }
+    TFUNCO();
     return res;
 }
 
@@ -137,6 +146,7 @@ InnObj * nnObjManager::outObj(int x, int y)
 {
     InnObj * obj = nullptr;
     hashkey hkey;
+    TFUNCI();
     if (range(x, y))
         if (genHashKey(x, y, hkey))
         {
@@ -153,12 +163,14 @@ InnObj * nnObjManager::outObj(int x, int y)
                 }
             }
         }
+    TFUNCO();
     return obj;
 }
 
 bool nnObjManager::addCoil(int x, nnObjCoil *obj)
 {
     bool res = false;
+    TFUNCI();
     if(obj!=nullptr)
     {
         if (obj->getContext() == objCoil)
@@ -206,12 +218,14 @@ bool nnObjManager::addCoil(int x, nnObjCoil *obj)
             }
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::addWire(int x, int y, InnObj * obj)
 {
     bool res = false;
+    TFUNCI();
     if (obj->getContext() == objWire)
     {
         hashkey hkey;
@@ -233,12 +247,14 @@ bool nnObjManager::addWire(int x, int y, InnObj * obj)
             }
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::addContact(int x, int y, nnObjContact *obj)
 {
     bool res = false;
+    TFUNCI();
     if(obj!=nullptr)
     {
         if (obj->getContext() == objContact)
@@ -263,6 +279,7 @@ bool nnObjManager::addContact(int x, int y, nnObjContact *obj)
             }
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -271,6 +288,7 @@ bool nnObjManager::replaceObj(int x, int y, InnObj * obj)
 {
     bool res = false;
     hashkey hkey;
+    TFUNCI();
     if (range(x, y) && obj != nullptr)
         if (genHashKey(x, y, hkey))
         {
@@ -291,12 +309,14 @@ bool nnObjManager::replaceObj(int x, int y, InnObj * obj)
                 }
             }
         }
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::removeAll(void)
 {
     bool res = false;
+    TFUNCI();
     if (size() > 0)
     {
         for (auto n : *this)
@@ -306,6 +326,7 @@ bool nnObjManager::removeAll(void)
         res = true;
         clear();
     }
+    TFUNCO();
     return res;
 }
 
@@ -319,6 +340,7 @@ bool nnObjManager::save(const STRING & name)
 {
     bool res=false;
     int num_obj = 0;
+    TFUNCI();
     if (!name.empty())
     {
 #ifdef __ANDROID__
@@ -349,6 +371,7 @@ bool nnObjManager::save(const STRING & name)
             res=true;
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -357,6 +380,7 @@ bool nnObjManager::save(const STRING & name)
 bool nnObjManager::load(const STRING & name)
 {
     bool res=false;
+    TFUNCI();
     if (!name.empty())
     {
         removeAll();
@@ -415,12 +439,14 @@ bool nnObjManager::load(const STRING & name)
         }
         res=true;
     }
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::genHashKey(int x, int y, hashkey &key)
 {
     bool res = false;
+    TFUNCI();
     x <<= 1;
     y <<= 1;
     x |= 1;
@@ -430,27 +456,33 @@ bool nnObjManager::genHashKey(int x, int y, hashkey &key)
     key.i.v2 = y;
     key.i.v1 = x;
     res =( key.v12 != 0);
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::range(int x, int y)
 {
     bool res = false;
+    TFUNCI();
     if (x < v_width && y < v_height)
         res = true;
+    TFUNCO();
     return res;
 }
 bool nnObjManager::rangeContact(int x, int y)
 {
     bool res = false;
+    TFUNCI();
     if (x < v_width && y < v_height - 1)
         res = true;
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::linkObj(int x, int y, InnObj *obj)
 {
     bool res = false;
+    TFUNCI();
     if (obj != nullptr)
     {
         InnObj *neighbourUp = nullptr;
@@ -588,6 +620,7 @@ bool nnObjManager::linkObj(int x, int y, InnObj *obj)
         }
 
     }
+    TFUNCO();
     return res;
 }
 
@@ -595,6 +628,7 @@ bool nnObjManager::unlinkObj(int x, int y, InnObj *obj)
 {
     bool res = false;
     InnObj *neighbour = nullptr;
+    TFUNCI();
     if (y > 0)
     {
         neighbour = getObj(x, y - 1);
@@ -651,6 +685,7 @@ bool nnObjManager::unlinkObj(int x, int y, InnObj *obj)
         }
 
     }
+    TFUNCO();
     return res;
 }
 
@@ -659,6 +694,7 @@ bool nnObjManager::unlinkObj(int x, int y, InnObj *obj)
 bool nnObjManager::moveObj(nnPoint from, nnPoint to)
 {
     bool res = false;
+    TFUNCI();
     InnObj *fromObj = getObj(from.x, from.y);
     InnObj *toObj = getObj(to.x, to.y);
     if (toObj == nullptr && fromObj != nullptr && fromObj->isComponent())
@@ -666,12 +702,14 @@ bool nnObjManager::moveObj(nnPoint from, nnPoint to)
         fromObj = outObj(from.x, from.y);
         res = addObj(to.x, to.y, fromObj);
     }
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::swapObj(nnPoint from, nnPoint to)
 {
     bool res = false;
+    TFUNCI();
     InnObj *fromObj = getObj(from.x, from.y);
     InnObj *toObj = getObj(to.x, to.y);
     if (toObj != nullptr && fromObj != nullptr && toObj->isComponent() && fromObj->isComponent())
@@ -682,6 +720,7 @@ bool nnObjManager::swapObj(nnPoint from, nnPoint to)
         if (res)
             res = addObj(from.x, from.y, toObj);
     }
+    TFUNCO();
     return res;
 }
 
@@ -689,18 +728,22 @@ bool nnObjManager::swapObj(nnPoint from, nnPoint to)
 bool nnObjManager::revHashKey(hashkey & key, int & x, int &y)
 {
     bool res = false;
+    TFUNCI();
     y = (key.i.v2)>>1 ;
     x = (key.i.v1)>>1 ;
     res = (y != 0 && x != 0);
+    TFUNCO();
     return res;
 }
 
 nnPoint  nnObjManager::getStartPoint(void)
 {
     int x, y;
+    TFUNCI();
     hashObjTable::iterator it = begin();
     hashkey key = it->first;
     revHashKey(key, x, y);
+    TFUNCO();
     return nnPoint(x, y);
 
 }
@@ -709,11 +752,13 @@ nnPoint  nnObjManager::getStartPoint(void)
 nnPoint  nnObjManager::getStopPoint(void)
 {
     int x, y;
+    TFUNCI();
     hashObjTable::reverse_iterator r_it = rbegin();
     r_it++;
     hashObjTable::iterator it = r_it.base();
     hashkey key = it->first;
     revHashKey(key, x, y);
+    TFUNCO();
     return nnPoint(x, y);
 }
 
@@ -734,6 +779,7 @@ bool nnObjManager::redo(void)
 bool nnObjManager::insertRow(int y_pos)
 {
     bool res = false;
+    TFUNCI();
     iterator it = begin();
     iterator _end = end();
     while (it != _end)
@@ -754,12 +800,14 @@ bool nnObjManager::insertRow(int y_pos)
     {
         v_height++;
     }
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::insertCol(int x_pos)
 {
     bool res = false;
+    TFUNCI();
     iterator it = begin();
     iterator _end = end();
     while (it != _end)
@@ -780,6 +828,7 @@ bool nnObjManager::insertCol(int x_pos)
     {
         v_width++;
     }
+    TFUNCO();
     return res;
 }
 
@@ -788,6 +837,7 @@ bool nnObjManager::removeRow(int y_pos)
 {
     bool res = false;
     int x;
+    TFUNCI();
     for (x = 0; x < v_width; x++)
     {
         InnObj *obj = getObj(x, y_pos);
@@ -834,6 +884,7 @@ bool nnObjManager::removeRow(int y_pos)
             it++;
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -841,6 +892,7 @@ bool nnObjManager::checkRemovableCol(int x_pos)
 {
     bool res = false;
     int y;
+    TFUNCI();
     for (y = 0; y < v_height; y++)
     {
         InnObj *obj = getObj(x_pos, y);
@@ -856,12 +908,14 @@ bool nnObjManager::checkRemovableCol(int x_pos)
         }
     }
     res = (y == v_height);
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::removeCol(int x_pos)
 {
     bool res = checkRemovableCol(x_pos);
+    TFUNCI();
     if (res)
     {
         int y;
@@ -896,6 +950,7 @@ bool nnObjManager::removeCol(int x_pos)
             it++;
         }
     }
+    TFUNCO();
     return res;
 }
 
@@ -903,6 +958,7 @@ bool nnObjManager::removeEmptyCol(void)
 {
     bool res = false;
     int vx;
+    TFUNCI();
     for (vx = v_width - 1; vx > 0; vx--)
     {
         res = checkRemovableCol(vx);
@@ -941,6 +997,7 @@ bool nnObjManager::removeEmptyCol(void)
             }
         }
     }
+    TFUNCO();
     return false;
 }
 
@@ -948,6 +1005,7 @@ bool nnObjManager::removeEmptyCol(void)
 bool nnObjManager::ResizeHeight(int h)
 {
     bool res = false;
+    TFUNCI();
     if (v_height != h)
     {
         if (v_height < h)
@@ -972,12 +1030,14 @@ bool nnObjManager::ResizeHeight(int h)
         }
     }
     res = (v_height == h);
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::ResizeWidth(int w)
 {
     bool res = false;
+    TFUNCI();
     if (v_width != w)
     {
         if (v_width < w)
@@ -1017,15 +1077,18 @@ bool nnObjManager::ResizeWidth(int w)
             }
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnObjManager::Resize(int w, int h)
 {
     bool res = false;
+    TFUNCI();
     res = ResizeWidth(w);
     if (res)
         res = ResizeHeight(h);
+    TFUNCO();
     return res;
 }
 
@@ -1049,6 +1112,7 @@ nnObjUndoRedo::~nnObjUndoRedo()
 bool nnObjUndoRedo::undo(void)
 {
     bool res = false;
+    TFUNCI();
     if (manager!=nullptr && undoObjs.size() > 0)
     {
         undo_redo_unit f = undoObjs.back();
@@ -1072,12 +1136,14 @@ bool nnObjUndoRedo::undo(void)
             break;
         }
     }
+    TFUNCO();
     return res;
 }
 
 bool nnObjUndoRedo::redo(void)
 {
     bool res = false;
+    TFUNCI();
     if (manager != nullptr && redoObjs.size() > 0)
     {
         undo_redo_unit f = redoObjs.back();
@@ -1098,8 +1164,8 @@ bool nnObjUndoRedo::redo(void)
             break;
         }
     }
+    TFUNCO();
     return res;
-
 }
 
 bool nnObjUndoRedo::setHost(IManager *_manager)
@@ -1110,6 +1176,7 @@ bool nnObjUndoRedo::setHost(IManager *_manager)
 
 void nnObjUndoRedo::record(undo_redo_unit u)
 {
+    TFUNCI();
     if (undoredoMode == false)
     {
         if (undoObjs.size() >= 100)
@@ -1132,10 +1199,12 @@ void nnObjUndoRedo::record(undo_redo_unit u)
         }
         redoObjs.push_back(u);
     }
+    TFUNCO();
 }
 
 void nnObjUndoRedo::clearUndoObjs(void)
 {
+    TFUNCI();
     if (undoObjs.size() > 0)
     {
         for (auto n : undoObjs)
@@ -1145,10 +1214,12 @@ void nnObjUndoRedo::clearUndoObjs(void)
         }
         undoObjs.clear();
     }
+    TFUNCO();
 }
 
 void nnObjUndoRedo::clearRedoObjs(void)
 {
+    TFUNCI();
     if (redoObjs.size() > 0)
     {
         for (auto n : redoObjs)
@@ -1158,6 +1229,7 @@ void nnObjUndoRedo::clearRedoObjs(void)
         }
         redoObjs.clear();
     }
+    TFUNCO();
 }
 
 

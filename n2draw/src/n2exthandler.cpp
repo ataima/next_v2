@@ -42,6 +42,7 @@ nnExtHandler::nnExtHandler(extHandler & _hook, void *unkObj)
 
 void nnExtHandler::doHandler(size_t Tparam, IParam *in)
 {
+    TFUNCI();
     if (hook && unknow)
     {
         try
@@ -54,4 +55,5 @@ void nnExtHandler::doHandler(size_t Tparam, IParam *in)
             throw(e);
         }
     }
+    TFUNCO();
 }
